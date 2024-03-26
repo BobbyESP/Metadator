@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
@@ -16,14 +15,29 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.navigation
+import androidx.navigation.navArgument
+import com.bobbyesp.metadator.model.SelectedSong
 import com.bobbyesp.metadator.presentation.common.LocalNavController
 import com.bobbyesp.metadator.presentation.common.LocalSnackbarHostState
+import com.bobbyesp.metadator.presentation.common.NavArgs
 import com.bobbyesp.metadator.presentation.common.Route
+import com.bobbyesp.metadator.presentation.common.SelectedSongParamType
+import com.bobbyesp.metadator.presentation.common.TagEditorSelectedSongParamType
+import com.bobbyesp.metadator.presentation.pages.MediaStorePageViewModel
+import com.bobbyesp.metadator.presentation.pages.home.HomePage
+import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.ID3MetadataEditorPage
+import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.ID3MetadataEditorPageViewModel
 import com.bobbyesp.ui.motion.animatedComposable
+import com.bobbyesp.ui.motion.slideInVerticallyComposable
+import com.bobbyesp.utilities.navigation.getParcelable
 
-@SuppressLint("UnusedBoxWithConstraintsScope")
+@SuppressLint("UnusedBoxWithConstraintsScope", "UnusedMaterialScaffoldPaddingParameter",
+    "UnusedMaterial3ScaffoldPaddingParameter"
+)
 @Composable
 fun Navigator() {
     val navController = LocalNavController.current
@@ -36,7 +50,7 @@ fun Navigator() {
     }
     val currentRoute = rememberSaveable(navBackStackEntry, key = "currentRoute") {
         mutableStateOf(
-            navBackStackEntry?.destination?.route ?: Route.MetadatorNavigator.HomePage.route
+            navBackStackEntry?.destination?.route ?: Route.MetadatorNavigator.Home.route
         )
     }
 
@@ -45,6 +59,8 @@ fun Navigator() {
     val showSnackbarMessage: suspend (String) -> Unit = { message ->
         snackbarHostState.showSnackbar(message)
     }
+
+    val mediaStoreViewModel = hiltViewModel<MediaStorePageViewModel>()
 
     BoxWithConstraints(
         modifier = Modifier
@@ -55,6 +71,7 @@ fun Navigator() {
             modifier = Modifier.fillMaxSize(),
             snackbarHost = {
                 SnackbarHost(
+                    modifier = Modifier.fillMaxWidth(),
                     hostState = snackbarHostState
                 ) { dataReceived ->
                     Snackbar(
@@ -64,19 +81,42 @@ fun Navigator() {
                         contentColor = MaterialTheme.colorScheme.inverseOnSurface,
                     )
                 }
-            },
-        ) {paddingValues ->
+            }
+        ) {
             NavHost(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(paddingValues)
                     .align(Alignment.Center),
                 navController = navController,
                 startDestination = Route.MetadatorNavigator.route,
                 route = Route.MainHost.route,
             ) {
-                animatedComposable(Route.MetadatorNavigator.route) {
+                navigation(
+                    startDestination = Route.MetadatorNavigator.Home.route,
+                    route = Route.MetadatorNavigator.route
+                ) {
+                    animatedComposable(Route.MetadatorNavigator.Home.route) {
+                        HomePage(viewModel = mediaStoreViewModel)
+                    }
+                }
 
+                navigation(
+                    startDestination = Route.UtilitiesNavigator.TagEditor.route,
+                    route = Route.UtilitiesNavigator.route
+                ) {
+                    slideInVerticallyComposable(
+                        route = Route.UtilitiesNavigator.TagEditor.route,
+                        arguments = listOf(navArgument(NavArgs.TagEditorSelectedSong.key) {
+                            type = TagEditorSelectedSongParamType
+                        })
+                    ) {
+                        val selectedSongParcelable =
+                            it.getParcelable<SelectedSong>(NavArgs.TagEditorSelectedSong.key)
+
+                        val viewModel = hiltViewModel<ID3MetadataEditorPageViewModel>()
+
+                        ID3MetadataEditorPage(viewModel = viewModel, selectedSong = selectedSongParcelable!!)
+                    }
                 }
             }
         }

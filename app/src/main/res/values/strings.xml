@@ -1,4 +1,33 @@
 <resources>
     <string name="app_name">Metadator</string>
     <string name="home">Home</string>
+    <string name="no_songs_found">No songs found</string>
+    <string name="first_open_media_store">If this is the first time that you try to see your library, this is a completely normal behavior. Try reloading the page in the below button.</string>
+    <string name="refresh">Refresh</string>
+    <string name="tag_editor">Tag editor</string>
+    <string name="utilities">Utilities</string>
+    <string name="viewing_metadata">Viewing metadata</string>
+    <string name="save">Save</string>
+    <string name="audio_features">Audio features</string>
+    <string name="bitrate">Bitrate</string>
+    <string name="sample_rate">Sample rate</string>
+    <string name="channels">Channels</string>
+    <string name="duration">Duration</string>
+    <string name="general_tags">General tags</string>
+    <string name="title">Title</string>
+    <string name="artist">Artist</string>
+    <string name="album">Album</string>
+    <string name="album_artist">Album artist</string>
+    <string name="track_number">Track number</string>
+    <string name="disc_number">Disc number</string>
+    <string name="date">Date</string>
+    <string name="genre">Genre</string>
+    <string name="credits">Credits</string>
+    <string name="composer">Composer</string>
+    <string name="lyricist">Lyricist</string>
+    <string name="conductor">Conductor</string>
+    <string name="remixer">Remixer</string>
+    <string name="performer">Performer</string>
+    <string name="dismiss">Dismiss</string>
+
 </resources>

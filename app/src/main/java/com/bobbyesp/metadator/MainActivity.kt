@@ -21,6 +21,7 @@ class MainActivity : ComponentActivity() {
         installSplashScreen()
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+        activity = this
         setupFirebase()
         setContent {
             val windowSizeClass = calculateWindowSizeClass(this)
@@ -32,6 +33,13 @@ class MainActivity : ComponentActivity() {
                     Navigator()
                 }
             }
+        }
+    }
+
+    companion object {
+        private lateinit var activity: MainActivity
+        fun getActivity(): MainActivity {
+            return activity
         }
     }
 }

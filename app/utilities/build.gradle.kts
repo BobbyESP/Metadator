@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kotlinAndroid)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -42,6 +43,7 @@ dependencies {
     implementation(project(":color"))
     implementation(libs.core.ktx)
     implementation(libs.kotlinx.datetime)
+    implementation(libs.kotlinx.serialization.json)
     implementation(libs.mmkv)
     implementation(libs.bundles.compose)
     implementation(libs.material)
@@ -49,4 +51,9 @@ dependencies {
 
     //Accompanist libraries
     implementation(libs.bundles.accompanist)
+    androidTestImplementation(platform(libs.compose.bom))
+    androidTestImplementation(libs.compose.test.junit4)
+    implementation(libs.compose.tooling.preview)
+    debugImplementation(libs.compose.tooling)
+    debugImplementation(libs.compose.test.manifest)
 }

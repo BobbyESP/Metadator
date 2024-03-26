@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.kotlin.ksp)
     alias(libs.plugins.hilt)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.kotlin.parcelize)
 }
 
 if (isFullBuild) {
@@ -131,7 +132,9 @@ dependencies {
 
 //-------------------Image Loading-------------------//
     implementation(libs.landscapist.coil)
-
+    implementation(libs.coil)
+    implementation(libs.compose.coil
+    )
 //-------------------FIREBASE-------------------//
     "playstoreImplementation"(platform(libs.firebase.bom))
     "playstoreImplementation"(libs.firebase.analytics)
@@ -142,7 +145,9 @@ dependencies {
     implementation(libs.qrcode.kotlin.android)
     implementation(libs.profileinstaller)
     implementation(libs.kotlinx.datetime)
+    implementation(libs.kotlinx.serialization.json)
     implementation(libs.taglib)
+    implementation(libs.scrollbar)
 
 //-------------------Testing-------------------//
 //Android testing libraries
