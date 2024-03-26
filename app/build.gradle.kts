@@ -67,6 +67,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
@@ -85,6 +86,7 @@ ksp {
 dependencies {
     implementation(project(":color"))
     implementation(project(":app:utilities"))
+    implementation(project(":app:ui"))
 //---------------Core----------------//
     implementation(libs.bundles.core) //⚠️ This contains core kotlinx libraries, lifecycle runtime and Activity Compose support
 

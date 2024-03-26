@@ -16,7 +16,6 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.serialization.json.Json
-
 @HiltAndroidApp
 class App : Application() {
     override fun onCreate() {
@@ -44,6 +43,8 @@ class App : Application() {
         lateinit var applicationScope: CoroutineScope
         lateinit var connectivityManager: ConnectivityManager
         lateinit var packageInfo: PackageInfo
+
+        val isPlayStoreBuild = BuildConfig.FLAVOR == "playstore"
 
         val json = Json {
             ignoreUnknownKeys = true

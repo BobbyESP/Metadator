@@ -1,4 +1,4 @@
-package com.bobbyesp.metadator.ui.theme
+package com.bobbyesp.metadator.presentation.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
