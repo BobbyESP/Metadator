@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.bobbyesp.metadator" />
+                  <option name="mobileSdkAppId" value="1:740110705687:android:548efa4f4051ff64692852" />
+                  <option name="projectId" value="metadator-app" />
+                  <option name="projectNumber" value="740110705687" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

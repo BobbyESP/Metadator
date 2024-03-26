@@ -2,4 +2,9 @@
 <resources>
 
     <style name="Theme.Metadator" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <style name="Theme.Metadator.Starting" parent="Theme.SplashScreen">
+        <item name="postSplashScreenTheme">@style/Theme.Metadator</item>
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
+    </style>
 </resources>

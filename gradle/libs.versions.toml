@@ -14,6 +14,7 @@ ksp = "1.9.21-1.0.15"
 material = "1.11.0"
 media3 = "1.3.0"
 leakcanary = "2.13"
+
 #Compose
 compose-bom = "2024.03.00"
 constraintLayout = "1.1.0-alpha13"
@@ -74,6 +75,9 @@ firebaseAuth = "22.3.1"
 gmsPlayServicesAuth = "21.0.0"
 googleServices = "4.4.1"
 firebaseBom = "32.8.0"
+
+#Others
+taglib = "a42d3846ba"
 
 #Tests
 junit = "4.13.2"
@@ -216,6 +220,7 @@ commons-compress = { module = "org.apache.commons:commons-compress", version.ref
 
 #Others
 qrcode-kotlin-android = { module = "io.github.g0dkar:qrcode-kotlin-android", version.ref = "qrcodeKotlinAndroid" }
+taglib = { group = "com.github.Kyant0", name = "taglib", version.ref = "taglib" }
 
 #Compose tooling and tests
 compose-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
