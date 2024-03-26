@@ -25,3 +25,4 @@ rootProject.name = "Metadator"
 include(":app")
 include(":color")
 include(":app:utilities")
+include(":app:ui")
