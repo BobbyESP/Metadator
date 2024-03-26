@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="follow_system">Follow system</string>
+    <string name="on">On</string>
+    <string name="off">Off</string>
+    <string name="grant">Grant</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="filesize_mb" translatable="false">%.2f MB</string>
+    <string name="filesize_gb" translatable="false">%.2f GB</string>
+</resources>
