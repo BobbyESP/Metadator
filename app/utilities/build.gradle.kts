@@ -48,9 +48,10 @@ dependencies {
     implementation(libs.bundles.compose)
     implementation(libs.material)
     implementation(libs.coil)
-
+    implementation(libs.bundles.coroutines)
     //Accompanist libraries
     implementation(libs.bundles.accompanist)
+
     androidTestImplementation(platform(libs.compose.bom))
     androidTestImplementation(libs.compose.test.junit4)
     implementation(libs.compose.tooling.preview)
