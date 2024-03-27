@@ -33,7 +33,7 @@ class ID3MetadataEditorPageViewModel @Inject constructor(
         val lyrics: String = ""
     )
 
-    fun loadTrackMetadata(path: String, fileName: String) {
+    fun loadTrackMetadata(path: String) {
         updateState(ID3MetadataEditorPageState.Loading)
 
         try {
@@ -49,8 +49,10 @@ class ID3MetadataEditorPageViewModel @Inject constructor(
                     return
                 }
                 val lyrics = metadata.propertyMap["LYRICS"]?.get(0) ?: ""
+
                 updateLyrics(lyrics)
                 updateMetadata(metadata)
+
                 updateState(ID3MetadataEditorPageState.Success(metadata))
             }
         } catch (e: IOException) {

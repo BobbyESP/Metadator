@@ -41,6 +41,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewModelScope
 import coil.compose.AsyncImagePainter
 import com.bobbyesp.ext.joinOrNullToString
 import com.bobbyesp.ext.toMinutes
@@ -56,6 +57,8 @@ import com.bobbyesp.ui.components.text.MarqueeText
 import com.bobbyesp.ui.components.text.PreConfiguredOutlinedTextField
 import com.bobbyesp.utilities.mediastore.AudioFileMetadata
 import com.bobbyesp.utilities.mediastore.AudioFileMetadata.Companion.toFileMetadata
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -69,10 +72,11 @@ fun ID3MetadataEditorPage(viewModel: ID3MetadataEditorPageViewModel, selectedSon
     var propertiesCopy: AudioFileMetadata? by remember { mutableStateOf(null) }
 
     LaunchedEffect(true) {
-        viewModel.loadTrackMetadata(
-            path = selectedSong.localSongPath!!,
-            fileName = selectedSong.fileName!!
-        )
+        viewModel.viewModelScope.launch(Dispatchers.IO) {
+            viewModel.loadTrackMetadata(
+                path = selectedSong.localSongPath!!
+            )
+        }
     }
 
     fun saveInMediaStore(): Boolean = viewModel.saveMetadata(
