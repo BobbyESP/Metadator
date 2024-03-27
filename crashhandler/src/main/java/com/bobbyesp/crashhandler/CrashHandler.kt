@@ -83,7 +83,7 @@ object CrashHandler {
                 packageInfo.versionCode.toLong()
             }
 
-        val release = if (Build.VERSION.SDK_INT >= 30) {
+        val androidVersion = if (Build.VERSION.SDK_INT >= 30) {
             Build.VERSION.RELEASE_OR_CODENAME
         } else {
             Build.VERSION.RELEASE
@@ -96,7 +96,7 @@ object CrashHandler {
 
 
         if (info.androidVersion) {
-            report.append("Android version: Android $release (API ${Build.VERSION.SDK_INT})\n")
+            report.append("Android version: Android $androidVersion (API ${Build.VERSION.SDK_INT})\n")
         }
 
         if (info.deviceInfo) {

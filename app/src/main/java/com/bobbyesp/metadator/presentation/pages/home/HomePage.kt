@@ -43,9 +43,6 @@ fun HomePage(
     val storagePermissionState = rememberPermissionState(permission = readAudioFiles)
     val navController = LocalNavController.current
 
-    val snackbarHostState = LocalSnackbarHostState.current
-    val scope = rememberCoroutineScope()
-
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     Scaffold(modifier = modifier.fillMaxSize(), topBar = {
