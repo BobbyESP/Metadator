@@ -39,6 +39,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name="com.bobbyesp.crashhandler.CrashHandlerActivity"
+            android:label="CrashHandlerActivity"
+            android:launchMode="singleTask"
+            android:theme="@style/Theme.Metadator" />
     </application>
 
 </manifest>

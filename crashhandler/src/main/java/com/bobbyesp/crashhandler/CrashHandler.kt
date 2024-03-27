@@ -53,8 +53,7 @@ object CrashHandler {
             val packageInfo = packageManager.run {
                 if (Build.VERSION.SDK_INT >= 33) getPackageInfo(
                     packageName, PackageManager.PackageInfoFlags.of(0)
-                ) else
-                    getPackageInfo(packageName, 0)
+                ) else getPackageInfo(packageName, 0)
             }
             startCrashReportActivity(this, packageInfo, reportInfo, logfile)
         }
@@ -74,15 +73,15 @@ object CrashHandler {
      *
      * @return The generated version report as a string.
      */
-    fun getVersionReport(packageInfo: PackageInfo, info: ReportInfo): String {
+    fun getVersionReport(packageInfo: PackageInfo, info: ReportInfo = ReportInfo()): String {
         val versionName = packageInfo.versionName
 
-        @Suppress("DEPRECATION")
-        val versionCode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            packageInfo.longVersionCode
-        } else {
-            packageInfo.versionCode.toLong()
-        }
+        @Suppress("DEPRECATION") val versionCode =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                packageInfo.longVersionCode
+            } else {
+                packageInfo.versionCode.toLong()
+            }
 
         val release = if (Build.VERSION.SDK_INT >= 30) {
             Build.VERSION.RELEASE_OR_CODENAME
@@ -92,22 +91,23 @@ object CrashHandler {
 
         val packageName = packageInfo.packageName
 
-        val reportMap = mapOf(
-            info.androidVersion to "Android version: Android $release (API ${Build.VERSION.SDK_INT})\n",
-            info.deviceInfo to "Device: ${Build.MANUFACTURER} ${Build.MODEL}\n",
-            info.supportedABIs to "Supported ABIs: ${Build.SUPPORTED_ABIS.contentToString()}\n"
-        )
-
         val report =
             StringBuilder().append("App version: $packageName $versionName ($versionCode)\n")
 
-        reportMap.forEach { (condition, string) ->
-            if (condition) {
-                report.append(string)
-            }
+
+        if (info.androidVersion) {
+            report.append("Android version: Android $release (API ${Build.VERSION.SDK_INT})\n")
         }
 
-        return report.toString()
+        if (info.deviceInfo) {
+            report.append("Device: ${Build.MANUFACTURER} ${Build.MODEL}\n")
+        }
+
+        if (info.supportedABIs) {
+            report.append("Supported ABIs: ${Build.SUPPORTED_ABIS.contentToString()}\n")
+        }
+
+        return report.toString() //It's only returned supportedABIs for some reason among the appended value at the creation of the "report" val
     }
 
     /**
@@ -120,9 +120,7 @@ object CrashHandler {
      * @return The absolute path of the created log file.
      */
     fun createLogFile(
-        context: Context,
-        errorReport: String,
-        directory: File = context.filesDir
+        context: Context, errorReport: String, directory: File = context.filesDir
     ): String {
         // Get the current time in milliseconds
         val date = System.currentTimeMillis()

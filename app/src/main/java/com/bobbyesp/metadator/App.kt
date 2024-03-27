@@ -8,6 +8,8 @@ import android.content.pm.PackageManager
 import android.net.ConnectivityManager
 import android.os.Build
 import androidx.core.content.getSystemService
+import com.bobbyesp.crashhandler.CrashHandler.setupCrashHandler
+import com.bobbyesp.crashhandler.ReportInfo
 import com.bobbyesp.utilities.Theme
 import com.google.android.material.color.DynamicColors
 import com.tencent.mmkv.MMKV
@@ -16,6 +18,8 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.serialization.json.Json
+import kotlin.properties.Delegates
+
 @HiltAndroidApp
 class App : Application() {
     override fun onCreate() {
@@ -30,10 +34,16 @@ class App : Application() {
         applicationScope = CoroutineScope(SupervisorJob())
         clipboard = getSystemService()!!
         connectivityManager = getSystemService()!!
-
         Theme.applicationScope = applicationScope
+        isPlayStoreBuild = BuildConfig.FLAVOR == "playstore"
         DynamicColors.applyToActivitiesIfAvailable(this)
         super.onCreate()
+
+        if(!isPlayStoreBuild) setupCrashHandler(reportInfo = ReportInfo(
+            androidVersion = true,
+            deviceInfo = true,
+            supportedABIs = true
+        ))
     }
 
     companion object {
@@ -43,8 +53,7 @@ class App : Application() {
         lateinit var applicationScope: CoroutineScope
         lateinit var connectivityManager: ConnectivityManager
         lateinit var packageInfo: PackageInfo
-
-        val isPlayStoreBuild = BuildConfig.FLAVOR == "playstore"
+        var isPlayStoreBuild by Delegates.notNull<Boolean>()
 
         val json = Json {
             ignoreUnknownKeys = true

@@ -26,7 +26,6 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.bobbyesp.crashhandler.R
 import com.bobbyesp.crashhandler.ui.components.ExpandableElevatedCard
@@ -34,7 +33,7 @@ import com.bobbyesp.crashhandler.ui.components.FilledButtonWithIcon
 import java.net.URLEncoder
 
 @Composable
-private fun CrashReportPage(
+fun CrashReportPage(
     versionReport: String = "VERSION REPORT",
     errorMessage: String = error_report_fake,
     onClick: () -> Unit = {}
@@ -43,7 +42,7 @@ private fun CrashReportPage(
 
     val clipboardManager = LocalClipboardManager.current
 
-    //cut the error message to 1000 characters
+    //cut the error message to 2000 characters
     val errorMessageCut = if (errorMessage.length > 2000) {
         errorMessage.substring(0, 2000) + "..."
     } else {
@@ -109,12 +108,6 @@ private fun CrashReportPage(
             )
         }
     }
-}
-
-@Preview
-@Composable
-private fun CrashHandlerPagePreview() {
-    CrashReportPage()
 }
 
 private const val error_report_fake =
