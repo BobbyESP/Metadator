@@ -27,7 +27,7 @@ commonsCompress = "1.24.0"
 
 #More UI
 androidx-paging = "3.2.1"
-qrcodeKotlinAndroid = "4.0.7"
+qrcodeKotlinAndroid = "4.1.0"
 orbital = "0.3.3"
 shimmer = "1.0.3"
 palette = "1.0.0"

@@ -67,7 +67,6 @@ fun ID3MetadataEditorPage(viewModel: ID3MetadataEditorPageViewModel, selectedSon
     val navController = LocalNavController.current
 
     val path = selectedSong.localSongPath
-    val fileName = selectedSong.fileName
 
     var propertiesCopy: AudioFileMetadata? by remember { mutableStateOf(null) }
 
@@ -84,7 +83,6 @@ fun ID3MetadataEditorPage(viewModel: ID3MetadataEditorPageViewModel, selectedSon
             propertyMap = propertiesCopy!!.toPropertyMap()
         )!!,
         path = path!!,
-        fileName = fileName!!
     )
 
     Scaffold(
@@ -127,6 +125,7 @@ fun ID3MetadataEditorPage(viewModel: ID3MetadataEditorPageViewModel, selectedSon
                     SideEffect {
                         propertiesCopy = actualPageState.metadata.propertyMap.toFileMetadata()
                     }
+
                     val artworkUri = selectedSong.artworkPath
                     var showArtwork by remember { mutableStateOf(true) }
                     var showMediaStoreInfoDialog by remember { mutableStateOf(false) }

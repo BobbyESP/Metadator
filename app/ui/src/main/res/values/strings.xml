@@ -2,4 +2,5 @@
 <resources>
     <string name="retry">Retry</string>
     <string name="back">Back</string>
+    <string name="undo">Undo</string>
 </resources>

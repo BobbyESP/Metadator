@@ -5,16 +5,15 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Snackbar
-import androidx.compose.material3.SnackbarHost
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -25,7 +24,6 @@ import com.bobbyesp.metadator.presentation.common.LocalNavController
 import com.bobbyesp.metadator.presentation.common.LocalSnackbarHostState
 import com.bobbyesp.metadator.presentation.common.NavArgs
 import com.bobbyesp.metadator.presentation.common.Route
-import com.bobbyesp.metadator.presentation.common.SelectedSongParamType
 import com.bobbyesp.metadator.presentation.common.TagEditorSelectedSongParamType
 import com.bobbyesp.metadator.presentation.pages.MediaStorePageViewModel
 import com.bobbyesp.metadator.presentation.pages.home.HomePage
@@ -33,10 +31,12 @@ import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.ID3Metadata
 import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.ID3MetadataEditorPageViewModel
 import com.bobbyesp.ui.motion.animatedComposable
 import com.bobbyesp.ui.motion.slideInVerticallyComposable
+import com.bobbyesp.ui.util.appBarScrollBehavior
 import com.bobbyesp.utilities.navigation.getParcelable
 
-@SuppressLint("UnusedBoxWithConstraintsScope", "UnusedMaterialScaffoldPaddingParameter",
-    "UnusedMaterial3ScaffoldPaddingParameter"
+@OptIn(ExperimentalMaterial3Api::class)
+@SuppressLint(
+    "UnusedBoxWithConstraintsScope"
 )
 @Composable
 fun Navigator() {
@@ -67,56 +67,41 @@ fun Navigator() {
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        Scaffold(
-            modifier = Modifier.fillMaxSize(),
-            snackbarHost = {
-                SnackbarHost(
-                    modifier = Modifier.fillMaxWidth(),
-                    hostState = snackbarHostState
-                ) { dataReceived ->
-                    Snackbar(
-                        modifier = Modifier,
-                        snackbarData = dataReceived,
-                        containerColor = MaterialTheme.colorScheme.inverseSurface,
-                        contentColor = MaterialTheme.colorScheme.inverseOnSurface,
-                    )
+        NavHost(
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.Center),
+            navController = navController,
+            startDestination = Route.MetadatorNavigator.route,
+            route = Route.MainHost.route,
+        ) {
+            navigation(
+                startDestination = Route.MetadatorNavigator.Home.route,
+                route = Route.MetadatorNavigator.route
+            ) {
+                animatedComposable(Route.MetadatorNavigator.Home.route) {
+                    HomePage(viewModel = mediaStoreViewModel)
                 }
             }
-        ) {
-            NavHost(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.Center),
-                navController = navController,
-                startDestination = Route.MetadatorNavigator.route,
-                route = Route.MainHost.route,
+
+            navigation(
+                startDestination = Route.UtilitiesNavigator.TagEditor.route,
+                route = Route.UtilitiesNavigator.route
             ) {
-                navigation(
-                    startDestination = Route.MetadatorNavigator.Home.route,
-                    route = Route.MetadatorNavigator.route
+                slideInVerticallyComposable(
+                    route = Route.UtilitiesNavigator.TagEditor.route,
+                    arguments = listOf(navArgument(NavArgs.TagEditorSelectedSong.key) {
+                        type = TagEditorSelectedSongParamType
+                    })
                 ) {
-                    animatedComposable(Route.MetadatorNavigator.Home.route) {
-                        HomePage(viewModel = mediaStoreViewModel)
-                    }
-                }
+                    val selectedSongParcelable =
+                        it.getParcelable<SelectedSong>(NavArgs.TagEditorSelectedSong.key)
 
-                navigation(
-                    startDestination = Route.UtilitiesNavigator.TagEditor.route,
-                    route = Route.UtilitiesNavigator.route
-                ) {
-                    slideInVerticallyComposable(
-                        route = Route.UtilitiesNavigator.TagEditor.route,
-                        arguments = listOf(navArgument(NavArgs.TagEditorSelectedSong.key) {
-                            type = TagEditorSelectedSongParamType
-                        })
-                    ) {
-                        val selectedSongParcelable =
-                            it.getParcelable<SelectedSong>(NavArgs.TagEditorSelectedSong.key)
+                    val viewModel = hiltViewModel<ID3MetadataEditorPageViewModel>()
 
-                        val viewModel = hiltViewModel<ID3MetadataEditorPageViewModel>()
-
-                        ID3MetadataEditorPage(viewModel = viewModel, selectedSong = selectedSongParcelable!!)
-                    }
+                    ID3MetadataEditorPage(
+                        viewModel = viewModel, selectedSong = selectedSongParcelable!!
+                    )
                 }
             }
         }

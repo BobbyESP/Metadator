@@ -6,5 +6,7 @@
     <style name="Theme.Metadator.Starting" parent="Theme.SplashScreen">
         <item name="postSplashScreenTheme">@style/Theme.Metadator</item>
         <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
     </style>
 </resources>
