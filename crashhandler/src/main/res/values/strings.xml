@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="copy_and_exit">Copy and exit</string>
+    <string name="report_github">Report on GitHub</string>
+    <string name="unknown_error_title">An unknown error has occurred!</string>
+    <string name="device_info">Device info</string>
+    <string name="device_info_subtitle">This shows us information about your device for helping you to solve the problem</string>
+</resources>

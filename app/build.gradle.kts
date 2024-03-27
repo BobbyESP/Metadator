@@ -148,6 +148,7 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.taglib)
     implementation(libs.scrollbar)
+    "fossImplementation"(project(":crashhandler"))
 
 //-------------------Testing-------------------//
 //Android testing libraries
