@@ -35,7 +35,7 @@ fun HomePage(
     val currentApiVersion = Build.VERSION.SDK_INT
 
     val readAudioFiles = when {
-        currentApiVersion < Build.VERSION_CODES.S -> Manifest.permission.READ_EXTERNAL_STORAGE
+        currentApiVersion < Build.VERSION_CODES.TIRAMISU -> Manifest.permission.READ_EXTERNAL_STORAGE
 
         else -> Manifest.permission.READ_MEDIA_AUDIO
     }
