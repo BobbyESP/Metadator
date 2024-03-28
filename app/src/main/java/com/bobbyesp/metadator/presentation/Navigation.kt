@@ -91,9 +91,7 @@ fun Navigator() {
             drawerState = drawerState,
             gesturesEnabled = canOpenDrawer,
             drawerContent = {
-                ModalDrawerSheet(
-                    modifier = Modifier.fillMaxWidth(0.75f),
-                ) {
+                ModalDrawerSheet {
                     Text(
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                         text = stringResource(id = R.string.app_name).uppercase(),
