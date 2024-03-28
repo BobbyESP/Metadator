@@ -4,14 +4,11 @@
     <selectionStates>
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2024-03-28T09:48:46.630324400Z">
+        <DropdownSelection timestamp="2024-03-28T23:01:30.241145700Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="FirebaseDirectAccess" identifier="reservation=projects/metadator-app/deviceSessions/session-359jeouq8ixs5" />
+              <DeviceId pluginId="PhysicalDevice" identifier="serial=d85c1834" />
             </handle>
-            <template>
-              <DeviceId pluginId="FirebaseDirectAccess" type="TEMPLATE" identifier="model_id=a51/31" />
-            </template>
           </Target>
         </DropdownSelection>
         <DialogSelection />

@@ -5,7 +5,9 @@ import android.app.RecoverableSecurityException
 import android.content.Context
 import android.os.Build
 import android.util.Log
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import com.bobbyesp.utilities.mediastore.AudioFileMetadata
 import com.bobbyesp.utilities.mediastore.MediaStoreReceiver
 import com.kyant.taglib.AudioPropertiesReadStyle
 import com.kyant.taglib.Metadata
@@ -19,6 +21,7 @@ import java.io.IOException
 import javax.inject.Inject
 
 const val ON_WRITE_DATA_REQUEST_CODE = 1
+
 @HiltViewModel
 class ID3MetadataEditorPageViewModel @Inject constructor(
     @ApplicationContext private val context: Context
@@ -26,15 +29,16 @@ class ID3MetadataEditorPageViewModel @Inject constructor(
     private val mutablePageViewState = MutableStateFlow(PageViewState())
     val pageViewState = mutablePageViewState.asStateFlow()
 
+    val propertiesCopy = mutableStateOf<AudioFileMetadata?>(null)
+
     data class PageViewState(
         val metadata: Metadata? = null,
         val state: ID3MetadataEditorPageState = ID3MetadataEditorPageState.Loading,
-        val lyrics: String = ""
+        val lyrics: String = "",
     )
 
     fun loadTrackMetadata(path: String) {
         updateState(ID3MetadataEditorPageState.Loading)
-
         try {
             MediaStoreReceiver.getFileDescriptorFromPath(context, path, mode = "r")?.use { songFd ->
                 val fd = songFd.dup()?.detachFd() ?: throw IOException("File descriptor is null")
@@ -65,9 +69,7 @@ class ID3MetadataEditorPageViewModel @Inject constructor(
 
     fun saveMetadata(
         context: Context = this.context, // Added missing context parameter
-        newMetadata: Metadata,
-        path: String,
-        intentPassthrough: (PendingIntent) -> Unit = {}
+        newMetadata: Metadata, path: String, intentPassthrough: (PendingIntent) -> Unit = {}
     ): Boolean {
         return try {
             MediaStoreReceiver.getFileDescriptorFromPath(context, path, mode = "w")
@@ -85,11 +87,12 @@ class ID3MetadataEditorPageViewModel @Inject constructor(
             Log.i("ID3MetadataEditorPageViewModel", "Security exception caught")
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 val recoverableSecurityException =
-                    securityException as? RecoverableSecurityException
-                        ?: throw RuntimeException(securityException.message, securityException)
+                    securityException as? RecoverableSecurityException ?: throw RuntimeException(
+                        securityException.message,
+                        securityException
+                    )
 
-                val intentSender =
-                    recoverableSecurityException.userAction.actionIntent
+                val intentSender = recoverableSecurityException.userAction.actionIntent
                 intentPassthrough(intentSender)
             } else {
                 throw RuntimeException(securityException.message, securityException)

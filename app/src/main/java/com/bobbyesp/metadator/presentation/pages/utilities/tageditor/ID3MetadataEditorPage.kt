@@ -21,8 +21,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MusicNote
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -34,6 +34,7 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -57,7 +58,6 @@ import com.bobbyesp.ui.components.others.PlaceholderCreator
 import com.bobbyesp.ui.components.text.LargeCategoryTitle
 import com.bobbyesp.ui.components.text.MarqueeText
 import com.bobbyesp.ui.components.text.PreConfiguredOutlinedTextField
-import com.bobbyesp.utilities.mediastore.AudioFileMetadata
 import com.bobbyesp.utilities.mediastore.AudioFileMetadata.Companion.toFileMetadata
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -65,34 +65,35 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ID3MetadataEditorPage(
-    viewModel: ID3MetadataEditorPageViewModel,
-    parcelableSong: ParcelableSong
+    viewModel: ID3MetadataEditorPageViewModel, parcelableSong: ParcelableSong
 ) {
     val viewState = viewModel.pageViewState.collectAsStateWithLifecycle().value
     val navController = LocalNavController.current
 
     val path = parcelableSong.localSongPath
+    val scope = rememberCoroutineScope()
 
-    var propertiesCopy: AudioFileMetadata? by remember { mutableStateOf(null) }
+    var propertiesCopy = viewModel.propertiesCopy.value
 
+    val vmScope = viewModel.viewModelScope
     LaunchedEffect(true) {
-        viewModel.viewModelScope.launch(Dispatchers.IO) {
+        vmScope.launch(vmScope.coroutineContext + Dispatchers.IO) {
             viewModel.loadTrackMetadata(
                 path = parcelableSong.localSongPath!!
             )
         }
     }
 
-
     val sendActivityIntent =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.StartIntentSenderForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
-                viewModel.saveMetadata(
-                    newMetadata = viewState.metadata?.copy(
-                        propertyMap = propertiesCopy!!.toPropertyMap()
-                    )!!,
-                    path = path!!
-                )
+                scope.launch(Dispatchers.IO) {
+                    viewModel.saveMetadata(
+                        newMetadata = viewState.metadata?.copy(
+                            propertyMap = propertiesCopy!!.toPropertyMap()
+                        )!!, path = path!!
+                    )
+                }
                 navController.popBackStack()
             }
         }
@@ -100,13 +101,11 @@ fun ID3MetadataEditorPage(
     fun saveInMediaStore(): Boolean = viewModel.saveMetadata(
         newMetadata = viewState.metadata?.copy(
             propertyMap = propertiesCopy!!.toPropertyMap()
-        )!!,
-        path = path!!
+        )!!, path = path!!
     ) {
         val intent = IntentSenderRequest.Builder(it).build()
         sendActivityIntent.launch(intent)
     }
-
 
     Scaffold(
         topBar = {
@@ -122,12 +121,11 @@ fun ID3MetadataEditorPage(
             }, navigationIcon = {
                 CloseButton { navController.popBackStack() }
             }, actions = {
-                TextButton(
-                    onClick = {
-                        if (saveInMediaStore()) {
-                            navController.popBackStack()
-                        }
-                    }) {
+                TextButton(onClick = {
+                    if (saveInMediaStore()) {
+                        navController.popBackStack()
+                    }
+                }) {
                     Text(text = stringResource(id = R.string.save))
                 }
             })
@@ -142,9 +140,26 @@ fun ID3MetadataEditorPage(
                 .padding(paddingValues)
         ) { actualPageState ->
             when (actualPageState) {
-                is ID3MetadataEditorPageViewModel.Companion.ID3MetadataEditorPageState.Loading -> CircularProgressIndicator()
-                is ID3MetadataEditorPageViewModel.Companion.ID3MetadataEditorPageState.Success -> {
+                is ID3MetadataEditorPageViewModel.Companion.ID3MetadataEditorPageState.Loading -> {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.spacedBy(
+                            8.dp, alignment = Alignment.CenterVertically
+                        ),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.loading_metadata),
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                        LinearProgressIndicator(
+                            modifier = Modifier.fillMaxWidth(0.7f)
+                        )
+                    }
+                }
 
+                is ID3MetadataEditorPageViewModel.Companion.ID3MetadataEditorPageState.Success -> {
                     SideEffect {
                         propertiesCopy = actualPageState.metadata.propertyMap.toFileMetadata()
                     }
