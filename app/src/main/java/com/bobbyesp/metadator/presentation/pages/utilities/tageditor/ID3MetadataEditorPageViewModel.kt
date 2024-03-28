@@ -1,12 +1,11 @@
 package com.bobbyesp.metadator.presentation.pages.utilities.tageditor
 
+import android.app.PendingIntent
 import android.app.RecoverableSecurityException
 import android.content.Context
 import android.os.Build
 import android.util.Log
-import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModel
-import com.bobbyesp.metadator.MainActivity
 import com.bobbyesp.utilities.mediastore.MediaStoreReceiver
 import com.kyant.taglib.AudioPropertiesReadStyle
 import com.kyant.taglib.Metadata
@@ -68,6 +67,7 @@ class ID3MetadataEditorPageViewModel @Inject constructor(
         context: Context = this.context, // Added missing context parameter
         newMetadata: Metadata,
         path: String,
+        intentPassthrough: (PendingIntent) -> Unit
     ): Boolean {
         return try {
             MediaStoreReceiver.getFileDescriptorFromPath(context, path, mode = "w")
@@ -89,11 +89,8 @@ class ID3MetadataEditorPageViewModel @Inject constructor(
                         ?: throw RuntimeException(securityException.message, securityException)
 
                 val intentSender =
-                    recoverableSecurityException.userAction.actionIntent.intentSender
-                ActivityCompat.startIntentSenderForResult(
-                    MainActivity.getActivity(), intentSender, ON_WRITE_DATA_REQUEST_CODE,
-                    null, 0, 0, 0, null
-                )
+                    recoverableSecurityException.userAction.actionIntent
+                intentPassthrough(intentSender)
             } else {
                 throw RuntimeException(securityException.message, securityException)
             }

@@ -1,12 +1,15 @@
 package com.bobbyesp.metadator.presentation.pages.utilities.tageditor
 
+import android.app.Activity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.IntentSenderRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -22,7 +25,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SmallTopAppBar
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -78,12 +80,29 @@ fun ID3MetadataEditorPage(viewModel: ID3MetadataEditorPageViewModel, selectedSon
         }
     }
 
+
+    val sendActivityIntent =
+        rememberLauncherForActivityResult(contract = ActivityResultContracts.StartIntentSenderForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                viewModel.viewModelScope.launch(Dispatchers.IO) {
+                    viewModel.loadTrackMetadata(
+                        path = selectedSong.localSongPath!!
+                    )
+                }
+                navController.popBackStack()
+            }
+        }
+
+
     fun saveInMediaStore(): Boolean = viewModel.saveMetadata(
         newMetadata = viewState.metadata?.copy(
             propertyMap = propertiesCopy!!.toPropertyMap()
         )!!,
-        path = path!!,
-    )
+        path = path!!
+    ) {
+        val intent = IntentSenderRequest.Builder(it).build()
+        sendActivityIntent.launch(intent)
+    }
 
     Scaffold(
         topBar = {

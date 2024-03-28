@@ -14,11 +14,15 @@ if (isFullBuild) {
     apply(plugin = "com.google.firebase.crashlytics")
 }
 
-val currentVersion: Version = Version.Beta(
-    versionMajor = 0,
+val commitSignature = providers.exec {
+    commandLine("git", "rev-parse", "--short", "HEAD")
+}.standardOutput.asText.get().substringBefore("\n")
+
+val currentVersion: Version = Version.Alpha(
+    versionMajor = 2,
     versionMinor = 0,
-    versionPatch = 1,
-    versionBuild = 0
+    versionPatch = 0,
+    commitId = commitSignature
 )
 
 android {
@@ -177,9 +181,11 @@ sealed class Version(
     open val versionMajor: Int,
     val versionMinor: Int,
     val versionPatch: Int,
-    val versionBuild: Int = 0
+    val versionBuild: Int = 0,
+    val commitId: String = ""
 ) {
     abstract fun toVersionName(): String
+
     fun toVersionCode(): Int {
         val minorExtraDigit = if (versionMinor > 9) {
             (versionMinor / 10).toString()
@@ -190,26 +196,28 @@ sealed class Version(
         return "$versionMajor$minorExtraDigit$versionPatch$versionBuild".toInt()
     }
 
+    class Stable(versionMajor: Int, versionMinor: Int, versionPatch: Int) :
+        Version(versionMajor, versionMinor, versionPatch) {
+        override fun toVersionName(): String = "${versionMajor}.${versionMinor}.${versionPatch}"
+    }
+
+    class ReleaseCandidate(
+        versionMajor: Int, versionMinor: Int, versionPatch: Int, versionBuild: Int
+    ) : Version(versionMajor, versionMinor, versionPatch, versionBuild) {
+        override fun toVersionName(): String =
+            "${versionMajor}.${versionMinor}.${versionPatch}-rc.$versionBuild"
+    }
+
     class Beta(versionMajor: Int, versionMinor: Int, versionPatch: Int, versionBuild: Int) :
         Version(versionMajor, versionMinor, versionPatch, versionBuild) {
         override fun toVersionName(): String =
             "${versionMajor}.${versionMinor}.${versionPatch}-beta.$versionBuild"
     }
 
-    class Stable(versionMajor: Int, versionMinor: Int, versionPatch: Int) :
-        Version(versionMajor, versionMinor, versionPatch) {
+    class Alpha(
+        versionMajor: Int, versionMinor: Int, versionPatch: Int, commitId: String
+    ) : Version(versionMajor, versionMinor, versionPatch, commitId = commitId) {
         override fun toVersionName(): String =
-            "${versionMajor}.${versionMinor}.${versionPatch}"
-    }
-
-    class ReleaseCandidate(
-        versionMajor: Int,
-        versionMinor: Int,
-        versionPatch: Int,
-        versionBuild: Int
-    ) :
-        Version(versionMajor, versionMinor, versionPatch, versionBuild) {
-        override fun toVersionName(): String =
-            "${versionMajor}.${versionMinor}.${versionPatch}-rc.$versionBuild"
+            "${versionMajor}.${versionMinor}.${versionPatch}-alpha.$commitId"
     }
 }

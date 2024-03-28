@@ -15,3 +15,5 @@
 local.properties
 metadator_keystore.jks
 *.apk
+/.idea/deploymentTargetSelector.xml
+/.idea/other.xml
