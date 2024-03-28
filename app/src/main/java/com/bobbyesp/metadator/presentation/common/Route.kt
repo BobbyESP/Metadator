@@ -4,7 +4,9 @@ import android.content.Context
 import android.net.Uri
 import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ContentPaste
+import androidx.compose.material.icons.rounded.Edit
+import androidx.compose.material.icons.rounded.Handyman
+import androidx.compose.material.icons.rounded.Home
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.bobbyesp.metadator.App.Companion.json
 import com.bobbyesp.metadator.R
@@ -21,14 +23,14 @@ sealed class Route(
 
     data object MetadatorNavigator : Route(
         "metadator_navigator",
-        title = R.string.app_name,
-        icon = Icons.Default.ContentPaste
+        title = R.string.home,
+        icon = Icons.Rounded.Home
     ) {
         data object Home :
             Route(
                 "home",
                 title = R.string.home,
-                icon = Icons.Default.ContentPaste
+                icon = Icons.Rounded.Home
             ) {
         }
     }
@@ -37,13 +39,13 @@ sealed class Route(
         Route(
             "utilities",
             title = R.string.utilities,
-            icon = Icons.Default.ContentPaste
+            icon = Icons.Rounded.Handyman
         ) {
         data object TagEditor :
             Route(
                 "utilities/tag_editor/{${NavArgs.TagEditorSelectedSong.key}}",
                 title = R.string.tag_editor,
-                icon = Icons.Default.ContentPaste
+                icon = Icons.Rounded.Edit
             ) {
             fun createRoute(selectedSong: SelectedSong) =
                 "utilities/tag_editor/${Uri.encode(json.encodeToString<SelectedSong>(selectedSong))}"
@@ -51,7 +53,7 @@ sealed class Route(
     }
 }
 
-val routesToShowInBottomBar = listOf(
+val routesToNavigate = listOf(
     Route.MetadatorNavigator,
 )
 
