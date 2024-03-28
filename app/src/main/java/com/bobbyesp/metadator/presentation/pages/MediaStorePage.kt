@@ -2,6 +2,7 @@ package com.bobbyesp.metadator.presentation.pages
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,6 +17,7 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,8 +30,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bobbyesp.metadator.R
 import com.bobbyesp.metadator.presentation.components.cards.songs.LocalSongCard
 import com.bobbyesp.model.Song
+import com.bobbyesp.ui.components.pulltorefresh.PullToRefreshLayout
+import com.bobbyesp.ui.components.pulltorefresh.rememberPullState
 import com.bobbyesp.utilities.ui.rememberForeverLazyGridState
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import my.nanihadesuka.compose.LazyGridVerticalScrollbar
 import my.nanihadesuka.compose.ScrollbarSelectionActionable
@@ -107,29 +112,45 @@ fun MediaStorePage(
                         }
                     } else {
                         val lazyGridState = rememberForeverLazyGridState(key = "lazyGrid")
-                        LazyGridVerticalScrollbar(
-                            state = lazyGridState,
-                            thumbColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                            thumbSelectedColor = MaterialTheme.colorScheme.primary,
-                            selectionActionable = ScrollbarSelectionActionable.WhenVisible,
+                        val pullState = rememberPullState()
+
+                        LaunchedEffect(pullState.isRefreshing) {
+                            if (pullState.isRefreshing) {
+                                viewModel.silentMediaStoreTracksLoad(context) {
+                                    delay(1000)
+                                    pullState.finishRefresh()
+                                }
+                            }
+                        }
+                        PullToRefreshLayout(
+                            pullState = pullState,
                         ) {
-                            LazyVerticalGrid(
-                                columns = GridCells.Adaptive(125.dp),
-                                verticalArrangement = Arrangement.spacedBy(6.dp),
-                                horizontalArrangement = Arrangement.spacedBy(6.dp),
-                                contentPadding = PaddingValues(8.dp),
-                                modifier = Modifier.fillMaxSize(),
-                                state = lazyGridState
+                            LazyGridVerticalScrollbar(
+                                state = lazyGridState,
+                                thumbColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                thumbSelectedColor = MaterialTheme.colorScheme.primary,
+                                selectionActionable = ScrollbarSelectionActionable.WhenVisible,
                             ) {
-                                items(count = songs.size,
-                                    key = { index -> songs[index].id },
-                                    contentType = { index -> songs[index].id.toString() }) { index ->
-                                    val song = songs[index]
-                                    LocalSongCard(song = song,
-                                        modifier = Modifier.animateItemPlacement(),
-                                        onClick = {
-                                            onItemClicked(song)
-                                        })
+                                LazyVerticalGrid(
+                                    columns = GridCells.Adaptive(125.dp),
+                                    verticalArrangement = Arrangement.spacedBy(6.dp),
+                                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                                    contentPadding = PaddingValues(8.dp),
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .background(MaterialTheme.colorScheme.background),
+                                    state = lazyGridState
+                                ) {
+                                    items(count = songs.size,
+                                        key = { index -> songs[index].id },
+                                        contentType = { index -> songs[index].id.toString() }) { index ->
+                                        val song = songs[index]
+                                        LocalSongCard(song = song,
+                                            modifier = Modifier.animateItemPlacement(),
+                                            onClick = {
+                                                onItemClicked(song)
+                                            })
+                                    }
                                 }
                             }
                         }

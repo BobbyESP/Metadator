@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
 
 @Parcelize
 @Serializable
-data class SelectedSong(
+data class ParcelableSong(
     val name: String,
     val mainArtist: String,
     val localSongPath: String? = null,

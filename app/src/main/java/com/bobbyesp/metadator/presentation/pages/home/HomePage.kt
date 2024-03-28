@@ -17,7 +17,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.bobbyesp.metadator.R
-import com.bobbyesp.metadator.model.SelectedSong
+import com.bobbyesp.metadator.model.ParcelableSong
 import com.bobbyesp.metadator.presentation.common.LocalNavController
 import com.bobbyesp.metadator.presentation.common.Route
 import com.bobbyesp.metadator.presentation.pages.MediaStorePage
@@ -80,7 +80,7 @@ fun HomePage(
                         val artistsList = song.artist.toList()
                         val mainArtist = artistsList.first().toString()
 
-                        val selectedSongParcel = SelectedSong(
+                        val chosenSongParcel = ParcelableSong(
                             name = song.title,
                             mainArtist = mainArtist,
                             localSongPath = song.path,
@@ -89,7 +89,7 @@ fun HomePage(
                         )
 
                         navController.navigate(
-                            Route.UtilitiesNavigator.TagEditor.createRoute(selectedSongParcel)
+                            Route.UtilitiesNavigator.TagEditor.createRoute(chosenSongParcel)
                         )
                     })
             })

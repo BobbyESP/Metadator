@@ -1,7 +1,6 @@
 package com.bobbyesp.metadator.presentation.pages
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bobbyesp.model.Song
@@ -11,11 +10,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.count
-import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -64,6 +60,28 @@ class MediaStorePageViewModel @Inject constructor(
         }
 
         updateState(MediaStorePageState.Loaded)
+    }
+
+    /**
+     * Loads all songs from the media store db
+     * @return a list of songs
+     */
+    suspend fun silentMediaStoreTracksLoad(
+        context: Context,
+        onFinish: suspend () -> Unit
+    ) {
+        val songs = withContext(viewModelScope.coroutineContext) {
+            async {
+                MediaStoreReceiver.getAllSongsFromMediaStore(
+                    applicationContext = context,
+                )
+            }.await()
+        }
+
+        mutablePageViewState.update {
+            it.copy(songs = songs)
+        }
+        onFinish()
     }
 
     /**

@@ -48,7 +48,7 @@ import coil.compose.AsyncImagePainter
 import com.bobbyesp.ext.joinOrNullToString
 import com.bobbyesp.ext.toMinutes
 import com.bobbyesp.metadator.R
-import com.bobbyesp.metadator.model.SelectedSong
+import com.bobbyesp.metadator.model.ParcelableSong
 import com.bobbyesp.metadator.presentation.common.LocalNavController
 import com.bobbyesp.metadator.presentation.components.image.AsyncImageImpl
 import com.bobbyesp.ui.components.button.CloseButton
@@ -64,18 +64,21 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ID3MetadataEditorPage(viewModel: ID3MetadataEditorPageViewModel, selectedSong: SelectedSong) {
+fun ID3MetadataEditorPage(
+    viewModel: ID3MetadataEditorPageViewModel,
+    parcelableSong: ParcelableSong
+) {
     val viewState = viewModel.pageViewState.collectAsStateWithLifecycle().value
     val navController = LocalNavController.current
 
-    val path = selectedSong.localSongPath
+    val path = parcelableSong.localSongPath
 
     var propertiesCopy: AudioFileMetadata? by remember { mutableStateOf(null) }
 
     LaunchedEffect(true) {
         viewModel.viewModelScope.launch(Dispatchers.IO) {
             viewModel.loadTrackMetadata(
-                path = selectedSong.localSongPath!!
+                path = parcelableSong.localSongPath!!
             )
         }
     }
@@ -146,7 +149,7 @@ fun ID3MetadataEditorPage(viewModel: ID3MetadataEditorPageViewModel, selectedSon
                         propertiesCopy = actualPageState.metadata.propertyMap.toFileMetadata()
                     }
 
-                    val artworkUri = selectedSong.artworkPath
+                    val artworkUri = parcelableSong.artworkPath
                     var showArtwork by remember { mutableStateOf(true) }
                     var showMediaStoreInfoDialog by remember { mutableStateOf(false) }
 

@@ -10,7 +10,7 @@ import androidx.compose.material.icons.rounded.Home
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.bobbyesp.metadator.App.Companion.json
 import com.bobbyesp.metadator.R
-import com.bobbyesp.metadator.model.SelectedSong
+import com.bobbyesp.metadator.model.ParcelableSong
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.serialization.encodeToString
 
@@ -47,8 +47,14 @@ sealed class Route(
                 title = R.string.tag_editor,
                 icon = Icons.Rounded.Edit
             ) {
-            fun createRoute(selectedSong: SelectedSong) =
-                "utilities/tag_editor/${Uri.encode(json.encodeToString<SelectedSong>(selectedSong))}"
+            fun createRoute(parcelableSong: ParcelableSong) =
+                "utilities/tag_editor/${
+                    Uri.encode(
+                        json.encodeToString<ParcelableSong>(
+                            parcelableSong
+                        )
+                    )
+                }"
         }
     }
 }

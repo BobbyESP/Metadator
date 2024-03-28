@@ -37,12 +37,12 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigation
 import androidx.navigation.navArgument
 import com.bobbyesp.metadator.R
-import com.bobbyesp.metadator.model.SelectedSong
+import com.bobbyesp.metadator.model.ParcelableSong
 import com.bobbyesp.metadator.presentation.common.LocalNavController
 import com.bobbyesp.metadator.presentation.common.LocalSnackbarHostState
 import com.bobbyesp.metadator.presentation.common.NavArgs
 import com.bobbyesp.metadator.presentation.common.Route
-import com.bobbyesp.metadator.presentation.common.TagEditorSelectedSongParamType
+import com.bobbyesp.metadator.presentation.common.TagEditorParcelableSongParamType
 import com.bobbyesp.metadator.presentation.common.routesToNavigate
 import com.bobbyesp.metadator.presentation.pages.MediaStorePageViewModel
 import com.bobbyesp.metadator.presentation.pages.home.HomePage
@@ -150,16 +150,16 @@ fun Navigator() {
                     slideInVerticallyComposable(
                         route = Route.UtilitiesNavigator.TagEditor.route,
                         arguments = listOf(navArgument(NavArgs.TagEditorSelectedSong.key) {
-                            type = TagEditorSelectedSongParamType
+                            type = TagEditorParcelableSongParamType
                         })
                     ) {
-                        val selectedSongParcelable =
-                            it.getParcelable<SelectedSong>(NavArgs.TagEditorSelectedSong.key)
+                        val parcelableSongParcelable =
+                            it.getParcelable<ParcelableSong>(NavArgs.TagEditorSelectedSong.key)
 
                         val viewModel = hiltViewModel<ID3MetadataEditorPageViewModel>()
 
                         ID3MetadataEditorPage(
-                            viewModel = viewModel, selectedSong = selectedSongParcelable!!
+                            viewModel = viewModel, parcelableSong = parcelableSongParcelable!!
                         )
                     }
                 }
