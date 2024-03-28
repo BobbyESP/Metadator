@@ -21,8 +21,6 @@ import javax.inject.Inject
 class MediaStorePageViewModel @Inject constructor(
     @ApplicationContext applicationContext: Context
 ) : ViewModel() {
-    private val TAG = "MediaStorePageViewModel"
-
     init {
         viewModelScope.launch(Dispatchers.IO) {
             loadMediaStoreTracks(applicationContext)
@@ -47,7 +45,7 @@ class MediaStorePageViewModel @Inject constructor(
     ) {
         updateState(MediaStorePageState.Loading)
 
-        val songs = withContext(Dispatchers.IO) {
+        val songs = withContext(viewModelScope.coroutineContext + Dispatchers.IO) {
             async {
                 MediaStoreReceiver.getAllSongsFromMediaStore(
                     applicationContext = context,
@@ -70,7 +68,7 @@ class MediaStorePageViewModel @Inject constructor(
         context: Context,
         onFinish: suspend () -> Unit
     ) {
-        val songs = withContext(viewModelScope.coroutineContext) {
+        val songs = withContext(viewModelScope.coroutineContext + Dispatchers.IO) {
             async {
                 MediaStoreReceiver.getAllSongsFromMediaStore(
                     applicationContext = context,
@@ -95,7 +93,7 @@ class MediaStorePageViewModel @Inject constructor(
     ) {
         updateState(MediaStorePageState.Loading)
 
-        val songs = withContext(Dispatchers.IO) {
+        val songs = withContext(viewModelScope.coroutineContext + Dispatchers.IO) {
             async {
                 MediaStoreReceiver.getAllSongsFromMediaStore(
                     applicationContext = context, searchTerm = filter, filterType = filterType
