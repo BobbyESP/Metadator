@@ -84,15 +84,15 @@ fun ID3MetadataEditorPage(viewModel: ID3MetadataEditorPageViewModel, selectedSon
     val sendActivityIntent =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.StartIntentSenderForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
-                viewModel.viewModelScope.launch(Dispatchers.IO) {
-                    viewModel.loadTrackMetadata(
-                        path = selectedSong.localSongPath!!
-                    )
-                }
+                viewModel.saveMetadata(
+                    newMetadata = viewState.metadata?.copy(
+                        propertyMap = propertiesCopy!!.toPropertyMap()
+                    )!!,
+                    path = path!!
+                )
                 navController.popBackStack()
             }
         }
-
 
     fun saveInMediaStore(): Boolean = viewModel.saveMetadata(
         newMetadata = viewState.metadata?.copy(
@@ -103,6 +103,7 @@ fun ID3MetadataEditorPage(viewModel: ID3MetadataEditorPageViewModel, selectedSon
         val intent = IntentSenderRequest.Builder(it).build()
         sendActivityIntent.launch(intent)
     }
+
 
     Scaffold(
         topBar = {

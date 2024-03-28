@@ -67,7 +67,7 @@ class ID3MetadataEditorPageViewModel @Inject constructor(
         context: Context = this.context, // Added missing context parameter
         newMetadata: Metadata,
         path: String,
-        intentPassthrough: (PendingIntent) -> Unit
+        intentPassthrough: (PendingIntent) -> Unit = {}
     ): Boolean {
         return try {
             MediaStoreReceiver.getFileDescriptorFromPath(context, path, mode = "w")
