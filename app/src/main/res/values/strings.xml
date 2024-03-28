@@ -30,5 +30,7 @@
     <string name="performer">Performer</string>
     <string name="dismiss">Dismiss</string>
     <string name="loading_mediastore">Loading MediaStore data</string>
+    <string name="open_navigation">Open navigation</string>
+    <string name="app_desc">An MD3 audio metadata editor</string>
 
 </resources>

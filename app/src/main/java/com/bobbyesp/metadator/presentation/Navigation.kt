@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -16,7 +15,6 @@ import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -38,6 +36,7 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.navArgument
 import com.bobbyesp.metadator.R
 import com.bobbyesp.metadator.model.ParcelableSong
+import com.bobbyesp.metadator.presentation.common.LocalDrawerState
 import com.bobbyesp.metadator.presentation.common.LocalNavController
 import com.bobbyesp.metadator.presentation.common.NavArgs
 import com.bobbyesp.metadator.presentation.common.Route
@@ -58,7 +57,7 @@ import com.bobbyesp.utilities.navigation.getParcelable
 @Composable
 fun Navigator() {
     val navController = LocalNavController.current
-    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    val drawerState = LocalDrawerState.current
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRootRoute = rememberSaveable(navBackStackEntry, key = "currentRootRoute") {

@@ -1,15 +1,14 @@
 package com.bobbyesp.metadator.presentation.common
 
 import android.os.Build
-import android.util.Log
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.DrawerState
+import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.dynamicDarkColorScheme
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
@@ -42,6 +41,8 @@ val LocalNavController =
 val LocalWindowWidthState =
     staticCompositionLocalOf { WindowWidthSizeClass.Compact } //This value probably will never change, that's why it is static
 val LocalSnackbarHostState = compositionLocalOf<SnackbarHostState> { error("No snackbar host state provided") }
+val LocalDrawerState =
+    compositionLocalOf<DrawerState> { error("No Drawer State has been provided") }
 
 @OptIn(ExperimentalMaterialNavigationApi::class)
 @Composable
@@ -55,6 +56,7 @@ fun AppLocalSettingsProvider(
     val imageLoader = ImageLoader.Builder(context).build()
     val config = LocalConfiguration.current
     val snackbarHostState = remember { SnackbarHostState() }
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
     appSettingsState.run {
         CompositionLocalProvider(
@@ -73,6 +75,7 @@ fun AppLocalSettingsProvider(
             LocalOrientation provides config.orientation,
             LocalSnackbarHostState provides snackbarHostState,
             LocalCoilImageLoader provides imageLoader,
+            LocalDrawerState provides drawerState
         ) {
             content() //The content of the app
         }
