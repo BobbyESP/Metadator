@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
@@ -82,11 +83,20 @@ class PullState internal constructor(
         _offsetY.animateTo(offsetY)
     }
 
-    fun finishRefresh() {
+    var isReloadFinished by mutableStateOf(false)
+        private set
+
+    fun finishRefresh(skipReloadFinished: Boolean = true) {
         isEnabled = false
         scope.launch {
-            settle(0f)
-            isRefreshing = false
+            if (!skipReloadFinished) {
+                settle(heightRefreshing) // keep the refreshing position
+                isRefreshing = false
+                isReloadFinished = true
+                delay(2000) // hold the isReloadFinished state for 2 seconds
+            }
+            settle(0f) // go back to initial position
+            isReloadFinished = false
             isEnabled = true
         }
     }

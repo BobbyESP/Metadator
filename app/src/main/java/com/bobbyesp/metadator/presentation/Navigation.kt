@@ -39,7 +39,6 @@ import androidx.navigation.navArgument
 import com.bobbyesp.metadator.R
 import com.bobbyesp.metadator.model.ParcelableSong
 import com.bobbyesp.metadator.presentation.common.LocalNavController
-import com.bobbyesp.metadator.presentation.common.LocalSnackbarHostState
 import com.bobbyesp.metadator.presentation.common.NavArgs
 import com.bobbyesp.metadator.presentation.common.Route
 import com.bobbyesp.metadator.presentation.common.TagEditorParcelableSongParamType
@@ -71,11 +70,6 @@ fun Navigator() {
         mutableStateOf(
             navBackStackEntry?.destination?.route ?: Route.MetadatorNavigator.Home.route
         )
-    }
-
-    val snackbarHostState = LocalSnackbarHostState.current
-    val showSnackbarMessage: suspend (String) -> Unit = { message ->
-        snackbarHostState.showSnackbar(message)
     }
 
     //able to open drawer when the user is in one of the main routes (root routes)

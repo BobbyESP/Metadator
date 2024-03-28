@@ -34,7 +34,6 @@ import com.bobbyesp.ui.components.pulltorefresh.PullToRefreshLayout
 import com.bobbyesp.ui.components.pulltorefresh.rememberPullState
 import com.bobbyesp.utilities.ui.rememberForeverLazyGridState
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import my.nanihadesuka.compose.LazyGridVerticalScrollbar
 import my.nanihadesuka.compose.ScrollbarSelectionActionable
@@ -117,8 +116,7 @@ fun MediaStorePage(
                         LaunchedEffect(pullState.isRefreshing) {
                             if (pullState.isRefreshing) {
                                 viewModel.silentMediaStoreTracksLoad(context) {
-                                    delay(1000)
-                                    pullState.finishRefresh()
+                                    pullState.finishRefresh(skipReloadFinished = false)
                                 }
                             }
                         }
