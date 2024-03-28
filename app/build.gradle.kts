@@ -85,7 +85,7 @@ android {
     applicationVariants.all {
         outputs.all {
             (this as com.android.build.gradle.internal.api.BaseVariantOutputImpl).outputFileName =
-                "Metadator-${defaultConfig.versionName}-${name}-${flavorName}.apk"
+                "Metadator-${defaultConfig.versionName}-${name}.apk"
         }
     }
 
