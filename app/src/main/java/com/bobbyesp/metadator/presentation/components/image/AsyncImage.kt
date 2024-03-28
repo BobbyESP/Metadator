@@ -52,7 +52,7 @@ fun AsyncImageImpl(
 
     if (isPreview) {
         Image(
-            painter = painterResource(R.drawable.ic_launcher_background),
+            painter = painterResource(R.drawable.metadator_logo_foreground),
             contentDescription = contentDescription,
             modifier = modifier,
             alignment = alignment,
@@ -104,7 +104,7 @@ fun AsyncImageImpl(
         ImageRequest.Builder(context).data(model)
             .crossfade(true).build()
 
-    val placeholderPainter = placeholder ?: painterResource(R.drawable.ic_launcher_foreground)
+    val placeholderPainter = placeholder ?: painterResource(R.drawable.metadator_logo_foreground)
 
     AsyncImage(
         model = imageRequest,
