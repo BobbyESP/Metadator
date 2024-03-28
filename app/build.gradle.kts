@@ -19,7 +19,7 @@ val commitSignature = providers.exec {
 }.standardOutput.asText.get().substringBefore("\n")
 
 val currentVersion: Version = Version.Alpha(
-    versionMajor = 2,
+    versionMajor = 1,
     versionMinor = 0,
     versionPatch = 0,
     commitId = commitSignature
