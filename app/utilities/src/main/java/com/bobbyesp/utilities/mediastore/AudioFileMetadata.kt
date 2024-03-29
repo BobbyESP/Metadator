@@ -2,7 +2,7 @@ package com.bobbyesp.utilities.mediastore
 
 import kotlinx.serialization.Serializable
 
-typealias PropertyMap = Map<String, Array<String>>
+typealias PropertyMap = HashMap<String, Array<String>>
 
 @Serializable
 data class AudioFileMetadata(
@@ -125,7 +125,7 @@ data class AudioFileMetadata(
     }
 
     fun toPropertyMap(): PropertyMap {
-        return mapOf(
+        return hashMapOf(
             "TITLE" to title,
             "ALBUM" to album,
             "ARTIST" to artist,
