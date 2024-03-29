@@ -66,43 +66,42 @@ class ID3MetadataEditorPageViewModel @Inject constructor(
     }
 
     fun saveMetadata(
-        context: Context = this.context, // Added missing context parameter
+        context: Context = this.context,
         newMetadata: Metadata, path: String, intentPassthrough: (PendingIntent) -> Unit = {}
     ): Boolean {
         return try {
-            MediaStoreReceiver.getFileDescriptorFromPath(context, path, mode = "w")
-                ?.let { fileDescriptor ->
-                    val fd = fileDescriptor.dup()?.detachFd()
-                        ?: throw IOException("File descriptor is null") // IOException instead of generic Exception
-                TagLib.savePropertyMap(
-                    fd,
-                    propertyMap = newMetadata.propertyMap
-                )
-                updateState(ID3MetadataEditorPageState.Success(newMetadata)) // Update state on success
-                true
-            } ?: false
-        } catch (securityException: SecurityException) {
-            Log.i("ID3MetadataEditorPageViewModel", "Security exception caught")
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                val recoverableSecurityException =
-                    securityException as? RecoverableSecurityException ?: throw RuntimeException(
-                        securityException.message,
-                        securityException
-                    )
+            val fd = MediaStoreReceiver.getFileDescriptorFromPath(context, path, mode = "w")
+                ?.dup()?.detachFd()
+                ?: throw IOException("File descriptor is null")
 
-                val intentSender = recoverableSecurityException.userAction.actionIntent
-                intentPassthrough(intentSender)
-            } else {
-                throw RuntimeException(securityException.message, securityException)
-            }
+            TagLib.savePropertyMap(fd, propertyMap = newMetadata.propertyMap)
+            updateState(ID3MetadataEditorPageState.Success(newMetadata))
+            true
+        } catch (securityException: SecurityException) {
+            handleSecurityException(securityException, intentPassthrough)
             false
-        } catch (e: IOException) { // Catching IOException specifically
+        } catch (e: IOException) {
             Log.e(
                 "ID3MetadataEditorPageViewModel",
                 "Error while trying to save metadata: ${e.message}"
             )
-            updateState(ID3MetadataEditorPageState.Error(e)) // Update state on error
+            updateState(ID3MetadataEditorPageState.Error(e))
             false
+        }
+    }
+
+    private fun handleSecurityException(
+        securityException: SecurityException,
+        intentPassthrough: (PendingIntent) -> Unit
+    ) {
+        Log.i("ID3MetadataEditorPageViewModel", "Security exception caught")
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            val recoverableSecurityException = securityException as? RecoverableSecurityException
+                ?: throw RuntimeException(securityException.message, securityException)
+
+            intentPassthrough(recoverableSecurityException.userAction.actionIntent)
+        } else {
+            throw RuntimeException(securityException.message, securityException)
         }
     }
 
