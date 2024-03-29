@@ -19,6 +19,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import coil.ImageLoader
+import coil.disk.DiskCache
+import coil.memory.MemoryCache
 import com.bobbyesp.metadator.App.Companion.context
 import com.bobbyesp.utilities.DarkThemePreference
 import com.bobbyesp.utilities.Theme.paletteStyles
@@ -30,6 +32,7 @@ import com.kyant.monet.LocalTonalPalettes
 import com.kyant.monet.PaletteStyle
 import com.kyant.monet.TonalPalettes.Companion.toTonalPalettes
 import com.skydoves.landscapist.coil.LocalCoilImageLoader
+import kotlinx.coroutines.Dispatchers
 
 val LocalDarkTheme = compositionLocalOf { DarkThemePreference() }
 val LocalSeedColor = compositionLocalOf { DEFAULT_SEED_COLOR }
@@ -53,7 +56,24 @@ fun AppLocalSettingsProvider(
     val appSettingsState = AppSettingsStateFlow.collectAsStateWithLifecycle().value
     val bottomSheetNavigator = rememberBottomSheetNavigator()
     val navController = rememberNavController(bottomSheetNavigator)
-    val imageLoader = ImageLoader.Builder(context).build()
+    val imageLoader = ImageLoader.Builder(context)
+        .memoryCache {
+            MemoryCache.Builder(context)
+                .maxSizePercent(0.35)
+                .build()
+        }
+        .diskCache {
+            DiskCache.Builder()
+                .directory(context.cacheDir.resolve("image_cache"))
+                .maxSizeBytes(7 * 1024 * 1024)
+                .build()
+        }
+        .respectCacheHeaders(false)
+        .allowHardware(true)
+        .crossfade(true)
+        .bitmapFactoryMaxParallelism(8)
+        .dispatcher(Dispatchers.IO)
+        .build()
     val config = LocalConfiguration.current
     val snackbarHostState = remember { SnackbarHostState() }
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)

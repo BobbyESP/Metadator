@@ -2,7 +2,6 @@ package com.bobbyesp.model
 
 import android.net.Uri
 import android.os.Parcelable
-import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
@@ -21,7 +20,7 @@ data class Song(
     val title: String,
     val artist: String,
     val album: String,
-    @Serializable(with = UriSerializer::class) val albumArtPath: Uri? = null,
+    @Serializable(with = UriSerializer::class) val artworkPath: Uri? = null,
     val duration: Double,
     val path: String,
     val fileName: String? = null
@@ -42,7 +41,7 @@ data class Song(
         parcel.writeString(title)
         parcel.writeString(artist)
         parcel.writeString(album)
-        parcel.writeParcelable(albumArtPath, flags)
+        parcel.writeParcelable(artworkPath, flags)
         parcel.writeDouble(duration)
         parcel.writeString(path)
         parcel.writeString(fileName)

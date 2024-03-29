@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.bobbyesp.metadator.presentation.pages.home
 
 import android.Manifest
@@ -6,28 +8,35 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.List
+import androidx.compose.material.icons.rounded.GridView
 import androidx.compose.material.icons.rounded.KeyboardDoubleArrowUp
 import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -40,6 +49,9 @@ import com.bobbyesp.metadator.presentation.common.Route
 import com.bobbyesp.metadator.presentation.pages.MediaStorePage
 import com.bobbyesp.metadator.presentation.pages.MediaStorePageViewModel
 import com.bobbyesp.ui.components.dropdown.AnimatedDropdownMenu
+import com.bobbyesp.ui.components.dropdown.DropdownItemContainer
+import com.bobbyesp.utilities.preferences.Preferences
+import com.bobbyesp.utilities.preferences.PreferencesKeys.DESIRED_OVERLAY
 import com.bobbyesp.utilities.ui.permission.PermissionNotGrantedDialog
 import com.bobbyesp.utilities.ui.permission.PermissionRequestHandler
 import com.bobbyesp.utilities.ui.permission.toPermissionType
@@ -47,6 +59,7 @@ import com.bobbyesp.utilities.ui.rememberForeverLazyGridState
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
 import kotlinx.coroutines.launch
+import okhttp3.internal.toImmutableList
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
 @Composable
@@ -72,6 +85,15 @@ fun HomePage(
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val mediaStoreLazyGridState = rememberForeverLazyGridState(key = "lazyGrid")
+    val mediaStoreLazyColumnState = rememberLazyListState()
+    var desiredLayout by remember {
+        mutableStateOf(
+            Preferences.EnumPrefs.getValue(
+                DESIRED_OVERLAY,
+                LayoutType.Grid
+            )
+        )
+    }
 
     val isFirstItemVisible by remember { derivedStateOf { mediaStoreLazyGridState.firstVisibleItemIndex == 0 } }
 
@@ -130,7 +152,9 @@ fun HomePage(
                         AnimatedDropdownMenu(expanded = moreOptionsVisible, onDismissRequest = {
                             moreOptionsVisible = false
                         }) {
-                            DropdownMenuContent()
+                            DropdownMenuContent(onLayoutChanged = {
+                                desiredLayout = it
+                            })
                         }
                     }
                 },
@@ -172,15 +196,16 @@ fun HomePage(
                 MediaStorePage(modifier = Modifier.padding(paddingValues = paddingValues),
                     viewModel = viewModel,
                     lazyGridState = mediaStoreLazyGridState,
+                    lazyListState = mediaStoreLazyColumnState,
+                    desiredLayout = desiredLayout,
                     onItemClicked = { song ->
                         val artistsList = song.artist.toList()
                         val mainArtist = artistsList.first().toString()
-
                         val chosenSongParcel = ParcelableSong(
                             name = song.title,
                             mainArtist = mainArtist,
                             localSongPath = song.path,
-                            artworkPath = song.albumArtPath,
+                            artworkPath = song.artworkPath,
                             fileName = song.fileName
                         )
 
@@ -193,10 +218,53 @@ fun HomePage(
 }
 
 @Composable
-private fun DropdownMenuContent() {
-    DropdownMenuItem(text = { Text(text = "Maincra") }, onClick = { })
-    DropdownMenuItem(text = { Text(text = "Maincra") }, onClick = { })
-    DropdownMenuItem(text = { Text(text = "Maincra") }, onClick = { })
-    DropdownMenuItem(text = { Text(text = "Maincra") }, onClick = { })
-    DropdownMenuItem(text = { Text(text = "Maincra") }, onClick = { })
+private fun DropdownMenuContent(
+    onLayoutChanged: (LayoutType) -> Unit = {}
+) {
+    val availableLayoutType = LayoutType.entries.toImmutableList()
+
+    var desiredOverlay by remember {
+        mutableIntStateOf(
+            Preferences.EnumPrefs.getValue(
+                DESIRED_OVERLAY,
+                LayoutType.Grid
+            ).ordinal
+        )
+    }
+
+    DropdownItemContainer(content = {
+        SingleChoiceSegmentedButtonRow {
+            availableLayoutType.forEachIndexed { index, listType ->
+                SegmentedButton(
+                    selected = desiredOverlay == listType.ordinal,
+                    onClick = {
+                        desiredOverlay = listType.ordinal
+                        Preferences.EnumPrefs.encodeValue(
+                            DESIRED_OVERLAY,
+                            listType
+                        )
+                        onLayoutChanged(listType)
+                    },
+                    shape = SegmentedButtonDefaults.itemShape(
+                        index = index,
+                        count = availableLayoutType.size
+                    ),
+                ) {
+                    Icon(
+                        imageVector = listType.icon,
+                        contentDescription = stringResource(id = R.string.list_type)
+                    )
+                }
+            }
+        }
+    })
+}
+
+enum class LayoutType(val icon: ImageVector) {
+    Grid(icon = Icons.Rounded.GridView),
+    List(icon = Icons.AutoMirrored.Rounded.List);
+
+    companion object {
+        fun Int.toListType(): LayoutType = entries.first { it.ordinal == this }
+    }
 }

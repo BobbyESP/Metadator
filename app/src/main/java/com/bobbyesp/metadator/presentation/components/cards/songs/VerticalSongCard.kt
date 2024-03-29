@@ -5,76 +5,39 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.AsyncImagePainter
-import com.bobbyesp.metadator.presentation.components.image.AsyncImageImpl
+import com.bobbyesp.metadator.presentation.components.image.ArtworkAsyncImage
 import com.bobbyesp.metadator.presentation.theme.MetadatorTheme
 import com.bobbyesp.model.Song
-import com.bobbyesp.ui.components.others.PlaceholderCreator
 import com.bobbyesp.ui.components.text.MarqueeText
 
 @Composable
-fun LocalSongCard(
+fun VerticalSongCard(
     modifier: Modifier = Modifier,
     song: Song,
     onClick: () -> Unit
 ) {
-    var showArtwork by remember { mutableStateOf(true) }
-
     Surface(
         modifier = modifier
             .clip(MaterialTheme.shapes.small),
         onClick = onClick
     ) {
         Column {
-            if (song.albumArtPath != null && showArtwork) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .aspectRatio(1f)
-                ) {
-                    AsyncImageImpl(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(MaterialTheme.shapes.small),
-                        model = song.albumArtPath!!,
-                        onState = { state ->
-                            //if it was successful, don't show the placeholder, else show it
-                            showArtwork =
-                                state !is AsyncImagePainter.State.Error && state !is AsyncImagePainter.State.Empty
-                        },
-                        contentDescription = "Song cover",
-                        contentScale = ContentScale.Fit,
-                        isPreview = false
-                    )
-                }
-            } else {
-                PlaceholderCreator(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .aspectRatio(1f)
-                        .clip(MaterialTheme.shapes.small),
-                    icon = Icons.Default.MusicNote,
-                    colorful = false,
-                    contentDescription = "Song cover"
-                )
-            }
+            ArtworkAsyncImage(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(1f),
+                artworkPath = song.artworkPath
+            )
             Column(
                 horizontalAlignment = Alignment.Start, modifier = Modifier.padding(8.dp)
             ) {
@@ -100,14 +63,15 @@ fun LocalSongCard(
 @Preview
 @Preview(uiMode = UI_MODE_NIGHT_YES)
 @Composable
-fun LocalSongCardPreview() {
+private fun LocalSongCardPreview() {
     MetadatorTheme {
-        LocalSongCard(song = Song(
+        VerticalSongCard(
+            song = Song(
             id = 1,
             title = "Bones",
             artist = "Imagine Dragons",
             album = "Mercury - Acts 1 & 2",
-            albumArtPath = null,
+                artworkPath = null,
             duration = 100.0,
             path = "path"
         ), onClick = {})

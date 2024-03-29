@@ -1,14 +1,8 @@
 package com.bobbyesp.utilities.preferences
 
 object PreferencesKeys {
-
-    //------------ExoPlayer------------
-    const val MAX_SONG_CACHE_SIZE = "max_song_cache_size"
-    const val MAX_PARALLEL_DOWNLOADS_EXO = "max_parallel_downloads_exo"
-
-    //------------YouTube----------------
-    const val AUDIO_QUALITY = "audio_quality"
-    const val SEARCH_SOURCE = "search_source"
+    //------------GENERAL--------------
+    const val DESIRED_OVERLAY = "desired_overlay"
 
     //------------THEME----------------
     const val DARK_THEME_VALUE = "dark_theme_value"
@@ -17,5 +11,5 @@ object PreferencesKeys {
     const val PALETTE_STYLE = "palette_style"
     const val DYNAMIC_COLOR = "dynamic_color"
 
-    const val MMKV_PREFERENCES_NAME = "spowlo_preferences"
+    const val MMKV_PREFERENCES_NAME = "metadator_preferences"
 }

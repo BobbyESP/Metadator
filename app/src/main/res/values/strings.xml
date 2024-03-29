@@ -35,5 +35,6 @@
     <string name="loading_metadata">Loading metadata</string>
     <string name="open_more_options">Open more options</string>
     <string name="scroll_to_top">Scroll to top</string>
+    <string name="list_type">List type</string>
 
 </resources>

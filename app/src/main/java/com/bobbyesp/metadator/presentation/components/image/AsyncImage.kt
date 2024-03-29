@@ -1,8 +1,13 @@
 package com.bobbyesp.metadator.presentation.components.image
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MusicNote
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -11,6 +16,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.DefaultAlpha
 import androidx.compose.ui.graphics.FilterQuality
@@ -25,6 +31,7 @@ import coil.compose.AsyncImagePainter
 import coil.request.ImageRequest
 import coil.request.SuccessResult
 import com.bobbyesp.metadator.R
+import com.bobbyesp.ui.components.others.PlaceholderCreator
 import com.skydoves.landscapist.coil.LocalCoilImageLoader
 
 @Composable
@@ -39,10 +46,9 @@ fun AsyncImageImpl(
     onState: ((AsyncImagePainter.State) -> Unit)? = null,
     colorFilter: ColorFilter? = null,
     filterQuality: FilterQuality = DrawScope.DefaultFilterQuality,
-    isPreview: Boolean = false
+    isPreview: Boolean = false,
+    context: Context = LocalContext.current
 ) {
-    val context = LocalContext.current
-
     // Create an ImageLoader if it doesn't exist yet and remember it with the current context.
     val imageLoader = LocalCoilImageLoader.current
 
@@ -125,6 +131,43 @@ fun AsyncImageImpl(
 
         )
 }
+
+@Composable
+fun ArtworkAsyncImage(
+    modifier: Modifier = Modifier,
+    artworkPath: Any? = null,
+) {
+    var showArtwork by remember { mutableStateOf(true) }
+
+    if (artworkPath != null && showArtwork) {
+        Column(
+            modifier = modifier
+        ) {
+            AsyncImageImpl(
+                modifier = modifier
+                    .clip(MaterialTheme.shapes.small),
+                model = artworkPath,
+                onState = { state ->
+                    //if it was successful, don't show the placeholder, else show it
+                    showArtwork =
+                        state !is AsyncImagePainter.State.Error && state !is AsyncImagePainter.State.Empty
+                },
+                contentDescription = "Song cover",
+                contentScale = ContentScale.Fit,
+                isPreview = false
+            )
+        }
+    } else {
+        PlaceholderCreator(
+            modifier = modifier
+                .clip(MaterialTheme.shapes.small),
+            icon = Icons.Default.MusicNote,
+            colorful = false,
+            contentDescription = "Song cover"
+        )
+    }
+}
+
 
 @Composable
 fun loadBitmapFromUrl(url: String): Bitmap? {
