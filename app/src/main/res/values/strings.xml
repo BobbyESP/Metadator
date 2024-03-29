@@ -33,5 +33,7 @@
     <string name="open_navigation">Open navigation</string>
     <string name="app_desc">An MD3 audio metadata editor</string>
     <string name="loading_metadata">Loading metadata</string>
+    <string name="open_more_options">Open more options</string>
+    <string name="scroll_to_top">Scroll to top</string>
 
 </resources>

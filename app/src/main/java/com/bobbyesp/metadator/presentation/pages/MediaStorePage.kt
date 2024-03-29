@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
@@ -32,7 +33,6 @@ import com.bobbyesp.metadator.presentation.components.cards.songs.LocalSongCard
 import com.bobbyesp.model.Song
 import com.bobbyesp.ui.components.pulltorefresh.PullToRefreshLayout
 import com.bobbyesp.ui.components.pulltorefresh.rememberPullState
-import com.bobbyesp.utilities.ui.rememberForeverLazyGridState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import my.nanihadesuka.compose.LazyGridVerticalScrollbar
@@ -41,7 +41,10 @@ import my.nanihadesuka.compose.ScrollbarSelectionActionable
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MediaStorePage(
-    modifier: Modifier = Modifier, viewModel: MediaStorePageViewModel, onItemClicked: (Song) -> Unit
+    modifier: Modifier = Modifier,
+    viewModel: MediaStorePageViewModel,
+    lazyGridState: LazyGridState,
+    onItemClicked: (Song) -> Unit
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -110,7 +113,6 @@ fun MediaStorePage(
                             }
                         }
                     } else {
-                        val lazyGridState = rememberForeverLazyGridState(key = "lazyGrid")
                         val pullState = rememberPullState()
 
                         LaunchedEffect(pullState.isRefreshing) {

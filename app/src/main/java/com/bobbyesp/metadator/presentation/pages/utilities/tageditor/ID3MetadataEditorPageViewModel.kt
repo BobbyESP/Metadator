@@ -20,8 +20,6 @@ import kotlinx.coroutines.flow.update
 import java.io.IOException
 import javax.inject.Inject
 
-const val ON_WRITE_DATA_REQUEST_CODE = 1
-
 @HiltViewModel
 class ID3MetadataEditorPageViewModel @Inject constructor(
     @ApplicationContext private val context: Context
