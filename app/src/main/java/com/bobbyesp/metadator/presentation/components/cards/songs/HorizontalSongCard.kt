@@ -12,7 +12,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -29,18 +28,17 @@ fun HorizontalSongCard(
     onClick: () -> Unit
 ) {
     Surface(
-        modifier = modifier
-            .clip(MaterialTheme.shapes.small),
+        modifier = modifier,
         onClick = onClick
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(6.dp)
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             ArtworkAsyncImage(
                 modifier = Modifier
-                    .size(48.dp)
+                    .size(64.dp)
                     .padding(4.dp),
                 artworkPath = song.artworkPath
             )

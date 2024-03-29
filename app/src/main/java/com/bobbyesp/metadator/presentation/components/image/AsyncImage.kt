@@ -145,7 +145,7 @@ fun ArtworkAsyncImage(
         ) {
             AsyncImageImpl(
                 modifier = modifier
-                    .clip(MaterialTheme.shapes.small),
+                    .clip(MaterialTheme.shapes.extraSmall),
                 model = artworkPath,
                 onState = { state ->
                     //if it was successful, don't show the placeholder, else show it
