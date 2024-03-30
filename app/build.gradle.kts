@@ -18,11 +18,11 @@ val commitSignature = providers.exec {
     commandLine("git", "rev-parse", "--short", "HEAD")
 }.standardOutput.asText.get().substringBefore("\n")
 
-val currentVersion: Version = Version.Alpha(
+val currentVersion: Version = Version.Beta(
     versionMajor = 1,
     versionMinor = 0,
     versionPatch = 0,
-    commitId = commitSignature
+    versionBuild = 1
 )
 
 android {
@@ -163,7 +163,7 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.taglib)
     implementation(libs.scrollbar)
-    "fossImplementation"(project(":crashhandler"))
+    implementation(project(":crashhandler"))
 
 //-------------------Testing-------------------//
 //Android testing libraries
