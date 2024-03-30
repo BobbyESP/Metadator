@@ -1,6 +1,7 @@
 package com.bobbyesp.metadator.presentation.pages
 
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -35,8 +36,8 @@ import com.bobbyesp.metadator.presentation.components.cards.songs.HorizontalSong
 import com.bobbyesp.metadator.presentation.components.cards.songs.VerticalSongCard
 import com.bobbyesp.metadator.presentation.pages.home.LayoutType
 import com.bobbyesp.model.Song
+import com.bobbyesp.ui.components.pulltorefresh.PullState
 import com.bobbyesp.ui.components.pulltorefresh.PullToRefreshLayout
-import com.bobbyesp.ui.components.pulltorefresh.rememberPullState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import my.nanihadesuka.compose.LazyColumnScrollbar
@@ -51,6 +52,7 @@ fun MediaStorePage(
     lazyGridState: LazyGridState,
     lazyListState: LazyListState,
     desiredLayout: LayoutType,
+    pullState: PullState,
     onItemClicked: (Song) -> Unit
 ) {
     val context = LocalContext.current
@@ -120,8 +122,6 @@ fun MediaStorePage(
                             }
                         }
                     } else {
-                        val pullState = rememberPullState()
-
                         LaunchedEffect(pullState.isRefreshing) {
                             if (pullState.isRefreshing) {
                                 viewModel.silentMediaStoreTracksLoad(context) {
@@ -133,7 +133,8 @@ fun MediaStorePage(
                             pullState = pullState,
                         ) {
                             Crossfade(
-                                targetState = desiredLayout, label = "List item transition"
+                                targetState = desiredLayout, label = "List item transition",
+                                animationSpec = tween(200)
                             ) { type ->
                                 when (type) {
                                     LayoutType.Grid -> {

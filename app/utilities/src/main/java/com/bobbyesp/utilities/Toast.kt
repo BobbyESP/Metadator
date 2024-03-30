@@ -1,4 +1,4 @@
-package com.bobbyesp.utilities.utilities
+package com.bobbyesp.utilities
 
 import android.content.Context
 import android.widget.Toast

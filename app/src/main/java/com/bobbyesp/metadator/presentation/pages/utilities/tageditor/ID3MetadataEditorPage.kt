@@ -219,7 +219,7 @@ fun ID3MetadataEditorPage(
                         }
                         LargeCategoryTitle(
                             modifier = Modifier.padding(vertical = 6.dp),
-                            text = stringResource(id = R.string.audio_features)
+                            text = stringResource(id = R.string.audio_details)
                         )
 
                         Column(
