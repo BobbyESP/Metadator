@@ -14,13 +14,13 @@ A simple yet complete metadata editor for your songs powered by [TagLib]("https:
 
 ## Showcase
 
-|                                                          Features Header                                                           |
-|:----------------------------------------------------------------------------------------------------------------------------------:|
-| [Features header]("https://github.com/BobbyESP/Metadator/blob/fd6371078143eff9d4c73ccd1f9085d4a0cf0511/assets/feature_header.png") |
+|                                                         Features Header                                                          |
+|:--------------------------------------------------------------------------------------------------------------------------------:|
+| [Features header](https://github.com/BobbyESP/Metadator/blob/fd6371078143eff9d4c73ccd1f9085d4a0cf0511/assets/feature_header.png) |
 
-| UI                                                                                                                                            | Functionality                                                                                                                                 | Different layouts                                                                                                                                            |
-|-----------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [Simple and clean UI]("https://github.com/BobbyESP/Metadator/blob/fd6371078143eff9d4c73ccd1f9085d4a0cf0511/assets/mockups/Mockup1_FINAL.png") | [Simple yet complete]("https://github.com/BobbyESP/Metadator/blob/fd6371078143eff9d4c73ccd1f9085d4a0cf0511/assets/mockups/Mockup3_FINAL.png") | [Different layouts, same experience]("https://github.com/BobbyESP/Metadator/blob/fd6371078143eff9d4c73ccd1f9085d4a0cf0511/assets/mockups/Mockup2_FINAL.png") |
+| UI                                                                                                                                          | Functionality                                                                                                                               | Different layouts                                                                                                                                          |
+|---------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [Simple and clean UI](https://github.com/BobbyESP/Metadator/blob/fd6371078143eff9d4c73ccd1f9085d4a0cf0511/assets/mockups/Mockup1_FINAL.png) | [Simple yet complete](https://github.com/BobbyESP/Metadator/blob/fd6371078143eff9d4c73ccd1f9085d4a0cf0511/assets/mockups/Mockup3_FINAL.png) | [Different layouts, same experience](https://github.com/BobbyESP/Metadator/blob/fd6371078143eff9d4c73ccd1f9085d4a0cf0511/assets/mockups/Mockup2_FINAL.png) |
 
 ## 🔮Features
 
@@ -45,7 +45,7 @@ A simple yet complete metadata editor for your songs powered by [TagLib]("https:
 ## ⬇️Download
 
 You can download the latest version of Metadator from
-the [releases page]("https://github.com/BobbyESP/Metadator/releases/latest")
+the [releases page](https://github.com/BobbyESP/Metadator/releases/latest)
 
 ## 🔠Translation
 
