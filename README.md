@@ -3,7 +3,9 @@
 </div>
 <h1 align="center">Metadator</h1>
 <div align="center">
-A simple yet complete metadata editor for your songs powered by [TagLib]("https://github.com/Kyant0/taglib") and made with Material You and Jetpack Compose.
+
+A simple yet complete metadata editor for your songs powered
+by [TagLib](https://github.com/Kyant0/taglib) and made with Material You and Jetpack Compose.
 
 ![GitHub all releases](https://img.shields.io/github/downloads/BobbyESP/Metadator/total?label=Downloads&logo=github&style=flat)
 ![GitHub Repo stars](https://img.shields.io/github/stars/BobbyESP/Metadator?color=informational&label=Stars&style=flat)
@@ -14,6 +16,8 @@ A simple yet complete metadata editor for your songs powered by [TagLib]("https:
 
 ## Showcase
 
+<div>
+
 |                                                          Features Header                                                          |
 |:---------------------------------------------------------------------------------------------------------------------------------:|
 | ![Features header](https://github.com/BobbyESP/Metadator/blob/fd6371078143eff9d4c73ccd1f9085d4a0cf0511/assets/feature_header.png) |
@@ -22,6 +26,7 @@ A simple yet complete metadata editor for your songs powered by [TagLib]("https:
 |----------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | ![Simple and clean UI](https://github.com/BobbyESP/Metadator/blob/fd6371078143eff9d4c73ccd1f9085d4a0cf0511/assets/mockups/Mockup1_FINAL.png) | ![Simple yet complete](https://github.com/BobbyESP/Metadator/blob/fd6371078143eff9d4c73ccd1f9085d4a0cf0511/assets/mockups/Mockup3_FINAL.png) | ![Different layouts, same experience](https://github.com/BobbyESP/Metadator/blob/fd6371078143eff9d4c73ccd1f9085d4a0cf0511/assets/mockups/Mockup2_FINAL.png) |
 
+</div>
 ## 🔮Features
 
 - **Simple and clean UI**: Metadator has a simple and clean UI that makes it easy to use.
