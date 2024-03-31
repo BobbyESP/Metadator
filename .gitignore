@@ -17,3 +17,5 @@ metadator_keystore.jks
 *.apk
 /.idea/deploymentTargetSelector.xml
 /.idea/other.xml
+/buildSrc/.gradle
+/buildSrc/build
