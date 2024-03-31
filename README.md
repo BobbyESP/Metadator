@@ -1,7 +1,7 @@
 <div align="center">
     <img src="./assets/app_logo.png" alt="Metadator icon" width="100" height="100"/>
 </div>
-<h1 align="center">Metadator</h1>
+<h1 align="center"><b>Metadator</b></h1>
 <div align="center">
 
 A simple yet complete metadata editor for your songs powered
@@ -14,7 +14,7 @@ by [TagLib](https://github.com/Kyant0/taglib) and made with Material You and Jet
 ![GitHub top language](https://img.shields.io/github/languages/top/BobbyESP/Spowlo?style=for-the-badge)
 </div>
 
-## Showcase
+## 📸Showcase
 
 <div align="center">
 
@@ -27,6 +27,7 @@ by [TagLib](https://github.com/Kyant0/taglib) and made with Material You and Jet
 | <img src="https://github.com/BobbyESP/Metadator/blob/fd6371078143eff9d4c73ccd1f9085d4a0cf0511/assets/mockups/Mockup1_FINAL.png" alt="Simple and clean UI" height="425"/> | <img src="https://github.com/BobbyESP/Metadator/blob/fd6371078143eff9d4c73ccd1f9085d4a0cf0511/assets/mockups/Mockup3_FINAL.png" alt="Simple yet complete" height="425"/> | <img src="https://github.com/BobbyESP/Metadator/blob/fd6371078143eff9d4c73ccd1f9085d4a0cf0511/assets/mockups/Mockup2_FINAL.png" alt="Different layouts, same experience" height="425"/> |
 
 </div>
+
 ## 🔮Features
 
 - **Simple and clean UI**: Metadator has a simple and clean UI that makes it easy to use.
