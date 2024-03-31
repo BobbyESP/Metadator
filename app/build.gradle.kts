@@ -1,5 +1,3 @@
-import com.google.firebase.crashlytics.buildtools.gradle.CrashlyticsExtension
-
 val isFullBuild: Boolean by rootProject.extra
 
 plugins {
@@ -62,10 +60,6 @@ android {
 
     productFlavors {
         create("playstore") {
-            configure<CrashlyticsExtension> {
-                mappingFileUploadEnabled = true
-                nativeSymbolUploadEnabled = false
-            }
             dimension = "version"
         }
 
