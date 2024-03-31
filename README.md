@@ -16,7 +16,7 @@ by [TagLib](https://github.com/Kyant0/taglib) and made with Material You and Jet
 
 ## Showcase
 
-<div>
+<div align="center">
 
 |                                                                 Features Header                                                                  |
 |:------------------------------------------------------------------------------------------------------------------------------------------------:|
