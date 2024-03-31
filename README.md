@@ -18,13 +18,13 @@ by [TagLib](https://github.com/Kyant0/taglib) and made with Material You and Jet
 
 <div>
 
-|                                                          Features Header                                                          |
-|:---------------------------------------------------------------------------------------------------------------------------------:|
-| ![Features header](https://github.com/BobbyESP/Metadator/blob/fd6371078143eff9d4c73ccd1f9085d4a0cf0511/assets/feature_header.png) |
+|                                                                        Features Header                                                                        |
+|:-------------------------------------------------------------------------------------------------------------------------------------------------------------:|
+| <img src="https://github.com/BobbyESP/Metadator/blob/fd6371078143eff9d4c73ccd1f9085d4a0cf0511/assets/feature_header.png" alt="Features header" height="600"/> |
 
-| UI                                                                                                                                           | Functionality                                                                                                                                | Different layouts                                                                                                                                           |
-|----------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| ![Simple and clean UI](https://github.com/BobbyESP/Metadator/blob/fd6371078143eff9d4c73ccd1f9085d4a0cf0511/assets/mockups/Mockup1_FINAL.png) | ![Simple yet complete](https://github.com/BobbyESP/Metadator/blob/fd6371078143eff9d4c73ccd1f9085d4a0cf0511/assets/mockups/Mockup3_FINAL.png) | ![Different layouts, same experience](https://github.com/BobbyESP/Metadator/blob/fd6371078143eff9d4c73ccd1f9085d4a0cf0511/assets/mockups/Mockup2_FINAL.png) |
+| UI                                                                                                                                                                       | Functionality                                                                                                                                                            | Different layouts                                                                                                                                                                       |
+|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| <img src="https://github.com/BobbyESP/Metadator/blob/fd6371078143eff9d4c73ccd1f9085d4a0cf0511/assets/mockups/Mockup1_FINAL.png" alt="Simple and clean UI" height="600"/> | <img src="https://github.com/BobbyESP/Metadator/blob/fd6371078143eff9d4c73ccd1f9085d4a0cf0511/assets/mockups/Mockup3_FINAL.png" alt="Simple yet complete" height="600"/> | <img src="https://github.com/BobbyESP/Metadator/blob/fd6371078143eff9d4c73ccd1f9085d4a0cf0511/assets/mockups/Mockup2_FINAL.png" alt="Different layouts, same experience" height="600"/> |
 
 </div>
 ## 🔮Features
