@@ -3,6 +3,7 @@
 package com.bobbyesp.metadator.presentation.pages.home
 
 import android.Manifest
+import android.app.Activity
 import android.os.Build
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -77,7 +78,7 @@ import okhttp3.internal.toImmutableList
 fun HomePage(
     modifier: Modifier = Modifier, viewModel: MediaStorePageViewModel
 ) {
-    val context = LocalContext.current
+    val context = LocalContext.current as Activity
     val currentApiVersion = Build.VERSION.SDK_INT
     val readAudioFiles = when {
         currentApiVersion < Build.VERSION_CODES.TIRAMISU -> Manifest.permission.READ_EXTERNAL_STORAGE
@@ -228,7 +229,7 @@ fun HomePage(
                         storagePermissionState.launchPermissionRequest()
                     },
                     onDismissRequest = {
-                        navController.popBackStack()
+                        context.finish()
                     },
                     shouldShowRationale = shouldShowRationale
                 )
