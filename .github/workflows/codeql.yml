@@ -62,7 +62,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build with Gradle
-        run: ./gradlew build
+        run: ./gradlew assembleFoss
 
       # Perform CodeQL analysis
       - name: Perform CodeQL Analysis
