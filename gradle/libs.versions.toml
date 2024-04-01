@@ -100,6 +100,7 @@ core-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref
 core-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "splashscreen" }
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
 activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity-compose" }
+androidx-legacy-support-v4 = { group = "androidx.legacy", name = "legacy-support-v4", version.ref = "legacySupportV4" }
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
 firebase-crashlytics-gradle = { module = "com.google.firebase:firebase-crashlytics-gradle", version.ref = "firebaseCrashlyticsGradle" }
 lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle-runtime-ktx" }
