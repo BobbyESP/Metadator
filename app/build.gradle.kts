@@ -184,6 +184,9 @@ class RoomSchemaArgProvider(
 ) : CommandLineArgumentProvider {
 
     override fun asArguments(): Iterable<String> {
+        if (!schemaDir.exists()) {
+            schemaDir.mkdirs()
+        }
         return listOf("room.schemaLocation=${schemaDir.path}")
     }
 }
