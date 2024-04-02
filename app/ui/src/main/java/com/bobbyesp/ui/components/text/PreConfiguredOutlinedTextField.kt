@@ -38,7 +38,7 @@ fun PreConfiguredOutlinedTextField(
     val (text, setText) = remember(value) { mutableStateOf(value) }
 
     SideEffect {
-        if (!text.isNullOrEmpty()) returnModifiedValue(text)
+        if (!text.isNullOrEmpty()) returnModifiedValue(text) else returnModifiedValue("")
     }
 
     OutlinedTextField(

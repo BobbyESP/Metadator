@@ -77,7 +77,7 @@ googleServices = "4.4.1"
 firebaseBom = "32.8.0"
 
 #Others
-taglib = "84a30a6c70"
+taglib = "1.0.0-alpha07"
 
 #Tests
 junit = "4.13.2"

@@ -42,13 +42,13 @@ class ID3MetadataEditorPageViewModel @Inject constructor(
                 val fd = songFd.dup()?.detachFd() ?: throw IOException("File descriptor is null")
                 val metadata = TagLib.getMetadata(
                     fd,
-                    readStyle = AudioPropertiesReadStyle.Fast,
-                    withLyrics = true
+                    readStyle = AudioPropertiesReadStyle.Fast
                 )
                 if (metadata == null) {
                     updateState(ID3MetadataEditorPageState.Error(Exception("Metadata is null")))
                     return
                 }
+
                 val lyrics = metadata.propertyMap["LYRICS"]?.get(0) ?: ""
 
                 updateLyrics(lyrics)
