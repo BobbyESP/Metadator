@@ -14,12 +14,19 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Warning
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -38,6 +45,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -93,6 +101,8 @@ fun ID3MetadataEditorPage(
                 navController.popBackStack()
             }
         }
+
+    var showNotSavedChangesDialog by remember { mutableStateOf(false) }
 
     fun saveInMediaStore(): Boolean = viewModel.saveMetadata(
         newMetadata = viewState.metadata?.copy(
@@ -161,7 +171,7 @@ fun ID3MetadataEditorPage(
                     }
 
                     val artworkUri = parcelableSong.artworkPath
-                    var showArtwork by remember { mutableStateOf(true) }
+
                     var showMediaStoreInfoDialog by remember { mutableStateOf(false) }
 
                     val audioStats by remember(actualPageState.metadata) {
@@ -399,4 +409,62 @@ fun ID3MetadataEditorPage(
             }
         }
     }
+
+    if (showNotSavedChangesDialog) {
+        NotSavedChanges(
+            changelog = AnnotatedString("AnnotatedString(\"changesDiff.value!!\")"),
+            onDismissChanges = {
+                showNotSavedChangesDialog = false
+                navController.popBackStack()
+            },
+            onReturnToPage = {
+                showNotSavedChangesDialog = false
+            }
+        )
+    }
+}
+
+@Composable
+private fun NotSavedChanges(
+    changelog: AnnotatedString, onDismissChanges: () -> Unit = {}, onReturnToPage: () -> Unit = {}
+) {
+    AlertDialog(
+        onDismissRequest = onReturnToPage,
+        icon = {
+            Icon(
+                imageVector = Icons.Rounded.Warning,
+                contentDescription = stringResource(id = R.string.warning)
+            )
+        },
+        title = {
+            Text(text = stringResource(id = R.string.unsaved_changes))
+        },
+        text = {
+            Column(
+                modifier = Modifier
+                    .heightIn(min = 200.dp, max = 400.dp)
+                    .verticalScroll(rememberScrollState())
+            ) {
+                Text(
+                    text = changelog,
+                )
+            }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = onReturnToPage,
+            ) {
+                Text(text = stringResource(id = R.string.return_str))
+            }
+
+        },
+        confirmButton = {
+            Button(
+                onClick = onDismissChanges,
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
+            ) {
+                Text(text = stringResource(id = R.string.discard_changes))
+            }
+        }
+    )
 }

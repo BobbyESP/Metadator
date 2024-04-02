@@ -122,6 +122,22 @@ data class AudioFileMetadata(
                 releaseType = releaseType?.copyOf()
             )
         }
+
+        fun AudioFileMetadata.differences(other: AudioFileMetadata): MetadataChangesDiff {
+            val differences = mutableMapOf<String, Pair<Array<String>?, Array<String>?>>()
+
+            this::class.java.declaredFields.forEach { field ->
+                field.isAccessible = true
+                val thisValue = field.get(this) as? Array<String>
+                val otherValue = field.get(other) as? Array<String>
+
+                if (thisValue?.contentEquals(otherValue) == false) {
+                    differences[field.name] = Pair(thisValue, otherValue)
+                }
+            }
+
+            return differences
+        }
     }
 
     fun toPropertyMap(): PropertyMap {
@@ -242,3 +258,5 @@ data class AudioFileMetadata(
         return result
     }
 }
+
+typealias MetadataChangesDiff = Map<String, Pair<Array<String>?, Array<String>?>>

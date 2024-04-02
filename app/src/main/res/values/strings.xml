@@ -39,5 +39,10 @@
     <string name="layout_type">Layout type</string>
     <string name="reload_media_store">Reload MediaStore</string>
     <string name="audio_details">Audio details</string>
+    <string name="discard_changes">Discard changes</string>
+    <string name="return_str">Return</string>
+    <string name="warning">Warning</string>
+    <string name="unsaved_changes">Unsaved changes</string>
+    <string name="unsaved_changes_info">The following fields have unsaved changes:</string>
 
 </resources>
