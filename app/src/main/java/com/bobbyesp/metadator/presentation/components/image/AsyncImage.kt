@@ -6,7 +6,7 @@ import android.graphics.drawable.BitmapDrawable
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MusicNote
+import androidx.compose.material.icons.rounded.MusicNote
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -52,10 +52,6 @@ fun AsyncImageImpl(
     // Create an ImageLoader if it doesn't exist yet and remember it with the current context.
     val imageLoader = LocalCoilImageLoader.current
 
-    val imageRequest =
-        ImageRequest.Builder(context).data(model)
-            .crossfade(true).build()
-
     if (isPreview) {
         Image(
             painter = painterResource(R.drawable.metadator_logo_foreground),
@@ -68,7 +64,7 @@ fun AsyncImageImpl(
         )
     } else {
         AsyncImage(
-            model = imageRequest,
+            model = model,
             imageLoader = imageLoader ?: ImageLoader.Builder(context).build(),
             onState = onState,
             filterQuality = filterQuality,
@@ -106,14 +102,10 @@ fun AsyncImageImpl(
 
     val imageLoader = LocalCoilImageLoader.current
 
-    val imageRequest =
-        ImageRequest.Builder(context).data(model)
-            .crossfade(true).build()
-
     val placeholderPainter = placeholder ?: painterResource(R.drawable.metadator_logo_foreground)
 
     AsyncImage(
-        model = imageRequest,
+        model = model,
         imageLoader = imageLoader ?: ImageLoader.Builder(context).build(),
         filterQuality = filterQuality,
         onError = onError,
@@ -161,7 +153,7 @@ fun ArtworkAsyncImage(
         PlaceholderCreator(
             modifier = modifier
                 .clip(MaterialTheme.shapes.small),
-            icon = Icons.Default.MusicNote,
+            icon = Icons.Rounded.MusicNote,
             colorful = false,
             contentDescription = "Song cover"
         )
