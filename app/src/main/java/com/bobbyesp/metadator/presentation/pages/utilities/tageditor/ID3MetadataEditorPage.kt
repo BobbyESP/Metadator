@@ -19,8 +19,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -45,16 +43,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
-import coil.compose.AsyncImagePainter
 import com.bobbyesp.ext.joinOrNullToString
 import com.bobbyesp.ext.toMinutes
 import com.bobbyesp.metadator.R
 import com.bobbyesp.metadator.model.ParcelableSong
 import com.bobbyesp.metadator.presentation.common.LocalNavController
-import com.bobbyesp.metadator.presentation.components.image.AsyncImageImpl
+import com.bobbyesp.metadator.presentation.components.image.ArtworkAsyncImage
 import com.bobbyesp.ui.components.button.CloseButton
 import com.bobbyesp.ui.components.others.MetadataTag
-import com.bobbyesp.ui.components.others.PlaceholderCreator
 import com.bobbyesp.ui.components.text.LargeCategoryTitle
 import com.bobbyesp.ui.components.text.MarqueeText
 import com.bobbyesp.ui.components.text.PreConfiguredOutlinedTextField
@@ -192,30 +188,13 @@ fun ID3MetadataEditorPage(
                                 .aspectRatio(1f)
                                 .align(Alignment.CenterHorizontally),
                         ) {
-                            if (artworkUri != null && showArtwork) {
-                                AsyncImageImpl(
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .clip(MaterialTheme.shapes.small)
-                                        .align(Alignment.Center),
-                                    model = artworkUri,
-                                    onState = { state ->
-                                        //if it was successful, don't show the placeholder, else show it
-                                        showArtwork =
-                                            state !is AsyncImagePainter.State.Error && state !is AsyncImagePainter.State.Empty
-                                    },
-                                    contentDescription = "Song Artwork"
-                                )
-                            } else {
-                                PlaceholderCreator(
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .clip(MaterialTheme.shapes.small)
-                                        .align(Alignment.Center),
-                                    icon = Icons.Default.MusicNote,
-                                    colorful = false
-                                )
-                            }
+                            ArtworkAsyncImage(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .clip(MaterialTheme.shapes.small)
+                                    .align(Alignment.Center),
+                                artworkPath = artworkUri,
+                            )
                         }
                         LargeCategoryTitle(
                             modifier = Modifier.padding(vertical = 6.dp),
