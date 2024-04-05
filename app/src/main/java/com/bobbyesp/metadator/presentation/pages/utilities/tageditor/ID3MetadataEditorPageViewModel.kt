@@ -6,17 +6,27 @@ import android.content.Context
 import android.os.Build
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.bobbyesp.metadator.R
 import com.bobbyesp.utilities.mediastore.AudioFileMetadata
 import com.bobbyesp.utilities.mediastore.MediaStoreReceiver
+import com.bobbyesp.utilities.mediastore.MetadataChangesDiff
 import com.kyant.taglib.AudioPropertiesReadStyle
 import com.kyant.taglib.Metadata
 import com.kyant.taglib.TagLib
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.IOException
 import javax.inject.Inject
 
@@ -32,36 +42,42 @@ class ID3MetadataEditorPageViewModel @Inject constructor(
     data class PageViewState(
         val metadata: Metadata? = null,
         val state: ID3MetadataEditorPageState = ID3MetadataEditorPageState.Loading,
-        val lyrics: String = "",
     )
 
-    fun loadTrackMetadata(path: String) {
+    suspend fun loadTrackMetadata(path: String) {
         updateState(ID3MetadataEditorPageState.Loading)
-        try {
+        kotlin.runCatching {
             MediaStoreReceiver.getFileDescriptorFromPath(context, path, mode = "r")?.use { songFd ->
-                val fd = songFd.dup()?.detachFd() ?: throw IOException("File descriptor is null")
-                val metadata = TagLib.getMetadata(
-                    fd,
-                    readStyle = AudioPropertiesReadStyle.Fast
-                )
+                val fd = songFd.dup()?.detachFd()
+                    ?: throw IllegalStateException("File descriptor is null")
+
+                val metadataDeferred =
+                    withContext(viewModelScope.coroutineContext + Dispatchers.IO) {
+                        async {
+                            TagLib.getMetadata(
+                                fd,
+                                readStyle = AudioPropertiesReadStyle.Fast
+                            )
+                        }
+                    }
+
+                val metadata = metadataDeferred.await()
+
                 if (metadata == null) {
                     updateState(ID3MetadataEditorPageState.Error(Exception("Metadata is null")))
                     return
                 }
 
-                val lyrics = metadata.propertyMap["LYRICS"]?.get(0) ?: ""
-
-                updateLyrics(lyrics)
                 updateMetadata(metadata)
 
                 updateState(ID3MetadataEditorPageState.Success(metadata))
             }
-        } catch (e: IOException) {
+        }.onFailure { error ->
             Log.e(
                 "ID3MetadataEditorPageViewModel",
-                "Error while trying to load metadata: ${e.message}"
+                "Error while trying to load metadata: ${error.message}"
             )
-            updateState(ID3MetadataEditorPageState.Error(e))
+            updateState(ID3MetadataEditorPageState.Error(error))
         }
     }
 
@@ -74,8 +90,12 @@ class ID3MetadataEditorPageViewModel @Inject constructor(
                 ?.dup()?.detachFd()
                 ?: throw IOException("File descriptor is null")
 
-            TagLib.savePropertyMap(fd, propertyMap = newMetadata.propertyMap)
-            updateState(ID3MetadataEditorPageState.Success(newMetadata))
+            viewModelScope.launch(Dispatchers.IO) {
+                TagLib.savePropertyMap(
+                    fd,
+                    propertyMap = newMetadata.propertyMap
+                )
+            }
             true
         } catch (securityException: SecurityException) {
             handleSecurityException(securityException, intentPassthrough)
@@ -105,19 +125,30 @@ class ID3MetadataEditorPageViewModel @Inject constructor(
         }
     }
 
+    fun generateUnsavedChangesText(
+        context: Context,
+        changes: MetadataChangesDiff
+    ): AnnotatedString {
+        val builder = AnnotatedString.Builder()
+        val localizedInfoText = context.getString(R.string.unsaved_changes_info)
+        builder.append("$localizedInfoText \n")
+
+        changes.forEach { (key, value) ->
+            val start = builder.length
+            builder.append("$key: ")
+            val end = builder.length
+            builder.addStyle(SpanStyle(fontWeight = FontWeight.Bold), start, end)
+            builder.append("${value.first?.joinToString()} -> ${value.second?.joinToString()}\n")
+        }
+
+        return builder.toAnnotatedString()
+    }
+
 
     private fun updateState(state: ID3MetadataEditorPageState) {
         mutablePageViewState.update {
             it.copy(
                 state = state
-            )
-        }
-    }
-
-    private fun updateLyrics(lyrics: String) {
-        mutablePageViewState.update {
-            it.copy(
-                lyrics = lyrics
             )
         }
     }

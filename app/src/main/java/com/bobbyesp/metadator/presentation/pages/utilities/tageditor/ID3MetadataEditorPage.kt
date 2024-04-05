@@ -50,7 +50,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewModelScope
 import com.bobbyesp.ext.joinOrNullToString
 import com.bobbyesp.ext.toMinutes
 import com.bobbyesp.metadator.R
@@ -79,13 +78,10 @@ fun ID3MetadataEditorPage(
 
     var propertiesCopy = viewModel.propertiesCopy.value
 
-    val vmScope = viewModel.viewModelScope
-    LaunchedEffect(true) {
-        vmScope.launch(vmScope.coroutineContext + Dispatchers.IO) {
-            viewModel.loadTrackMetadata(
-                path = parcelableSong.localSongPath!!
-            )
-        }
+    LaunchedEffect(parcelableSong.localSongPath) {
+        viewModel.loadTrackMetadata(
+            path = parcelableSong.localSongPath!!
+        )
     }
 
     val sendActivityIntent =
