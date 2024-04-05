@@ -48,7 +48,7 @@ data class AudioFileMetadata(
     var releaseType: Array<String>? = null
 ) {
     companion object {
-        fun PropertyMap.toFileMetadata(): AudioFileMetadata {
+        fun PropertyMap.toAudioFileMetadata(): AudioFileMetadata {
             return AudioFileMetadata(
                 title = this["TITLE"],
                 album = this["ALBUM"],
@@ -121,22 +121,6 @@ data class AudioFileMetadata(
                 releaseStatus = releaseStatus?.copyOf(),
                 releaseType = releaseType?.copyOf()
             )
-        }
-
-        fun AudioFileMetadata.differences(other: AudioFileMetadata): MetadataChangesDiff {
-            val differences = mutableMapOf<String, Pair<Array<String>?, Array<String>?>>()
-
-            this::class.java.declaredFields.forEach { field ->
-                field.isAccessible = true
-                val thisValue = field.get(this) as? Array<String>
-                val otherValue = field.get(other) as? Array<String>
-
-                if (thisValue?.contentEquals(otherValue) == false) {
-                    differences[field.name] = Pair(thisValue, otherValue)
-                }
-            }
-
-            return differences
         }
     }
 
@@ -258,5 +242,3 @@ data class AudioFileMetadata(
         return result
     }
 }
-
-typealias MetadataChangesDiff = Map<String, Pair<Array<String>?, Array<String>?>>

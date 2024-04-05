@@ -6,15 +6,10 @@ import android.content.Context
 import android.os.Build
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.bobbyesp.metadator.R
 import com.bobbyesp.utilities.mediastore.AudioFileMetadata
 import com.bobbyesp.utilities.mediastore.MediaStoreReceiver
-import com.bobbyesp.utilities.mediastore.MetadataChangesDiff
 import com.kyant.taglib.AudioPropertiesReadStyle
 import com.kyant.taglib.Metadata
 import com.kyant.taglib.TagLib
@@ -124,26 +119,6 @@ class ID3MetadataEditorPageViewModel @Inject constructor(
             throw RuntimeException(securityException.message, securityException)
         }
     }
-
-    fun generateUnsavedChangesText(
-        context: Context,
-        changes: MetadataChangesDiff
-    ): AnnotatedString {
-        val builder = AnnotatedString.Builder()
-        val localizedInfoText = context.getString(R.string.unsaved_changes_info)
-        builder.append("$localizedInfoText \n")
-
-        changes.forEach { (key, value) ->
-            val start = builder.length
-            builder.append("$key: ")
-            val end = builder.length
-            builder.addStyle(SpanStyle(fontWeight = FontWeight.Bold), start, end)
-            builder.append("${value.first?.joinToString()} -> ${value.second?.joinToString()}\n")
-        }
-
-        return builder.toAnnotatedString()
-    }
-
 
     private fun updateState(state: ID3MetadataEditorPageState) {
         mutablePageViewState.update {

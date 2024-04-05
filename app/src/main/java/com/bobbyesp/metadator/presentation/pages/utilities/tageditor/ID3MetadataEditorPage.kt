@@ -1,6 +1,7 @@
 package com.bobbyesp.metadator.presentation.pages.utilities.tageditor
 
 import android.app.Activity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -14,7 +15,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -45,7 +45,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -61,7 +60,7 @@ import com.bobbyesp.ui.components.others.MetadataTag
 import com.bobbyesp.ui.components.text.LargeCategoryTitle
 import com.bobbyesp.ui.components.text.MarqueeText
 import com.bobbyesp.ui.components.text.PreConfiguredOutlinedTextField
-import com.bobbyesp.utilities.mediastore.AudioFileMetadata.Companion.toFileMetadata
+import com.bobbyesp.utilities.mediastore.AudioFileMetadata.Companion.toAudioFileMetadata
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -107,6 +106,15 @@ fun ID3MetadataEditorPage(
     ) {
         val intent = IntentSenderRequest.Builder(it).build()
         sendActivityIntent.launch(intent)
+    }
+
+    BackHandler {
+        val hasChanges = propertiesCopy != viewState.metadata?.propertyMap?.toAudioFileMetadata()
+        if (hasChanges) {
+            showNotSavedChangesDialog = true
+        } else {
+            navController.popBackStack()
+        }
     }
 
     Scaffold(
@@ -163,7 +171,7 @@ fun ID3MetadataEditorPage(
 
                 is ID3MetadataEditorPageViewModel.Companion.ID3MetadataEditorPageState.Success -> {
                     SideEffect {
-                        propertiesCopy = actualPageState.metadata.propertyMap.toFileMetadata()
+                        propertiesCopy = actualPageState.metadata.propertyMap.toAudioFileMetadata()
                     }
 
                     val artworkUri = parcelableSong.artworkPath
@@ -175,7 +183,7 @@ fun ID3MetadataEditorPage(
                     }
 
                     val songProperties by remember(actualPageState.metadata) {
-                        mutableStateOf(actualPageState.metadata.propertyMap.toFileMetadata())
+                        mutableStateOf(actualPageState.metadata.propertyMap.toAudioFileMetadata())
                     }
 
                     val scrollState = rememberScrollState()
@@ -408,7 +416,6 @@ fun ID3MetadataEditorPage(
 
     if (showNotSavedChangesDialog) {
         NotSavedChanges(
-            changelog = AnnotatedString("AnnotatedString(\"changesDiff.value!!\")"),
             onDismissChanges = {
                 showNotSavedChangesDialog = false
                 navController.popBackStack()
@@ -422,7 +429,7 @@ fun ID3MetadataEditorPage(
 
 @Composable
 private fun NotSavedChanges(
-    changelog: AnnotatedString, onDismissChanges: () -> Unit = {}, onReturnToPage: () -> Unit = {}
+    onDismissChanges: () -> Unit = {}, onReturnToPage: () -> Unit = {}
 ) {
     AlertDialog(
         onDismissRequest = onReturnToPage,
@@ -436,15 +443,10 @@ private fun NotSavedChanges(
             Text(text = stringResource(id = R.string.unsaved_changes))
         },
         text = {
-            Column(
-                modifier = Modifier
-                    .heightIn(min = 200.dp, max = 400.dp)
-                    .verticalScroll(rememberScrollState())
-            ) {
-                Text(
-                    text = changelog,
-                )
-            }
+            Text(
+                text = stringResource(id = R.string.unsaved_changes_info),
+                style = MaterialTheme.typography.bodyMedium
+            )
         },
         dismissButton = {
             TextButton(
@@ -452,7 +454,6 @@ private fun NotSavedChanges(
             ) {
                 Text(text = stringResource(id = R.string.return_str))
             }
-
         },
         confirmButton = {
             Button(
