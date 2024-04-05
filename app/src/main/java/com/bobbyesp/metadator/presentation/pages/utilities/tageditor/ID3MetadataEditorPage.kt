@@ -1,7 +1,6 @@
 package com.bobbyesp.metadator.presentation.pages.utilities.tageditor
 
 import android.app.Activity
-import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -35,7 +34,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -60,7 +58,6 @@ import com.bobbyesp.ui.components.others.MetadataTag
 import com.bobbyesp.ui.components.text.LargeCategoryTitle
 import com.bobbyesp.ui.components.text.MarqueeText
 import com.bobbyesp.ui.components.text.PreConfiguredOutlinedTextField
-import com.bobbyesp.utilities.mediastore.AudioFileMetadata.Companion.toAudioFileMetadata
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -106,15 +103,6 @@ fun ID3MetadataEditorPage(
     ) {
         val intent = IntentSenderRequest.Builder(it).build()
         sendActivityIntent.launch(intent)
-    }
-
-    BackHandler {
-        val hasChanges = propertiesCopy != viewState.metadata?.propertyMap?.toAudioFileMetadata()
-        if (hasChanges) {
-            showNotSavedChangesDialog = true
-        } else {
-            navController.popBackStack()
-        }
     }
 
     Scaffold(
@@ -170,21 +158,12 @@ fun ID3MetadataEditorPage(
                 }
 
                 is ID3MetadataEditorPageViewModel.Companion.ID3MetadataEditorPageState.Success -> {
-                    SideEffect {
-                        propertiesCopy = actualPageState.metadata.propertyMap.toAudioFileMetadata()
-                    }
+                    var showMediaStoreInfoDialog by remember { mutableStateOf(false) }
 
                     val artworkUri = parcelableSong.artworkPath
 
-                    var showMediaStoreInfoDialog by remember { mutableStateOf(false) }
-
-                    val audioStats by remember(actualPageState.metadata) {
-                        mutableStateOf(actualPageState.metadata.audioProperties)
-                    }
-
-                    val songProperties by remember(actualPageState.metadata) {
-                        mutableStateOf(actualPageState.metadata.propertyMap.toAudioFileMetadata())
-                    }
+                    val songProperties = viewState.audioFileMetadata!!
+                    val audioStats = viewState.audioProperties!!
 
                     val scrollState = rememberScrollState()
 

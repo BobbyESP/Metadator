@@ -9,7 +9,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bobbyesp.utilities.mediastore.AudioFileMetadata
+import com.bobbyesp.utilities.mediastore.AudioFileMetadata.Companion.toAudioFileMetadata
 import com.bobbyesp.utilities.mediastore.MediaStoreReceiver
+import com.kyant.taglib.AudioProperties
 import com.kyant.taglib.AudioPropertiesReadStyle
 import com.kyant.taglib.Metadata
 import com.kyant.taglib.TagLib
@@ -36,6 +38,8 @@ class ID3MetadataEditorPageViewModel @Inject constructor(
 
     data class PageViewState(
         val metadata: Metadata? = null,
+        val audioFileMetadata: AudioFileMetadata? = null,
+        val audioProperties: AudioProperties? = null,
         val state: ID3MetadataEditorPageState = ID3MetadataEditorPageState.Loading,
     )
 
@@ -65,7 +69,9 @@ class ID3MetadataEditorPageViewModel @Inject constructor(
 
                 updateMetadata(metadata)
 
-                updateState(ID3MetadataEditorPageState.Success(metadata))
+                updateState(ID3MetadataEditorPageState.Success)
+
+                propertiesCopy.value = metadata.propertyMap.toAudioFileMetadata()
             }
         }.onFailure { error ->
             Log.e(
@@ -131,7 +137,9 @@ class ID3MetadataEditorPageViewModel @Inject constructor(
     private fun updateMetadata(metadata: Metadata? = null) {
         mutablePageViewState.update {
             it.copy(
-                metadata = metadata
+                metadata = metadata,
+                audioFileMetadata = metadata?.propertyMap?.toAudioFileMetadata(),
+                audioProperties = metadata?.audioProperties
             )
         }
     }
@@ -139,7 +147,7 @@ class ID3MetadataEditorPageViewModel @Inject constructor(
     companion object {
         sealed class ID3MetadataEditorPageState {
             data object Loading : ID3MetadataEditorPageState()
-            data class Success(val metadata: Metadata) : ID3MetadataEditorPageState()
+            data object Success : ID3MetadataEditorPageState()
             data class Error(val throwable: Throwable) : ID3MetadataEditorPageState()
         }
     }
