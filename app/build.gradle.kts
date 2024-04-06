@@ -12,6 +12,7 @@ plugins {
 if (isFullBuild) {
     apply(plugin = libs.plugins.google.gms.get().pluginId)
     apply(plugin = "com.google.firebase.crashlytics")
+    apply<CrashlyticsBuildConfig>()
 }
 
 val commitSignature = providers.exec {
@@ -22,7 +23,7 @@ val currentVersion: Version = Version.Beta(
     versionMajor = 1,
     versionMinor = 0,
     versionPatch = 0,
-    versionBuild = 3
+    versionBuild = 4
 )
 
 android {
