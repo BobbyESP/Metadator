@@ -18,6 +18,7 @@ leakcanary = "2.13"
 
 #Compose
 compose-bom = "2024.04.00"
+compose-bom-canary = "2024.04.00-alpha01"
 constraintLayout = "1.1.0-alpha13"
 androidx-compose-material3 = "1.2.1"
 compose-util = "1.6.5"
@@ -102,6 +103,7 @@ core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx
 activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity-compose" }
 androidx-legacy-support-v4 = { group = "androidx.legacy", name = "legacy-support-v4", version.ref = "legacySupportV4" }
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
+compose-bom-canary = { group = "dev.chrisbanes.compose", name = "compose-bom", version.ref = "compose-bom-canary" }
 firebase-crashlytics-gradle = { module = "com.google.firebase:firebase-crashlytics-gradle", version.ref = "firebaseCrashlyticsGradle" }
 lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle-runtime-ktx" }
 lifecycle-compose-runtime = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycle-runtime-ktx" }
