@@ -36,6 +36,7 @@ import com.bobbyesp.metadator.presentation.components.cards.songs.HorizontalSong
 import com.bobbyesp.metadator.presentation.components.cards.songs.VerticalSongCard
 import com.bobbyesp.metadator.presentation.pages.home.LayoutType
 import com.bobbyesp.model.Song
+import com.bobbyesp.ui.common.pages.ErrorPage
 import com.bobbyesp.ui.components.pulltorefresh.PullState
 import com.bobbyesp.ui.components.pulltorefresh.PullToRefreshLayout
 import kotlinx.coroutines.Dispatchers
@@ -201,7 +202,9 @@ fun MediaStorePage(
                 }
 
                 is MediaStorePageState.Error -> {
-                    Text(text = "Error") //TODO: Change this
+                    ErrorPage(error = stringResource(id = com.bobbyesp.crashhandler.R.string.unknown_error_title)) {
+
+                    }
                 }
             }
         }

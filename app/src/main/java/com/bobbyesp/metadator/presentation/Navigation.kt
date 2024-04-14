@@ -107,7 +107,7 @@ fun Navigator() {
                         fontWeight = FontWeight.Bold,
                         fontFamily = FontFamily.Monospace
                     )
-                    routesToNavigate.forEachIndexed { index, route ->
+                    routesToNavigate.forEachIndexed { _, route ->
                         NavigationDrawerItem(label = {
                             Text(text = route.title?.let { stringResource(id = it) } ?: "")
                         }, selected = currentRootRoute.value == route.route, onClick = {

@@ -164,6 +164,7 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.taglib)
     implementation(libs.scrollbar)
+    implementation(libs.lyricfier)
     implementation(project(":crashhandler"))
 
 //-------------------Testing-------------------//

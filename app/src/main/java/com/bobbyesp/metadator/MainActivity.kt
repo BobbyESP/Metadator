@@ -45,7 +45,6 @@ class MainActivity : ComponentActivity() {
 
     companion object {
         private lateinit var activity: MainActivity
-        const val CLOSE_ACTIVITY_NON_GRANTED_PERMISSIONS = 1
         fun getActivity(): MainActivity {
             return activity
         }
