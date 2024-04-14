@@ -137,7 +137,7 @@ class DraggableBottomSheetState(
     draggableState: DraggableState,
     private val coroutineScope: CoroutineScope,
     private val animatable: Animatable<Dp, AnimationVector1D>,
-    private val onAnchorChanged: (Int) -> Unit,
+    private val onAnchorChanged: (DraggableBottomSheetAnchor) -> Unit,
     val collapsedBound: Dp,
 ) : DraggableState by draggableState {
     val dismissedBound: Dp
@@ -165,14 +165,14 @@ class DraggableBottomSheetState(
     }
 
     fun collapse(animationSpec: AnimationSpec<Dp>) {
-        onAnchorChanged(collapsedAnchor)
+        onAnchorChanged(DraggableBottomSheetAnchor.COLLAPSED)
         coroutineScope.launch {
             animatable.animateTo(collapsedBound, animationSpec)
         }
     }
 
     fun expand(animationSpec: AnimationSpec<Dp>) {
-        onAnchorChanged(expandedAnchor)
+        onAnchorChanged(DraggableBottomSheetAnchor.EXPANDED)
         coroutineScope.launch {
             animatable.animateTo(animatable.upperBound!!, animationSpec)
         }
@@ -195,7 +195,7 @@ class DraggableBottomSheetState(
     }
 
     fun dismiss() {
-        onAnchorChanged(dismissedAnchor)
+        onAnchorChanged(DraggableBottomSheetAnchor.DISMISSED)
         coroutineScope.launch {
             animatable.animateTo(animatable.lowerBound!!)
         }
@@ -292,22 +292,24 @@ class DraggableBottomSheetState(
         }
 }
 
-const val expandedAnchor = 2
-const val collapsedAnchor = 1
-const val dismissedAnchor = 0
+enum class DraggableBottomSheetAnchor {
+    DISMISSED,
+    COLLAPSED,
+    EXPANDED
+}
 
 @Composable
 fun rememberDraggableBottomSheetState(
     dismissedBound: Dp,
     expandedBound: Dp,
     collapsedBound: Dp = dismissedBound,
-    initialAnchor: Int = dismissedAnchor,
+    initialAnchor: DraggableBottomSheetAnchor = DraggableBottomSheetAnchor.DISMISSED,
     animationSpec: AnimationSpec<Dp>
 ): DraggableBottomSheetState {
     val density = LocalDensity.current
     val coroutineScope = rememberCoroutineScope()
 
-    var previousAnchor by rememberSaveable {
+    var previousAnchor by rememberSaveable(key = "previousAnchorDraggableBs") {
         mutableStateOf(initialAnchor)
     }
     val animatable = remember {
@@ -316,10 +318,9 @@ fun rememberDraggableBottomSheetState(
 
     return remember(dismissedBound, expandedBound, collapsedBound, coroutineScope) {
         val initialValue = when (previousAnchor) {
-            expandedAnchor -> expandedBound
-            collapsedAnchor -> collapsedBound
-            dismissedAnchor -> dismissedBound
-            else -> error("Unknown BottomSheet anchor")
+            DraggableBottomSheetAnchor.EXPANDED -> expandedBound
+            DraggableBottomSheetAnchor.COLLAPSED -> collapsedBound
+            DraggableBottomSheetAnchor.DISMISSED -> dismissedBound
         }
 
         animatable.updateBounds(dismissedBound.coerceAtMost(expandedBound), expandedBound)
