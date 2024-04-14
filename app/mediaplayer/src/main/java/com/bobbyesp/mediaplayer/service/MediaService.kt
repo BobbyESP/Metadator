@@ -1,8 +1,6 @@
 package com.bobbyesp.mediaplayer.service
 
 import android.content.Intent
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.session.MediaSession
@@ -20,7 +18,6 @@ class MediaService : MediaSessionService() {
     @Inject
     lateinit var notificationManager: MediaNotificationManager
 
-    @RequiresApi(Build.VERSION_CODES.O)
     @UnstableApi
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         notificationManager.startNotificationService(

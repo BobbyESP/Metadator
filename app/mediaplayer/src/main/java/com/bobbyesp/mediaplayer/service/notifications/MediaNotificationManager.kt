@@ -5,7 +5,6 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
@@ -16,7 +15,6 @@ import com.bobbyesp.mediaplayer.R
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
-@RequiresApi(Build.VERSION_CODES.O)
 class MediaNotificationManager @Inject constructor(
     @ApplicationContext private val context: Context,
     private val player: ExoPlayer
@@ -59,22 +57,32 @@ class MediaNotificationManager @Inject constructor(
     }
 
     private fun startForegroundNotification(mediaSessionService: MediaSessionService) {
-        val notification = Notification.Builder(context, NOTIFICATION_CHANNEL_ID)
-            .setCategory(Notification.CATEGORY_SERVICE)
-            .build()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val notification = Notification.Builder(context, NOTIFICATION_CHANNEL_ID)
+                .setCategory(Notification.CATEGORY_SERVICE)
+                .build()
 
-        mediaSessionService.startForeground(NOTIFICATION_ID, notification)
+            mediaSessionService.startForeground(NOTIFICATION_ID, notification)
+        } else {
+            val notification = NotificationCompat.Builder(context)
+                .setCategory(NotificationCompat.CATEGORY_SERVICE)
+                .build()
+
+            mediaSessionService.startForeground(NOTIFICATION_ID, notification)
+        }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun createNotificationChannel() {
-        val channel = NotificationChannel(
-            NOTIFICATION_CHANNEL_ID,
-            NOTIFICATION_CHANNEL_NAME,
-            NotificationManager.IMPORTANCE_LOW
-        )
-        notificationManager.createNotificationChannel(channel)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                NOTIFICATION_CHANNEL_ID,
+                NOTIFICATION_CHANNEL_NAME,
+                NotificationManager.IMPORTANCE_LOW
+            )
+            notificationManager.createNotificationChannel(channel)
+        }
     }
+
 
     companion object {
         private const val NOTIFICATION_ID = 200
