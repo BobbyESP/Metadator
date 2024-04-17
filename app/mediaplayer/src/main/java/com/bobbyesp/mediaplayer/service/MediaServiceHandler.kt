@@ -107,18 +107,22 @@ class MediaServiceHandler @Inject constructor(
     suspend fun onPlayerEvent(playerEvent: PlayerEvent) {
         when (playerEvent) {
             is PlayerEvent.PlayPause -> {
-                if (player.isPlaying) {
-                    player.pause()
-                    _mediaState.update {
-                        MediaState.Playing(false)
+                when (player.isPlaying) {
+                    true -> {
+                        player.pause()
+                        _mediaState.update {
+                            MediaState.Playing(false)
+                        }
+                        stopProgressUpdate()
                     }
-                    stopProgressUpdate()
-                } else {
-                    player.play()
-                    _mediaState.update {
-                        MediaState.Playing(true)
+
+                    false -> {
+                        player.play()
+                        _mediaState.update {
+                            MediaState.Playing(true)
+                        }
+                        startProgressUpdate()
                     }
-                    startProgressUpdate()
                 }
             }
 
@@ -212,7 +216,7 @@ sealed class PlayerEvent {
     data class UpdateProgress(val updatedProgress: Long) : PlayerEvent()
 }
 
-sealed class MediaState {
+sealed class MediaState { //TODO: NOT USE SEALED CLASSES
     data object Idle : MediaState()
     data class Ready(val duration: Long) : MediaState()
     data class Progress(val progress: Long) : MediaState()

@@ -14,8 +14,11 @@ import com.bobbyesp.utilities.mediastore.MediaStoreReceiver.Advanced.observeSong
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -32,7 +35,8 @@ class MediaplayerViewModel @Inject constructor(
 
     data class MediaplayerPageState(
         val uiState: PlayerState = PlayerState.Initial,
-        val playingSong: Song? = null
+        val playingSong: Song? = null,
+        val queueSongs: Flow<List<Song>> = emptyFlow()
     )
 
     init {
@@ -43,7 +47,7 @@ class MediaplayerViewModel @Inject constructor(
                     is MediaState.Playing -> mutableMediaplayerPageState.update {
                         (it.uiState as? PlayerState.Ready)?.let { readyState ->
                             it.copy(
-                                uiState = readyState.copy(isPlaying = true)
+                                uiState = readyState.copy(isPlaying = mediaState.isPlaying)
                             )
                         } ?: it
                     }
@@ -63,6 +67,12 @@ class MediaplayerViewModel @Inject constructor(
     }
 
 
+    fun togglePlayPause() {
+        viewModelScope.launch {
+            serviceHandler.onPlayerEvent(PlayerEvent.PlayPause)
+        }
+    }
+
     fun playSingleSong(song: Song) {
         loadSongInfo(song)
         viewModelScope.launch {
@@ -72,7 +82,10 @@ class MediaplayerViewModel @Inject constructor(
 
     private fun loadSongInfo(song: Song) {
         mutableMediaplayerPageState.update {
-            it.copy(playingSong = song)
+            it.copy(
+                playingSong = song,
+                queueSongs = flowOf(listOf(song))
+            )
         }
         val mediaItem = MediaItem.Builder()
             .setUri(song.path)

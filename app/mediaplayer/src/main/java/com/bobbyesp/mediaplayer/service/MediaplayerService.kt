@@ -1,6 +1,7 @@
 package com.bobbyesp.mediaplayer.service
 
 import android.content.Intent
+import android.os.Binder
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.session.MediaSession
@@ -42,5 +43,10 @@ class MediaplayerService : MediaSessionService() {
 
     override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaSession {
         return mediaSession
+    }
+
+    inner class MusicBinder : Binder() {
+        val service: MediaplayerService
+            get() = this@MediaplayerService
     }
 }

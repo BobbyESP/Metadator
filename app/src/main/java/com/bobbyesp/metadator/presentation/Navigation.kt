@@ -1,9 +1,8 @@
 package com.bobbyesp.metadator.presentation
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -18,7 +17,6 @@ import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,12 +44,15 @@ import com.bobbyesp.metadator.presentation.common.NavArgs
 import com.bobbyesp.metadator.presentation.common.Route
 import com.bobbyesp.metadator.presentation.common.TagEditorParcelableSongParamType
 import com.bobbyesp.metadator.presentation.common.routesToNavigate
+import com.bobbyesp.metadator.presentation.components.others.CollapsedPlayerHeight
+import com.bobbyesp.metadator.presentation.components.others.PlayerAnimationSpec
 import com.bobbyesp.metadator.presentation.pages.MediaStorePageViewModel
 import com.bobbyesp.metadator.presentation.pages.home.HomePage
 import com.bobbyesp.metadator.presentation.pages.mediaplayer.MediaplayerPage
 import com.bobbyesp.metadator.presentation.pages.mediaplayer.MediaplayerViewModel
 import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.ID3MetadataEditorPage
 import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.ID3MetadataEditorPageViewModel
+import com.bobbyesp.ui.components.bottomsheet.draggable.rememberDraggableBottomSheetState
 import com.bobbyesp.ui.motion.animatedComposable
 import com.bobbyesp.ui.motion.slideInVerticallyComposable
 import com.bobbyesp.utilities.navigation.getParcelable
@@ -79,26 +80,26 @@ fun Navigator() {
 
     val scope = rememberCoroutineScope()
 
-    val showSnackbarMessage: suspend (String) -> Unit = { message ->
-        snackbarHostState.showSnackbar(message)
-    }
-
     //able to open drawer when the user is in one of the main routes (root routes)
     val canOpenDrawer by remember(currentRoute) {
         mutableStateOf(routesToNavigate.fastAny { it.route == currentRootRoute.value })
     }
 
     val mediaStoreViewModel = hiltViewModel<MediaStorePageViewModel>()
+    val mediaplayerViewModel = hiltViewModel<MediaplayerViewModel>()
 
-    LaunchedEffect(canOpenDrawer) {
-        Log.i("Navigator", "canOpenDrawer: $canOpenDrawer")
-    }
-
-    Box(
+    BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
+        val mediaPlayerSheetState = rememberDraggableBottomSheetState(
+            dismissedBound = 0.dp,
+            collapsedBound = CollapsedPlayerHeight,
+            expandedBound = maxHeight,
+            animationSpec = PlayerAnimationSpec,
+        )
+
         ModalNavigationDrawer(
             drawerState = drawerState,
             gesturesEnabled = canOpenDrawer,
@@ -177,8 +178,7 @@ fun Navigator() {
                         route = Route.MediaplayerNavigator.route
                     ) {
                         animatedComposable(Route.MediaplayerNavigator.Mediaplayer.route) {
-                            val viewModel = hiltViewModel<MediaplayerViewModel>()
-                            MediaplayerPage(viewModel)
+                            MediaplayerPage(mediaplayerViewModel, mediaPlayerSheetState)
                         }
                     }
 

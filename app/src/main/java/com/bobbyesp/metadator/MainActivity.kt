@@ -34,6 +34,7 @@ class MainActivity : ComponentActivity() {
         }
         activity = this
         setupFirebase()
+        startMediaPlayerService()
         setContent {
             val windowSizeClass = calculateWindowSizeClass(this)
             AppLocalSettingsProvider(windowSizeClass.widthSizeClass) {
