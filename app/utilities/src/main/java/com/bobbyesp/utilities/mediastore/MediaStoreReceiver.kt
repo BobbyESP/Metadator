@@ -22,7 +22,7 @@ object MediaStoreReceiver {
      * @param applicationContext The application context.
      * @return A list of all the songs in the device.
      */
-    fun getAllSongsFromMediaStore(applicationContext: Context): List<Song> {
+    fun getSongsBySearchTerm(applicationContext: Context): List<Song> {
         val contentResolver: ContentResolver = applicationContext.contentResolver
         val uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
 
@@ -72,7 +72,7 @@ object MediaStoreReceiver {
         return songs
     }
 
-    fun getAllSongsFromMediaStore(
+    fun getSongsBySearchTerm(
         applicationContext: Context, searchTerm: String?, filterType: MediaStoreFilterType?
     ): List<Song> {
         val contentResolver: ContentResolver = applicationContext.contentResolver

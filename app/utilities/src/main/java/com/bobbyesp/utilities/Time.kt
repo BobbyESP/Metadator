@@ -70,7 +70,7 @@ object Time {
     fun formatDuration(duration: Long): String {
         val minutes: Long = duration / 60000
         val seconds: Long = (duration % 60000) / 1000
-        return String.format("%02d:%02d", minutes, seconds)
+        return String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds)
     }
 
     fun parseDateStringToLocalTime(dateString: String): String? {

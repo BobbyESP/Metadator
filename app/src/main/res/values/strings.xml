@@ -44,5 +44,6 @@
     <string name="warning">Warning</string>
     <string name="unsaved_changes">Unsaved changes</string>
     <string name="unsaved_changes_info">There are some metadata fields that has been changed and not saved. Do you really want to discard the changes?</string>
+    <string name="mediaplayer">Mediaplayer</string>
 
 </resources>

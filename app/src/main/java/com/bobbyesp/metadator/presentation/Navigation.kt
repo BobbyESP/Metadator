@@ -22,6 +22,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -47,11 +48,13 @@ import com.bobbyesp.metadator.presentation.common.TagEditorParcelableSongParamTy
 import com.bobbyesp.metadator.presentation.common.routesToNavigate
 import com.bobbyesp.metadator.presentation.pages.MediaStorePageViewModel
 import com.bobbyesp.metadator.presentation.pages.home.HomePage
+import com.bobbyesp.metadator.presentation.pages.mediaplayer.MediaplayerPage
 import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.ID3MetadataEditorPage
 import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.ID3MetadataEditorPageViewModel
 import com.bobbyesp.ui.motion.animatedComposable
 import com.bobbyesp.ui.motion.slideInVerticallyComposable
 import com.bobbyesp.utilities.navigation.getParcelable
+import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -72,6 +75,8 @@ fun Navigator() {
     }
 
     val snackbarHostState = LocalSnackbarHostState.current
+
+    val scope = rememberCoroutineScope()
 
     val showSnackbarMessage: suspend (String) -> Unit = { message ->
         snackbarHostState.showSnackbar(message)
@@ -108,35 +113,47 @@ fun Navigator() {
                         fontFamily = FontFamily.Monospace
                     )
                     routesToNavigate.forEachIndexed { _, route ->
-                        NavigationDrawerItem(label = {
-                            Text(text = route.title?.let { stringResource(id = it) } ?: "")
-                        }, selected = currentRootRoute.value == route.route, onClick = {
+                        NavigationDrawerItem(
+                            label = {
+                                Text(text = route.title?.let { stringResource(id = it) } ?: "")
+                            }, selected = currentRootRoute.value == route.route, onClick = {
+                                if (currentRootRoute.value == route.route) {
+                                    scope.launch {
+                                        drawerState.close()
+                                    }
+                                    return@NavigationDrawerItem
+                                } else {
+                                    navController.navigate(route.route) {
+                                        popUpTo(navController.graph.startDestinationId)
+                                        launchSingleTop = true
+                                    }
+                                    scope.launch {
+                                        drawerState.close()
+                                    }
+                                }
+                            }, icon = {
+                                Icon(imageVector = route.icon!!,
+                                    contentDescription = route.title?.let { stringResource(id = it) })
+                            }, badge = {
 
-                        }, icon = {
-                            Icon(imageVector = route.icon!!,
-                                contentDescription = route.title?.let { stringResource(id = it) })
-                        }, badge = {
-
-                        }, modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+                            }, modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
                         )
                     }
                 }
             },
         ) {
-            Scaffold(
-                snackbarHost = {
-                    SnackbarHost(
-                        hostState = snackbarHostState
-                    ) { dataReceived ->
-                        Snackbar(
-                            modifier = Modifier,
-                            snackbarData = dataReceived,
-                            containerColor = MaterialTheme.colorScheme.inverseSurface,
-                            contentColor = MaterialTheme.colorScheme.inverseOnSurface,
-                        )
-                    }
+            Scaffold(snackbarHost = {
+                SnackbarHost(
+                    hostState = snackbarHostState
+                ) { dataReceived ->
+                    Snackbar(
+                        modifier = Modifier,
+                        snackbarData = dataReceived,
+                        containerColor = MaterialTheme.colorScheme.inverseSurface,
+                        contentColor = MaterialTheme.colorScheme.inverseOnSurface,
+                    )
                 }
-            ) {
+            }) {
                 NavHost(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -151,6 +168,15 @@ fun Navigator() {
                     ) {
                         animatedComposable(Route.MetadatorNavigator.Home.route) {
                             HomePage(viewModel = mediaStoreViewModel)
+                        }
+                    }
+
+                    navigation(
+                        startDestination = Route.MediaplayerNavigator.Mediaplayer.route,
+                        route = Route.MediaplayerNavigator.route
+                    ) {
+                        animatedComposable(Route.MediaplayerNavigator.Mediaplayer.route) {
+                            MediaplayerPage()
                         }
                     }
 

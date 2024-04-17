@@ -1,6 +1,7 @@
 package com.bobbyesp.metadator.presentation.components.cards.songs
 
 import android.content.res.Configuration
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,6 +22,7 @@ import com.bobbyesp.metadator.presentation.components.image.ArtworkAsyncImage
 import com.bobbyesp.metadator.presentation.theme.MetadatorTheme
 import com.bobbyesp.model.Song
 import com.bobbyesp.ui.components.text.MarqueeText
+import com.bobbyesp.utilities.Time
 
 @Composable
 fun HorizontalSongCard(
@@ -43,7 +46,9 @@ fun HorizontalSongCard(
                 artworkPath = song.artworkPath
             )
             Column(
-                horizontalAlignment = Alignment.Start, modifier = Modifier.padding(8.dp)
+                horizontalAlignment = Alignment.Start, modifier = Modifier
+                    .padding(vertical = 8.dp, horizontal = 6.dp)
+                    .weight(1f)
             ) {
                 MarqueeText(
                     text = song.title,
@@ -59,6 +64,19 @@ fun HorizontalSongCard(
                     fontSize = 12.sp
                 )
             }
+
+            Text(
+                text = Time.formatDuration(song.duration.toLong()),
+                style = MaterialTheme.typography.bodySmall,
+                fontSize = 12.sp,
+                modifier = Modifier
+                    .padding(8.dp)
+                    .background(
+                        MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.1f),
+                        MaterialTheme.shapes.small
+                    )
+                    .padding(6.dp)
+            )
         }
     }
 }

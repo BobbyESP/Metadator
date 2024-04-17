@@ -35,7 +35,6 @@ import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -97,8 +96,6 @@ fun HomePage(
         mutableStateOf(false)
     }
 
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
-
     val mediaStoreLazyGridState = rememberForeverLazyGridState(key = "lazyGrid")
     val mediaStoreLazyColumnState = rememberLazyListState()
     val pullState = rememberPullState()
@@ -115,7 +112,8 @@ fun HomePage(
     val listIsFirstItemVisible by remember { derivedStateOf { mediaStoreLazyColumnState.firstVisibleItemIndex == 0 } }
 
     Scaffold(
-        modifier = modifier.fillMaxSize(), topBar = {
+        modifier = modifier.fillMaxSize(),
+        topBar = {
             CenterAlignedTopAppBar(navigationIcon = {
                 IconButton(onClick = {
                     scope.launch {
@@ -175,7 +173,7 @@ fun HomePage(
                         })
                     }
                 }
-            }, scrollBehavior = scrollBehavior
+            }
             )
         }, floatingActionButton = {
             when (desiredLayout) {

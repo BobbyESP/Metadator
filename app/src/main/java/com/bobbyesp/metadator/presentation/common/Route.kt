@@ -7,6 +7,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.Handyman
 import androidx.compose.material.icons.rounded.Home
+import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.bobbyesp.metadator.App.Companion.json
 import com.bobbyesp.metadator.R
@@ -31,6 +32,20 @@ sealed class Route(
                 "home",
                 title = R.string.home,
                 icon = Icons.Rounded.Home
+            ) {
+        }
+    }
+
+    data object MediaplayerNavigator : Route(
+        "mediaplayer_navigator",
+        title = R.string.mediaplayer,
+        icon = Icons.Rounded.PlayArrow
+    ) {
+        data object Mediaplayer :
+            Route(
+                "mediaplayer",
+                title = R.string.mediaplayer,
+                icon = Icons.Rounded.PlayArrow
             ) {
         }
     }
@@ -61,6 +76,7 @@ sealed class Route(
 
 val routesToNavigate = listOf(
     Route.MetadatorNavigator,
+    Route.MediaplayerNavigator
 )
 
 fun Route.getTitle(@ApplicationContext context: Context): String? {

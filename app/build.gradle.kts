@@ -125,9 +125,9 @@ dependencies {
     implementation(libs.bundles.ktor)
 
 //    //---------------Media3---------------//
-//    implementation(libs.bundles.media3)
-//    implementation(libs.androidx.media3.datasource.okhttp)
-
+    implementation(libs.bundles.media3)
+    implementation(libs.androidx.media3.datasource.okhttp)
+    implementation(project(":app:mediaplayer"))
 
 //---------------Dependency Injection---------------//
     implementation(libs.bundles.hilt)

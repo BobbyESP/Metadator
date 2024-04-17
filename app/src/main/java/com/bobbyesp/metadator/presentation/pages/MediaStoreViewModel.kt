@@ -47,7 +47,7 @@ class MediaStorePageViewModel @Inject constructor(
 
         val songs = withContext(viewModelScope.coroutineContext + Dispatchers.IO) {
             async {
-                MediaStoreReceiver.getAllSongsFromMediaStore(
+                MediaStoreReceiver.getSongsBySearchTerm(
                     applicationContext = context,
                 )
             }.await()
@@ -70,7 +70,7 @@ class MediaStorePageViewModel @Inject constructor(
     ) {
         val songs = withContext(viewModelScope.coroutineContext + Dispatchers.IO) {
             async {
-                MediaStoreReceiver.getAllSongsFromMediaStore(
+                MediaStoreReceiver.getSongsBySearchTerm(
                     applicationContext = context,
                 )
             }.await()
@@ -95,7 +95,7 @@ class MediaStorePageViewModel @Inject constructor(
 
         val songs = withContext(viewModelScope.coroutineContext + Dispatchers.IO) {
             async {
-                MediaStoreReceiver.getAllSongsFromMediaStore(
+                MediaStoreReceiver.getSongsBySearchTerm(
                     applicationContext = context, searchTerm = filter, filterType = filterType
                 )
             }.await()

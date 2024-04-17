@@ -14,6 +14,9 @@
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="29" />
 
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
+
     <application
         android:name=".App"
         android:allowBackup="true"
@@ -43,6 +46,11 @@
             android:label="CrashHandlerActivity"
             android:launchMode="singleTask"
             android:theme="@style/Theme.Metadator" />
+
+        <service
+            android:name="com.bobbyesp.mediaplayer.service.MediaplayerService"
+            android:foregroundServiceType="mediaPlayback" />
+
     </application>
 
 </manifest>

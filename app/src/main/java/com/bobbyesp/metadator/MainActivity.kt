@@ -1,5 +1,6 @@
 package com.bobbyesp.metadator
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -9,6 +10,7 @@ import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
+import com.bobbyesp.mediaplayer.service.MediaplayerService
 import com.bobbyesp.metadator.presentation.Navigator
 import com.bobbyesp.metadator.presentation.common.AppLocalSettingsProvider
 import com.bobbyesp.metadator.presentation.common.LocalDarkTheme
@@ -18,6 +20,8 @@ import setupFirebase
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    private var isMusicPlayerServiceStarted = false
+
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
@@ -40,6 +44,19 @@ class MainActivity : ComponentActivity() {
                     Navigator()
                 }
             }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        stopService(Intent(this, MediaplayerService::class.java))
+        isMusicPlayerServiceStarted = false
+    }
+
+    fun startMediaPlayerService() {
+        if (!isMusicPlayerServiceStarted) {
+            isMusicPlayerServiceStarted = true
+            startService(Intent(this, MediaplayerService::class.java))
         }
     }
 

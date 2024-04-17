@@ -51,7 +51,7 @@ import kotlinx.coroutines.launch
 
 /**
  * Bottom Sheet
- * Modified from [ViMusic](https://github.com/vfsfitvnm/ViMusic)
+ * Improved version from [ViMusic](https://github.com/vfsfitvnm/ViMusic)
  */
 @Composable
 fun DraggableBottomSheet(
