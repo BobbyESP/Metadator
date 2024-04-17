@@ -45,5 +45,7 @@
     <string name="unsaved_changes">Unsaved changes</string>
     <string name="unsaved_changes_info">There are some metadata fields that has been changed and not saved. Do you really want to discard the changes?</string>
     <string name="mediaplayer">Mediaplayer</string>
+    <string name="play">Play</string>
+    <string name="pause">Pause</string>
 
 </resources>

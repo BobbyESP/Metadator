@@ -49,6 +49,7 @@ import com.bobbyesp.metadator.presentation.common.routesToNavigate
 import com.bobbyesp.metadator.presentation.pages.MediaStorePageViewModel
 import com.bobbyesp.metadator.presentation.pages.home.HomePage
 import com.bobbyesp.metadator.presentation.pages.mediaplayer.MediaplayerPage
+import com.bobbyesp.metadator.presentation.pages.mediaplayer.MediaplayerViewModel
 import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.ID3MetadataEditorPage
 import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.ID3MetadataEditorPageViewModel
 import com.bobbyesp.ui.motion.animatedComposable
@@ -176,7 +177,8 @@ fun Navigator() {
                         route = Route.MediaplayerNavigator.route
                     ) {
                         animatedComposable(Route.MediaplayerNavigator.Mediaplayer.route) {
-                            MediaplayerPage()
+                            val viewModel = hiltViewModel<MediaplayerViewModel>()
+                            MediaplayerPage(viewModel)
                         }
                     }
 

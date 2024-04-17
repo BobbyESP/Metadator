@@ -5,6 +5,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
@@ -23,6 +24,7 @@ class MediaNotificationManager @Inject constructor(
         context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
     init {
+        Log.i("MediaNotificationManager", "init: creating notification manager")
         createNotificationChannel()
     }
 
@@ -58,12 +60,20 @@ class MediaNotificationManager @Inject constructor(
 
     private fun startForegroundNotification(mediaSessionService: MediaSessionService) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Log.d(
+                "MediaNotificationManager",
+                "startForegroundNotification: creating notification for API >= 26"
+            )
             val notification = Notification.Builder(context, NOTIFICATION_CHANNEL_ID)
                 .setCategory(Notification.CATEGORY_SERVICE)
                 .build()
 
             mediaSessionService.startForeground(NOTIFICATION_ID, notification)
         } else {
+            Log.d(
+                "MediaNotificationManager",
+                "startForegroundNotification: creating notification for API < 26"
+            )
             val notification = NotificationCompat.Builder(context)
                 .setCategory(NotificationCompat.CATEGORY_SERVICE)
                 .build()
