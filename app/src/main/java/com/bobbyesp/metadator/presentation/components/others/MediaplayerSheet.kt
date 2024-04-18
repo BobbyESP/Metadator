@@ -1,6 +1,7 @@
 package com.bobbyesp.metadator.presentation.components.others
 
-import androidx.compose.foundation.ExperimentalFoundationApi
+import android.content.res.Configuration
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -8,12 +9,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Pause
@@ -27,14 +30,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.media3.common.MediaMetadata
 import com.bobbyesp.metadator.R
 import com.bobbyesp.metadator.presentation.components.image.ArtworkAsyncImage
 import com.bobbyesp.metadator.presentation.pages.mediaplayer.MediaplayerViewModel
+import com.bobbyesp.metadator.presentation.theme.MetadatorTheme
 import com.bobbyesp.model.Song
 import com.bobbyesp.ui.components.bottomsheet.draggable.DraggableBottomSheet
 import com.bobbyesp.ui.components.bottomsheet.draggable.DraggableBottomSheetState
@@ -57,23 +64,26 @@ fun MediaplayerSheet(
         },
         backgroundColor = MaterialTheme.colorScheme.surfaceColorAtElevation(NavigationBarDefaults.Elevation)
     ) {
-
+        MediaplayerExpandedContent(
+            viewModel = viewModel,
+            sheetState = state
+        )
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun MediaplayerCollapsedContent(
     modifier: Modifier = Modifier,
     viewModel: MediaplayerViewModel,
 ) {
     val viewState = viewModel.pageViewState.collectAsStateWithLifecycle().value
-    val playingSong = viewState.playingSong ?: return
-
     val playerState = viewState.uiState
 
+    val playingSong = viewState.playingSong ?: return
+
     val progress = (playerState as? MediaplayerViewModel.PlayerState.Ready)?.progress ?: 0f
-    val isPlaying = (playerState as? MediaplayerViewModel.PlayerState.Ready)?.isPlaying ?: false
+    val isPlaying = viewModel.isPlaying.collectAsStateWithLifecycle().value
+
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -88,6 +98,108 @@ private fun MediaplayerCollapsedContent(
         ) {
             viewModel.togglePlayPause()
         }
+    }
+}
+
+@Composable
+private fun MediaplayerExpandedContent(
+    modifier: Modifier = Modifier,
+    viewModel: MediaplayerViewModel,
+    sheetState: DraggableBottomSheetState
+) {
+    val viewState = viewModel.pageViewState.collectAsStateWithLifecycle().value
+    val playerState = viewState.uiState
+
+    val playingSong = viewState.queueSongs.items.getOrNull(0)?.mediaMetadata ?: return
+
+    val progress = (playerState as? MediaplayerViewModel.PlayerState.Ready)?.progress ?: 0f
+    val isPlaying = viewModel.isPlaying.collectAsStateWithLifecycle().value
+
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .systemBarsPadding(),
+    ) {
+        when (LocalConfiguration.current.orientation) {
+            Configuration.ORIENTATION_LANDSCAPE -> {
+                Row(
+                    modifier = Modifier
+                        .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Horizontal))
+                        .padding(bottom = sheetState.collapsedBound)
+                ) {
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        SongInformation(
+                            mediaMetadata = playingSong,
+                            modifier = Modifier.padding(8.dp)
+                        )
+                    }
+
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier
+                            .weight(1f)
+                            .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Top))
+                    ) {
+
+                    }
+                }
+            }
+
+            else -> {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(bottom = sheetState.collapsedBound)
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp)
+                    ) {
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun SongInformation(
+    modifier: Modifier = Modifier,
+    mediaMetadata: MediaMetadata
+) {
+    val config = LocalConfiguration.current
+    val screenHeight = config.screenHeightDp.dp
+    val screenWidth = config.screenWidthDp.dp
+
+    Column(
+        modifier = modifier
+            .fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(4.dp)
+    ) {
+        ArtworkAsyncImage(
+            modifier = Modifier
+                .size(screenWidth / 2)
+                .clip(MaterialTheme.shapes.medium),
+            artworkPath = mediaMetadata.artworkUri
+        )
+        MarqueeText(
+            text = mediaMetadata.title.toString(),
+            style = MaterialTheme.typography.bodyLarge,
+            fontWeight = FontWeight.Bold,
+            fontSize = 16.sp
+        )
+        MarqueeText(
+            text = mediaMetadata.artist.toString(),
+            style = MaterialTheme.typography.bodyMedium.copy(
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+            ),
+            fontSize = 12.sp
+        )
     }
 }
 
@@ -173,23 +285,38 @@ fun SongCard(
     }
 }
 
-//@Preview
-//@Preview(uiMode = UI_MODE_NIGHT_YES)
-//@Composable
-//private fun CollapsedContentPrev() {
-//    MetadatorTheme {
-//        MediaplayerCollapsedContent(
-//            queueSongs = listOf(
-//                Song(
-//                    id = 1,
-//                    title = "Bones",
-//                    artist = "Imagine Dragons",
-//                    album = "Mercury - Acts 1 & 2",
-//                    artworkPath = null,
-//                    duration = 100.0,
-//                    path = "path"
-//                )
-//            )
-//        )
-//    }
-//}
+
+@Preview
+@Preview(uiMode = UI_MODE_NIGHT_YES)
+@Composable
+private fun SongInformationPrev() {
+    MetadatorTheme {
+        SongInformation(
+            mediaMetadata = MediaMetadata.Builder()
+                .setTitle("Bones")
+                .setArtist("Imagine Dragons")
+                .setAlbumTitle("Mercury - Acts 1 & 2")
+                .setArtworkUri(null)
+                .build()
+        )
+    }
+}
+
+@Preview
+@Preview(uiMode = UI_MODE_NIGHT_YES)
+@Composable
+private fun CollapsedContentPrev() {
+    MetadatorTheme {
+        SongCard(
+            playingSong = Song(
+                id = 1,
+                title = "Bones",
+                artist = "Imagine Dragons",
+                album = "Mercury - Acts 1 & 2",
+                artworkPath = null,
+                duration = 100.0,
+                path = "path"
+            )
+        )
+    }
+}

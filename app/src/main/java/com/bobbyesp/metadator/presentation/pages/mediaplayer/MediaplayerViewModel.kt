@@ -8,17 +8,16 @@ import androidx.media3.common.MediaMetadata
 import com.bobbyesp.mediaplayer.service.MediaServiceHandler
 import com.bobbyesp.mediaplayer.service.MediaState
 import com.bobbyesp.mediaplayer.service.PlayerEvent
+import com.bobbyesp.mediaplayer.service.queue.SongsQueue
 import com.bobbyesp.model.Song
 import com.bobbyesp.utilities.Time.formatDuration
 import com.bobbyesp.utilities.mediastore.MediaStoreReceiver.Advanced.observeSongs
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.emptyFlow
-import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -33,15 +32,17 @@ class MediaplayerViewModel @Inject constructor(
 
     val songsFlow = applicationContext.contentResolver.observeSongs()
 
+    val isPlaying = serviceHandler.isThePlayerPlaying
+
     data class MediaplayerPageState(
         val uiState: PlayerState = PlayerState.Initial,
         val playingSong: Song? = null,
-        val queueSongs: Flow<List<Song>> = emptyFlow()
+        val queueSongs: SongsQueue = SongsQueue(items = emptyList())
     )
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            serviceHandler.mediaState.collect { mediaState ->
+            serviceHandler.mediaState.collectLatest { mediaState ->
                 when (mediaState) {
                     is MediaState.Buffering -> calculateProgressValues(mediaState.progress)
                     is MediaState.Playing -> mutableMediaplayerPageState.update {
@@ -81,12 +82,6 @@ class MediaplayerViewModel @Inject constructor(
     }
 
     private fun loadSongInfo(song: Song) {
-        mutableMediaplayerPageState.update {
-            it.copy(
-                playingSong = song,
-                queueSongs = flowOf(listOf(song))
-            )
-        }
         val mediaItem = MediaItem.Builder()
             .setUri(song.path)
             .setMediaMetadata(
@@ -97,6 +92,13 @@ class MediaplayerViewModel @Inject constructor(
                     .setArtworkUri(song.artworkPath)
                     .build()
             ).build()
+
+        mutableMediaplayerPageState.update {
+            it.copy(
+                playingSong = song,
+                queueSongs = SongsQueue(items = listOf(mediaItem))
+            )
+        }
 
         viewModelScope.launch {
             serviceHandler.setMediaItem(mediaItem)

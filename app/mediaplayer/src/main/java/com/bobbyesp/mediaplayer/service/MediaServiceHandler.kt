@@ -22,7 +22,19 @@ class MediaServiceHandler @Inject constructor(
     private val _mediaState = MutableStateFlow<MediaState>(MediaState.Idle)
     val mediaState = _mediaState.asStateFlow()
 
+    val isThePlayerPlaying: MutableStateFlow<Boolean> = MutableStateFlow(false)
+
     private var job: Job? = null
+
+    override fun onIsPlayingChanged(isPlaying: Boolean) {
+        _mediaState.update {
+            MediaState.Playing(isPlaying)
+        }
+        isThePlayerPlaying.update {
+            isPlaying
+        }
+        super.onIsPlayingChanged(isPlaying)
+    }
 
     init {
         player.addListener(this)
@@ -107,22 +119,12 @@ class MediaServiceHandler @Inject constructor(
     suspend fun onPlayerEvent(playerEvent: PlayerEvent) {
         when (playerEvent) {
             is PlayerEvent.PlayPause -> {
-                when (player.isPlaying) {
-                    true -> {
-                        player.pause()
-                        _mediaState.update {
-                            MediaState.Playing(false)
-                        }
-                        stopProgressUpdate()
-                    }
-
-                    false -> {
-                        player.play()
-                        _mediaState.update {
-                            MediaState.Playing(true)
-                        }
-                        startProgressUpdate()
-                    }
+                if (player.isPlaying) {
+                    player.pause()
+                    stopProgressUpdate()
+                } else {
+                    player.play()
+                    startProgressUpdate()
                 }
             }
 
