@@ -115,19 +115,20 @@ fun Navigator() {
                         fontFamily = FontFamily.Monospace
                     )
                     routesToNavigate.forEachIndexed { _, route ->
+                        val isSelected = currentRootRoute.value == route.route
                         NavigationDrawerItem(
                             label = {
                                 Text(text = route.title?.let { stringResource(id = it) } ?: "")
-                            }, selected = currentRootRoute.value == route.route, onClick = {
-                                if (currentRootRoute.value == route.route) {
+                            }, selected = isSelected, onClick = {
+                                if (isSelected) {
                                     scope.launch {
                                         drawerState.close()
                                     }
                                     return@NavigationDrawerItem
                                 } else {
                                     navController.navigate(route.route) {
-                                        popUpTo(navController.graph.startDestinationId)
                                         launchSingleTop = true
+                                        restoreState = true
                                     }
                                     scope.launch {
                                         drawerState.close()

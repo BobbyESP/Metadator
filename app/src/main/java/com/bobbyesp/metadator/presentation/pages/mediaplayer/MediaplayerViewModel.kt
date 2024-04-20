@@ -1,6 +1,7 @@
 package com.bobbyesp.metadator.presentation.pages.mediaplayer
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.MediaItem
@@ -10,8 +11,10 @@ import com.bobbyesp.mediaplayer.service.MediaServiceHandler
 import com.bobbyesp.mediaplayer.service.MediaState
 import com.bobbyesp.mediaplayer.service.PlayerEvent
 import com.bobbyesp.mediaplayer.service.queue.SongsQueue
+import com.bobbyesp.metadator.ext.toSong
 import com.bobbyesp.model.Song
 import com.bobbyesp.utilities.Time.formatDuration
+import com.bobbyesp.utilities.mediastore.MediaStoreReceiver.Advanced.getSongs
 import com.bobbyesp.utilities.mediastore.MediaStoreReceiver.Advanced.observeSongs
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -32,9 +35,16 @@ class MediaplayerViewModel @Inject constructor(
     private val mutableMediaplayerPageState = MutableStateFlow(MediaplayerPageState())
     val pageViewState = mutableMediaplayerPageState.asStateFlow()
 
-    val songsFlow = applicationContext.contentResolver.observeSongs()
+    val songsFlow = applicationContext.contentResolver.observeSongs() //IT DOESNT ALLOW COPYING
 
     val isPlaying = serviceHandler.isThePlayerPlaying
+
+    // Create a MutableStateFlow for the queue
+    private val queueFlow = MutableStateFlow(SongsQueue(items = emptyList()))
+
+    // Create a MutableStateFlow for the currently playing song
+    private val playingSongFlow = MutableStateFlow<Song?>(null)
+
 
     data class MediaplayerPageState(
         val uiState: PlayerState = PlayerState.Initial,
@@ -83,6 +93,50 @@ class MediaplayerViewModel @Inject constructor(
         }
     }
 
+    fun playShuffledQueue(firstSong: Song) {
+        playRandomQueue(firstSong)
+        viewModelScope.launch {
+            serviceHandler.onPlayerEvent(PlayerEvent.PlayPause)
+        }
+    }
+
+    fun nextSong() {
+        val currentIndex = queueFlow.value.items.indexOfFirst {
+            it.mediaMetadata.title == playingSongFlow.value?.title
+        }
+        if (currentIndex != -1 && currentIndex < queueFlow.value.items.size - 1) {
+            playingSongFlow.update {
+                queueFlow.value.items[currentIndex + 1].toSong()
+            }
+        }
+    }
+
+    fun previousSong() {
+        val currentIndex = queueFlow.value.items.indexOfFirst {
+            it.mediaMetadata.title == playingSongFlow.value?.title
+        }
+        if (currentIndex > 0) {
+            playingSongFlow.value = queueFlow.value.items[currentIndex - 1].toSong()
+        }
+    }
+
+
+    private fun playRandomQueue(firstSong: Song) {
+        viewModelScope.launch {
+            val copiedList = applicationContext.contentResolver.getSongs().toMutableList()
+
+            copiedList.shuffle()
+
+            // Move the firstSong to the front of the list
+            copiedList.remove(firstSong)
+            copiedList.add(0, firstSong)
+
+            Log.d("MediaplayerViewModel", "playRandomQueue: copiedList: $copiedList")
+
+            loadQueueSongs(copiedList)
+        }
+    }
+
     private fun loadSongInfo(song: Song) {
         val mediaItem = MediaItem.Builder()
             .setUri(song.path)
@@ -104,6 +158,36 @@ class MediaplayerViewModel @Inject constructor(
 
         viewModelScope.launch {
             serviceHandler.setMediaItem(mediaItem)
+        }
+    }
+
+    private fun loadQueueSongs(songs: List<Song>) {
+        val mediaItems = songs.map { song ->
+            MediaItem.Builder()
+                .setUri(song.path)
+                .setMediaMetadata(
+                    MediaMetadata.Builder()
+                        .setTitle(song.title)
+                        .setArtist(song.artist)
+                        .setAlbumTitle(song.album)
+                        .setArtworkUri(song.artworkPath)
+                        .build()
+                ).build()
+        }
+
+        queueFlow.update {
+            SongsQueue(items = mediaItems)
+        }
+
+        mutableMediaplayerPageState.update {
+            it.copy(
+                playingSong = songs.first(),
+                queueSongs = SongsQueue(items = mediaItems)
+            )
+        }
+
+        viewModelScope.launch {
+            serviceHandler.setMediaItems(mediaItems)
         }
     }
 

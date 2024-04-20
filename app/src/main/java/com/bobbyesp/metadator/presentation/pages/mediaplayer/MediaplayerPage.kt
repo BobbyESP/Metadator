@@ -28,7 +28,6 @@ fun MediaplayerPage(
     val mediaStoreLazyColumnState = rememberLazyListState()
 
     val songs = viewModel.songsFlow.collectAsStateWithLifecycle(initialValue = emptyList()).value
-
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -59,7 +58,7 @@ fun MediaplayerPage(
                             HorizontalSongCard(song = song,
                                 modifier = Modifier.animateItemPlacement(),
                                 onClick = {
-                                    viewModel.playSingleSong(song)
+                                    viewModel.playShuffledQueue(song)
 
                                     if (mediaPlayerSheetState.isDismissed) {
                                         mediaPlayerSheetState.collapseSoft()
