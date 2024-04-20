@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
+import com.bobbyesp.mediaplayer.service.ConnectionHandler
 import com.bobbyesp.mediaplayer.service.MediaServiceHandler
 import com.bobbyesp.mediaplayer.service.MediaState
 import com.bobbyesp.mediaplayer.service.PlayerEvent
@@ -25,7 +26,8 @@ import javax.inject.Inject
 @HiltViewModel
 class MediaplayerViewModel @Inject constructor(
     @ApplicationContext private val applicationContext: Context,
-    private val serviceHandler: MediaServiceHandler
+    private val serviceHandler: MediaServiceHandler,
+    private val connectionHandler: ConnectionHandler
 ) : ViewModel() {
     private val mutableMediaplayerPageState = MutableStateFlow(MediaplayerPageState())
     val pageViewState = mutableMediaplayerPageState.asStateFlow()

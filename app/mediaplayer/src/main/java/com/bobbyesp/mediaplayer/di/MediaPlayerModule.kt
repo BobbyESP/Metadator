@@ -9,6 +9,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import androidx.media3.session.MediaSession
+import com.bobbyesp.mediaplayer.service.ConnectionHandler
 import com.bobbyesp.mediaplayer.service.MediaServiceHandler
 import com.bobbyesp.mediaplayer.service.notifications.MediaNotificationManager
 import dagger.Module
@@ -61,4 +62,7 @@ object MediaPlayerModule {
             player = player
         )
 
+    @Provides
+    @Singleton
+    fun provideConnectionHandler(): ConnectionHandler = ConnectionHandler()
 }

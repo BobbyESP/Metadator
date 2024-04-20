@@ -21,6 +21,7 @@ import androidx.navigation.compose.rememberNavController
 import coil.ImageLoader
 import coil.disk.DiskCache
 import coil.memory.MemoryCache
+import com.bobbyesp.mediaplayer.service.ConnectionHandler
 import com.bobbyesp.metadator.App.Companion.context
 import com.bobbyesp.utilities.DarkThemePreference
 import com.bobbyesp.utilities.Theme.paletteStyles
@@ -46,11 +47,14 @@ val LocalWindowWidthState =
 val LocalSnackbarHostState = compositionLocalOf<SnackbarHostState> { error("No snackbar host state provided") }
 val LocalDrawerState =
     compositionLocalOf<DrawerState> { error("No Drawer State has been provided") }
+val LocalMediaplayerConnection =
+    compositionLocalOf<ConnectionHandler> { error("No Media Player Service Connection handler has been provided") }
 
 @OptIn(ExperimentalMaterialNavigationApi::class)
 @Composable
 fun AppLocalSettingsProvider(
     windowWidthSize: WindowWidthSizeClass,
+    playerConnectionHandler: ConnectionHandler,
     content: @Composable () -> Unit
 ) {
     val appSettingsState = AppSettingsStateFlow.collectAsStateWithLifecycle().value
@@ -95,7 +99,8 @@ fun AppLocalSettingsProvider(
             LocalOrientation provides config.orientation,
             LocalSnackbarHostState provides snackbarHostState,
             LocalCoilImageLoader provides imageLoader,
-            LocalDrawerState provides drawerState
+            LocalDrawerState provides drawerState,
+            LocalMediaplayerConnection provides playerConnectionHandler,
         ) {
             content() //The content of the app
         }

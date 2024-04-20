@@ -19,8 +19,15 @@ class MediaplayerService : MediaSessionService() {
     @Inject
     lateinit var notificationManager: MediaNotificationManager
 
+    @Inject
+    lateinit var connectionHandler: ConnectionHandler
+
+    @Inject
+    lateinit var mediaServiceHandler: MediaServiceHandler
+
     @UnstableApi
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        connectionHandler.connect(mediaServiceHandler)
         notificationManager.startNotificationService(
             mediaSessionService = this,
             mediaSession = mediaSession
@@ -30,15 +37,17 @@ class MediaplayerService : MediaSessionService() {
     }
 
     override fun onDestroy() {
-        super.onDestroy()
+        connectionHandler.disconnect()
         mediaSession.run {
             release()
             if (player.playbackState != Player.STATE_IDLE) {
                 player.seekTo(0)
+                player.clearMediaItems()
                 player.playWhenReady = false
                 player.stop()
             }
         }
+        super.onDestroy()
     }
 
     override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaSession {
