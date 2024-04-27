@@ -10,9 +10,9 @@ import com.bobbyesp.mediaplayer.service.notifications.MediaNotificationManager
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
+@UnstableApi
 @AndroidEntryPoint
 class MediaplayerService : MediaSessionService() {
-
     @Inject
     lateinit var mediaSession: MediaSession
 
@@ -50,9 +50,13 @@ class MediaplayerService : MediaSessionService() {
         super.onDestroy()
     }
 
-    override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaSession {
-        return mediaSession
+    override fun onTaskRemoved(rootIntent: Intent?) {
+        super.onTaskRemoved(rootIntent)
+        stopSelf()
     }
+
+    override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaSession =
+        mediaSession
 
     inner class MusicBinder : Binder() {
         val service: MediaplayerService

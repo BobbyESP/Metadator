@@ -1,28 +1,28 @@
 [versions]
 #General, lifecycle and core
-agp = "8.5.0-alpha02"
+agp = "8.5.0-alpha06"
 firebaseCrashlyticsGradle = "2.9.9"
-gradle = "8.5.0-alpha02"
+gradle = "8.5.0-alpha06"
 kotlin = "1.9.23"
 appcompat = "1.7.0-alpha03"
-core-ktx = "1.12.0"
+core-ktx = "1.13.0"
 legacySupportV4 = "1.0.0"
 lifecycle-runtime-ktx = "2.7.0"
-activity-compose = "1.8.2"
+activity-compose = "1.9.0"
 compose-compiler = "1.5.11"
 ksp = "1.9.23-1.0.19"
 lyricfier = "1.0"
 splashscreen = "1.0.1"
 material = "1.11.0"
-media3 = "1.3.0"
+media3 = "1.3.1"
 leakcanary = "2.13"
 
 #Compose
-compose-bom = "2024.04.00"
-compose-bom-canary = "2024.04.00-alpha01"
+compose-bom = "2024.04.01"
+compose-bom-canary = "2024.04.00-alpha02"
 constraintLayout = "1.1.0-alpha13"
 androidx-compose-material3 = "1.2.1"
-compose-util = "1.6.5"
+compose-util = "1.6.6"
 accompanist = "0.34.0"
 compose-pagination = "3.2.1"
 commonsIo = "2.15.0"
@@ -62,7 +62,7 @@ hilt-ext = "1.2.0"
 
 #Database
 room = "2.6.1"
-datastore = "1.0.0"
+datastore = "1.1.0"
 
 #High performance Key-value storage
 mmkv = "1.3.2"
@@ -75,9 +75,9 @@ markdown = "0.3.7"
 
 #Firebase, GMS...
 firebaseAuth = "22.3.1"
-gmsPlayServicesAuth = "21.0.0"
+gmsPlayServicesAuth = "21.1.0"
 googleServices = "4.4.1"
-firebaseBom = "32.8.0"
+firebaseBom = "32.8.1"
 
 #Others
 taglib = "1.0.0-alpha07"
@@ -116,7 +116,7 @@ compose-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 compose-runtime = { group = "androidx.compose.runtime", name = "runtime" }
 compose-foundation = { group = "androidx.compose.foundation", name = "foundation" }
 compose-material-iconsExtended = { group = "androidx.compose.material", name = "material-icons-extended" }
-compose-animation-graphics = { group = "androidx.compose.animation", name = "animation-graphics" }
+compose-animation = { group = "androidx.compose.animation", name = "animation" }
 compose-ui = { group = "androidx.compose.ui", name = "ui" }
 compose-material = { group = "androidx.compose.material", name = "material" }
 compose-ui-util = { group = "androidx.compose.ui", name = "ui-util", version.ref = "compose-util" }
@@ -263,7 +263,7 @@ androidx-baselineprofile = { id = "androidx.baselineprofile", version.ref = "and
 core = ["core-ktx", "lifecycle-runtime-ktx", "lifecycle-compose-runtime", "lifecycle-compose-viewModel", "activity-compose", "core-appcompat", "core-splashscreen"]
 ktor = ["ktor-android", "ktor-okhttp" ,"ktor-core", "ktor-serialization", "ktor-logging", "ktor-contentnegotiation", "ktor-encoding"]
 accompanist = ["accompanist-navigation-animation", "accompanist-permissions", "accompanist-webview", "accompanist-pager-layouts", "accompanist-pager-indicators", "accompanist-flowlayout", "accompanist-material"]
-compose = ["compose-ui-util","compose-graphics", "compose-runtime", "compose-foundation", "compose-material-iconsExtended", "compose-animation-graphics", "compose-ui", "compose-material", "compose-material3", "compose-navigation" ,"compose-material3-windowSizeClass", "compose-constraintLayout"]
+compose = ["compose-ui-util", "compose-graphics", "compose-runtime", "compose-foundation", "compose-material-iconsExtended", "compose-animation", "compose-ui", "compose-material", "compose-material3", "compose-navigation", "compose-material3-windowSizeClass", "compose-constraintLayout"]
 hilt = ["compose-hilt-navigation", "hilt-android"]
 hilt-kapt = ["hilt-compiler", "hilt-ext-compiler"]
 pagination = ["paging-compose", "paging-runtime"]

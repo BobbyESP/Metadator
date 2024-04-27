@@ -3,7 +3,11 @@ package com.bobbyesp.mediaplayer.service
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
+import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.analytics.AnalyticsListener
+import androidx.media3.exoplayer.analytics.PlaybackStats
+import androidx.media3.exoplayer.analytics.PlaybackStatsListener
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,9 +20,10 @@ import javax.inject.Inject
  * It provides methods to control the media player such as play, pause, stop, and seek.
  * It also provides methods to manage the media queue such as set, add, and remove media items.
  */
+@UnstableApi
 class MediaServiceHandler @Inject constructor(
     private val player: ExoPlayer
-) : Player.Listener {
+) : Player.Listener, PlaybackStatsListener.Callback {
     private val _mediaState = MutableStateFlow<MediaState>(MediaState.Idle)
     val mediaState = _mediaState.asStateFlow()
 
@@ -207,6 +212,13 @@ class MediaServiceHandler @Inject constructor(
         _mediaState.update {
             MediaState.Playing(false)
         }
+    }
+
+    override fun onPlaybackStatsReady(
+        eventTime: AnalyticsListener.EventTime,
+        playbackStats: PlaybackStats
+    ) {
+        TODO("Not yet implemented")
     }
 }
 

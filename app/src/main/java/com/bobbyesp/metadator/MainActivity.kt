@@ -14,6 +14,7 @@ import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
+import androidx.media3.common.util.UnstableApi
 import com.bobbyesp.mediaplayer.service.ConnectionHandler
 import com.bobbyesp.mediaplayer.service.MediaplayerService
 import com.bobbyesp.metadator.presentation.Navigator
@@ -24,6 +25,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import setupFirebase
 import javax.inject.Inject
 
+@androidx.annotation.OptIn(UnstableApi::class)
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private var isMusicPlayerServiceStarted = false
@@ -44,7 +46,6 @@ class MainActivity : ComponentActivity() {
         }
         activity = this
         setupFirebase()
-        startMediaPlayerService()
         setContent {
             val windowSizeClass = calculateWindowSizeClass(this)
             AppLocalSettingsProvider(windowSizeClass.widthSizeClass, connectionHandler) {
@@ -58,9 +59,13 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        stopService(Intent(this, MediaplayerService::class.java))
+    override fun onStart() {
+        super.onStart()
+        startMediaPlayerService()
+    }
+
+    override fun onStop() {
+        super.onStop()
         unbindService(serviceConnection)
         isMusicPlayerServiceStarted = false
     }
@@ -96,8 +101,6 @@ class MainActivity : ComponentActivity() {
 
     companion object {
         private lateinit var activity: MainActivity
-        fun getActivity(): MainActivity {
-            return activity
-        }
+        fun getActivity(): MainActivity = activity
     }
 }
