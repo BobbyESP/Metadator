@@ -22,9 +22,7 @@ import androidx.compose.material.icons.rounded.GridView
 import androidx.compose.material.icons.rounded.KeyboardDoubleArrowUp
 import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material.icons.rounded.MoreVert
-import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -60,7 +58,6 @@ import com.bobbyesp.metadator.presentation.pages.MediaStorePage
 import com.bobbyesp.metadator.presentation.pages.MediaStorePageViewModel
 import com.bobbyesp.ui.components.dropdown.AnimatedDropdownMenu
 import com.bobbyesp.ui.components.dropdown.DropdownItemContainer
-import com.bobbyesp.ui.components.pulltorefresh.rememberPullState
 import com.bobbyesp.ui.components.text.AutoResizableText
 import com.bobbyesp.utilities.preferences.Preferences
 import com.bobbyesp.utilities.preferences.PreferencesKeys.DESIRED_OVERLAY
@@ -98,7 +95,6 @@ fun HomePage(
 
     val mediaStoreLazyGridState = rememberForeverLazyGridState(key = "lazyGrid")
     val mediaStoreLazyColumnState = rememberLazyListState()
-    val pullState = rememberPullState()
 
     var desiredLayout by remember {
         mutableStateOf(
@@ -111,117 +107,108 @@ fun HomePage(
     val gridIsFirstItemVisible by remember { derivedStateOf { mediaStoreLazyGridState.firstVisibleItemIndex == 0 } }
     val listIsFirstItemVisible by remember { derivedStateOf { mediaStoreLazyColumnState.firstVisibleItemIndex == 0 } }
 
-    Scaffold(
-        modifier = modifier.fillMaxSize(),
-        topBar = {
-            CenterAlignedTopAppBar(navigationIcon = {
-                IconButton(onClick = {
-                    scope.launch {
-                        drawerState.open()
-                    }
-                }) {
-                    Icon(
-                        imageVector = Icons.Rounded.Menu,
-                        contentDescription = stringResource(id = R.string.open_navigation)
-                    )
+    Scaffold(modifier = modifier.fillMaxSize(), topBar = {
+        CenterAlignedTopAppBar(navigationIcon = {
+            IconButton(onClick = {
+                scope.launch {
+                    drawerState.open()
                 }
-            }, title = {
-                Column(
-                    horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally,
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.app_name).uppercase(),
-                        fontWeight = FontWeight.SemiBold,
-                        fontFamily = FontFamily.Monospace,
-                        style = MaterialTheme.typography.titleLarge.copy(
-                            letterSpacing = 4.sp,
-                        ),
-                    )
-                    AutoResizableText(
-                        text = stringResource(id = R.string.app_desc).uppercase(),
-                        fontWeight = FontWeight.Normal,
-                        fontFamily = FontFamily.Monospace,
-                        style = MaterialTheme.typography.bodySmall.copy(
-                            letterSpacing = 2.sp,
-                        ),
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
-                    )
-                }
-            }, actions = {
-                IconButton(onClick = {
+            }) {
+                Icon(
+                    imageVector = Icons.Rounded.Menu,
+                    contentDescription = stringResource(id = R.string.open_navigation)
+                )
+            }
+        }, title = {
+            Column(
+                horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally,
+            ) {
+                Text(
+                    text = stringResource(id = R.string.app_name).uppercase(),
+                    fontWeight = FontWeight.SemiBold,
+                    fontFamily = FontFamily.Monospace,
+                    style = MaterialTheme.typography.titleLarge.copy(
+                        letterSpacing = 4.sp,
+                    ),
+                )
+                AutoResizableText(
+                    text = stringResource(id = R.string.app_desc).uppercase(),
+                    fontWeight = FontWeight.Normal,
+                    fontFamily = FontFamily.Monospace,
+                    style = MaterialTheme.typography.bodySmall.copy(
+                        letterSpacing = 2.sp,
+                    ),
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                )
+            }
+        }, actions = {
+            IconButton(
+                onClick = {
                     moreOptionsVisible = !moreOptionsVisible
                 }) {
-                    Icon(
-                        imageVector = Icons.Rounded.MoreVert,
-                        contentDescription = stringResource(
-                            id = R.string.open_more_options
-                        )
+                Icon(
+                    imageVector = Icons.Rounded.MoreVert, contentDescription = stringResource(
+                        id = R.string.open_more_options
                     )
-                }
-                if (moreOptionsVisible) {
-                    AnimatedDropdownMenu(expanded = moreOptionsVisible, onDismissRequest = {
-                        moreOptionsVisible = false
+                )
+            }
+            AnimatedDropdownMenu(
+                expanded = moreOptionsVisible, onDismissRequest = {
+                    moreOptionsVisible = false
+                }) {
+                DropdownMenuContent(onLayoutChanged = {
+                    desiredLayout = it
+                })
+            }
+
+        })
+    }, floatingActionButton = {
+        when (desiredLayout) {
+            LayoutType.Grid -> {
+                AnimatedVisibility(
+                    visible = !gridIsFirstItemVisible,
+                    enter = fadeIn() + scaleIn(),
+                    exit = fadeOut() + scaleOut()
+                ) {
+                    FloatingActionButton(onClick = {
+                        scope.launch {
+                            mediaStoreLazyGridState.animateScrollToItem(0)
+                        }
                     }) {
-                        DropdownMenuContent(reloadMediastore = {
-                            scope.launch {
-                                viewModel.silentMediaStoreTracksLoad(context) {
-                                    pullState.finishRefresh(skipReloadFinished = false)
-                                }
-                            }
-                        }, onLayoutChanged = {
-                            desiredLayout = it
-                        })
+                        Icon(
+                            imageVector = Icons.Rounded.KeyboardDoubleArrowUp,
+                            contentDescription = stringResource(
+                                id = R.string.scroll_to_top
+                            )
+                        )
                     }
                 }
             }
-            )
-        }, floatingActionButton = {
-            when (desiredLayout) {
-                LayoutType.Grid -> {
-                    AnimatedVisibility(
-                        visible = !gridIsFirstItemVisible,
-                        enter = fadeIn() + scaleIn(),
-                        exit = fadeOut() + scaleOut()
-                    ) {
-                        FloatingActionButton(onClick = {
-                            scope.launch {
-                                mediaStoreLazyGridState.animateScrollToItem(0)
-                            }
-                        }) {
-                            Icon(
-                                imageVector = Icons.Rounded.KeyboardDoubleArrowUp,
-                                contentDescription = stringResource(
-                                    id = R.string.scroll_to_top
-                                )
-                            )
-                        }
-                    }
-                }
 
-                LayoutType.List -> {
-                    AnimatedVisibility(
-                        visible = !listIsFirstItemVisible,
-                        enter = fadeIn() + scaleIn(),
-                        exit = fadeOut() + scaleOut()
-                    ) {
-                        FloatingActionButton(onClick = {
-                            scope.launch {
-                                mediaStoreLazyColumnState.animateScrollToItem(0)
-                            }
-                        }) {
-                            Icon(
-                                imageVector = Icons.Rounded.KeyboardDoubleArrowUp,
-                                contentDescription = stringResource(
-                                    id = R.string.scroll_to_top
-                                )
-                            )
+            LayoutType.List -> {
+                AnimatedVisibility(
+                    visible = !listIsFirstItemVisible,
+                    enter = fadeIn() + scaleIn(),
+                    exit = fadeOut() + scaleOut()
+                ) {
+                    FloatingActionButton(onClick = {
+                        scope.launch {
+                            mediaStoreLazyColumnState.animateScrollToItem(0)
                         }
+                    }) {
+                        Icon(
+                            imageVector = Icons.Rounded.KeyboardDoubleArrowUp,
+                            contentDescription = stringResource(
+                                id = R.string.scroll_to_top
+                            )
+                        )
                     }
                 }
             }
-            //for scrolling up to the top
+        }
+        //for scrolling up to the top
 
-        }) { paddingValues ->
+    }) { paddingValues ->
         PermissionRequestHandler(permissionState = storagePermissionState,
             deniedContent = { shouldShowRationale ->
                 PermissionNotGrantedDialog(
@@ -241,7 +228,6 @@ fun HomePage(
                     lazyGridState = mediaStoreLazyGridState,
                     lazyListState = mediaStoreLazyColumnState,
                     desiredLayout = desiredLayout,
-                    pullState = pullState,
                     onItemClicked = { song ->
                         val artistsList = song.artist.toList()
                         val mainArtist = artistsList.first().toString()
@@ -263,7 +249,7 @@ fun HomePage(
 
 @Composable
 private fun DropdownMenuContent(
-    reloadMediastore: () -> Unit = {}, onLayoutChanged: (LayoutType) -> Unit = {}
+    onLayoutChanged: (LayoutType) -> Unit = {}
 ) {
     val availableLayoutType = LayoutType.entries.toImmutableList()
 
@@ -281,8 +267,7 @@ private fun DropdownMenuContent(
     ) {
         Text(
             text = stringResource(id = R.string.layout_type),
-            modifier = Modifier
-                .fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             color = MaterialTheme.colorScheme.primary,
             style = MaterialTheme.typography.labelMedium
         )
@@ -311,18 +296,6 @@ private fun DropdownMenuContent(
             }
         })
     }
-    DropdownMenuItem(leadingIcon = {
-        Icon(
-            imageVector = Icons.Rounded.Refresh,
-            contentDescription = stringResource(id = R.string.reload_media_store)
-        )
-    }, text = {
-        Text(
-            text = stringResource(id = R.string.reload_media_store),
-            style = MaterialTheme.typography.bodyMedium
-        )
-    }, onClick = reloadMediastore
-    )
 }
 
 enum class LayoutType(val icon: ImageVector) {

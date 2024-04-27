@@ -6,41 +6,22 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.material3.Button
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.bobbyesp.metadator.R
 import com.bobbyesp.metadator.presentation.components.cards.songs.HorizontalSongCard
 import com.bobbyesp.metadator.presentation.components.cards.songs.VerticalSongCard
 import com.bobbyesp.metadator.presentation.pages.home.LayoutType
 import com.bobbyesp.model.Song
-import com.bobbyesp.ui.common.pages.ErrorPage
-import com.bobbyesp.ui.components.pulltorefresh.PullState
-import com.bobbyesp.ui.components.pulltorefresh.PullToRefreshLayout
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import my.nanihadesuka.compose.LazyColumnScrollbar
 import my.nanihadesuka.compose.LazyGridVerticalScrollbar
 import my.nanihadesuka.compose.ScrollbarSelectionActionable
@@ -53,157 +34,72 @@ fun MediaStorePage(
     lazyGridState: LazyGridState,
     lazyListState: LazyListState,
     desiredLayout: LayoutType,
-    pullState: PullState,
     onItemClicked: (Song) -> Unit
 ) {
-    val context = LocalContext.current
-    val scope = rememberCoroutineScope()
-
-    val viewState = viewModel.pageViewState.collectAsStateWithLifecycle().value
-    val songs = viewState.songs
-    val state = viewState.state
+    val songs = viewModel.songsFlow.collectAsStateWithLifecycle(initialValue = emptyList()).value
 
     Box(
         modifier = modifier.fillMaxSize()
     ) {
         Crossfade(
-            targetState = state,
-            label = "Fade between UI states MediaStorePage",
-            modifier = Modifier.fillMaxSize()
-        ) {
-            when (it) {
-                is MediaStorePageState.Loading -> {
-                    Column(
-                        modifier = Modifier.fillMaxSize(),
-                        verticalArrangement = Arrangement.spacedBy(
-                            8.dp, alignment = Alignment.CenterVertically
-                        ),
-                        horizontalAlignment = Alignment.CenterHorizontally
+            targetState = desiredLayout, label = "List item transition", animationSpec = tween(200)
+        ) { type ->
+            when (type) {
+                LayoutType.Grid -> {
+                    LazyGridVerticalScrollbar(
+                        state = lazyGridState,
+                        thumbColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        thumbSelectedColor = MaterialTheme.colorScheme.primary,
+                        selectionActionable = ScrollbarSelectionActionable.WhenVisible,
                     ) {
-                        Text(
-                            text = stringResource(id = R.string.loading_mediastore),
-                            style = MaterialTheme.typography.bodyMedium,
-                            fontWeight = FontWeight.SemiBold
-                        )
-                        LinearProgressIndicator(
-                            modifier = Modifier.fillMaxWidth(0.7f)
-                        )
-                    }
-                }
-
-                is MediaStorePageState.Loaded -> {
-                    if (songs.isEmpty()) {
-                        Column(
-                            modifier = Modifier.fillMaxSize(),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.spacedBy(
-                                8.dp, alignment = Alignment.CenterVertically
-                            )
+                        LazyVerticalGrid(
+                            columns = GridCells.Adaptive(125.dp),
+                            verticalArrangement = Arrangement.spacedBy(6.dp),
+                            horizontalArrangement = Arrangement.spacedBy(6.dp),
+                            contentPadding = PaddingValues(8.dp),
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(MaterialTheme.colorScheme.background),
+                            state = lazyGridState
                         ) {
-                            Text(
-                                text = stringResource(id = R.string.no_songs_found),
-                                style = MaterialTheme.typography.bodyMedium,
-                                fontWeight = FontWeight.Bold
-                            )
-                            HorizontalDivider(modifier = Modifier.fillMaxWidth(0.9f))
-                            Text(
-                                text = stringResource(id = R.string.first_open_media_store),
-                                style = MaterialTheme.typography.labelLarge,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                textAlign = TextAlign.Center
-                            )
-                            Button(onClick = {
-                                scope.launch(Dispatchers.IO) {
-                                    viewModel.loadMediaStoreTracks(
-                                        context
-                                    )
-                                }
-                            }) {
-                                Text(text = stringResource(id = R.string.refresh))
-                            }
-                        }
-                    } else {
-                        LaunchedEffect(pullState.isRefreshing) {
-                            if (pullState.isRefreshing) {
-                                viewModel.silentMediaStoreTracksLoad(context) {
-                                    pullState.finishRefresh(skipReloadFinished = false)
-                                }
-                            }
-                        }
-                        PullToRefreshLayout(
-                            pullState = pullState,
-                        ) {
-                            Crossfade(
-                                targetState = desiredLayout, label = "List item transition",
-                                animationSpec = tween(200)
-                            ) { type ->
-                                when (type) {
-                                    LayoutType.Grid -> {
-                                        LazyGridVerticalScrollbar(
-                                            state = lazyGridState,
-                                            thumbColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                                            thumbSelectedColor = MaterialTheme.colorScheme.primary,
-                                            selectionActionable = ScrollbarSelectionActionable.WhenVisible,
-                                        ) {
-                                            LazyVerticalGrid(
-                                                columns = GridCells.Adaptive(125.dp),
-                                                verticalArrangement = Arrangement.spacedBy(6.dp),
-                                                horizontalArrangement = Arrangement.spacedBy(6.dp),
-                                                contentPadding = PaddingValues(8.dp),
-                                                modifier = Modifier
-                                                    .fillMaxSize()
-                                                    .background(MaterialTheme.colorScheme.background),
-                                                state = lazyGridState
-                                            ) {
-                                                items(count = songs.size,
-                                                    key = { index -> songs[index].id },
-                                                    contentType = { index -> songs[index].id.toString() }) { index ->
-                                                    val song = songs[index]
-                                                    VerticalSongCard(song = song,
-                                                        modifier = Modifier.animateItemPlacement(),
-                                                        onClick = {
-                                                            onItemClicked(song)
-                                                        })
-                                                }
-                                            }
-                                        }
-                                    }
-
-                                    LayoutType.List -> {
-                                        LazyColumnScrollbar(
-                                            listState = lazyListState,
-                                            thumbColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                                            thumbSelectedColor = MaterialTheme.colorScheme.primary,
-                                            selectionActionable = ScrollbarSelectionActionable.WhenVisible,
-                                        ) {
-                                            LazyColumn(
-                                                modifier = Modifier
-                                                    .fillMaxSize()
-                                                    .background(MaterialTheme.colorScheme.background),
-                                                state = lazyListState,
-                                            ) {
-                                                items(count = songs.size,
-                                                    key = { index -> songs[index].id },
-                                                    contentType = { index -> songs[index].id.toString() }) { index ->
-                                                    val song = songs[index]
-                                                    HorizontalSongCard(song = song,
-                                                        modifier = Modifier.animateItemPlacement(),
-                                                        onClick = {
-                                                            onItemClicked(song)
-                                                        })
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
+                            items(count = songs.size,
+                                key = { index -> songs[index].id },
+                                contentType = { index -> songs[index].id.toString() }) { index ->
+                                val song = songs[index]
+                                VerticalSongCard(song = song, modifier = Modifier.animateItem(
+                                    fadeInSpec = null, fadeOutSpec = null
+                                ), onClick = {
+                                    onItemClicked(song)
+                                })
                             }
                         }
                     }
                 }
 
-                is MediaStorePageState.Error -> {
-                    ErrorPage(error = stringResource(id = com.bobbyesp.crashhandler.R.string.unknown_error_title)) {
-
+                LayoutType.List -> {
+                    LazyColumnScrollbar(
+                        listState = lazyListState,
+                        thumbColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        thumbSelectedColor = MaterialTheme.colorScheme.primary,
+                        selectionActionable = ScrollbarSelectionActionable.WhenVisible,
+                    ) {
+                        LazyColumn(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(MaterialTheme.colorScheme.background),
+                            state = lazyListState,
+                        ) {
+                            items(count = songs.size,
+                                key = { index -> songs[index].id },
+                                contentType = { index -> songs[index].id.toString() }) { index ->
+                                val song = songs[index]
+                                HorizontalSongCard(song = song, modifier = Modifier.animateItem(
+                                    fadeInSpec = null, fadeOutSpec = null
+                                ), onClick = {
+                                    onItemClicked(song)
+                                })
+                            }
+                        }
                     }
                 }
             }
