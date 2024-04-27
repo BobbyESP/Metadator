@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Square
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
@@ -127,6 +129,9 @@ fun Navigator() {
                                     return@NavigationDrawerItem
                                 } else {
                                     navController.navigate(route.route) {
+                                        popUpTo(Route.MainHost.route) {
+                                            saveState = true
+                                        }
                                         launchSingleTop = true
                                         restoreState = true
                                     }
@@ -135,7 +140,8 @@ fun Navigator() {
                                     }
                                 }
                             }, icon = {
-                                Icon(imageVector = route.icon!!,
+                                Icon(
+                                    imageVector = route.icon ?: Icons.Rounded.Square,
                                     contentDescription = route.title?.let { stringResource(id = it) })
                             }, badge = {
 

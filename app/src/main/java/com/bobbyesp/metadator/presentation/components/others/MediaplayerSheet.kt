@@ -62,7 +62,7 @@ fun MediaplayerSheet(
                 viewModel = viewModel,
             )
         },
-        backgroundColor = MaterialTheme.colorScheme.surfaceColorAtElevation(NavigationBarDefaults.Elevation)
+        backgroundColor = MaterialTheme.colorScheme.surfaceColorAtElevation(NavigationBarDefaults.Elevation + 2.dp)
     ) {
         MediaplayerExpandedContent(
             viewModel = viewModel,
