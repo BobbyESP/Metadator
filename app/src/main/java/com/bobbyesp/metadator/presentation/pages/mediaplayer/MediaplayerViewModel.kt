@@ -34,7 +34,7 @@ class MediaplayerViewModel @Inject constructor(
     @ApplicationContext private val applicationContext: Context,
     private val serviceHandler: MediaServiceHandler,
     private val mediaSession: MediaSession,
-    private val connectionHandler: ConnectionHandler
+    val connectionHandler: ConnectionHandler
 ) : ViewModel() {
     private val mutableMediaplayerPageState = MutableStateFlow(MediaplayerPageState())
     val pageViewState = mutableMediaplayerPageState.asStateFlow()

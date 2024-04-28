@@ -5,6 +5,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ContentTransform
 import androidx.compose.animation.SizeTransform
+import androidx.compose.animation.core.EaseInOutSine
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.rememberTransition
@@ -44,6 +45,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -52,7 +54,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -62,6 +63,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
+import com.bobbyesp.mediaplayer.service.ConnectionState
 import com.bobbyesp.metadator.R
 import com.bobbyesp.metadator.presentation.components.buttons.PlayPauseAnimatedButton
 import com.bobbyesp.metadator.presentation.components.image.ArtworkAsyncImage
@@ -71,6 +73,7 @@ import com.bobbyesp.ui.components.bottomsheet.draggable.DraggableBottomSheet
 import com.bobbyesp.ui.components.bottomsheet.draggable.DraggableBottomSheetState
 import com.bobbyesp.ui.components.button.DynamicButton
 import com.bobbyesp.ui.components.text.MarqueeText
+import com.bobbyesp.ui.components.text.MarqueeTextGradientOptions
 import com.bobbyesp.ui.motion.materialSharedAxisXIn
 import com.bobbyesp.ui.motion.materialSharedAxisXOut
 import com.bobbyesp.utilities.Time.formatDuration
@@ -79,10 +82,22 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun MediaplayerSheet(
-    modifier: Modifier = Modifier, state: DraggableBottomSheetState, viewModel: MediaplayerViewModel
+    modifier: Modifier = Modifier,
+    state: DraggableBottomSheetState,
+    viewModel: MediaplayerViewModel
 ) {
     val playingSong =
         viewModel.playingSong.collectAsStateWithLifecycle().value?.mediaMetadata ?: return
+    val connectionState =
+        viewModel.connectionHandler.connectionState.collectAsStateWithLifecycle().value
+
+    LaunchedEffect(connectionState, Unit) {
+        if (connectionState is ConnectionState.Connected && state.isDismissed) {
+            launch {
+                state.collapseSoft()
+            }
+        }
+    }
 
     DraggableBottomSheet(
         modifier = modifier, state = state, collapsedContent = {
@@ -129,29 +144,13 @@ private fun MediaplayerCollapsedContent(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun MediaplayerExpandedContent(
     modifier: Modifier = Modifier,
-    imageModifier: Modifier = Modifier,
     viewModel: MediaplayerViewModel,
     sheetState: DraggableBottomSheetState
 ) {
     val scope = rememberCoroutineScope()
-    val viewState = viewModel.pageViewState.collectAsStateWithLifecycle().value
-    val playerState = viewState.uiState
-
-    val playingSong =
-        viewModel.playingSong.collectAsStateWithLifecycle().value?.mediaMetadata ?: return
-
-    val readyState = playerState as? MediaplayerViewModel.PlayerState.Ready
-    val progress = readyState?.progress ?: return
-
-    var sliderPosition by remember {
-        mutableStateOf<Float?>(null)
-    }
-
-    val isPlaying = viewModel.isPlaying.collectAsStateWithLifecycle().value
 
     BackHandler {
         sheetState.collapseSoft()
@@ -164,7 +163,6 @@ private fun MediaplayerExpandedContent(
         Column(
             modifier = Modifier.statusBarsPadding()
         ) {
-
             Row(
                 modifier = Modifier
                     .padding(horizontal = 12.dp)
@@ -187,138 +185,153 @@ private fun MediaplayerExpandedContent(
                     Icon(imageVector = Icons.Rounded.MoreVert, contentDescription = null)
                 }
             }
-
-            ArtworkAsyncImage(
-                artworkPath = playingSong.artworkUri,
-                modifier = imageModifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 24.dp, vertical = 16.dp)
-                    .clip(MaterialTheme.shapes.small)
+            PlayerControls(
+                modifier = Modifier.fillMaxWidth(),
+                imageModifier = Modifier,
+                viewModel = viewModel
             )
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            Column(modifier = Modifier.padding(horizontal = 24.dp)) {
-                Text(
-                    text = playingSong.title.toString(),
-                    style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Medium)
-                )
-                Text(
-                    text = playingSong.artist.toString(),
-                    style = MaterialTheme.typography.bodyLarge,
-                )
-            }
-
-            Column(
-                modifier = Modifier.padding(horizontal = 18.dp)
-            ) {
-                val interactionSource = remember {
-                    MutableInteractionSource()
-                }
-
-                val songDuration by remember {
-                    derivedStateOf {
-                        formatDuration(readyState.duration)
-                    }
-                }
-
-                val colors = SliderDefaults.colors()
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Slider(
-                    modifier = Modifier.height(20.dp),
-                    value = sliderPosition ?: progress,
-                    onValueChange = {
-                        sliderPosition = it
-                    },
-                    onValueChangeFinished = {
-                        viewModel.seekTo(sliderPosition ?: return@Slider)
-                        scope.launch {
-                            delay(350)
-                            sliderPosition = null
-                        }
-                    },
-                    colors = colors,
-                    track = { sliderState ->
-                        SliderDefaults.Track(
-                            sliderState = sliderState,
-                            drawStopIndicator = null,
-                            thumbTrackGapSize = 4.dp,
-                            modifier = Modifier.height(8.dp)
-                        )
-                    },
-                    thumb = {
-                        SliderDefaults.Thumb(
-                            interactionSource = interactionSource,
-                            thumbSize = DpSize(width = 4.dp, height = 20.dp)
-                        )
-                    },
-                    interactionSource = interactionSource
-                )
-
-                Row(modifier = Modifier.padding(horizontal = 2.dp)) {
-                    Text(
-                        text = readyState.progressString,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    Spacer(modifier = Modifier.weight(1f))
-                    Text(
-                        text = songDuration,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(24.dp))
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    PlayPauseAnimatedButton(isPlaying = isPlaying) {
-                        viewModel.togglePlayPause()
-                    }
-                }
-            }
         }
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun SongInformation(
-    modifier: Modifier = Modifier, mediaMetadata: MediaMetadata
+private fun PlayerControls(
+    modifier: Modifier = Modifier,
+    imageModifier: Modifier = Modifier,
+    viewModel: MediaplayerViewModel,
 ) {
-    val config = LocalConfiguration.current
-    val screenHeight = config.screenHeightDp.dp
-    val screenWidth = config.screenWidthDp.dp
+    val scope = rememberCoroutineScope()
+    val viewState = viewModel.pageViewState.collectAsStateWithLifecycle().value
+    val playerState = viewState.uiState
+
+    val playingSong =
+        viewModel.playingSong.collectAsStateWithLifecycle().value?.mediaMetadata ?: return
+
+    val readyState = playerState as? MediaplayerViewModel.PlayerState.Ready
+    val progress = readyState?.progress ?: return
+
+    var sliderPosition by remember {
+        mutableStateOf<Float?>(null)
+    }
+
+    val duration by remember(readyState.duration) {
+        mutableLongStateOf(readyState.duration)
+    }
+
+    var temporalProgressString by remember {
+        mutableStateOf<String?>(null)
+    }
+
+    val isPlaying = viewModel.isPlaying.collectAsStateWithLifecycle().value
 
     Column(
-        modifier = modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier,
+        horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         ArtworkAsyncImage(
-            modifier = Modifier
-                .size(screenWidth / 2)
-                .clip(MaterialTheme.shapes.medium),
-            artworkPath = mediaMetadata.artworkUri
+            artworkPath = playingSong.artworkUri,
+            modifier = imageModifier
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp, vertical = 16.dp)
+                .clip(MaterialTheme.shapes.small)
         )
-        MarqueeText(
-            text = mediaMetadata.title.toString(),
-            style = MaterialTheme.typography.bodyLarge,
-            fontWeight = FontWeight.Bold,
-            fontSize = 16.sp
-        )
-        MarqueeText(
-            text = mediaMetadata.artist.toString(),
-            style = MaterialTheme.typography.bodyMedium.copy(
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-            ),
-            fontSize = 12.sp
-        )
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Column(modifier = Modifier.padding(horizontal = 24.dp)) {
+            Text(
+                text = playingSong.title.toString(),
+                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Medium)
+            )
+            MarqueeText(
+                text = playingSong.artist.toString(),
+                style = MaterialTheme.typography.bodyLarge,
+                customEasing = EaseInOutSine,
+                sideGradient = MarqueeTextGradientOptions(
+                    color = MaterialTheme.colorScheme.surfaceContainer,
+                    left = false
+                )
+            )
+        }
+
+        Column(
+            modifier = Modifier.padding(horizontal = 18.dp)
+        ) {
+            val interactionSource = remember {
+                MutableInteractionSource()
+            }
+
+            val songDuration by remember(readyState.duration) {
+                derivedStateOf {
+                    formatDuration(readyState.duration)
+                }
+            }
+
+            val colors = SliderDefaults.colors()
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Slider(
+                modifier = Modifier.height(20.dp),
+                value = sliderPosition ?: progress,
+                onValueChange = {
+                    sliderPosition = it
+                    temporalProgressString = formatDuration((it * duration).toLong())
+                },
+                onValueChangeFinished = {
+                    viewModel.seekTo(sliderPosition ?: return@Slider)
+                    scope.launch {
+                        delay(350)
+                        sliderPosition = null
+                        temporalProgressString = null
+                    }
+                },
+                colors = colors,
+                track = { sliderState ->
+                    SliderDefaults.Track(
+                        sliderState = sliderState,
+                        drawStopIndicator = null,
+                        thumbTrackGapSize = 4.dp,
+                        modifier = Modifier.height(8.dp)
+                    )
+                },
+                thumb = {
+                    SliderDefaults.Thumb(
+                        interactionSource = interactionSource,
+                        thumbSize = DpSize(width = 4.dp, height = 20.dp)
+                    )
+                },
+                interactionSource = interactionSource
+            )
+
+            Row(modifier = Modifier.padding(horizontal = 2.dp)) {
+                Text(
+                    text = temporalProgressString ?: readyState.progressString,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Spacer(modifier = Modifier.weight(1f))
+                Text(
+                    text = songDuration,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                PlayPauseAnimatedButton(isPlaying = isPlaying) {
+                    viewModel.togglePlayPause()
+                }
+            }
+        }
     }
 }
 
@@ -430,17 +443,17 @@ fun MiniplayerContent(
 }
 
 
-@Preview
-@Preview(uiMode = UI_MODE_NIGHT_YES)
-@Composable
-private fun SongInformationPrev() {
-    MetadatorTheme {
-        SongInformation(
-            mediaMetadata = MediaMetadata.Builder().setTitle("Bones").setArtist("Imagine Dragons")
-                .setAlbumTitle("Mercury - Acts 1 & 2").setArtworkUri(null).build()
-        )
-    }
-}
+//@Preview
+//@Preview(uiMode = UI_MODE_NIGHT_YES)
+//@Composable
+//private fun SongInformationPrev() {
+//    MetadatorTheme {
+//        PlayerControls(
+//            mediaMetadata = MediaMetadata.Builder().setTitle("Bones").setArtist("Imagine Dragons")
+//                .setAlbumTitle("Mercury - Acts 1 & 2").setArtworkUri(null).build()
+//        )
+//    }
+//}
 
 @Preview
 @Preview(uiMode = UI_MODE_NIGHT_YES)
