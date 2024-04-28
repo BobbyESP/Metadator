@@ -3,16 +3,26 @@ package com.bobbyesp.mediaplayer.service
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
+import androidx.media3.common.Player.EVENT_POSITION_DISCONTINUITY
+import androidx.media3.common.Player.EVENT_TIMELINE_CHANGED
+import androidx.media3.common.Player.STATE_IDLE
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.analytics.AnalyticsListener
 import androidx.media3.exoplayer.analytics.PlaybackStats
 import androidx.media3.exoplayer.analytics.PlaybackStatsListener
+import com.bobbyesp.mediaplayer.ext.toMediaItem
+import com.bobbyesp.mediaplayer.service.queue.EmptyQueue
+import com.bobbyesp.mediaplayer.service.queue.Queue
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -24,16 +34,19 @@ import javax.inject.Inject
 class MediaServiceHandler @Inject constructor(
     private val player: ExoPlayer
 ) : Player.Listener, PlaybackStatsListener.Callback {
+
     private val _mediaState = MutableStateFlow<MediaState>(MediaState.Idle)
     val mediaState = _mediaState.asStateFlow()
 
-    private val _playerActions = MutableStateFlow<PlayerEvent?>(null)
-    val playerActions = _playerActions.asStateFlow()
+    private var currentQueue: Queue = EmptyQueue
+    var queueTitle: String? = null
+
+    val currentMediaItem = MutableStateFlow<MediaItem?>(null)
 
     val isThePlayerPlaying: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
     private var job: Job? = null
-
+    private val scope = CoroutineScope(Dispatchers.Main)
     override fun onIsPlayingChanged(isPlaying: Boolean) {
         _mediaState.update {
             MediaState.Playing(isPlaying)
@@ -74,6 +87,58 @@ class MediaServiceHandler @Inject constructor(
     fun setMediaItems(mediaItems: List<MediaItem>) {
         player.setMediaItems(mediaItems)
         player.prepare()
+    }
+
+    fun playQueue(queue: Queue, playWhenReady: Boolean = true) {
+        currentQueue = queue
+        queueTitle = null
+        if (queue.preloadItem != null) {
+            setMediaItem(queue.preloadItem!!.toMediaItem())
+            player.playWhenReady = playWhenReady
+        }
+
+        // Launch a new coroutine in the main thread
+        scope.launch {
+            // Get the initial state of the queue in the IO thread
+            // This is a suspending operation and will not block the main thread
+            val initialState = withContext(Dispatchers.IO) { queue.getInitialData() }
+
+            // Set the title of the queue
+            queueTitle = initialState.title
+
+            // Check if the initial state has any items and if the player is not idle or the preload item is null
+            // If both conditions are met, proceed with the rest of the code
+            if (initialState.items.isNotEmpty() && !(queue.preloadItem != null && player.playbackState == STATE_IDLE)) {
+                // If the preload item is not null, add media items to the player
+                if (queue.preloadItem != null) {
+                    // Add media items from the start of the list to the current media item index
+                    player.addMediaItems(
+                        0,
+                        initialState.items.subList(0, initialState.mediaItemIndex)
+                    )
+                    // Add media items from the current media item index to the end of the list
+                    player.addMediaItems(
+                        initialState.items.subList(
+                            initialState.mediaItemIndex + 1,
+                            initialState.items.size
+                        )
+                    )
+                } else {
+                    // If the preload item is null, set media items to the player
+                    // If the media item index is greater than 0, use it as the start position
+                    // Otherwise, use 0 as the start position
+                    player.setMediaItems(
+                        initialState.items,
+                        if (initialState.mediaItemIndex > 0) initialState.mediaItemIndex else 0,
+                        initialState.position
+                    )
+                    // Prepare the player for playback
+                    player.prepare()
+                    // Set the player to start playback when it's ready
+                    player.playWhenReady = playWhenReady
+                }
+            }
+        }
     }
 
     /**
@@ -156,6 +221,13 @@ class MediaServiceHandler @Inject constructor(
         }
     }
 
+    override fun onEvents(player: Player, events: Player.Events) {
+        super.onEvents(player, events)
+        if (events.containsAny(EVENT_TIMELINE_CHANGED, EVENT_POSITION_DISCONTINUITY)) {
+            currentMediaItem.value = player.currentMediaItem
+        }
+    }
+
     fun getActualMediaItem(): MediaItem? {
         return player.currentMediaItem
     }
@@ -198,6 +270,14 @@ class MediaServiceHandler @Inject constructor(
             ExoPlayer.STATE_IDLE -> _mediaState.update {
                 MediaState.Idle
             }
+        }
+    }
+
+    override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
+        super.onPlayWhenReadyChanged(playWhenReady, reason)
+        if (reason == STATE_IDLE) {
+            currentQueue = EmptyQueue
+            queueTitle = null
         }
     }
 

@@ -42,8 +42,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -63,6 +63,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import com.bobbyesp.metadator.R
+import com.bobbyesp.metadator.presentation.components.buttons.PlayPauseAnimatedButton
 import com.bobbyesp.metadator.presentation.components.image.ArtworkAsyncImage
 import com.bobbyesp.metadator.presentation.pages.mediaplayer.MediaplayerViewModel
 import com.bobbyesp.metadator.presentation.theme.MetadatorTheme
@@ -73,13 +74,15 @@ import com.bobbyesp.ui.components.text.MarqueeText
 import com.bobbyesp.ui.motion.materialSharedAxisXIn
 import com.bobbyesp.ui.motion.materialSharedAxisXOut
 import com.bobbyesp.utilities.Time.formatDuration
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
 fun MediaplayerSheet(
     modifier: Modifier = Modifier, state: DraggableBottomSheetState, viewModel: MediaplayerViewModel
 ) {
-    val playingSong = viewModel.playingSong.collectAsStateWithLifecycle().value ?: return
+    val playingSong =
+        viewModel.playingSong.collectAsStateWithLifecycle().value?.mediaMetadata ?: return
 
     DraggableBottomSheet(
         modifier = modifier, state = state, collapsedContent = {
@@ -111,10 +114,12 @@ private fun MediaplayerCollapsedContent(
         modifier = modifier
             .fillMaxWidth()
             .height(CollapsedPlayerHeight)
+            .padding(bottom = 8.dp)
             .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Horizontal)),
+        contentAlignment = Alignment.Center
     ) {
         MiniplayerContent(
-            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+            modifier = Modifier.padding(horizontal = 12.dp),
             playingSong = nowPlaying,
             songProgress = progress,
             isPlaying = isPlaying,
@@ -136,17 +141,14 @@ private fun MediaplayerExpandedContent(
     val viewState = viewModel.pageViewState.collectAsStateWithLifecycle().value
     val playerState = viewState.uiState
 
-    val playingSong = viewModel.playingSong.collectAsStateWithLifecycle().value ?: return
+    val playingSong =
+        viewModel.playingSong.collectAsStateWithLifecycle().value?.mediaMetadata ?: return
 
     val readyState = playerState as? MediaplayerViewModel.PlayerState.Ready
     val progress = readyState?.progress ?: return
 
     var sliderPosition by remember {
         mutableStateOf<Float?>(null)
-    }
-
-    val duration by remember {
-        mutableLongStateOf(readyState.duration)
     }
 
     val isPlaying = viewModel.isPlaying.collectAsStateWithLifecycle().value
@@ -207,14 +209,17 @@ private fun MediaplayerExpandedContent(
                 )
             }
 
-            Column(modifier = Modifier.padding(horizontal = 22.dp)) {
-
+            Column(
+                modifier = Modifier.padding(horizontal = 18.dp)
+            ) {
                 val interactionSource = remember {
                     MutableInteractionSource()
                 }
 
                 val songDuration by remember {
-                    mutableStateOf(formatDuration(readyState.duration))
+                    derivedStateOf {
+                        formatDuration(readyState.duration)
+                    }
                 }
 
                 val colors = SliderDefaults.colors()
@@ -229,7 +234,10 @@ private fun MediaplayerExpandedContent(
                     },
                     onValueChangeFinished = {
                         viewModel.seekTo(sliderPosition ?: return@Slider)
-                        sliderPosition = null
+                        scope.launch {
+                            delay(350)
+                            sliderPosition = null
+                        }
                     },
                     colors = colors,
                     track = { sliderState ->
@@ -262,10 +270,20 @@ private fun MediaplayerExpandedContent(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
+
+                Spacer(modifier = Modifier.height(24.dp))
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    PlayPauseAnimatedButton(isPlaying = isPlaying) {
+                        viewModel.togglePlayPause()
+                    }
+                }
             }
-
         }
-
     }
 }
 
@@ -311,7 +329,7 @@ fun MiniplayerContent(
     isPlaying: Boolean = false,
     songProgress: Float = 0f,
     imageModifier: Modifier = Modifier,
-    onClick: () -> Unit = {}
+    onPlayPause: () -> Unit = {}
 ) {
     val transitionState = remember { MutableTransitionState(playingSong) }
 
@@ -332,7 +350,8 @@ fun MiniplayerContent(
     )
 
     Column(
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterVertically),
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -341,8 +360,8 @@ fun MiniplayerContent(
         ) {
             ArtworkAsyncImage(
                 modifier = imageModifier
-                    .size(48.dp)
-                    .clip(MaterialTheme.shapes.small),
+                    .size(52.dp)
+                    .clip(MaterialTheme.shapes.extraSmall),
                 artworkPath = songCardArtworkUri
             )
             Column(
@@ -378,25 +397,27 @@ fun MiniplayerContent(
                 }
             }
 
-            DynamicButton(modifier = Modifier
-                .size(42.dp)
-                .padding(4.dp), icon = {
-                Icon(
-                    imageVector = Icons.Rounded.Pause,
-                    contentDescription = stringResource(
-                        id = R.string.pause
-                    ),
-                )
-            }, icon2 = {
-                Icon(
-                    imageVector = Icons.Rounded.PlayArrow,
-                    contentDescription = stringResource(
-                        id = R.string.play
-                    ),
-                )
-            }, isIcon1 = isPlaying
+            DynamicButton(
+                modifier = Modifier
+                    .size(42.dp)
+                    .padding(4.dp),
+                icon = {
+                    Icon(
+                        imageVector = Icons.Rounded.Pause,
+                        contentDescription = stringResource(
+                            id = R.string.pause
+                        ),
+                    )
+                }, icon2 = {
+                    Icon(
+                        imageVector = Icons.Rounded.PlayArrow,
+                        contentDescription = stringResource(
+                            id = R.string.play
+                        ),
+                    )
+                }, isIcon1 = isPlaying
             ) {
-                onClick()
+                onPlayPause()
             }
         }
         LinearProgressIndicator(

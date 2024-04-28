@@ -56,7 +56,10 @@ fun MediaplayerPage(
                             contentType = { index -> songs[index].id.toString() }) { index ->
                             val song = songs[index]
                             HorizontalSongCard(song = song,
-                                modifier = Modifier.animateItemPlacement(),
+                                modifier = Modifier.animateItem(
+                                    fadeInSpec = null,
+                                    fadeOutSpec = null
+                                ),
                                 onClick = {
                                     viewModel.playShuffledQueue(song)
 

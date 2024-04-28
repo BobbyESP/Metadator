@@ -5,6 +5,6 @@ import androidx.compose.animation.core.spring
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
-val CollapsedPlayerHeight = 84.dp
+val CollapsedPlayerHeight = 90.dp
 
 val PlayerAnimationSpec = spring<Dp>(stiffness = Spring.StiffnessMediumLow)
