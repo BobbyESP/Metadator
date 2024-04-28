@@ -139,18 +139,14 @@ private fun MediaplayerExpandedContent(
     val playingSong = viewModel.playingSong.collectAsStateWithLifecycle().value ?: return
 
     val readyState = playerState as? MediaplayerViewModel.PlayerState.Ready
-    val progress by animateFloatAsState(
-        targetValue = readyState?.progress ?: 0f,
-        animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec,
-        label = "Animated full screen slider progress",
-    )
+    val progress = readyState?.progress ?: return
 
     var sliderPosition by remember {
         mutableStateOf<Float?>(null)
     }
 
     val duration by remember {
-        mutableLongStateOf(readyState?.duration ?: 0L)
+        mutableLongStateOf(readyState.duration)
     }
 
     val isPlaying = viewModel.isPlaying.collectAsStateWithLifecycle().value
@@ -218,7 +214,7 @@ private fun MediaplayerExpandedContent(
                 }
 
                 val songDuration by remember {
-                    mutableStateOf(formatDuration(readyState?.duration ?: 0L))
+                    mutableStateOf(formatDuration(readyState.duration))
                 }
 
                 val colors = SliderDefaults.colors()
@@ -255,7 +251,7 @@ private fun MediaplayerExpandedContent(
 
                 Row(modifier = Modifier.padding(horizontal = 2.dp)) {
                     Text(
-                        text = readyState?.progressString ?: "00:00",
+                        text = readyState.progressString,
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
