@@ -27,6 +27,9 @@ class MediaServiceHandler @Inject constructor(
     private val _mediaState = MutableStateFlow<MediaState>(MediaState.Idle)
     val mediaState = _mediaState.asStateFlow()
 
+    private val _playerActions = MutableStateFlow<PlayerEvent?>(null)
+    val playerActions = _playerActions.asStateFlow()
+
     val isThePlayerPlaying: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
     private var job: Job? = null

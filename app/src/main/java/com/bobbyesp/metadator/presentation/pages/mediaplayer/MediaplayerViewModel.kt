@@ -8,12 +8,12 @@ import androidx.lifecycle.viewModelScope
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.util.UnstableApi
+import androidx.media3.session.MediaSession
 import com.bobbyesp.mediaplayer.service.ConnectionHandler
 import com.bobbyesp.mediaplayer.service.MediaServiceHandler
 import com.bobbyesp.mediaplayer.service.MediaState
 import com.bobbyesp.mediaplayer.service.PlayerEvent
 import com.bobbyesp.mediaplayer.service.queue.SongsQueue
-import com.bobbyesp.metadator.ext.toSong
 import com.bobbyesp.model.Song
 import com.bobbyesp.utilities.Time.formatDuration
 import com.bobbyesp.utilities.mediastore.MediaStoreReceiver.Advanced.getSongs
@@ -33,12 +33,13 @@ import javax.inject.Inject
 class MediaplayerViewModel @Inject constructor(
     @ApplicationContext private val applicationContext: Context,
     private val serviceHandler: MediaServiceHandler,
+    private val mediaSession: MediaSession,
     private val connectionHandler: ConnectionHandler
 ) : ViewModel() {
     private val mutableMediaplayerPageState = MutableStateFlow(MediaplayerPageState())
     val pageViewState = mutableMediaplayerPageState.asStateFlow()
 
-    val songsFlow = applicationContext.contentResolver.observeSongs() //IT DOESNT ALLOW COPYING
+    val songsFlow = applicationContext.contentResolver.observeSongs()
 
     val isPlaying = serviceHandler.isThePlayerPlaying
 
@@ -46,12 +47,11 @@ class MediaplayerViewModel @Inject constructor(
     private val queueFlow = MutableStateFlow(SongsQueue(items = emptyList()))
 
     // Create a MutableStateFlow for the currently playing song
-    private val playingSongFlow = MutableStateFlow<Song?>(null)
-
+    private val playingSongFlow = MutableStateFlow<MediaMetadata?>(null)
+    val playingSong = playingSongFlow.asStateFlow()
 
     data class MediaplayerPageState(
         val uiState: PlayerState = PlayerState.Initial,
-        val playingSong: Song? = null,
         val queueSongs: SongsQueue = SongsQueue(items = emptyList())
     )
 
@@ -82,7 +82,6 @@ class MediaplayerViewModel @Inject constructor(
         }
     }
 
-
     fun togglePlayPause() {
         viewModelScope.launch {
             serviceHandler.onPlayerEvent(PlayerEvent.PlayPause)
@@ -109,7 +108,7 @@ class MediaplayerViewModel @Inject constructor(
         }
         if (currentIndex != -1 && currentIndex < queueFlow.value.items.size - 1) {
             playingSongFlow.update {
-                queueFlow.value.items[currentIndex + 1].toSong()
+                queueFlow.value.items[currentIndex + 1].mediaMetadata
             }
         }
     }
@@ -119,7 +118,17 @@ class MediaplayerViewModel @Inject constructor(
             it.mediaMetadata.title == playingSongFlow.value?.title
         }
         if (currentIndex > 0) {
-            playingSongFlow.value = queueFlow.value.items[currentIndex - 1].toSong()
+            playingSongFlow.update {
+                queueFlow.value.items[currentIndex - 1].mediaMetadata
+            }
+        }
+    }
+
+    fun seekTo(progress: Float) {
+        val duration = (pageViewState.value.uiState as? PlayerState.Ready)?.duration ?: 0L
+        val seekPosition = (progress * duration).toLong()
+        viewModelScope.launch {
+            serviceHandler.seekTo(seekPosition)
         }
     }
 
@@ -154,10 +163,11 @@ class MediaplayerViewModel @Inject constructor(
 
         mutableMediaplayerPageState.update {
             it.copy(
-                playingSong = song,
                 queueSongs = SongsQueue(items = listOf(mediaItem))
             )
         }
+
+        playingSongFlow.update { mediaItem.mediaMetadata }
 
         viewModelScope.launch {
             serviceHandler.setMediaItem(mediaItem)
@@ -184,13 +194,15 @@ class MediaplayerViewModel @Inject constructor(
 
         mutableMediaplayerPageState.update {
             it.copy(
-                playingSong = songs.first(),
                 queueSongs = SongsQueue(items = mediaItems)
             )
         }
 
+        playingSongFlow.update { mediaItems.first().mediaMetadata }
+
         viewModelScope.launch {
             serviceHandler.setMediaItems(mediaItems)
+            if (!isPlaying.value) serviceHandler.onPlayerEvent(PlayerEvent.PlayPause)
         }
     }
 

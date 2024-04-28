@@ -92,8 +92,8 @@ fun DraggableBottomSheet(
             }
             .clip(
                 RoundedCornerShape(
-                    topStart = if (!state.isExpanded) 16.dp else 0.dp,
-                    topEnd = if (!state.isExpanded) 16.dp else 0.dp
+                    topStart = if (!state.isExpanded) 8.dp else 0.dp,
+                    topEnd = if (!state.isExpanded) 8.dp else 0.dp
                 )
             )
             .background(backgroundColor)

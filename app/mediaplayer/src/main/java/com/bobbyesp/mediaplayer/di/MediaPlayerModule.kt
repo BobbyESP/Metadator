@@ -62,7 +62,8 @@ object MediaPlayerModule {
         @ApplicationContext context: Context,
         player: ExoPlayer
     ): MediaSession =
-        MediaSession.Builder(context, player).build()
+        MediaSession.Builder(context, player)
+            .build()
 
     @Provides
     @Singleton
