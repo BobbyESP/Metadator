@@ -44,7 +44,8 @@ val LocalNavController =
     compositionLocalOf<NavHostController> { error("No nav controller provided") }
 val LocalWindowWidthState =
     staticCompositionLocalOf { WindowWidthSizeClass.Compact } //This value probably will never change, that's why it is static
-val LocalSnackbarHostState = compositionLocalOf<SnackbarHostState> { error("No snackbar host state provided") }
+val LocalSnackbarHostState =
+    compositionLocalOf<SnackbarHostState> { error("No snackbar host state provided") }
 val LocalDrawerState =
     compositionLocalOf<DrawerState> { error("No Drawer State has been provided") }
 val LocalMediaplayerConnection =

@@ -85,6 +85,7 @@ data class AudioFileMetadata(
                 releaseType = this["RELEASETYPE"]
             )
         }
+
         fun AudioFileMetadata.deepCopy(): AudioFileMetadata {
             return AudioFileMetadata(
                 title = title?.copyOf(),

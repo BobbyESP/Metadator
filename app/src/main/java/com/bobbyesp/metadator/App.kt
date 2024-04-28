@@ -39,11 +39,13 @@ class App : Application() {
         DynamicColors.applyToActivitiesIfAvailable(this)
         super.onCreate()
 
-        if(!isPlayStoreBuild) setupCrashHandler(reportInfo = ReportInfo(
-            androidVersion = true,
-            deviceInfo = true,
-            supportedABIs = true
-        ))
+        if (!isPlayStoreBuild) setupCrashHandler(
+            reportInfo = ReportInfo(
+                androidVersion = true,
+                deviceInfo = true,
+                supportedABIs = true
+            )
+        )
     }
 
     companion object {

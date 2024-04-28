@@ -1,6 +1,5 @@
 package com.bobbyesp.metadator.presentation.pages.mediaplayer
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,7 +18,6 @@ import com.bobbyesp.ui.components.bottomsheet.draggable.DraggableBottomSheetStat
 import my.nanihadesuka.compose.LazyColumnScrollbar
 import my.nanihadesuka.compose.ScrollbarSelectionActionable
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MediaplayerPage(
     viewModel: MediaplayerViewModel,

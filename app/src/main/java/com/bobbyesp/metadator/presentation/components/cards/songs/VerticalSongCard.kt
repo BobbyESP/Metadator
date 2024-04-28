@@ -67,13 +67,13 @@ private fun LocalSongCardPreview() {
     MetadatorTheme {
         VerticalSongCard(
             song = Song(
-            id = 1,
-            title = "Bones",
-            artist = "Imagine Dragons",
-            album = "Mercury - Acts 1 & 2",
+                id = 1,
+                title = "Bones",
+                artist = "Imagine Dragons",
+                album = "Mercury - Acts 1 & 2",
                 artworkPath = null,
-            duration = 100.0,
-            path = "path"
-        ), onClick = {})
+                duration = 100.0,
+                path = "path"
+            ), onClick = {})
     }
 }

@@ -2,7 +2,6 @@ package com.bobbyesp.ui.motion
 
 import android.graphics.Path
 import androidx.compose.animation.AnimatedVisibilityScope
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut

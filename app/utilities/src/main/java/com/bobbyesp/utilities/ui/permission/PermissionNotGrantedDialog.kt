@@ -152,7 +152,8 @@ fun String.toPermissionType(): PermissionType {
 @Preview
 @Composable
 fun PermissionNotGrantedPreview() {
-    PermissionNotGrantedDialog(onGrantRequest = {},
+    PermissionNotGrantedDialog(
+        onGrantRequest = {},
         onDismissRequest = {},
         neededPermissions = listOf(
             PermissionType.READ_EXTERNAL_STORAGE, PermissionType.WRITE_EXTERNAL_STORAGE
