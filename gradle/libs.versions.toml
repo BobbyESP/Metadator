@@ -80,7 +80,7 @@ googleServices = "4.4.1"
 firebaseBom = "32.8.1"
 
 #Others
-taglib = "1.0.0-alpha07"
+taglib = "53f7581088"
 
 #Tests
 junit = "4.13.2"

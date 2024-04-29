@@ -3,6 +3,7 @@ package com.bobbyesp.metadator.presentation.pages.utilities.tageditor
 import android.app.PendingIntent
 import android.app.RecoverableSecurityException
 import android.content.Context
+import android.net.Uri
 import android.os.Build
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
@@ -14,6 +15,7 @@ import com.bobbyesp.utilities.mediastore.MediaStoreReceiver
 import com.kyant.taglib.AudioProperties
 import com.kyant.taglib.AudioPropertiesReadStyle
 import com.kyant.taglib.Metadata
+import com.kyant.taglib.Picture
 import com.kyant.taglib.TagLib
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -84,7 +86,10 @@ class ID3MetadataEditorPageViewModel @Inject constructor(
 
     fun saveMetadata(
         context: Context = this.context,
-        newMetadata: Metadata, path: String, intentPassthrough: (PendingIntent) -> Unit = {}
+        newMetadata: Metadata,
+        path: String,
+        imageUri: Uri?,
+        intentPassthrough: (PendingIntent) -> Unit = {}
     ): Boolean {
         return try {
             val fd = MediaStoreReceiver.getFileDescriptorFromPath(context, path, mode = "w")
@@ -96,6 +101,31 @@ class ID3MetadataEditorPageViewModel @Inject constructor(
                     fd,
                     propertyMap = newMetadata.propertyMap
                 )
+
+                imageUri?.let {
+                    val byteArray =
+                        context.contentResolver.openInputStream(it)?.readBytes() ?: return@let
+                    val mimeType = context.contentResolver.getType(it) ?: return@let
+                    val picture = Picture(
+                        data = byteArray,
+                        mimeType = mimeType,
+                        description = "Song cover - Metadator",
+                        pictureType = "Cover (front)"
+                    )
+                    val saved = TagLib.savePictures(
+                        fd,
+                        pictures = arrayOf(picture)
+                    )
+
+                    if (saved) {
+                        Log.i("ID3MetadataEditorPageViewModel", "Saved picture")
+                    } else {
+                        Log.e(
+                            "ID3MetadataEditorPageViewModel",
+                            "Error while trying to save picture"
+                        )
+                    }
+                }
             }
             true
         } catch (securityException: SecurityException) {

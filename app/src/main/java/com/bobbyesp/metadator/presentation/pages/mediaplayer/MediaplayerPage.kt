@@ -1,18 +1,25 @@
 package com.bobbyesp.metadator.presentation.pages.mediaplayer
 
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.add
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bobbyesp.metadator.presentation.components.cards.songs.HorizontalSongCard
+import com.bobbyesp.metadator.presentation.components.others.CollapsedPlayerHeight
 import com.bobbyesp.metadator.presentation.components.others.MediaplayerSheet
 import com.bobbyesp.ui.components.bottomsheet.draggable.DraggableBottomSheetState
 import my.nanihadesuka.compose.LazyColumnScrollbar
@@ -26,11 +33,20 @@ fun MediaplayerPage(
     val mediaStoreLazyColumnState = rememberLazyListState()
 
     val songs = viewModel.songsFlow.collectAsStateWithLifecycle(initialValue = emptyList()).value
+
+    // Animate the padding
+    val bottomPadding by animateDpAsState(
+        targetValue = if (mediaPlayerSheetState.isDismissed) 0.dp else CollapsedPlayerHeight - 10.dp,
+        label = "MediaplayerPage bottom padding animation"
+    )
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
         Scaffold(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
+            contentWindowInsets = WindowInsets.systemBars.add(
+                WindowInsets(bottom = bottomPadding)
+            ),
         ) {
             Column(
                 modifier = Modifier

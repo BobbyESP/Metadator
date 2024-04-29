@@ -47,5 +47,6 @@
     <string name="mediaplayer">Mediaplayer</string>
     <string name="play">Play</string>
     <string name="pause">Pause</string>
+    <string name="edit_image">Edit image</string>
 
 </resources>
