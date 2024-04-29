@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -206,17 +207,19 @@ private fun PlayerControls(
     val playerState = viewState.uiState
 
     val playingSong =
-        viewModel.playingSong.collectAsStateWithLifecycle().value?.mediaMetadata ?: return
+        viewModel.playingSong.collectAsStateWithLifecycle().value?.mediaMetadata
 
     val readyState = playerState as? MediaplayerViewModel.PlayerState.Ready
-    val progress = readyState?.progress ?: return
+    val progress = readyState?.progress ?: 0f
 
     var sliderPosition by remember {
         mutableStateOf<Float?>(null)
     }
 
-    val duration by remember(readyState.duration) {
-        mutableLongStateOf(readyState.duration)
+    val duration by remember(readyState?.duration) {
+        derivedStateOf {
+            mutableLongStateOf(readyState?.duration ?: 0L)
+        }
     }
 
     var temporalProgressString by remember {
@@ -231,9 +234,10 @@ private fun PlayerControls(
         verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         ArtworkAsyncImage(
-            artworkPath = playingSong.artworkUri,
+            artworkPath = playingSong?.artworkUri,
             modifier = imageModifier
                 .fillMaxWidth()
+                .aspectRatio(1f)
                 .padding(horizontal = 24.dp, vertical = 16.dp)
                 .clip(MaterialTheme.shapes.small)
         )
@@ -242,11 +246,11 @@ private fun PlayerControls(
 
         Column(modifier = Modifier.padding(horizontal = 24.dp)) {
             Text(
-                text = playingSong.title.toString(),
+                text = playingSong?.title.toString(),
                 style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Medium)
             )
             MarqueeText(
-                text = playingSong.artist.toString(),
+                text = playingSong?.artist.toString(),
                 style = MaterialTheme.typography.bodyLarge,
                 customEasing = EaseInOutSine,
                 sideGradient = MarqueeTextGradientOptions(
@@ -263,9 +267,9 @@ private fun PlayerControls(
                 MutableInteractionSource()
             }
 
-            val songDuration by remember(readyState.duration) {
+            val songDuration by remember(readyState?.duration) {
                 derivedStateOf {
-                    formatDuration(readyState.duration)
+                    formatDuration(readyState?.duration ?: 0L)
                 }
             }
 
@@ -278,7 +282,7 @@ private fun PlayerControls(
                 value = sliderPosition ?: progress,
                 onValueChange = {
                     sliderPosition = it
-                    temporalProgressString = formatDuration((it * duration).toLong())
+                    temporalProgressString = formatDuration((it * duration.longValue).toLong())
                 },
                 onValueChangeFinished = {
                     viewModel.seekTo(sliderPosition ?: return@Slider)
@@ -308,7 +312,7 @@ private fun PlayerControls(
 
             Row(modifier = Modifier.padding(horizontal = 2.dp)) {
                 Text(
-                    text = temporalProgressString ?: readyState.progressString,
+                    text = temporalProgressString ?: readyState?.progressString ?: "00:00",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )

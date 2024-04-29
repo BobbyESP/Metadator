@@ -1,6 +1,7 @@
 package com.bobbyesp.metadator.presentation.pages.mediaplayer
 
 import android.content.Context
+import android.net.Uri
 import android.util.Log
 import androidx.annotation.OptIn
 import androidx.lifecycle.ViewModel
@@ -26,6 +27,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.io.File
 import javax.inject.Inject
 
 @OptIn(UnstableApi::class)
@@ -116,7 +118,7 @@ class MediaplayerViewModel @Inject constructor(
 
     private fun loadSongInfo(song: Song) {
         val mediaItem = MediaItem.Builder()
-            .setUri(song.path)
+            .setUri(Uri.fromFile(File(song.path)))
             .setMediaMetadata(
                 MediaMetadata.Builder()
                     .setTitle(song.title)
@@ -134,7 +136,7 @@ class MediaplayerViewModel @Inject constructor(
     private fun loadQueueSongs(songs: List<Song>) {
         val mediaItems = songs.map { song ->
             MediaItem.Builder()
-                .setUri(song.path)
+                .setUri(Uri.fromFile(File(song.path)))
                 .setMediaMetadata(
                     MediaMetadata.Builder()
                         .setTitle(song.title)

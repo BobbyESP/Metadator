@@ -145,7 +145,7 @@ fun ArtworkAsyncImage(
                         state !is AsyncImagePainter.State.Error && state !is AsyncImagePainter.State.Empty
                 },
                 contentDescription = "Song cover",
-                contentScale = ContentScale.Fit,
+                contentScale = ContentScale.Crop,
                 isPreview = false
             )
         }
