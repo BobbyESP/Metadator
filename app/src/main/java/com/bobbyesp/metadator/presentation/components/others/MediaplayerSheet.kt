@@ -134,7 +134,9 @@ private fun MediaplayerCollapsedContent(
         contentAlignment = Alignment.Center
     ) {
         MiniplayerContent(
-            modifier = Modifier.padding(horizontal = 12.dp),
+            modifier = Modifier
+                .padding(horizontal = 12.dp)
+                .padding(bottom = 6.dp),
             playingSong = nowPlaying,
             songProgress = progress,
             isPlaying = isPlaying,
@@ -197,7 +199,6 @@ private fun MediaplayerExpandedContent(
                                     contentDescription = stringResource(id = R.string.close),
                                     modifier = Modifier.rotate(-90f)
                                 )
-
                             }
                             IconButton(onClick = {
 
