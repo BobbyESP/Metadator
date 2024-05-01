@@ -31,13 +31,12 @@
     <string name="dismiss">Dismiss</string>
     <string name="loading_mediastore">Loading MediaStore data</string>
     <string name="open_navigation">Open navigation</string>
-    <string name="app_desc">An MD3 audio metadata editor</string>
+    <string name="app_desc">An audio metadata editor</string>
     <string name="loading_metadata">Loading metadata</string>
     <string name="open_more_options">Open more options</string>
     <string name="scroll_to_top">Scroll to top</string>
     <string name="list_type">List type</string>
     <string name="layout_type">Layout type</string>
-    <string name="reload_media_store">Reload MediaStore</string>
     <string name="audio_details">Audio details</string>
     <string name="discard_changes">Discard changes</string>
     <string name="return_str">Return</string>
@@ -49,5 +48,7 @@
     <string name="pause">Pause</string>
     <string name="edit_image">Edit image</string>
     <string name="seek_to_previous">Seek to previous</string>
+    <string name="close">Close</string>
+    <string name="more">More</string>
 
 </resources>

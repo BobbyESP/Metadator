@@ -17,6 +17,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.coerceIn
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bobbyesp.metadator.presentation.components.cards.songs.HorizontalSongCard
@@ -35,9 +36,11 @@ fun MediaplayerPage(
 
     val songs = viewModel.songsFlow.collectAsStateWithLifecycle(initialValue = emptyList()).value
 
-    // Animate the padding
     val bottomPadding by animateDpAsState(
-        targetValue = if (mediaPlayerSheetState.isDismissed) 0.dp else CollapsedPlayerHeight - 10.dp,
+        targetValue = (if (mediaPlayerSheetState.isDismissed) 0.dp else CollapsedPlayerHeight - 16.dp).coerceIn(
+            0.dp,
+            CollapsedPlayerHeight
+        ),
         label = "MediaplayerPage bottom padding animation"
     )
 

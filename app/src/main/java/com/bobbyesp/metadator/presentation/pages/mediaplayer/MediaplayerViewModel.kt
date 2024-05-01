@@ -127,23 +127,6 @@ class MediaplayerViewModel @Inject constructor(
         }
     }
 
-    private fun loadSongInfo(song: Song) {
-        val mediaItem = MediaItem.Builder()
-            .setUri(Uri.fromFile(File(song.path)))
-            .setMediaMetadata(
-                MediaMetadata.Builder()
-                    .setTitle(song.title)
-                    .setArtist(song.artist)
-                    .setAlbumTitle(song.album)
-                    .setArtworkUri(song.artworkPath)
-                    .build()
-            ).build()
-
-        viewModelScope.launch {
-            serviceHandler.setMediaItem(mediaItem)
-        }
-    }
-
     private fun loadQueueSongs(songs: List<Song>) {
         val mediaItems = songs.map { song ->
             MediaItem.Builder()
@@ -162,6 +145,12 @@ class MediaplayerViewModel @Inject constructor(
             val queue = SongsQueue(title = null, items = mediaItems)
             serviceHandler.playQueue(queue)
         }
+    }
+
+    fun dismissPlayer() {
+        mediaSession.player.stop()
+        mediaSession.player.clearMediaItems()
+        connectionHandler.disconnect()
     }
 
     private fun calculateProgressValues(currentProgress: Long) {

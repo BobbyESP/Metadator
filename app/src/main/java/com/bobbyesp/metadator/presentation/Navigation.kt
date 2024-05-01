@@ -101,7 +101,6 @@ fun Navigator() {
             expandedBound = maxHeight,
             animationSpec = PlayerAnimationSpec,
         )
-
         ModalNavigationDrawer(
             drawerState = drawerState,
             gesturesEnabled = canOpenDrawer,
@@ -121,7 +120,9 @@ fun Navigator() {
                         NavigationDrawerItem(
                             label = {
                                 Text(text = route.title?.let { stringResource(id = it) } ?: "")
-                            }, selected = isSelected, onClick = {
+                            },
+                            selected = isSelected,
+                            onClick = {
                                 if (isSelected) {
                                     scope.launch {
                                         drawerState.close()
@@ -139,13 +140,16 @@ fun Navigator() {
                                         drawerState.close()
                                     }
                                 }
-                            }, icon = {
+                            },
+                            icon = {
                                 Icon(
                                     imageVector = route.icon ?: Icons.Rounded.Square,
                                     contentDescription = route.title?.let { stringResource(id = it) })
-                            }, badge = {
+                            },
+                            badge = {
 
-                            }, modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+                            },
+                            modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
                         )
                     }
                 }
@@ -205,7 +209,8 @@ fun Navigator() {
                             val viewModel = hiltViewModel<ID3MetadataEditorPageViewModel>()
 
                             ID3MetadataEditorPage(
-                                viewModel = viewModel, parcelableSong = parcelableSongParcelable!!
+                                viewModel = viewModel,
+                                parcelableSong = parcelableSongParcelable!!
                             )
                         }
                     }

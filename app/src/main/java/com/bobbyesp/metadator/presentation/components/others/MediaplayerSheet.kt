@@ -84,9 +84,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun MediaplayerSheet(
-    modifier: Modifier = Modifier,
-    state: DraggableBottomSheetState,
-    viewModel: MediaplayerViewModel
+    modifier: Modifier = Modifier, state: DraggableBottomSheetState, viewModel: MediaplayerViewModel
 ) {
     val playingSong =
         viewModel.playingSong.collectAsStateWithLifecycle().value?.mediaMetadata ?: return
@@ -106,8 +104,9 @@ fun MediaplayerSheet(
             MediaplayerCollapsedContent(
                 viewModel = viewModel, nowPlaying = playingSong
             )
-        }, backgroundColor = MaterialTheme.colorScheme.surfaceContainerHigh
-    ) {
+        }, backgroundColor = MaterialTheme.colorScheme.surfaceContainerHigh, onDismiss = {
+            viewModel.dismissPlayer()
+        }) {
         MediaplayerExpandedContent(
             viewModel = viewModel,
             sheetState = state,
@@ -131,7 +130,6 @@ private fun MediaplayerCollapsedContent(
         modifier = modifier
             .fillMaxWidth()
             .height(CollapsedPlayerHeight)
-            .padding(bottom = 8.dp)
             .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Horizontal)),
         contentAlignment = Alignment.Center
     ) {
@@ -153,8 +151,7 @@ private fun MediaplayerExpandedContent(
     sheetState: DraggableBottomSheetState
 ) {
     val scope = rememberCoroutineScope()
-    val playingSong =
-        viewModel.playingSong.collectAsStateWithLifecycle().value?.mediaMetadata
+    val playingSong = viewModel.playingSong.collectAsStateWithLifecycle().value?.mediaMetadata
 
     val config = LocalConfiguration.current
 
@@ -169,8 +166,7 @@ private fun MediaplayerExpandedContent(
         when (config.orientation) {
             Configuration.ORIENTATION_LANDSCAPE -> {
                 Row(
-                    modifier = Modifier
-                        .fillMaxSize()
+                    modifier = Modifier.fillMaxSize()
                 ) {
                     Box(
                         modifier = Modifier
@@ -198,10 +194,20 @@ private fun MediaplayerExpandedContent(
                             }) {
                                 Icon(
                                     imageVector = Icons.Rounded.ArrowBackIosNew,
-                                    contentDescription = null,
+                                    contentDescription = stringResource(id = R.string.close),
                                     modifier = Modifier.rotate(-90f)
                                 )
 
+                            }
+                            IconButton(onClick = {
+
+                            }) {
+                                Icon(
+                                    imageVector = Icons.Rounded.MoreVert,
+                                    contentDescription = stringResource(
+                                        id = R.string.more
+                                    )
+                                )
                             }
                         }
                     }
@@ -212,8 +218,7 @@ private fun MediaplayerExpandedContent(
                         contentAlignment = Alignment.Center,
                     ) {
                         PlayerControls(
-                            modifier = Modifier.fillMaxWidth(),
-                            viewModel = viewModel
+                            modifier = Modifier.fillMaxWidth(), viewModel = viewModel
                         )
                     }
                 }
@@ -235,18 +240,19 @@ private fun MediaplayerExpandedContent(
                         }) {
                             Icon(
                                 imageVector = Icons.Rounded.ArrowBackIosNew,
-                                contentDescription = null,
+                                contentDescription = stringResource(id = R.string.close),
                                 modifier = Modifier.rotate(-90f)
                             )
 
                         }
                         Spacer(modifier = Modifier.weight(1f))
-                        IconButton(
-                            onClick = {
+                        IconButton(onClick = {
 
-                            }
-                        ) {
-                            Icon(imageVector = Icons.Rounded.MoreVert, contentDescription = null)
+                        }) {
+                            Icon(
+                                imageVector = Icons.Rounded.MoreVert,
+                                contentDescription = stringResource(id = R.string.more)
+                            )
                         }
                     }
                     Column(
@@ -262,8 +268,7 @@ private fun MediaplayerExpandedContent(
                                 .clip(MaterialTheme.shapes.small)
                         )
                         PlayerControls(
-                            modifier = Modifier.fillMaxWidth(),
-                            viewModel = viewModel
+                            modifier = Modifier.fillMaxWidth(), viewModel = viewModel
                         )
                     }
                 }
@@ -286,8 +291,7 @@ private fun PlayerControls(
     val viewState = viewModel.pageViewState.collectAsStateWithLifecycle().value
     val playerState = viewState.uiState
 
-    val playingSong =
-        viewModel.playingSong.collectAsStateWithLifecycle().value?.mediaMetadata
+    val playingSong = viewModel.playingSong.collectAsStateWithLifecycle().value?.mediaMetadata
 
     val readyState = playerState as? MediaplayerViewModel.PlayerState.Ready
     val progress = readyState?.progress ?: 0f
@@ -322,12 +326,10 @@ private fun PlayerControls(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
-        transition.AnimatedContent(
-            modifier = Modifier
-                .padding(horizontal = 24.dp)
-                .align(Alignment.Start),
-            transitionSpec = { AnimatedTextContentTransformation }
-        ) {
+        transition.AnimatedContent(modifier = Modifier
+            .padding(horizontal = 24.dp)
+            .align(Alignment.Start),
+            transitionSpec = { AnimatedTextContentTransformation }) {
             Column {
                 Text(
                     text = it?.title.toString(),
@@ -338,8 +340,7 @@ private fun PlayerControls(
                     style = MaterialTheme.typography.bodyLarge,
                     customEasing = EaseInOutSine,
                     sideGradient = MarqueeTextGradientOptions(
-                        color = MaterialTheme.colorScheme.surfaceContainer,
-                        left = false
+                        color = MaterialTheme.colorScheme.surfaceContainer, left = false
                     )
                 )
             }
@@ -411,15 +412,12 @@ private fun PlayerControls(
             Spacer(modifier = Modifier.height(24.dp))
 
             Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterHorizontally),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                IconButton(
-                    modifier = Modifier.size(SeekToButtonSize),
-                    onClick = { viewModel.seekToPrevious() }
-                ) {
+                IconButton(modifier = Modifier.size(SeekToButtonSize),
+                    onClick = { viewModel.seekToPrevious() }) {
                     Icon(
                         modifier = Modifier.size(SeekToButtonSize),
                         imageVector = Icons.Rounded.SkipPrevious,
@@ -431,8 +429,7 @@ private fun PlayerControls(
                 }
                 IconButton(
                     modifier = Modifier.size(SeekToButtonSize),
-                    onClick = { viewModel.seekToNext() }
-                ) {
+                    onClick = { viewModel.seekToNext() }) {
                     Icon(
                         modifier = Modifier.size(SeekToButtonSize),
                         imageVector = Icons.Rounded.SkipNext,
@@ -513,25 +510,23 @@ fun MiniplayerContent(
                 }
             }
 
-            DynamicButton(
-                modifier = Modifier
-                    .size(42.dp)
-                    .padding(4.dp),
-                icon = {
-                    Icon(
-                        imageVector = Icons.Rounded.Pause,
-                        contentDescription = stringResource(
-                            id = R.string.pause
-                        ),
-                    )
-                }, icon2 = {
-                    Icon(
-                        imageVector = Icons.Rounded.PlayArrow,
-                        contentDescription = stringResource(
-                            id = R.string.play
-                        ),
-                    )
-                }, isIcon1 = isPlaying
+            DynamicButton(modifier = Modifier
+                .size(42.dp)
+                .padding(4.dp), icon = {
+                Icon(
+                    imageVector = Icons.Rounded.Pause,
+                    contentDescription = stringResource(
+                        id = R.string.pause
+                    ),
+                )
+            }, icon2 = {
+                Icon(
+                    imageVector = Icons.Rounded.PlayArrow,
+                    contentDescription = stringResource(
+                        id = R.string.play
+                    ),
+                )
+            }, isIcon1 = isPlaying
             ) {
                 onPlayPause()
             }

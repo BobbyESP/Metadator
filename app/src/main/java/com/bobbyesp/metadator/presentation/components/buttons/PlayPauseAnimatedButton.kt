@@ -9,8 +9,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.rounded.Pause
+import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -20,7 +20,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.bobbyesp.metadator.R
 
 @Composable
 fun PlayPauseAnimatedButton(
@@ -56,14 +58,14 @@ fun PlayPauseAnimatedButton(
             if (isPlaying) {
                 Icon(
                     imageVector = Icons.Rounded.Pause,
-                    contentDescription = "Pause",
+                    contentDescription = stringResource(id = R.string.pause),
                     tint = MaterialTheme.colorScheme.secondary,
                     modifier = Modifier.size(32.dp)
                 )
             } else {
                 Icon(
-                    imageVector = Icons.Default.PlayArrow,
-                    contentDescription = "Play",
+                    imageVector = Icons.Rounded.PlayArrow,
+                    contentDescription = stringResource(id = R.string.play),
                     tint = MaterialTheme.colorScheme.secondary,
                     modifier = Modifier.size(32.dp)
                 )

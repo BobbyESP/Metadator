@@ -93,38 +93,18 @@ class ID3MetadataEditorPageViewModel @Inject constructor(
     ): Boolean {
         return try {
             val fd = MediaStoreReceiver.getFileDescriptorFromPath(context, path, mode = "w")
-                ?.dup()?.detachFd()
                 ?: throw IOException("File descriptor is null")
 
             viewModelScope.launch(Dispatchers.IO) {
-                TagLib.savePropertyMap(
-                    fd,
-                    propertyMap = newMetadata.propertyMap
-                )
+                fd.dup()?.detachFd()?.let {
+                    TagLib.savePropertyMap(
+                        it,
+                        propertyMap = newMetadata.propertyMap
+                    )
+                }
 
                 imageUri?.let {
-                    val byteArray =
-                        context.contentResolver.openInputStream(it)?.readBytes() ?: return@let
-                    val mimeType = context.contentResolver.getType(it) ?: return@let
-                    val picture = Picture(
-                        data = byteArray,
-                        mimeType = mimeType,
-                        description = "Song cover - Metadator",
-                        pictureType = "Cover (front)"
-                    )
-                    val saved = TagLib.savePictures(
-                        fd,
-                        pictures = arrayOf(picture)
-                    )
-
-                    if (saved) {
-                        Log.i("ID3MetadataEditorPageViewModel", "Saved picture")
-                    } else {
-                        Log.e(
-                            "ID3MetadataEditorPageViewModel",
-                            "Error while trying to save picture"
-                        )
-                    }
+                    savePicture(context, it, fd.detachFd())
                 }
             }
             true
@@ -153,6 +133,27 @@ class ID3MetadataEditorPageViewModel @Inject constructor(
             intentPassthrough(recoverableSecurityException.userAction.actionIntent)
         } else {
             throw RuntimeException(securityException.message, securityException)
+        }
+    }
+
+    private fun savePicture(context: Context, imageUri: Uri, fileDescriptorId: Int) {
+        val byteArray = context.contentResolver.openInputStream(imageUri)?.readBytes() ?: return
+        val mimeType = context.contentResolver.getType(imageUri) ?: return
+        val picture = Picture(
+            data = byteArray,
+            mimeType = mimeType,
+            description = "Song cover - Metadator",
+            pictureType = "Cover (front)"
+        )
+        val saved = TagLib.savePictures(
+            fileDescriptorId,
+            pictures = arrayOf(picture)
+        )
+
+        if (saved) {
+            Log.i("ID3MetadataEditorPageViewModel", "Saved picture")
+        } else {
+            Log.e("ID3MetadataEditorPageViewModel", "Error while trying to save picture")
         }
     }
 
