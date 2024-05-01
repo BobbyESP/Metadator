@@ -99,6 +99,17 @@ class MediaplayerViewModel @Inject constructor(
         }
     }
 
+    fun seekToPrevious() {
+        viewModelScope.launch {
+            serviceHandler.onPlayerEvent(PlayerEvent.Previous)
+        }
+    }
+
+    fun seekToNext() {
+        viewModelScope.launch {
+            serviceHandler.onPlayerEvent(PlayerEvent.Next)
+        }
+    }
 
     private fun playRandomQueue(firstSong: Song) {
         viewModelScope.launch {

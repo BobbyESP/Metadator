@@ -4,6 +4,7 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.add
 import androidx.compose.foundation.layout.fillMaxSize
@@ -39,6 +40,7 @@ fun MediaplayerPage(
         targetValue = if (mediaPlayerSheetState.isDismissed) 0.dp else CollapsedPlayerHeight - 10.dp,
         label = "MediaplayerPage bottom padding animation"
     )
+
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -63,6 +65,7 @@ fun MediaplayerPage(
                         modifier = Modifier
                             .fillMaxSize()
                             .background(MaterialTheme.colorScheme.background),
+                        contentPadding = PaddingValues(horizontal = 8.dp),
                         state = mediaStoreLazyColumnState,
                     ) {
                         items(count = songs.size,

@@ -149,9 +149,8 @@ dependencies {
 //-------------------Image Loading-------------------//
     implementation(libs.landscapist.coil)
     implementation(libs.coil)
-    implementation(
-        libs.compose.coil
-    )
+    implementation(libs.compose.coil)
+
 //-------------------FIREBASE-------------------//
     "playstoreImplementation"(platform(libs.firebase.bom))
     "playstoreImplementation"(libs.firebase.analytics)

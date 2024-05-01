@@ -4,7 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.MusicNote
 import androidx.compose.material3.MaterialTheme
@@ -119,9 +119,8 @@ fun AsyncImageImpl(
         alignment = alignment,
         contentScale = contentScale,
         alpha = alpha,
-        colorFilter = colorFilter,
-
-        )
+        colorFilter = colorFilter
+    )
 }
 
 @Composable
@@ -132,8 +131,9 @@ fun ArtworkAsyncImage(
     var showArtwork by remember { mutableStateOf(true) }
 
     if (artworkPath != null && showArtwork) {
-        Column(
-            modifier = modifier
+        Box(
+            modifier = modifier,
+            contentAlignment = Alignment.Center,
         ) {
             AsyncImageImpl(
                 modifier = modifier
@@ -155,7 +155,7 @@ fun ArtworkAsyncImage(
                 .clip(MaterialTheme.shapes.small),
             icon = Icons.Rounded.MusicNote,
             colorful = false,
-            contentDescription = "Song cover"
+            contentDescription = "Song cover placeholder"
         )
     }
 }

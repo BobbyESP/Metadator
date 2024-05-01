@@ -48,5 +48,6 @@
     <string name="play">Play</string>
     <string name="pause">Pause</string>
     <string name="edit_image">Edit image</string>
+    <string name="seek_to_previous">Seek to previous</string>
 
 </resources>
