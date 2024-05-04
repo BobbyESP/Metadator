@@ -2,7 +2,6 @@ package com.bobbyesp.metadator.presentation.pages.mediaplayer
 
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import androidx.annotation.OptIn
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -120,8 +119,6 @@ class MediaplayerViewModel @Inject constructor(
             // Move the firstSong to the front of the list
             copiedList.remove(firstSong)
             copiedList.add(0, firstSong)
-
-            Log.d("MediaplayerViewModel", "playRandomQueue: copiedList: $copiedList")
 
             loadQueueSongs(copiedList)
         }

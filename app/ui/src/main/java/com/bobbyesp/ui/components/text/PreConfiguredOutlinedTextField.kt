@@ -19,6 +19,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import com.bobbyesp.ui.R
 
 @Composable
@@ -45,7 +46,7 @@ fun PreConfiguredOutlinedTextField(
         modifier = modifier,
         value = text ?: "",
         onValueChange = setText,
-        label = { Text(text = label) },
+        label = { Text(text = label, maxLines = 1, overflow = TextOverflow.Ellipsis) },
         enabled = enabled,
         readOnly = readOnly,
         keyboardOptions = keyboardOptions,
