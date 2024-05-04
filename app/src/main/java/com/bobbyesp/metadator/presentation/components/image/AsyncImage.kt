@@ -130,7 +130,15 @@ fun ArtworkAsyncImage(
 ) {
     var showArtwork by remember { mutableStateOf(true) }
 
-    if (artworkPath != null && showArtwork) {
+    val model by remember(artworkPath) {
+        mutableStateOf(artworkPath)
+    }
+
+    LaunchedEffect(model) {
+        showArtwork = model != null
+    }
+
+    if (model != null && showArtwork) {
         Box(
             modifier = modifier,
             contentAlignment = Alignment.Center,
@@ -138,7 +146,7 @@ fun ArtworkAsyncImage(
             AsyncImageImpl(
                 modifier = modifier
                     .clip(MaterialTheme.shapes.extraSmall),
-                model = artworkPath,
+                model = model!!,
                 onState = { state ->
                     //if it was successful, don't show the placeholder, else show it
                     showArtwork =
