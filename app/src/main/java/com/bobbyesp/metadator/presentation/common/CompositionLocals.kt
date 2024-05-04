@@ -1,6 +1,7 @@
 package com.bobbyesp.metadator.presentation.common
 
 import android.os.Build
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.SnackbarHostState
@@ -50,6 +51,8 @@ val LocalDrawerState =
     compositionLocalOf<DrawerState> { error("No Drawer State has been provided") }
 val LocalMediaplayerConnection =
     compositionLocalOf<ConnectionHandler> { error("No Media Player Service Connection handler has been provided") }
+val LocalPlayerAwareWindowInsets =
+    compositionLocalOf<WindowInsets> { error("No WindowInsets provided") }
 
 @OptIn(ExperimentalMaterialNavigationApi::class)
 @Composable

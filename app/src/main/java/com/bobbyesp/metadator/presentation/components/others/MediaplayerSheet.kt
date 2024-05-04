@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -162,7 +163,13 @@ private fun MediaplayerExpandedContent(
     }
 
     Surface(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier
+            .fillMaxSize()
+            .padding(
+                WindowInsets.systemBars
+                    .only(WindowInsetsSides.Horizontal)
+                    .asPaddingValues()
+            ),
         color = MaterialTheme.colorScheme.surfaceContainer,
     ) {
         when (config.orientation) {
@@ -448,7 +455,6 @@ fun MiniplayerContent(
     playingSong: MediaMetadata,
     isPlaying: Boolean = false,
     songProgress: Float = 0f,
-    imageModifier: Modifier = Modifier,
     onPlayPause: () -> Unit = {}
 ) {
     val transitionState = remember { MutableTransitionState(playingSong) }
@@ -479,7 +485,7 @@ fun MiniplayerContent(
             horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             ArtworkAsyncImage(
-                modifier = imageModifier
+                modifier = Modifier
                     .size(52.dp)
                     .clip(MaterialTheme.shapes.extraSmall),
                 artworkPath = songCardArtworkUri
