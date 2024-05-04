@@ -50,5 +50,6 @@
     <string name="seek_to_previous">Seek to previous</string>
     <string name="close">Close</string>
     <string name="more">More</string>
+    <string name="music_queue">Music queue</string>
 
 </resources>

@@ -26,7 +26,11 @@ object MotionConstants {
     const val DefaultFadeOutDuration: Int = 75
     val DefaultSlideDistance: Dp = 30.dp
 
+    const val DURATION = 600
     const val DURATION_ENTER = 400
+    const val DURATION_ENTER_SHORT = 300
     const val DURATION_EXIT = 200
+    const val DURATION_EXIT_SHORT = 100
+
     const val initialOffset = 0.10f
 }

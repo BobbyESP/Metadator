@@ -1,13 +1,21 @@
-package com.bobbyesp.metadator.presentation.components.others
+package com.bobbyesp.metadator.presentation.components.others.mediaplayer
 
 import android.content.res.Configuration
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.BoundsTransform
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.core.EaseInOutSine
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.rememberTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -22,13 +30,16 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.QueueMusic
 import androidx.compose.material.icons.rounded.ArrowBackIosNew
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material.icons.rounded.Pause
@@ -72,6 +83,9 @@ import com.bobbyesp.mediaplayer.service.ConnectionState
 import com.bobbyesp.metadator.R
 import com.bobbyesp.metadator.presentation.components.buttons.PlayPauseAnimatedButton
 import com.bobbyesp.metadator.presentation.components.image.ArtworkAsyncImage
+import com.bobbyesp.metadator.presentation.components.others.AnimatedTextContentTransformation
+import com.bobbyesp.metadator.presentation.components.others.CollapsedPlayerHeight
+import com.bobbyesp.metadator.presentation.components.others.SeekToButtonSize
 import com.bobbyesp.metadator.presentation.pages.mediaplayer.MediaplayerViewModel
 import com.bobbyesp.metadator.presentation.theme.MetadatorTheme
 import com.bobbyesp.ui.components.bottomsheet.draggable.DraggableBottomSheet
@@ -79,6 +93,11 @@ import com.bobbyesp.ui.components.bottomsheet.draggable.DraggableBottomSheetStat
 import com.bobbyesp.ui.components.button.DynamicButton
 import com.bobbyesp.ui.components.text.MarqueeText
 import com.bobbyesp.ui.components.text.MarqueeTextGradientOptions
+import com.bobbyesp.ui.motion.MotionConstants.DURATION
+import com.bobbyesp.ui.motion.MotionConstants.DURATION_EXIT_SHORT
+import com.bobbyesp.ui.motion.emphasizeEasing
+import com.bobbyesp.ui.motion.tweenEnter
+import com.bobbyesp.ui.motion.tweenExit
 import com.bobbyesp.utilities.Time.formatDuration
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -100,14 +119,13 @@ fun MediaplayerSheet(
         }
     }
 
-    DraggableBottomSheet(
-        modifier = modifier, state = state, collapsedContent = {
-            MediaplayerCollapsedContent(
-                viewModel = viewModel, nowPlaying = playingSong
-            )
-        }, backgroundColor = MaterialTheme.colorScheme.surfaceContainerHigh, onDismiss = {
-            viewModel.dismissPlayer()
-        }) {
+    DraggableBottomSheet(modifier = modifier, state = state, collapsedContent = {
+        MediaplayerCollapsedContent(
+            viewModel = viewModel, nowPlaying = playingSong
+        )
+    }, backgroundColor = MaterialTheme.colorScheme.surfaceContainerHigh, onDismiss = {
+        viewModel.dismissPlayer()
+    }) {
         MediaplayerExpandedContent(
             viewModel = viewModel,
             sheetState = state,
@@ -147,12 +165,120 @@ private fun MediaplayerCollapsedContent(
     }
 }
 
+
+@Composable
+fun MiniplayerContent(
+    modifier: Modifier = Modifier,
+    playingSong: MediaMetadata,
+    isPlaying: Boolean = false,
+    songProgress: Float = 0f,
+    onPlayPause: () -> Unit = {}
+) {
+    val transitionState = remember { MutableTransitionState(playingSong) }
+
+    LaunchedEffect(playingSong) {
+        transitionState.targetState = playingSong
+    }
+
+    val transition = rememberTransition(transitionState = transitionState)
+
+    val songCardArtworkUri = remember(transitionState.isIdle) {
+        transitionState.currentState.artworkUri
+    }
+
+    val animatedSongProgress by animateFloatAsState(
+        targetValue = songProgress,
+        animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec,
+        label = "Animated song progress"
+    )
+
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterVertically),
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            ArtworkAsyncImage(
+                modifier = Modifier
+                    .size(52.dp)
+                    .clip(MaterialTheme.shapes.extraSmall),
+                artworkPath = songCardArtworkUri
+            )
+            Column(
+                horizontalAlignment = Alignment.Start,
+                modifier = Modifier
+                    .padding(vertical = 8.dp, horizontal = 6.dp)
+                    .weight(1f)
+            ) {
+                transition.AnimatedContent(transitionSpec = { AnimatedTextContentTransformation }) {
+                    Column {
+                        MarqueeText(
+                            text = it.title.toString(),
+                            style = MaterialTheme.typography.bodyLarge,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 16.sp
+                        )
+
+                        MarqueeText(
+                            text = it.artist.toString(),
+                            style = MaterialTheme.typography.bodyMedium.copy(
+                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                            ),
+                            fontSize = 12.sp
+                        )
+                    }
+
+                }
+            }
+
+            DynamicButton(modifier = Modifier
+                .size(42.dp)
+                .padding(4.dp), icon = {
+                Icon(
+                    imageVector = Icons.Rounded.Pause,
+                    contentDescription = stringResource(
+                        id = R.string.pause
+                    ),
+                )
+            }, icon2 = {
+                Icon(
+                    imageVector = Icons.Rounded.PlayArrow,
+                    contentDescription = stringResource(
+                        id = R.string.play
+                    ),
+                )
+            }, isIcon1 = isPlaying
+            ) {
+                onPlayPause()
+            }
+        }
+        LinearProgressIndicator(
+            progress = {
+                animatedSongProgress
+            },
+            modifier = Modifier.fillMaxWidth(),
+        )
+    }
+}
+
+@OptIn(ExperimentalSharedTransitionApi::class)
+private val AlbumArtBoundsTransform = BoundsTransform { _, _ ->
+    tween(easing = emphasizeEasing, durationMillis = DURATION)
+}
+
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 private fun MediaplayerExpandedContent(
     modifier: Modifier = Modifier,
     viewModel: MediaplayerViewModel,
     sheetState: DraggableBottomSheetState
 ) {
+    var view by remember {
+        mutableStateOf(MediaplayerSheetView.FULL_PLAYER)
+    }
     val scope = rememberCoroutineScope()
     val playingSong = viewModel.playingSong.collectAsStateWithLifecycle().value?.mediaMetadata
 
@@ -162,128 +288,159 @@ private fun MediaplayerExpandedContent(
         sheetState.collapseSoft()
     }
 
-    Surface(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(
-                WindowInsets.systemBars
-                    .only(WindowInsetsSides.Horizontal)
-                    .asPaddingValues()
-            ),
-        color = MaterialTheme.colorScheme.surfaceContainer,
+    SharedTransitionLayout(
+        modifier = Modifier.fillMaxSize()
     ) {
-        when (config.orientation) {
-            Configuration.ORIENTATION_LANDSCAPE -> {
-                Row(
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .weight(1f),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        ArtworkAsyncImage(
-                            artworkPath = playingSong?.artworkUri,
-                            modifier = Modifier
-                                .fillMaxHeight(0.9f)
-                                .aspectRatio(1f)
-                                .clip(MaterialTheme.shapes.small)
-                        )
-                        Column(
-                            modifier = Modifier
-                                .align(Alignment.TopStart)
-                                .statusBarsPadding()
-                                .padding(start = 12.dp),
-                        ) {
-                            IconButton(onClick = {
-                                scope.launch {
-                                    sheetState.collapseSoft()
-                                }
-                            }) {
-                                Icon(
-                                    imageVector = Icons.Rounded.ArrowBackIosNew,
-                                    contentDescription = stringResource(id = R.string.close),
-                                    modifier = Modifier.rotate(-90f)
-                                )
-                            }
-                            IconButton(onClick = {
-
-                            }) {
-                                Icon(
-                                    imageVector = Icons.Rounded.MoreVert,
-                                    contentDescription = stringResource(
-                                        id = R.string.more
-                                    )
-                                )
-                            }
-                        }
-                    }
-                    Box(
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .weight(1f),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        PlayerControls(
-                            modifier = Modifier.fillMaxWidth(), viewModel = viewModel
-                        )
-                    }
-                }
-            }
-
-            Configuration.ORIENTATION_PORTRAIT -> {
-                Column(
-                    modifier = Modifier.statusBarsPadding()
-                ) {
+        Surface(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(
+                    WindowInsets.systemBars
+                        .only(WindowInsetsSides.Horizontal)
+                        .asPaddingValues()
+                ),
+            color = MaterialTheme.colorScheme.surfaceContainer,
+        ) {
+            when (config.orientation) {
+                Configuration.ORIENTATION_LANDSCAPE -> {
                     Row(
-                        modifier = Modifier
-                            .padding(horizontal = 12.dp)
-                            .padding(top = 12.dp, bottom = 12.dp)
+                        modifier = Modifier.fillMaxSize()
                     ) {
-                        IconButton(onClick = {
-                            scope.launch {
-                                sheetState.collapseSoft()
-                            }
-                        }) {
-                            Icon(
-                                imageVector = Icons.Rounded.ArrowBackIosNew,
-                                contentDescription = stringResource(id = R.string.close),
-                                modifier = Modifier.rotate(-90f)
-                            )
-
-                        }
-                        Spacer(modifier = Modifier.weight(1f))
-                        IconButton(onClick = {
-
-                        }) {
-                            Icon(
-                                imageVector = Icons.Rounded.MoreVert,
-                                contentDescription = stringResource(id = R.string.more)
-                            )
-                        }
-                    }
-                    Column(
-                        modifier = Modifier.fillMaxSize(),
-                        verticalArrangement = Arrangement.spacedBy(24.dp)
-                    ) {
-                        ArtworkAsyncImage(
-                            artworkPath = playingSong?.artworkUri,
+                        Box(
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .aspectRatio(1f)
-                                .padding(horizontal = 24.dp, vertical = 16.dp)
-                                .clip(MaterialTheme.shapes.small)
-                        )
-                        PlayerControls(
-                            modifier = Modifier.fillMaxWidth(), viewModel = viewModel
-                        )
+                                .fillMaxHeight()
+                                .weight(1f),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            ArtworkAsyncImage(
+                                artworkPath = playingSong?.artworkUri,
+                                modifier = Modifier
+                                    .fillMaxHeight(0.9f)
+                                    .aspectRatio(1f)
+                                    .clip(MaterialTheme.shapes.small)
+                            )
+                            Column(
+                                modifier = Modifier
+                                    .align(Alignment.TopStart)
+                                    .statusBarsPadding()
+                                    .padding(start = 12.dp),
+                            ) {
+                                IconButton(onClick = {
+                                    scope.launch {
+                                        sheetState.collapseSoft()
+                                    }
+                                }) {
+                                    Icon(
+                                        imageVector = Icons.Rounded.ArrowBackIosNew,
+                                        contentDescription = stringResource(id = R.string.close),
+                                        modifier = Modifier.rotate(-90f)
+                                    )
+                                }
+                                IconButton(onClick = {
+
+                                }) {
+                                    Icon(
+                                        imageVector = Icons.Rounded.MoreVert,
+                                        contentDescription = stringResource(
+                                            id = R.string.more
+                                        )
+                                    )
+                                }
+                            }
+                        }
+                        Box(
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .weight(1f),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            PlayerControls(
+                                modifier = Modifier.fillMaxWidth(), viewModel = viewModel
+                            )
+                        }
                     }
                 }
-            }
 
-            else -> {
+                else -> {
+                    AnimatedContent(targetState = view, label = "", transitionSpec = {
+                        fadeIn(
+                            tweenEnter(delayMillis = DURATION_EXIT_SHORT)
+                        ) togetherWith fadeOut(
+                            tweenExit(durationMillis = DURATION_EXIT_SHORT)
+                        )
+                    }) {
+                        when (it) {
+                            MediaplayerSheetView.FULL_PLAYER -> {
+                                Column(
+                                    modifier = Modifier.statusBarsPadding()
+                                ) {
+                                    Row(
+                                        modifier = Modifier
+                                            .padding(horizontal = 12.dp)
+                                            .padding(top = 12.dp, bottom = 12.dp)
+                                    ) {
+                                        IconButton(onClick = {
+                                            scope.launch {
+                                                sheetState.collapseSoft()
+                                            }
+                                        }) {
+                                            Icon(
+                                                imageVector = Icons.Rounded.ArrowBackIosNew,
+                                                contentDescription = stringResource(id = R.string.close),
+                                                modifier = Modifier.rotate(-90f)
+                                            )
 
+                                        }
+                                        Spacer(modifier = Modifier.weight(1f))
+                                        IconButton(onClick = {
+
+                                        }) {
+                                            Icon(
+                                                imageVector = Icons.Rounded.MoreVert,
+                                                contentDescription = stringResource(id = R.string.more)
+                                            )
+                                        }
+                                    }
+                                    Column(
+                                        modifier = Modifier,
+                                        verticalArrangement = Arrangement.spacedBy(24.dp)
+                                    ) {
+                                        ArtworkAsyncImage(
+                                            artworkPath = playingSong?.artworkUri,
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .aspectRatio(1f)
+                                                .padding(horizontal = 24.dp, vertical = 16.dp)
+                                                .clip(MaterialTheme.shapes.small)
+                                        )
+                                        PlayerControls(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            viewModel = viewModel
+                                        )
+                                    }
+                                    Spacer(modifier = Modifier.weight(1f))
+                                    PlayerOptions(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        onOpenQueue = {
+                                            view = MediaplayerSheetView.QUEUE
+                                        }
+                                    )
+                                }
+
+                            }
+
+                            MediaplayerSheetView.QUEUE -> {
+                                PlayerQueue(
+                                    imageModifier = Modifier,
+                                    nowPlaying = playingSong,
+                                    queue = emptyList(), onBackPressed = {
+                                        view = MediaplayerSheetView.FULL_PLAYER
+                                    }
+                                )
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -450,103 +607,62 @@ private fun PlayerControls(
 }
 
 @Composable
-fun MiniplayerContent(
+private fun PlayerQueue(
     modifier: Modifier = Modifier,
-    playingSong: MediaMetadata,
-    isPlaying: Boolean = false,
-    songProgress: Float = 0f,
-    onPlayPause: () -> Unit = {}
+    imageModifier: Modifier,
+    nowPlaying: MediaMetadata?,
+    queue: List<MediaMetadata>,
+    onPlay: (MediaMetadata) -> Unit = {},
+    onBackPressed: () -> Unit = {}
 ) {
-    val transitionState = remember { MutableTransitionState(playingSong) }
-
-    LaunchedEffect(playingSong) {
-        transitionState.targetState = playingSong
+    BackHandler {
+        onBackPressed()
     }
 
-    val transition = rememberTransition(transitionState = transitionState)
-
-    val songCardArtworkUri = remember(transitionState.isIdle) {
-        transitionState.currentState.artworkUri
-    }
-
-    val animatedSongProgress by animateFloatAsState(
-        targetValue = songProgress,
-        animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec,
-        label = "Animated song progress"
-    )
-
-    Column(
-        modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterVertically),
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(4.dp)
+    Column {
+        Box(
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(24.dp)
         ) {
             ArtworkAsyncImage(
-                modifier = Modifier
-                    .size(52.dp)
-                    .clip(MaterialTheme.shapes.extraSmall),
-                artworkPath = songCardArtworkUri
+                artworkPath = nowPlaying?.artworkUri,
+                modifier = imageModifier
+                    .clip(MaterialTheme.shapes.small)
             )
-            Column(
-                horizontalAlignment = Alignment.Start,
-                modifier = Modifier
-                    .padding(vertical = 8.dp, horizontal = 6.dp)
-                    .weight(1f)
-            ) {
-                transition.AnimatedContent(transitionSpec = { AnimatedTextContentTransformation }) {
-                    Column {
-                        MarqueeText(
-                            text = it.title.toString(),
-                            style = MaterialTheme.typography.bodyLarge,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 16.sp
-                        )
-
-                        MarqueeText(
-                            text = it.artist.toString(),
-                            style = MaterialTheme.typography.bodyMedium.copy(
-                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-                            ),
-                            fontSize = 12.sp
-                        )
-                    }
-
-                }
-            }
-
-            DynamicButton(modifier = Modifier
-                .size(42.dp)
-                .padding(4.dp), icon = {
-                Icon(
-                    imageVector = Icons.Rounded.Pause,
-                    contentDescription = stringResource(
-                        id = R.string.pause
-                    ),
-                )
-            }, icon2 = {
-                Icon(
-                    imageVector = Icons.Rounded.PlayArrow,
-                    contentDescription = stringResource(
-                        id = R.string.play
-                    ),
-                )
-            }, isIcon1 = isPlaying
-            ) {
-                onPlayPause()
-            }
         }
-        LinearProgressIndicator(
-            progress = {
-                animatedSongProgress
-            },
-            modifier = Modifier.fillMaxWidth(),
-        )
     }
 }
 
+@Composable
+private fun PlayerOptions(
+    modifier: Modifier = Modifier,
+    onOpenQueue: () -> Unit = {}
+) {
+    Box(
+        modifier = modifier
+            .clip(
+                RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
+            )
+            .background(MaterialTheme.colorScheme.surfaceContainerHigh),
+        contentAlignment = Alignment.Center
+    ) {
+        Row(
+            modifier = Modifier
+                .navigationBarsPadding()
+                .padding(vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            IconButton(onClick = onOpenQueue) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Rounded.QueueMusic,
+                    contentDescription = stringResource(id = R.string.music_queue)
+                )
+            }
+        }
+    }
+}
 
 //@Preview
 //@Preview(uiMode = UI_MODE_NIGHT_YES)

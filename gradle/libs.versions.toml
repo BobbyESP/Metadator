@@ -1,11 +1,11 @@
 [versions]
 #General, lifecycle and core
 agp = "8.5.0-alpha06"
-firebaseCrashlyticsGradle = "2.9.9"
+firebaseCrashlyticsGradle = "3.0.0"
 gradle = "8.5.0-alpha06"
 kotlin = "1.9.23"
 appcompat = "1.7.0-alpha03"
-core-ktx = "1.13.0"
+core-ktx = "1.13.1"
 legacySupportV4 = "1.0.0"
 lifecycle-runtime-ktx = "2.7.0"
 activity-compose = "1.9.0"
@@ -18,11 +18,11 @@ media3 = "1.3.1"
 leakcanary = "2.13"
 
 #Compose
-compose-bom = "2024.04.01"
+compose-bom = "2024.05.00"
 compose-bom-canary = "2024.04.00-alpha02"
 constraintLayout = "1.1.0-alpha13"
 androidx-compose-material3 = "1.2.1"
-compose-util = "1.6.6"
+compose-util = "1.6.7"
 accompanist = "0.34.0"
 compose-pagination = "3.2.1"
 commonsIo = "2.15.0"
@@ -62,7 +62,7 @@ hilt-ext = "1.2.0"
 
 #Database
 room = "2.6.1"
-datastore = "1.1.0"
+datastore = "1.1.1"
 
 #High performance Key-value storage
 mmkv = "1.3.2"
@@ -74,10 +74,10 @@ customTabs = "1.8.0"
 markdown = "0.3.7"
 
 #Firebase, GMS...
-firebaseAuth = "22.3.1"
-gmsPlayServicesAuth = "21.1.0"
+firebaseAuth = "23.0.0"
+gmsPlayServicesAuth = "21.1.1"
 googleServices = "4.4.1"
-firebaseBom = "32.8.1"
+firebaseBom = "33.0.0"
 
 #Others
 taglib = "53f7581088"

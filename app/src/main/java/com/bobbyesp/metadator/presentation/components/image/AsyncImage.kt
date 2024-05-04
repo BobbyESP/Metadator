@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.MusicNote
 import androidx.compose.material3.MaterialTheme
@@ -127,6 +128,7 @@ fun AsyncImageImpl(
 fun ArtworkAsyncImage(
     modifier: Modifier = Modifier,
     artworkPath: Any? = null,
+    imageModifier: Modifier = Modifier
 ) {
     var showArtwork by remember { mutableStateOf(true) }
 
@@ -144,8 +146,9 @@ fun ArtworkAsyncImage(
             contentAlignment = Alignment.Center,
         ) {
             AsyncImageImpl(
-                modifier = modifier
-                    .clip(MaterialTheme.shapes.extraSmall),
+                modifier = imageModifier
+                    .fillMaxSize()
+                    .clip(MaterialTheme.shapes.small),
                 model = model!!,
                 onState = { state ->
                     //if it was successful, don't show the placeholder, else show it
@@ -158,13 +161,19 @@ fun ArtworkAsyncImage(
             )
         }
     } else {
-        PlaceholderCreator(
-            modifier = modifier
-                .clip(MaterialTheme.shapes.small),
-            icon = Icons.Rounded.MusicNote,
-            colorful = false,
-            contentDescription = "Song cover placeholder"
-        )
+        Box(
+            modifier = modifier,
+            contentAlignment = Alignment.Center,
+        ) {
+            PlaceholderCreator(
+                modifier = imageModifier
+                    .fillMaxSize()
+                    .clip(MaterialTheme.shapes.small),
+                icon = Icons.Rounded.MusicNote,
+                colorful = false,
+                contentDescription = "Song cover placeholder"
+            )
+        }
     }
 }
 

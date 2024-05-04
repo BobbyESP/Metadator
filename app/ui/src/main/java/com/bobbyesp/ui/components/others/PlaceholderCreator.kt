@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lyrics
+import androidx.compose.material.icons.rounded.Lyrics
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -32,7 +33,7 @@ fun PlaceholderCreator(
         color = if (colorful) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface,
         modifier = modifier
     ) {
-        if (icon != null) {
+        icon?.let {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Icon(
                     modifier = Modifier
@@ -55,7 +56,7 @@ private fun PlaceholderCreatorPreview() {
         modifier = Modifier
             .width(200.dp)
             .aspectRatio(1f),
-        icon = Icons.Default.Lyrics,
+        icon = Icons.Rounded.Lyrics,
         colorful = true,
         contentDescription = "Song cover"
     )
