@@ -18,7 +18,7 @@ fun MediaplayerSheet(
     modifier: Modifier = Modifier, state: DraggableBottomSheetState, viewModel: MediaplayerViewModel
 ) {
     val playingSong =
-        viewModel.playingSong.collectAsStateWithLifecycle().value?.mediaMetadata ?: return
+        viewModel.songBeingPlayed.collectAsStateWithLifecycle().value?.mediaMetadata ?: return
     val connectionState =
         viewModel.connectionHandler.connectionState.collectAsStateWithLifecycle().value
 

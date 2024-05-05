@@ -2,10 +2,12 @@ package com.bobbyesp.mediaplayer.service
 
 import android.os.Bundle
 import androidx.media3.common.MediaItem
-import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
 import androidx.media3.common.Player.EVENT_POSITION_DISCONTINUITY
 import androidx.media3.common.Player.EVENT_TIMELINE_CHANGED
+import androidx.media3.common.Player.REPEAT_MODE_ALL
+import androidx.media3.common.Player.REPEAT_MODE_OFF
+import androidx.media3.common.Player.REPEAT_MODE_ONE
 import androidx.media3.common.Player.STATE_IDLE
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
@@ -15,7 +17,7 @@ import androidx.media3.exoplayer.analytics.PlaybackStatsListener
 import androidx.media3.exoplayer.source.ShuffleOrder
 import androidx.media3.session.SessionCommand
 import com.bobbyesp.mediaplayer.ext.toMediaItem
-import com.bobbyesp.mediaplayer.service.notifications.MediaSessionLayoutHandler
+import com.bobbyesp.mediaplayer.service.notifications.customLayout.MediaSessionLayoutHandler
 import com.bobbyesp.mediaplayer.service.queue.EmptyQueue
 import com.bobbyesp.mediaplayer.service.queue.Queue
 import kotlinx.coroutines.CoroutineScope
@@ -47,7 +49,9 @@ class MediaServiceHandler @Inject constructor(
 
     val currentMediaItem = MutableStateFlow<MediaItem?>(null)
 
-    val isThePlayerPlaying: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val isPlaying: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val shuffleModeEnabled = MutableStateFlow(false)
+    val repeatMode = MutableStateFlow(REPEAT_MODE_OFF)
 
     private var job: Job? = null
     private val scope = CoroutineScope(Dispatchers.Main)
@@ -59,15 +63,16 @@ class MediaServiceHandler @Inject constructor(
 
     init {
         player.addListener(this)
+        repeatMode.update { player.repeatMode }
+        shuffleModeEnabled.update { player.shuffleModeEnabled }
         job = Job()
     }
 
     override fun onIsPlayingChanged(isPlaying: Boolean) {
-        mediaSessionInterface.updateNotificationLayout()
         _mediaState.update {
             MediaState.Playing(isPlaying)
         }
-        isThePlayerPlaying.update {
+        this.isPlaying.update {
             isPlaying
         }
         super.onIsPlayingChanged(isPlaying)
@@ -88,15 +93,6 @@ class MediaServiceHandler @Inject constructor(
      */
     fun setMediaItem(mediaItem: MediaItem) {
         player.setMediaItem(mediaItem)
-        player.prepare()
-    }
-
-    /**
-     * Sets a list of media items as the current queue and prepares the player for playback.
-     * @param mediaItems The list of media items to be set.
-     */
-    fun setMediaItems(mediaItems: List<MediaItem>) {
-        player.setMediaItems(mediaItems)
         player.prepare()
     }
 
@@ -153,46 +149,6 @@ class MediaServiceHandler @Inject constructor(
     }
 
     /**
-     * Adds a media item to the end of the queue and prepares the player for playback.
-     * @param mediaItem The media item to be added.
-     */
-    fun addMediaItem(mediaItem: MediaItem) {
-        player.addMediaItem(mediaItem)
-        player.prepare()
-    }
-
-    /**
-     * Removes a media item from the queue.
-     * @param index The media item to be removed.
-     */
-    fun removeMediaItemAtIndex(index: Int) {
-        player.removeMediaItem(index)
-    }
-
-    /**
-     * Moves a media item within the queue.
-     * @param currentIndex The current index of the media item.
-     * @param newIndex The new index for the media item.
-     */
-    fun moveMediaItem(currentIndex: Int, newIndex: Int) {
-        player.moveMediaItem(currentIndex, newIndex)
-    }
-
-    /**
-     * Skips to the next media item in the queue.
-     */
-    fun skipToNext() {
-        player.seekToNext()
-    }
-
-    /**
-     * Skips to the previous media item in the queue.
-     */
-    fun skipToPrevious() {
-        player.seekToPrevious()
-    }
-
-    /**
      * Seeks to a specific position in the current media item.
      * @param positionMs The position to seek to, in milliseconds.
      */
@@ -229,31 +185,21 @@ class MediaServiceHandler @Inject constructor(
             is PlayerEvent.UpdateProgress -> {
                 player.seekTo(playerEvent.updatedProgress)
             }
+
+            PlayerEvent.ToggleRepeat -> {
+                val repeatMode = when (player.repeatMode) {
+                    REPEAT_MODE_OFF -> REPEAT_MODE_ONE
+                    REPEAT_MODE_ONE -> REPEAT_MODE_ALL
+                    REPEAT_MODE_ALL -> REPEAT_MODE_OFF
+                    else -> REPEAT_MODE_OFF
+                }
+                player.repeatMode = repeatMode
+            }
+
+            PlayerEvent.ToggleShuffle -> {
+                player.shuffleModeEnabled = !player.shuffleModeEnabled
+            }
         }
-    }
-
-    fun getActualMediaItem(): MediaItem? {
-        return player.currentMediaItem
-    }
-
-    fun getActualMediaItemIndex(): Int {
-        return player.currentMediaItemIndex
-    }
-
-    fun getActualMediaItemMetadata(): MediaMetadata? {
-        return player.currentMediaItem?.mediaMetadata
-    }
-
-    fun getActualMediaItemDuration(): Long {
-        return player.duration
-    }
-
-    fun getActualMediaItemPosition(): Long {
-        return player.currentPosition
-    }
-
-    fun getActualMediaItemPositionPercentage(): Float {
-        return player.currentPosition / player.duration.toFloat()
     }
 
     override fun onEvents(player: Player, events: Player.Events) {
@@ -300,6 +246,7 @@ class MediaServiceHandler @Inject constructor(
     override fun onShuffleModeEnabledChanged(shuffleModeEnabled: Boolean) {
         // Update the notification layout
         mediaSessionInterface.updateNotificationLayout()
+        this.shuffleModeEnabled.update { shuffleModeEnabled }
 
         // If shuffle mode is enabled
         if (shuffleModeEnabled) {
@@ -327,6 +274,7 @@ class MediaServiceHandler @Inject constructor(
 
     override fun onRepeatModeChanged(repeatMode: Int) {
         mediaSessionInterface.updateNotificationLayout()
+        this.repeatMode.update { repeatMode }
     }
 
     private suspend fun startProgressUpdate() = job.run {
@@ -369,6 +317,8 @@ sealed class PlayerEvent {
     data object Stop : PlayerEvent()
     data object Next : PlayerEvent()
     data object Previous : PlayerEvent()
+    data object ToggleShuffle : PlayerEvent()
+    data object ToggleRepeat : PlayerEvent()
     data class UpdateProgress(val updatedProgress: Long) : PlayerEvent()
 }
 

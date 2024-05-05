@@ -51,5 +51,7 @@
     <string name="close">Close</string>
     <string name="more">More</string>
     <string name="music_queue">Music queue</string>
+    <string name="toggle_shuffle">Toggle shuffle</string>
+    <string name="toggle_repeat">Toggle repeat</string>
 
 </resources>

@@ -11,7 +11,8 @@ import com.bobbyesp.ui.motion.materialSharedAxisXIn
 import com.bobbyesp.ui.motion.materialSharedAxisXOut
 
 val CollapsedPlayerHeight = 84.dp
-val SeekToButtonSize = 42.dp
+val SeekToButtonSize = 48.dp
+val PlayerCommandsButtonSize = 48.dp
 
 val PlayerAnimationSpec: AnimationSpec<Dp> = tween(
     durationMillis = 750,

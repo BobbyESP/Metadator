@@ -9,21 +9,22 @@ import androidx.media3.common.Player.REPEAT_MODE_OFF
 import androidx.media3.common.Player.REPEAT_MODE_ONE
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.session.CommandButton
+import androidx.media3.session.MediaLibraryService
 import androidx.media3.session.MediaSession
-import androidx.media3.session.MediaSessionService
 import com.bobbyesp.mediaplayer.R
 import com.bobbyesp.mediaplayer.service.MediaServiceHandler.Companion.CommandToggleRepeatMode
 import com.bobbyesp.mediaplayer.service.MediaServiceHandler.Companion.CommandToggleShuffle
 import com.bobbyesp.mediaplayer.service.notifications.MediaNotificationManager
-import com.bobbyesp.mediaplayer.service.notifications.MediaSessionLayoutHandler
+import com.bobbyesp.mediaplayer.service.notifications.customLayout.MediaSessionLayoutHandler
+import com.google.common.collect.ImmutableList
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @UnstableApi
 @AndroidEntryPoint
-class MediaplayerService : MediaSessionService(), MediaSessionLayoutHandler {
+class MediaplayerService : MediaLibraryService(), MediaSessionLayoutHandler {
     @Inject
-    lateinit var mediaSession: MediaSession
+    lateinit var mediaSession: MediaLibrarySession
 
     @Inject
     lateinit var notificationManager: MediaNotificationManager
@@ -39,44 +40,38 @@ class MediaplayerService : MediaSessionService(), MediaSessionLayoutHandler {
         Log.i("MediaplayerService", "Shuffle mode: ${mediaSession.player.shuffleModeEnabled}")
         Log.i("MediaplayerService", "Repeat mode: ${mediaSession.player.repeatMode}")
 
-        mediaSession.setCustomLayout(
-            listOf(
-                CommandButton.Builder()
-                    .setDisplayName(getString(if (mediaSession.player.shuffleModeEnabled) R.string.action_shuffle_off else R.string.action_shuffle_on))
-                    .setIconResId(if (mediaSession.player.shuffleModeEnabled) R.drawable.shuffle_on else R.drawable.shuffle)
-                    .setSessionCommand(CommandToggleShuffle)
-                    .build(),
-                CommandButton.Builder()
-                    .setDisplayName(
-                        getString(
-                            when (mediaSession.player.repeatMode) {
-                                REPEAT_MODE_OFF -> R.string.repeat_mode_off
-                                REPEAT_MODE_ONE -> R.string.repeat_mode_one
-                                REPEAT_MODE_ALL -> R.string.repeat_mode_all
-                                else -> throw IllegalStateException()
-                            }
-                        )
-                    )
-                    .setIconResId(
+        val commandButtons = ImmutableList.of<CommandButton>(
+            CommandButton.Builder()
+                .setDisplayName(getString(if (mediaSession.player.shuffleModeEnabled) R.string.action_shuffle_off else R.string.action_shuffle_on))
+                .setIconResId(if (mediaSession.player.shuffleModeEnabled) R.drawable.shuffle_on else R.drawable.shuffle)
+                .setSessionCommand(CommandToggleShuffle).build(),
+            CommandButton.Builder()
+                .setDisplayName(
+                    getString(
                         when (mediaSession.player.repeatMode) {
-                            REPEAT_MODE_OFF -> R.drawable.repeat
-                            REPEAT_MODE_ONE -> R.drawable.repeat_one_on
-                            REPEAT_MODE_ALL -> R.drawable.repeat_on
+                            REPEAT_MODE_OFF -> R.string.repeat_mode_off
+                            REPEAT_MODE_ONE -> R.string.repeat_mode_one
+                            REPEAT_MODE_ALL -> R.string.repeat_mode_all
                             else -> throw IllegalStateException()
                         }
                     )
-                    .setSessionCommand(CommandToggleRepeatMode)
-                    .build()
-            )
+                ).setIconResId(
+                    when (mediaSession.player.repeatMode) {
+                        REPEAT_MODE_OFF -> R.drawable.repeat
+                        REPEAT_MODE_ONE -> R.drawable.repeat_one_on
+                        REPEAT_MODE_ALL -> R.drawable.repeat_on
+                        else -> throw IllegalStateException()
+                    }
+                ).setSessionCommand(CommandToggleRepeatMode).build()
         )
+        mediaSession.setCustomLayout(commandButtons)
     }
 
     @UnstableApi
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         connectionHandler.connect(mediaServiceHandler)
         notificationManager.startNotificationService(
-            mediaSessionService = this,
-            mediaSession = mediaSession
+            mediaSessionService = this, mediaSession = mediaSession
         )
         mediaServiceHandler.setMediaSessionInterface(this)
         return super.onStartCommand(intent, flags, startId)
@@ -101,7 +96,7 @@ class MediaplayerService : MediaSessionService(), MediaSessionLayoutHandler {
         stopSelf()
     }
 
-    override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaSession =
+    override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaLibrarySession =
         mediaSession
 
     inner class MusicBinder : Binder() {

@@ -11,7 +11,6 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import androidx.media3.session.MediaLibraryService.MediaLibrarySession
-import androidx.media3.session.MediaSession
 import com.bobbyesp.mediaplayer.service.ConnectionHandler
 import com.bobbyesp.mediaplayer.service.MediaLibrarySessionCallback
 import com.bobbyesp.mediaplayer.service.MediaServiceHandler
@@ -61,11 +60,11 @@ object MediaPlayerModule {
 
     @Provides
     @Singleton
-    fun provideMediaSession(
+    fun provideMediaLibrarySession(
         @ApplicationContext context: Context,
         player: ExoPlayer,
         mediaLibrarySessionCallback: MediaLibrarySessionCallback,
-    ): MediaSession =
+    ): MediaLibrarySession =
         MediaLibrarySession.Builder(context, player, mediaLibrarySessionCallback)
             .setSessionActivity(
                 PendingIntent.getActivity(

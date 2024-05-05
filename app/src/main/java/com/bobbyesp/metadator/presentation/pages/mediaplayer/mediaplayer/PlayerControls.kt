@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -41,6 +42,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bobbyesp.metadator.R
 import com.bobbyesp.metadator.presentation.components.buttons.PlayPauseAnimatedButton
+import com.bobbyesp.metadator.presentation.components.others.RepeatStateIcon
+import com.bobbyesp.metadator.presentation.components.others.ShuffleStateIcon
 import com.bobbyesp.metadator.presentation.pages.mediaplayer.MediaplayerViewModel
 import com.bobbyesp.ui.components.text.MarqueeText
 import com.bobbyesp.ui.components.text.MarqueeTextGradientOptions
@@ -55,13 +58,15 @@ fun PlayerControls(
     viewModel: MediaplayerViewModel,
 ) {
     val scope = rememberCoroutineScope()
+
     val viewState = viewModel.pageViewState.collectAsStateWithLifecycle().value
     val playerState = viewState.uiState
 
-    val playingSong = viewModel.playingSong.collectAsStateWithLifecycle().value?.mediaMetadata
-
     val readyState = playerState as? MediaplayerViewModel.PlayerState.Ready
+
     val progress = readyState?.progress ?: 0f
+
+    val playingSong = viewModel.songBeingPlayed.collectAsStateWithLifecycle().value?.mediaMetadata
 
     var sliderPosition by remember {
         mutableStateOf<Float?>(null)
@@ -78,6 +83,8 @@ fun PlayerControls(
     }
 
     val isPlaying = viewModel.isPlaying.collectAsStateWithLifecycle().value
+    val isShuffleEnabled = viewModel.isShuffleEnabled.collectAsStateWithLifecycle().value
+    val repeatMode = viewModel.repeatMode.collectAsStateWithLifecycle().value
 
     val transitionState = remember { MutableTransitionState(playingSong) }
 
@@ -180,13 +187,22 @@ fun PlayerControls(
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterHorizontally),
+                horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally),
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                IconButton(
+                    modifier = Modifier.size(PlayerCommandsButtonSize),
+                    onClick = viewModel::toggleShuffle
+                ) {
+                    ShuffleStateIcon(
+                        modifier = Modifier,
+                        isShuffleEnabled = isShuffleEnabled
+                    )
+                }
                 IconButton(modifier = Modifier.size(SeekToButtonSize),
                     onClick = { viewModel.seekToPrevious() }) {
                     Icon(
-                        modifier = Modifier.size(SeekToButtonSize),
+                        modifier = Modifier.fillMaxSize(),
                         imageVector = Icons.Rounded.SkipPrevious,
                         contentDescription = stringResource(id = R.string.seek_to_previous)
                     )
@@ -198,9 +214,19 @@ fun PlayerControls(
                     modifier = Modifier.size(SeekToButtonSize),
                     onClick = { viewModel.seekToNext() }) {
                     Icon(
-                        modifier = Modifier.size(SeekToButtonSize),
+                        modifier = Modifier.fillMaxSize(),
                         imageVector = Icons.Rounded.SkipNext,
                         contentDescription = stringResource(id = R.string.seek_to_previous)
+                    )
+                }
+
+                IconButton(
+                    modifier = Modifier.size(PlayerCommandsButtonSize),
+                    onClick = viewModel::toggleRepeat
+                ) {
+                    RepeatStateIcon(
+                        modifier = Modifier,
+                        repeatMode = repeatMode
                     )
                 }
             }

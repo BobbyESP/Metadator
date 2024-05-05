@@ -7,8 +7,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
+import androidx.media3.common.Player.REPEAT_MODE_OFF
 import androidx.media3.common.util.UnstableApi
-import androidx.media3.session.MediaSession
+import androidx.media3.session.MediaLibraryService.MediaLibrarySession
 import com.bobbyesp.mediaplayer.service.ConnectionHandler
 import com.bobbyesp.mediaplayer.service.MediaServiceHandler
 import com.bobbyesp.mediaplayer.service.MediaState
@@ -34,7 +35,7 @@ import javax.inject.Inject
 class MediaplayerViewModel @Inject constructor(
     @ApplicationContext private val applicationContext: Context,
     private val serviceHandler: MediaServiceHandler,
-    private val mediaSession: MediaSession,
+    private val mediaSession: MediaLibrarySession,
     val connectionHandler: ConnectionHandler
 ) : ViewModel() {
     private val mutableMediaplayerPageState = MutableStateFlow(MediaplayerPageState())
@@ -42,8 +43,11 @@ class MediaplayerViewModel @Inject constructor(
 
     val songsFlow = applicationContext.contentResolver.observeSongs()
 
-    val isPlaying = serviceHandler.isThePlayerPlaying
-    val playingSong = serviceHandler.currentMediaItem.asStateFlow()
+    val songBeingPlayed = serviceHandler.currentMediaItem.asStateFlow()
+
+    val isPlaying = serviceHandler.isPlaying
+    val isShuffleEnabled = serviceHandler.shuffleModeEnabled
+    val repeatMode = serviceHandler.repeatMode
 
     data class MediaplayerPageState(
         val uiState: PlayerState = PlayerState.Initial,
@@ -67,7 +71,9 @@ class MediaplayerViewModel @Inject constructor(
                     is MediaState.Ready -> {
                         mutableMediaplayerPageState.update {
                             it.copy(
-                                uiState = PlayerState.Ready(duration = mediaState.duration)
+                                uiState = PlayerState.Ready(
+                                    duration = mediaState.duration,
+                                )
                             )
                         }
                     }
@@ -79,6 +85,18 @@ class MediaplayerViewModel @Inject constructor(
     fun togglePlayPause() {
         viewModelScope.launch {
             serviceHandler.onPlayerEvent(PlayerEvent.PlayPause)
+        }
+    }
+
+    fun toggleShuffle() {
+        viewModelScope.launch {
+            serviceHandler.onPlayerEvent(PlayerEvent.ToggleShuffle)
+        }
+    }
+
+    fun toggleRepeat() {
+        viewModelScope.launch {
+            serviceHandler.onPlayerEvent(PlayerEvent.ToggleRepeat)
         }
     }
 
@@ -144,6 +162,7 @@ class MediaplayerViewModel @Inject constructor(
     private fun loadQueueSongs(songs: List<Song>) {
         val mediaItems = songs.map { song ->
             MediaItem.Builder()
+                .setCustomCacheKey(song.id.toString())
                 .setUri(Uri.fromFile(File(song.path)))
                 .setMediaMetadata(
                     MediaMetadata.Builder()
@@ -210,7 +229,9 @@ class MediaplayerViewModel @Inject constructor(
             val progress: Float = 0f,
             val progressString: String = "00:00",
             val duration: Long = 0L,
-            val isPlaying: Boolean = false
+            val isPlaying: Boolean = false,
+            val isShuffleEnabled: Boolean = false,
+            val repeatMode: Int = REPEAT_MODE_OFF
         ) : PlayerState
     }
 }

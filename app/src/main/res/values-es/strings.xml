@@ -51,4 +51,7 @@
     <string name="seek_to_previous">Volver a la anterior</string>
     <string name="close">Cerrar</string>
     <string name="more">Más</string>
+    <string name="music_queue">Cola de música</string>
+    <string name="toggle_shuffle">Alternar modo aleatorio</string>
+    <string name="toggle_repeat">Alternar modo de repetición</string>
 </resources>

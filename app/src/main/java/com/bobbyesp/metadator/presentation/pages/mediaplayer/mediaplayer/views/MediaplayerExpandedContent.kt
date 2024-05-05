@@ -68,7 +68,7 @@ fun MediaplayerExpandedContent(
         mutableStateOf(MediaplayerSheetView.FULL_PLAYER)
     }
     val scope = rememberCoroutineScope()
-    val playingSong = viewModel.playingSong.collectAsStateWithLifecycle().value?.mediaMetadata
+    val playingSong = viewModel.songBeingPlayed.collectAsStateWithLifecycle().value?.mediaMetadata
 
     val config = LocalConfiguration.current
 
