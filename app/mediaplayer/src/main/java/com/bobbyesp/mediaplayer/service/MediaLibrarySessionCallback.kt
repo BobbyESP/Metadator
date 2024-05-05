@@ -7,7 +7,7 @@ import androidx.media3.common.Player.REPEAT_MODE_ALL
 import androidx.media3.common.Player.REPEAT_MODE_OFF
 import androidx.media3.common.Player.REPEAT_MODE_ONE
 import androidx.media3.common.util.UnstableApi
-import androidx.media3.session.MediaLibraryService
+import androidx.media3.session.MediaLibraryService.MediaLibrarySession
 import androidx.media3.session.MediaSession
 import androidx.media3.session.SessionCommand
 import androidx.media3.session.SessionResult
@@ -26,7 +26,7 @@ import javax.inject.Inject
 
 class MediaLibrarySessionCallback @Inject constructor(
     @ApplicationContext val context: Context,
-) : MediaLibraryService.MediaLibrarySession.Callback {
+) : MediaLibrarySession.Callback {
 
     private val availableCommands = listOf(
         CommandToggleLibrary,

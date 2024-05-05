@@ -50,7 +50,6 @@ import com.bobbyesp.metadator.presentation.components.image.ArtworkAsyncImage
 import com.bobbyesp.metadator.presentation.pages.mediaplayer.MediaplayerViewModel
 import com.bobbyesp.metadator.presentation.pages.mediaplayer.mediaplayer.MediaplayerSheetView
 import com.bobbyesp.metadator.presentation.pages.mediaplayer.mediaplayer.PlayerControls
-import com.bobbyesp.metadator.presentation.pages.mediaplayer.mediaplayer.PlayerOptions
 import com.bobbyesp.ui.components.bottomsheet.draggable.DraggableBottomSheetState
 import com.bobbyesp.ui.motion.MotionConstants
 import com.bobbyesp.ui.motion.tweenEnter
@@ -207,12 +206,12 @@ fun MediaplayerExpandedContent(
                                         )
                                     }
                                     Spacer(modifier = Modifier.weight(1f))
-                                    PlayerOptions(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        onOpenQueue = {
-                                            view = MediaplayerSheetView.QUEUE
-                                        }
-                                    )
+//                                    PlayerOptions(
+//                                        modifier = Modifier.fillMaxWidth(),
+//                                        onOpenQueue = {
+//                                            view = MediaplayerSheetView.QUEUE
+//                                        }
+//                                    )
                                 }
 
                             }

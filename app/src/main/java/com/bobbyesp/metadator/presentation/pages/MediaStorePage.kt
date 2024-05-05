@@ -2,7 +2,6 @@ package com.bobbyesp.metadator.presentation.pages
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -26,7 +25,6 @@ import my.nanihadesuka.compose.LazyColumnScrollbar
 import my.nanihadesuka.compose.LazyGridVerticalScrollbar
 import my.nanihadesuka.compose.ScrollbarSelectionActionable
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MediaStorePage(
     modifier: Modifier = Modifier,

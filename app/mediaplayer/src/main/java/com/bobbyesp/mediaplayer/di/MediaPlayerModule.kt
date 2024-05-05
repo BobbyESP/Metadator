@@ -38,6 +38,8 @@ object MediaPlayerModule {
     fun providePlayer(
         @ApplicationContext context: Context, audioAttributes: AudioAttributes
     ): ExoPlayer = ExoPlayer.Builder(context)
+        .setSeekBackIncrementMs(5000)
+        .setSeekForwardIncrementMs(5000)
         .setAudioAttributes(audioAttributes, true)
         .setHandleAudioBecomingNoisy(true)
         .setTrackSelector(DefaultTrackSelector(context))

@@ -52,6 +52,10 @@ class MediaServiceHandler @Inject constructor(
     val isPlaying: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val shuffleModeEnabled = MutableStateFlow(false)
     val repeatMode = MutableStateFlow(REPEAT_MODE_OFF)
+    val canSkipNext: Boolean
+        get() = player.hasNextMediaItem()
+
+    val canSkipPrevious: Boolean = false
 
     private var job: Job? = null
     private val scope = CoroutineScope(Dispatchers.Main)
@@ -69,6 +73,7 @@ class MediaServiceHandler @Inject constructor(
     }
 
     override fun onIsPlayingChanged(isPlaying: Boolean) {
+        mediaSessionInterface.updateNotificationLayout()
         _mediaState.update {
             MediaState.Playing(isPlaying)
         }
@@ -82,6 +87,7 @@ class MediaServiceHandler @Inject constructor(
      * Stops the player, clears the media queue, and releases resources.
      */
     fun killPlayer() {
+        player.removeListener(this)
         player.stop()
         player.clearMediaItems()
         player.release()
@@ -305,10 +311,10 @@ class MediaServiceHandler @Inject constructor(
         const val ACTION_TOGGLE_LIKE = "TOGGLE_LIKE"
         const val ACTION_TOGGLE_SHUFFLE = "TOGGLE_SHUFFLE"
         const val ACTION_TOGGLE_REPEAT_MODE = "TOGGLE_REPEAT_MODE"
-        val CommandToggleLibrary = SessionCommand(ACTION_TOGGLE_LIBRARY, Bundle.EMPTY)
-        val CommandToggleLike = SessionCommand(ACTION_TOGGLE_LIKE, Bundle.EMPTY)
-        val CommandToggleShuffle = SessionCommand(ACTION_TOGGLE_SHUFFLE, Bundle.EMPTY)
-        val CommandToggleRepeatMode = SessionCommand(ACTION_TOGGLE_REPEAT_MODE, Bundle.EMPTY)
+        val CommandToggleLibrary = SessionCommand(ACTION_TOGGLE_LIBRARY, Bundle())
+        val CommandToggleLike = SessionCommand(ACTION_TOGGLE_LIKE, Bundle())
+        val CommandToggleShuffle = SessionCommand(ACTION_TOGGLE_SHUFFLE, Bundle())
+        val CommandToggleRepeatMode = SessionCommand(ACTION_TOGGLE_REPEAT_MODE, Bundle())
     }
 }
 

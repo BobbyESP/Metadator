@@ -108,60 +108,61 @@ fun HomePage(
     val listIsFirstItemVisible by remember { derivedStateOf { mediaStoreLazyColumnState.firstVisibleItemIndex == 0 } }
 
     Scaffold(modifier = modifier.fillMaxSize(), topBar = {
-        CenterAlignedTopAppBar(navigationIcon = {
-            IconButton(onClick = {
-                scope.launch {
-                    drawerState.open()
-                }
-            }) {
-                Icon(
-                    imageVector = Icons.Rounded.Menu,
-                    contentDescription = stringResource(id = R.string.open_navigation)
-                )
-            }
-        }, title = {
-            Column(
-                horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally,
-            ) {
-                Text(
-                    text = stringResource(id = R.string.app_name).uppercase(),
-                    fontWeight = FontWeight.SemiBold,
-                    fontFamily = FontFamily.Monospace,
-                    style = MaterialTheme.typography.titleLarge.copy(
-                        letterSpacing = 4.sp,
-                    ),
-                )
-                AutoResizableText(
-                    text = stringResource(id = R.string.app_desc).uppercase(),
-                    fontWeight = FontWeight.Normal,
-                    fontFamily = FontFamily.Monospace,
-                    style = MaterialTheme.typography.bodySmall.copy(
-                        letterSpacing = 2.sp,
-                    ),
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
-                )
-            }
-        }, actions = {
-            IconButton(
-                onClick = {
-                    moreOptionsVisible = !moreOptionsVisible
+        CenterAlignedTopAppBar(
+            navigationIcon = {
+                IconButton(onClick = {
+                    scope.launch {
+                        drawerState.open()
+                    }
                 }) {
-                Icon(
-                    imageVector = Icons.Rounded.MoreVert, contentDescription = stringResource(
-                        id = R.string.open_more_options
+                    Icon(
+                        imageVector = Icons.Rounded.Menu,
+                        contentDescription = stringResource(id = R.string.open_navigation)
                     )
-                )
-            }
-            AnimatedDropdownMenu(
-                expanded = moreOptionsVisible, onDismissRequest = {
-                    moreOptionsVisible = false
-                }) {
-                DropdownMenuContent(onLayoutChanged = {
-                    desiredLayout = it
-                })
-            }
+                }
+            }, title = {
+                Column(
+                    horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally,
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.app_name).uppercase(),
+                        fontWeight = FontWeight.SemiBold,
+                        fontFamily = FontFamily.Monospace,
+                        style = MaterialTheme.typography.titleLarge.copy(
+                            letterSpacing = 4.sp,
+                        ),
+                    )
+                    AutoResizableText(
+                        text = stringResource(id = R.string.app_desc).uppercase(),
+                        fontWeight = FontWeight.Normal,
+                        fontFamily = FontFamily.Monospace,
+                        style = MaterialTheme.typography.bodySmall.copy(
+                            letterSpacing = 2.sp,
+                        ),
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                    )
+                }
+            }, actions = {
+                IconButton(
+                    onClick = {
+                        moreOptionsVisible = !moreOptionsVisible
+                    }) {
+                    Icon(
+                        imageVector = Icons.Rounded.MoreVert, contentDescription = stringResource(
+                            id = R.string.open_more_options
+                        )
+                    )
+                }
+                AnimatedDropdownMenu(
+                    expanded = moreOptionsVisible, onDismissRequest = {
+                        moreOptionsVisible = false
+                    }) {
+                    DropdownMenuContent(onLayoutChanged = {
+                        desiredLayout = it
+                    })
+                }
 
-        })
+            })
     }, floatingActionButton = {
         when (desiredLayout) {
             LayoutType.Grid -> {

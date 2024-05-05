@@ -5,6 +5,7 @@ import android.net.Uri
 import androidx.annotation.OptIn
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player.REPEAT_MODE_OFF
@@ -49,6 +50,9 @@ class MediaplayerViewModel @Inject constructor(
     val isShuffleEnabled = serviceHandler.shuffleModeEnabled
     val repeatMode = serviceHandler.repeatMode
 
+    val canSkipNext = serviceHandler.canSkipNext
+    val canSkipPrevious = serviceHandler.canSkipPrevious
+
     data class MediaplayerPageState(
         val uiState: PlayerState = PlayerState.Initial,
     )
@@ -57,7 +61,11 @@ class MediaplayerViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             serviceHandler.mediaState.collectLatest { mediaState ->
                 when (mediaState) {
-                    is MediaState.Buffering -> calculateProgressValues(mediaState.progress)
+                    is MediaState.Buffering -> {
+                        if (mediaState.progress != C.TIME_UNSET) {
+                            calculateProgressValues(mediaState.progress)
+                        }
+                    }
                     is MediaState.Playing -> mutableMediaplayerPageState.update {
                         (it.uiState as? PlayerState.Ready)?.let { readyState ->
                             it.copy(
@@ -67,7 +75,11 @@ class MediaplayerViewModel @Inject constructor(
                     }
 
                     is MediaState.Idle -> mutableMediaplayerPageState.update { it.copy(uiState = PlayerState.Initial) }
-                    is MediaState.Progress -> calculateProgressValues(mediaState.progress)
+                    is MediaState.Progress -> {
+                        if (mediaState.progress != C.TIME_UNSET) {
+                            calculateProgressValues(mediaState.progress)
+                        }
+                    }
                     is MediaState.Ready -> {
                         mutableMediaplayerPageState.update {
                             it.copy(

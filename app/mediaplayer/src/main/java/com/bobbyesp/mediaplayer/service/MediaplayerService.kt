@@ -2,7 +2,6 @@ package com.bobbyesp.mediaplayer.service
 
 import android.content.Intent
 import android.os.Binder
-import android.util.Log
 import androidx.media3.common.Player
 import androidx.media3.common.Player.REPEAT_MODE_ALL
 import androidx.media3.common.Player.REPEAT_MODE_OFF
@@ -36,13 +35,9 @@ class MediaplayerService : MediaLibraryService(), MediaSessionLayoutHandler {
     lateinit var mediaServiceHandler: MediaServiceHandler
 
     override fun updateNotificationLayout() {
-        Log.i("MediaplayerService", "Updating notification layout")
-        Log.i("MediaplayerService", "Shuffle mode: ${mediaSession.player.shuffleModeEnabled}")
-        Log.i("MediaplayerService", "Repeat mode: ${mediaSession.player.repeatMode}")
-
         val commandButtons = ImmutableList.of<CommandButton>(
             CommandButton.Builder()
-                .setDisplayName(getString(if (mediaSession.player.shuffleModeEnabled) R.string.action_shuffle_off else R.string.action_shuffle_on))
+                .setDisplayName(getString(if (mediaSession.player.shuffleModeEnabled) R.string.action_shuffle_on else R.string.action_shuffle_off))
                 .setIconResId(if (mediaSession.player.shuffleModeEnabled) R.drawable.shuffle_on else R.drawable.shuffle)
                 .setSessionCommand(CommandToggleShuffle).build(),
             CommandButton.Builder()
