@@ -1,4 +1,4 @@
-package com.bobbyesp.metadator.presentation.components.others
+package com.bobbyesp.metadator.presentation.pages.mediaplayer.mediaplayer
 
 import androidx.compose.animation.ContentTransform
 import androidx.compose.animation.SizeTransform

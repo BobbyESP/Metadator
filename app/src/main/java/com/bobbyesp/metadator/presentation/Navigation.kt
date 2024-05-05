@@ -55,12 +55,12 @@ import com.bobbyesp.metadator.presentation.common.NavArgs
 import com.bobbyesp.metadator.presentation.common.Route
 import com.bobbyesp.metadator.presentation.common.TagEditorParcelableSongParamType
 import com.bobbyesp.metadator.presentation.common.routesToNavigate
-import com.bobbyesp.metadator.presentation.components.others.CollapsedPlayerHeight
-import com.bobbyesp.metadator.presentation.components.others.PlayerAnimationSpec
 import com.bobbyesp.metadator.presentation.pages.MediaStorePageViewModel
 import com.bobbyesp.metadator.presentation.pages.home.HomePage
 import com.bobbyesp.metadator.presentation.pages.mediaplayer.MediaplayerPage
 import com.bobbyesp.metadator.presentation.pages.mediaplayer.MediaplayerViewModel
+import com.bobbyesp.metadator.presentation.pages.mediaplayer.mediaplayer.CollapsedPlayerHeight
+import com.bobbyesp.metadator.presentation.pages.mediaplayer.mediaplayer.PlayerAnimationSpec
 import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.ID3MetadataEditorPage
 import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.ID3MetadataEditorPageViewModel
 import com.bobbyesp.ui.components.bottomsheet.draggable.rememberDraggableBottomSheetState

@@ -1,4 +1,4 @@
-package com.bobbyesp.metadator.presentation.components.others.mediaplayer
+package com.bobbyesp.metadator.presentation.pages.mediaplayer.mediaplayer
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.EaseInOutSine
@@ -41,8 +41,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bobbyesp.metadator.R
 import com.bobbyesp.metadator.presentation.components.buttons.PlayPauseAnimatedButton
-import com.bobbyesp.metadator.presentation.components.others.AnimatedTextContentTransformation
-import com.bobbyesp.metadator.presentation.components.others.SeekToButtonSize
 import com.bobbyesp.metadator.presentation.pages.mediaplayer.MediaplayerViewModel
 import com.bobbyesp.ui.components.text.MarqueeText
 import com.bobbyesp.ui.components.text.MarqueeTextGradientOptions
