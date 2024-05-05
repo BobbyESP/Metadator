@@ -15,6 +15,8 @@ import com.bobbyesp.mediaplayer.service.ConnectionHandler
 import com.bobbyesp.mediaplayer.service.MediaLibrarySessionCallback
 import com.bobbyesp.mediaplayer.service.MediaServiceHandler
 import com.bobbyesp.mediaplayer.service.notifications.MediaNotificationManager
+import com.bobbyesp.mediaplayer.service.notifications.customLayout.MediaSessionLayoutHandler
+import com.bobbyesp.mediaplayer.service.notifications.customLayout.MediaSessionLayoutHandlerImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -90,4 +92,13 @@ object MediaPlayerModule {
     @Provides
     @Singleton
     fun provideConnectionHandler(): ConnectionHandler = ConnectionHandler()
+
+    @Provides
+    @Singleton
+    fun provideMediaSessionLayoutHandler(
+        @ApplicationContext context: Context,
+        mediaLibrarySessionCallback: MediaLibrarySessionCallback,
+        mediaLibrarySession: MediaLibrarySession
+    ): MediaSessionLayoutHandler =
+        MediaSessionLayoutHandlerImpl(context, mediaLibrarySession, mediaLibrarySessionCallback)
 }
