@@ -1,5 +1,6 @@
 package com.bobbyesp.mediaplayer.service
 
+import android.os.Bundle
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
@@ -11,7 +12,10 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.analytics.AnalyticsListener
 import androidx.media3.exoplayer.analytics.PlaybackStats
 import androidx.media3.exoplayer.analytics.PlaybackStatsListener
+import androidx.media3.exoplayer.source.ShuffleOrder
+import androidx.media3.session.SessionCommand
 import com.bobbyesp.mediaplayer.ext.toMediaItem
+import com.bobbyesp.mediaplayer.service.notifications.MediaSessionLayoutHandler
 import com.bobbyesp.mediaplayer.service.queue.EmptyQueue
 import com.bobbyesp.mediaplayer.service.queue.Queue
 import kotlinx.coroutines.CoroutineScope
@@ -47,7 +51,19 @@ class MediaServiceHandler @Inject constructor(
 
     private var job: Job? = null
     private val scope = CoroutineScope(Dispatchers.Main)
+    private lateinit var mediaSessionInterface: MediaSessionLayoutHandler
+
+    fun setMediaSessionInterface(mediaSessionInterface: MediaSessionLayoutHandler) {
+        this.mediaSessionInterface = mediaSessionInterface
+    }
+
+    init {
+        player.addListener(this)
+        job = Job()
+    }
+
     override fun onIsPlayingChanged(isPlaying: Boolean) {
+        mediaSessionInterface.updateNotificationLayout()
         _mediaState.update {
             MediaState.Playing(isPlaying)
         }
@@ -55,11 +71,6 @@ class MediaServiceHandler @Inject constructor(
             isPlaying
         }
         super.onIsPlayingChanged(isPlaying)
-    }
-
-    init {
-        player.addListener(this)
-        job = Job()
     }
 
     /**
@@ -221,13 +232,6 @@ class MediaServiceHandler @Inject constructor(
         }
     }
 
-    override fun onEvents(player: Player, events: Player.Events) {
-        super.onEvents(player, events)
-        if (events.containsAny(EVENT_TIMELINE_CHANGED, EVENT_POSITION_DISCONTINUITY)) {
-            currentMediaItem.value = player.currentMediaItem
-        }
-    }
-
     fun getActualMediaItem(): MediaItem? {
         return player.currentMediaItem
     }
@@ -252,6 +256,12 @@ class MediaServiceHandler @Inject constructor(
         return player.currentPosition / player.duration.toFloat()
     }
 
+    override fun onEvents(player: Player, events: Player.Events) {
+        super.onEvents(player, events)
+        if (events.containsAny(EVENT_TIMELINE_CHANGED, EVENT_POSITION_DISCONTINUITY)) {
+            currentMediaItem.value = player.currentMediaItem
+        }
+    }
 
     override fun onPlaybackStateChanged(playbackState: Int) {
         when (playbackState) {
@@ -281,6 +291,44 @@ class MediaServiceHandler @Inject constructor(
         }
     }
 
+    /**
+     * This method is triggered when the shuffle mode is enabled or disabled in the player.
+     * It updates the notification layout and, if shuffle mode is enabled, it shuffles the media items in the player.
+     *
+     * @param shuffleModeEnabled A boolean indicating whether shuffle mode is enabled.
+     */
+    override fun onShuffleModeEnabledChanged(shuffleModeEnabled: Boolean) {
+        // Update the notification layout
+        mediaSessionInterface.updateNotificationLayout()
+
+        // If shuffle mode is enabled
+        if (shuffleModeEnabled) {
+            // Always put current playing item at first
+            // Create an array of indices representing the media items in the player
+            val shuffledIndices = IntArray(player.mediaItemCount) { it }
+
+            // Shuffle the indices
+            shuffledIndices.shuffle()
+
+            // Swap the current media item index with the first index
+            shuffledIndices[shuffledIndices.indexOf(player.currentMediaItemIndex)] =
+                shuffledIndices[0]
+            shuffledIndices[0] = player.currentMediaItemIndex
+
+            // Set the shuffle order in the player using the shuffled indices
+            player.setShuffleOrder(
+                ShuffleOrder.DefaultShuffleOrder(
+                    shuffledIndices,
+                    System.currentTimeMillis()
+                )
+            )
+        }
+    }
+
+    override fun onRepeatModeChanged(repeatMode: Int) {
+        mediaSessionInterface.updateNotificationLayout()
+    }
+
     private suspend fun startProgressUpdate() = job.run {
         while (true) {
             delay(250)
@@ -302,6 +350,17 @@ class MediaServiceHandler @Inject constructor(
         playbackStats: PlaybackStats
     ) {
         TODO("Not yet implemented")
+    }
+
+    companion object {
+        const val ACTION_TOGGLE_LIBRARY = "TOGGLE_LIBRARY"
+        const val ACTION_TOGGLE_LIKE = "TOGGLE_LIKE"
+        const val ACTION_TOGGLE_SHUFFLE = "TOGGLE_SHUFFLE"
+        const val ACTION_TOGGLE_REPEAT_MODE = "TOGGLE_REPEAT_MODE"
+        val CommandToggleLibrary = SessionCommand(ACTION_TOGGLE_LIBRARY, Bundle.EMPTY)
+        val CommandToggleLike = SessionCommand(ACTION_TOGGLE_LIKE, Bundle.EMPTY)
+        val CommandToggleShuffle = SessionCommand(ACTION_TOGGLE_SHUFFLE, Bundle.EMPTY)
+        val CommandToggleRepeatMode = SessionCommand(ACTION_TOGGLE_REPEAT_MODE, Bundle.EMPTY)
     }
 }
 

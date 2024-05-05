@@ -67,7 +67,7 @@ fun MediaplayerPage(
                                     fadeOutSpec = null
                                 ),
                                 onClick = {
-                                    viewModel.playShuffledQueue(song)
+                                    viewModel.playOrderedQueue(song)
 
                                     if (mediaPlayerSheetState.isDismissed) {
                                         mediaPlayerSheetState.collapseSoft()

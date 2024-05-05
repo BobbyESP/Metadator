@@ -43,7 +43,6 @@ class MediaplayerViewModel @Inject constructor(
     val songsFlow = applicationContext.contentResolver.observeSongs()
 
     val isPlaying = serviceHandler.isThePlayerPlaying
-
     val playingSong = serviceHandler.currentMediaItem.asStateFlow()
 
     data class MediaplayerPageState(
@@ -83,6 +82,13 @@ class MediaplayerViewModel @Inject constructor(
         }
     }
 
+    fun playOrderedQueue(firstSong: Song) {
+        playQueue(firstSong)
+        viewModelScope.launch {
+            serviceHandler.onPlayerEvent(PlayerEvent.PlayPause)
+        }
+    }
+
     fun playShuffledQueue(firstSong: Song) {
         playRandomQueue(firstSong)
         viewModelScope.launch {
@@ -117,6 +123,17 @@ class MediaplayerViewModel @Inject constructor(
             copiedList.shuffle()
 
             // Move the firstSong to the front of the list
+            copiedList.remove(firstSong)
+            copiedList.add(0, firstSong)
+
+            loadQueueSongs(copiedList)
+        }
+    }
+
+    private fun playQueue(firstSong: Song) {
+        viewModelScope.launch {
+            val copiedList = applicationContext.contentResolver.getSongs().toMutableList()
+
             copiedList.remove(firstSong)
             copiedList.add(0, firstSong)
 
