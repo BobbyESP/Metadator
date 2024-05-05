@@ -1,5 +1,6 @@
 package com.bobbyesp.mediaplayer.di
 
+import android.app.PendingIntent
 import android.content.Context
 import android.os.Build
 import androidx.annotation.OptIn
@@ -63,9 +64,17 @@ object MediaPlayerModule {
     fun provideMediaSession(
         @ApplicationContext context: Context,
         player: ExoPlayer,
-        mediaLibrarySessionCallback: MediaLibrarySessionCallback
+        mediaLibrarySessionCallback: MediaLibrarySessionCallback,
     ): MediaSession =
         MediaLibrarySession.Builder(context, player, mediaLibrarySessionCallback)
+            .setSessionActivity(
+                PendingIntent.getActivity(
+                    context,
+                    0,
+                    context.packageManager.getLaunchIntentForPackage(context.packageName),
+                    PendingIntent.FLAG_IMMUTABLE
+                )
+            )
             .build()
 
     @Provides

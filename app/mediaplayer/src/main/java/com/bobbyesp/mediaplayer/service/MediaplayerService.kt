@@ -36,6 +36,9 @@ class MediaplayerService : MediaSessionService(), MediaSessionLayoutHandler {
 
     override fun updateNotificationLayout() {
         Log.i("MediaplayerService", "Updating notification layout")
+        Log.i("MediaplayerService", "Shuffle mode: ${mediaSession.player.shuffleModeEnabled}")
+        Log.i("MediaplayerService", "Repeat mode: ${mediaSession.player.repeatMode}")
+
         mediaSession.setCustomLayout(
             listOf(
                 CommandButton.Builder()

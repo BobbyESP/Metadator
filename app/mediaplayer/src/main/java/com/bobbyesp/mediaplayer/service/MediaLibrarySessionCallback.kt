@@ -25,21 +25,29 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
 class MediaLibrarySessionCallback @Inject constructor(
-    @ApplicationContext val context: Context
+    @ApplicationContext val context: Context,
 ) : MediaLibraryService.MediaLibrarySession.Callback {
+
+    private val availableCommands = listOf(
+        CommandToggleLibrary,
+        CommandToggleLike,
+        CommandToggleShuffle,
+        CommandToggleRepeatMode
+    )
 
     override fun onConnect(
         session: MediaSession,
         controller: MediaSession.ControllerInfo
     ): MediaSession.ConnectionResult {
         val connectionResult = super.onConnect(session, controller)
+        val availableSessionCommands = connectionResult.availableSessionCommands.buildUpon()
+
+        availableCommands.forEach {
+            availableSessionCommands.add(it)
+        }
+
         return MediaSession.ConnectionResult.accept(
-            connectionResult.availableSessionCommands.buildUpon()
-                .add(CommandToggleLibrary)
-                .add(CommandToggleLike)
-                .add(CommandToggleShuffle)
-                .add(CommandToggleRepeatMode)
-                .build(),
+            availableSessionCommands.build(),
             connectionResult.availablePlayerCommands
         )
     }
