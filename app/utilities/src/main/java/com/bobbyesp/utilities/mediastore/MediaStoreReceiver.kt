@@ -227,9 +227,10 @@ object MediaStoreReceiver {
         }
 
         fun ContentResolver.observeSongs(
+            searchTerm: String? = null,
             filter: MediaStoreFilterType? = null,
         ) = observe(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI).map {
-            getSongs(filterType = filter)
+            getSongs(filterType = filter, searchTerm = searchTerm)
         }
     }
 }

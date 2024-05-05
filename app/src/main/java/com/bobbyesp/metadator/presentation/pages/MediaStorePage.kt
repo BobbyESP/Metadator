@@ -20,6 +20,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bobbyesp.metadator.presentation.components.cards.songs.HorizontalSongCard
 import com.bobbyesp.metadator.presentation.components.cards.songs.VerticalSongCard
 import com.bobbyesp.metadator.presentation.pages.home.LayoutType
+import com.bobbyesp.metadator.presentation.pages.status.EmptyMediaStore
 import com.bobbyesp.model.Song
 import my.nanihadesuka.compose.LazyColumnScrollbar
 import my.nanihadesuka.compose.LazyGridVerticalScrollbar
@@ -42,60 +43,66 @@ fun MediaStorePage(
         Crossfade(
             targetState = desiredLayout, label = "List item transition", animationSpec = tween(200)
         ) { type ->
-            when (type) {
-                LayoutType.Grid -> {
-                    LazyGridVerticalScrollbar(
-                        state = lazyGridState,
-                        thumbColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                        thumbSelectedColor = MaterialTheme.colorScheme.primary,
-                        selectionActionable = ScrollbarSelectionActionable.WhenVisible,
-                    ) {
-                        LazyVerticalGrid(
-                            columns = GridCells.Adaptive(125.dp),
-                            verticalArrangement = Arrangement.spacedBy(6.dp),
-                            horizontalArrangement = Arrangement.spacedBy(6.dp),
-                            contentPadding = PaddingValues(8.dp),
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .background(MaterialTheme.colorScheme.background),
-                            state = lazyGridState
+            if (songs.isEmpty()) {
+                EmptyMediaStore(
+                    modifier = Modifier.fillMaxSize()
+                )
+            } else {
+                when (type) {
+                    LayoutType.Grid -> {
+                        LazyGridVerticalScrollbar(
+                            state = lazyGridState,
+                            thumbColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                            thumbSelectedColor = MaterialTheme.colorScheme.primary,
+                            selectionActionable = ScrollbarSelectionActionable.WhenVisible,
                         ) {
-                            items(count = songs.size,
-                                key = { index -> songs[index].id },
-                                contentType = { index -> songs[index].id.toString() }) { index ->
-                                val song = songs[index]
-                                VerticalSongCard(song = song, modifier = Modifier.animateItem(
-                                    fadeInSpec = null, fadeOutSpec = null
-                                ), onClick = {
-                                    onItemClicked(song)
-                                })
+                            LazyVerticalGrid(
+                                columns = GridCells.Adaptive(125.dp),
+                                verticalArrangement = Arrangement.spacedBy(6.dp),
+                                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                                contentPadding = PaddingValues(8.dp),
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .background(MaterialTheme.colorScheme.background),
+                                state = lazyGridState
+                            ) {
+                                items(count = songs.size,
+                                    key = { index -> songs[index].id },
+                                    contentType = { index -> songs[index].id.toString() }) { index ->
+                                    val song = songs[index]
+                                    VerticalSongCard(song = song, modifier = Modifier.animateItem(
+                                        fadeInSpec = null, fadeOutSpec = null
+                                    ), onClick = {
+                                        onItemClicked(song)
+                                    })
+                                }
                             }
                         }
                     }
-                }
 
-                LayoutType.List -> {
-                    LazyColumnScrollbar(
-                        listState = lazyListState,
-                        thumbColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                        thumbSelectedColor = MaterialTheme.colorScheme.primary,
-                        selectionActionable = ScrollbarSelectionActionable.WhenVisible,
-                    ) {
-                        LazyColumn(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .background(MaterialTheme.colorScheme.background),
-                            state = lazyListState,
+                    LayoutType.List -> {
+                        LazyColumnScrollbar(
+                            listState = lazyListState,
+                            thumbColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                            thumbSelectedColor = MaterialTheme.colorScheme.primary,
+                            selectionActionable = ScrollbarSelectionActionable.WhenVisible,
                         ) {
-                            items(count = songs.size,
-                                key = { index -> songs[index].id },
-                                contentType = { index -> songs[index].id.toString() }) { index ->
-                                val song = songs[index]
-                                HorizontalSongCard(song = song, modifier = Modifier.animateItem(
-                                    fadeInSpec = null, fadeOutSpec = null
-                                ), onClick = {
-                                    onItemClicked(song)
-                                })
+                            LazyColumn(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .background(MaterialTheme.colorScheme.background),
+                                state = lazyListState,
+                            ) {
+                                items(count = songs.size,
+                                    key = { index -> songs[index].id },
+                                    contentType = { index -> songs[index].id.toString() }) { index ->
+                                    val song = songs[index]
+                                    HorizontalSongCard(song = song, modifier = Modifier.animateItem(
+                                        fadeInSpec = null, fadeOutSpec = null
+                                    ), onClick = {
+                                        onItemClicked(song)
+                                    })
+                                }
                             }
                         }
                     }

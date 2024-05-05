@@ -53,5 +53,7 @@
     <string name="music_queue">Music queue</string>
     <string name="toggle_shuffle">Toggle shuffle</string>
     <string name="toggle_repeat">Toggle repeat</string>
+    <string name="empty_media_store">Empty MediaStore</string>
+    <string name="empty_media_store_desc">Seems like you have no songs on your device. Come back when there\'s something to edit!</string>
 
 </resources>

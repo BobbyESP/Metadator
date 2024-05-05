@@ -54,4 +54,6 @@
     <string name="music_queue">Cola de música</string>
     <string name="toggle_shuffle">Alternar modo aleatorio</string>
     <string name="toggle_repeat">Alternar modo de repetición</string>
+    <string name="empty_media_store">MediaStore vacío</string>
+    <string name="empty_media_store_desc">Parece que no tienes canciones en tu dispositivo. Vuelve cuando tengas algo que editar!</string>
 </resources>
