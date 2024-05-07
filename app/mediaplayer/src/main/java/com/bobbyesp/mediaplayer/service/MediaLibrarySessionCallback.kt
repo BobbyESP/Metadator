@@ -2,6 +2,7 @@ package com.bobbyesp.mediaplayer.service
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.annotation.OptIn
 import androidx.media3.common.Player.REPEAT_MODE_ALL
 import androidx.media3.common.Player.REPEAT_MODE_OFF
@@ -39,6 +40,7 @@ class MediaLibrarySessionCallback @Inject constructor(
         session: MediaSession,
         controller: MediaSession.ControllerInfo
     ): MediaSession.ConnectionResult {
+        Log.i("MediaLibrarySessionCallback", session.toString())
         val connectionResult = super.onConnect(session, controller)
         val availableSessionCommands = connectionResult.availableSessionCommands.buildUpon()
 

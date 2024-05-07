@@ -2,6 +2,7 @@ package com.bobbyesp.metadator.presentation.pages.mediaplayer
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import androidx.annotation.OptIn
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -58,6 +59,7 @@ class MediaplayerViewModel @Inject constructor(
     )
 
     init {
+        Log.i("MediaplayerViewModel", mediaSession.toString())
         viewModelScope.launch(Dispatchers.IO) {
             serviceHandler.mediaState.collectLatest { mediaState ->
                 when (mediaState) {

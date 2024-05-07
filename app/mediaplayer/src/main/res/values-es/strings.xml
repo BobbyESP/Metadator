@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="action_shuffle_off">Modo aleatorio desactivado</string>
+    <string name="action_shuffle_on">Modo aleatorio activado</string>
+    <string name="repeat_mode_off">Repetición desactivada</string>
+    <string name="repeat_mode_one">Repetir la canción actual</string>
+    <string name="repeat_mode_all">Repetir todo</string>
+</resources>
