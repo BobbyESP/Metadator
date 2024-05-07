@@ -1,6 +1,5 @@
 package com.bobbyesp.mediaplayer.service
 
-import android.os.Bundle
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.Player.EVENT_POSITION_DISCONTINUITY
@@ -15,7 +14,6 @@ import androidx.media3.exoplayer.analytics.AnalyticsListener
 import androidx.media3.exoplayer.analytics.PlaybackStats
 import androidx.media3.exoplayer.analytics.PlaybackStatsListener
 import androidx.media3.exoplayer.source.ShuffleOrder
-import androidx.media3.session.SessionCommand
 import com.bobbyesp.mediaplayer.ext.toMediaItem
 import com.bobbyesp.mediaplayer.service.notifications.customLayout.MediaSessionLayoutHandler
 import com.bobbyesp.mediaplayer.service.queue.EmptyQueue
@@ -175,8 +173,7 @@ class MediaServiceHandler @Inject constructor(
             }
 
             is PlayerEvent.Stop -> {
-                /**THIS KILLS THE PLAYER**/
-                player.stop()
+                killPlayer()
                 stopProgressUpdate()
             }
 
@@ -304,17 +301,6 @@ class MediaServiceHandler @Inject constructor(
         playbackStats: PlaybackStats
     ) {
         TODO("Not yet implemented")
-    }
-
-    companion object {
-        const val ACTION_TOGGLE_LIBRARY = "TOGGLE_LIBRARY"
-        const val ACTION_TOGGLE_LIKE = "TOGGLE_LIKE"
-        const val ACTION_TOGGLE_SHUFFLE = "TOGGLE_SHUFFLE"
-        const val ACTION_TOGGLE_REPEAT_MODE = "TOGGLE_REPEAT_MODE"
-        val CommandToggleLibrary = SessionCommand(ACTION_TOGGLE_LIBRARY, Bundle())
-        val CommandToggleLike = SessionCommand(ACTION_TOGGLE_LIKE, Bundle())
-        val CommandToggleShuffle = SessionCommand(ACTION_TOGGLE_SHUFFLE, Bundle())
-        val CommandToggleRepeatMode = SessionCommand(ACTION_TOGGLE_REPEAT_MODE, Bundle())
     }
 }
 

@@ -9,8 +9,8 @@ import androidx.media3.session.CommandButton
 import androidx.media3.session.MediaLibraryService
 import com.bobbyesp.mediaplayer.R
 import com.bobbyesp.mediaplayer.service.MediaLibrarySessionCallback
-import com.bobbyesp.mediaplayer.service.MediaServiceHandler.Companion.CommandToggleRepeatMode
-import com.bobbyesp.mediaplayer.service.MediaServiceHandler.Companion.CommandToggleShuffle
+import com.bobbyesp.mediaplayer.service.MediaSessionConstants.CommandToggleRepeatMode
+import com.bobbyesp.mediaplayer.service.MediaSessionConstants.CommandToggleShuffle
 import com.google.common.collect.ImmutableList
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject

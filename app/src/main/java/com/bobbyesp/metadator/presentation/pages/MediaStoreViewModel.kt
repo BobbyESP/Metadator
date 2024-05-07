@@ -11,5 +11,6 @@ import javax.inject.Inject
 class MediaStorePageViewModel @Inject constructor(
     @ApplicationContext private val applicationContext: Context
 ) : ViewModel() {
-    val songsFlow = applicationContext.contentResolver.observeSongs()
+    val songsFlow =
+        applicationContext.contentResolver.observeSongs() //TODO: Use State<T> for checking when it is loading
 }
