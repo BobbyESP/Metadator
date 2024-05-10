@@ -46,15 +46,36 @@ class MediaNotificationManager @Inject constructor(
                     pendingIntent = mediaSession.sessionActivity
                 )
             )
-            .setSmallIconResourceId(R.drawable.metadator_logo_foreground_player)
+            .setSmallIconResourceId(R.drawable.metadator_logo_player)
+            .setNotificationListener(object : PlayerNotificationManager.NotificationListener {
+                override fun onNotificationCancelled(
+                    notificationId: Int,
+                    dismissedByUser: Boolean
+                ) {
+                    Log.d(
+                        "MediaNotificationManager",
+                        "onNotificationCancelled: notification cancelled"
+                    )
+                }
+
+                override fun onNotificationPosted(
+                    notificationId: Int,
+                    notification: Notification,
+                    ongoing: Boolean
+                ) {
+                    Log.d(
+                        "MediaNotificationManager",
+                        "onNotificationPosted: notification posted"
+                    )
+                }
+            })
             .build()
-            .also {
-                it.setMediaSessionToken(mediaSession.sessionCompatToken)
-                it.setUseFastForwardActionInCompactView(true)
-                it.setUseRewindActionInCompactView(true)
-                it.setUseNextActionInCompactView(false)
-                it.setPriority(NotificationCompat.PRIORITY_LOW)
-                it.setPlayer(player)
+            .also { playerNotificationManager ->
+                with(playerNotificationManager) {
+                    setMediaSessionToken(mediaSession.sessionCompatToken)
+                    setPriority(NotificationCompat.PRIORITY_LOW)
+                    setPlayer(player)
+                }
             }
     }
 
