@@ -65,3 +65,4 @@
 # Only used in `kotlinx.coroutines.internal.ExceptionsConstructor`.
 # The case when it is not available is hidden in a `try`-`catch`, as well as a check for Android.
 -dontwarn java.lang.ClassValue
+-dontwarn org.slf4j.impl.StaticLoggerBinder

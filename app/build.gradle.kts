@@ -25,7 +25,7 @@ val currentVersion: Version = Version.Beta(
     versionMajor = 1,
     versionMinor = 0,
     versionPatch = 0,
-    versionBuild = 6
+    versionBuild = 7
 )
 
 val localProperties = Properties().apply {
