@@ -1,4 +1,4 @@
-package com.bobbyesp.metadator.presentation.pages.status
+package com.bobbyesp.metadator.presentation.components.others.status
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.background

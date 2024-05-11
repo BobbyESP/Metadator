@@ -1,3 +1,5 @@
+import java.util.Properties
+
 val isFullBuild: Boolean by rootProject.extra
 
 plugins {
@@ -26,6 +28,10 @@ val currentVersion: Version = Version.Beta(
     versionBuild = 6
 )
 
+val localProperties = Properties().apply {
+    load(project.rootDir.resolve("local.properties").inputStream())
+}
+
 android {
     namespace = "com.bobbyesp.metadator"
     compileSdk = 34
@@ -42,16 +48,31 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        manifestPlaceholders["redirectHostName"] = "metadator"
+        manifestPlaceholders["redirectSchemeName"] = "metadator"
     }
 
     buildTypes {
         release {
+            buildConfigField(
+                "String", "CLIENT_ID", "\"${localProperties.getProperty("CLIENT_ID")}\""
+            )
+            buildConfigField(
+                "String", "CLIENT_SECRET", "\"${localProperties.getProperty("CLIENT_SECRET")}\""
+            )
             isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             )
         }
         debug {
+            buildConfigField(
+                "String", "CLIENT_ID", "\"${localProperties.getProperty("CLIENT_ID")}\""
+            )
+            buildConfigField(
+                "String", "CLIENT_SECRET", "\"${localProperties.getProperty("CLIENT_SECRET")}\""
+            )
             isMinifyEnabled = false
             applicationIdSuffix = ".debug"
         }
@@ -165,6 +186,7 @@ dependencies {
     implementation(libs.taglib)
     implementation(libs.scrollbar)
     implementation(libs.lyricfier)
+    implementation(libs.spotify.api.android)
     implementation(project(":crashhandler"))
 
 //-------------------Testing-------------------//

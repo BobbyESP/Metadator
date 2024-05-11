@@ -5,7 +5,7 @@ import com.bobbyesp.model.Song
 
 fun MediaItem.toSong(): Song {
     val mediaMetadata =
-        this.mediaMetadata ?: throw IllegalArgumentException("MediaItem must have a MediaMetadata")
+        this.mediaMetadata
     return Song(
         id = mediaId.hashCode().toLong(),
         title = (mediaMetadata.title ?: "").toString(),

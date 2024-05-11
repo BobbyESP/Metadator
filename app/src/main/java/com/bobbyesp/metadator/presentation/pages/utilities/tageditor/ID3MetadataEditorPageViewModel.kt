@@ -9,6 +9,8 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.adamratzman.spotify.models.Track
+import com.bobbyesp.metadator.features.spotify.domain.repositories.SearchRepository
 import com.bobbyesp.utilities.mediastore.AudioFileMetadata
 import com.bobbyesp.utilities.mediastore.AudioFileMetadata.Companion.toAudioFileMetadata
 import com.bobbyesp.utilities.mediastore.MediaStoreReceiver
@@ -31,7 +33,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ID3MetadataEditorPageViewModel @Inject constructor(
-    @ApplicationContext private val context: Context
+    @ApplicationContext private val context: Context,
+    private val searchRepository: SearchRepository
 ) : ViewModel() {
     private val mutablePageViewState = MutableStateFlow(PageViewState())
     val pageViewState = mutablePageViewState.asStateFlow()
@@ -154,6 +157,16 @@ class ID3MetadataEditorPageViewModel @Inject constructor(
             Log.i("ID3MetadataEditorPageViewModel", "Saved picture")
         } else {
             Log.e("ID3MetadataEditorPageViewModel", "Error while trying to save picture")
+        }
+    }
+
+    suspend fun getSpotifyResults(query: String): List<Track> {
+        val result = searchRepository.searchTracks(query)
+        return if (result.isSuccess) {
+            result.getOrNull() ?: emptyList()
+        } else {
+            result.exceptionOrNull()?.printStackTrace()
+            emptyList()
         }
     }
 

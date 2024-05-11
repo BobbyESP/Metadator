@@ -19,8 +19,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bobbyesp.metadator.presentation.components.cards.songs.HorizontalSongCard
 import com.bobbyesp.metadator.presentation.components.cards.songs.VerticalSongCard
+import com.bobbyesp.metadator.presentation.components.others.status.EmptyMediaStore
 import com.bobbyesp.metadator.presentation.pages.home.LayoutType
-import com.bobbyesp.metadator.presentation.pages.status.EmptyMediaStore
 import com.bobbyesp.model.Song
 import my.nanihadesuka.compose.LazyColumnScrollbar
 import my.nanihadesuka.compose.LazyGridVerticalScrollbar

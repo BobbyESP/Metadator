@@ -57,6 +57,8 @@ class App : Application() {
         lateinit var packageInfo: PackageInfo
         var isPlayStoreBuild by Delegates.notNull<Boolean>()
 
+        val appVersion: String get() = packageInfo.versionName
+
         val json = Json {
             ignoreUnknownKeys = true
             isLenient = true
