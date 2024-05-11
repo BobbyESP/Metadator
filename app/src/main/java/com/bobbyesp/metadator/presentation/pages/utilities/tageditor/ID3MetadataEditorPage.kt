@@ -54,8 +54,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.bobbyesp.ext.joinOrNullToString
+import com.bobbyesp.ext.toAudioFileMetadata
 import com.bobbyesp.ext.toMinutes
+import com.bobbyesp.ext.toModifiableMap
 import com.bobbyesp.metadator.R
 import com.bobbyesp.metadator.model.ParcelableSong
 import com.bobbyesp.metadator.presentation.common.LocalNavController
@@ -65,6 +66,8 @@ import com.bobbyesp.ui.components.others.MetadataTag
 import com.bobbyesp.ui.components.text.LargeCategoryTitle
 import com.bobbyesp.ui.components.text.MarqueeText
 import com.bobbyesp.ui.components.text.PreConfiguredOutlinedTextField
+import com.bobbyesp.utilities.mediastore.AudioFileMetadata.Companion.toAudioFileMetadata
+import com.bobbyesp.utilities.mediastore.AudioFileMetadata.Companion.toPropertyMap
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -79,7 +82,8 @@ fun ID3MetadataEditorPage(
     val path = parcelableSong.localSongPath
     val scope = rememberCoroutineScope()
 
-    var propertiesCopy = viewModel.propertiesCopy.value
+    val metadata = viewState.metadata
+    val modifiablePropertyMap = viewState.metadata?.propertyMap?.toModifiableMap()
 
     var newArtworkAddress by remember {
         mutableStateOf<Uri?>(null)
@@ -96,11 +100,15 @@ fun ID3MetadataEditorPage(
         rememberLauncherForActivityResult(contract = ActivityResultContracts.StartIntentSenderForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 scope.launch(Dispatchers.IO) {
-                    viewModel.saveMetadata(
-                        newMetadata = viewState.metadata?.copy(
-                            propertyMap = propertiesCopy!!.toPropertyMap()
-                        )!!, path = path!!, imageUri = newArtworkAddress
-                    )
+                    modifiablePropertyMap?.let {
+                        viewModel.saveMetadata(
+                            newMetadata = viewState.metadata.copy(
+                                propertyMap = it.toAudioFileMetadata().toPropertyMap()
+                            ),
+                            path = path!!,
+                            imageUri = newArtworkAddress
+                        )
+                    }
                 }
                 navController.popBackStack()
             }
@@ -110,7 +118,7 @@ fun ID3MetadataEditorPage(
 
     fun saveInMediaStore(): Boolean = viewModel.saveMetadata(
         newMetadata = viewState.metadata?.copy(
-            propertyMap = propertiesCopy!!.toPropertyMap()
+            propertyMap = modifiablePropertyMap!!.toAudioFileMetadata().toPropertyMap()
         )!!, path = path!!, imageUri = newArtworkAddress
     ) {
         val intent = IntentSenderRequest.Builder(it).build()
@@ -139,9 +147,6 @@ fun ID3MetadataEditorPage(
             }, actions = {
                 IconButton(onClick = {
                     scope.launch(Dispatchers.IO) {
-                        val results = viewModel.getSpotifyResults(
-                            propertiesCopy?.title?.joinToString() + propertiesCopy?.artist?.joinToString()
-                        )
                         //TODO: Implement the search results
                     }
                 }) {
@@ -191,11 +196,12 @@ fun ID3MetadataEditorPage(
                 }
 
                 is ID3MetadataEditorPageViewModel.Companion.ID3MetadataEditorPageState.Success -> {
+                    //TODO: SOME FIELDS LIKE ARTIST MIGHT WANT TO BE SAVED IN DIFFERENT INDEXES OF THE ARRAY
                     var showMediaStoreInfoDialog by remember { mutableStateOf(false) }
 
                     val artworkUri = newArtworkAddress ?: parcelableSong.artworkPath
 
-                    val songProperties = viewState.audioFileMetadata!!
+                    val songProperties = metadata!!.propertyMap.toAudioFileMetadata()
                     val audioStats = viewState.audioProperties!!
 
                     val scrollState = rememberScrollState()
@@ -293,39 +299,35 @@ fun ID3MetadataEditorPage(
                             text = stringResource(id = R.string.general_tags)
                         )
                         PreConfiguredOutlinedTextField(
-                            value = songProperties.title.joinOrNullToString(),
+                            value = songProperties.title,
                             label = stringResource(id = R.string.title),
                             modifier = Modifier.fillMaxWidth()
                         ) { title ->
-                            propertiesCopy?.title = arrayOf(title)
+                            modifiablePropertyMap?.put("TITLE", title)
                         }
 
                         PreConfiguredOutlinedTextField(
-                            value = songProperties.artist.joinOrNullToString(),
+                            value = songProperties.artist,
                             label = stringResource(id = R.string.artist),
                             modifier = Modifier.fillMaxWidth()
                         ) { artists ->
-                            propertiesCopy?.artist =
-                                artists.split(",").map { it.trim() }.toTypedArray()
-
+                            modifiablePropertyMap?.put("ARTIST", artists)
                         }
 
                         PreConfiguredOutlinedTextField(
-                            value = songProperties.album.joinOrNullToString(),
+                            value = songProperties.album,
                             label = stringResource(id = R.string.album),
                             modifier = Modifier.fillMaxWidth()
                         ) { album ->
-                            propertiesCopy?.album = arrayOf(album)
+                            modifiablePropertyMap?.put("ALBUM", album)
                         }
 
                         PreConfiguredOutlinedTextField(
-                            value = songProperties.albumArtist.joinOrNullToString(),
+                            value = songProperties.albumArtist,
                             label = stringResource(id = R.string.album_artist),
                             modifier = Modifier.fillMaxWidth()
                         ) { artists ->
-                            propertiesCopy?.albumArtist =
-                                artists.split(",").map { it.trim() }.toTypedArray()
-
+                            modifiablePropertyMap?.put("ALBUMARTIST", artists)
                         }
 
                         Column(
@@ -335,40 +337,38 @@ fun ID3MetadataEditorPage(
                                 modifier = Modifier.fillMaxWidth(),
                             ) {
                                 PreConfiguredOutlinedTextField(
-                                    value = songProperties.trackNumber.joinOrNullToString(),
+                                    value = songProperties.trackNumber,
                                     label = stringResource(id = R.string.track_number),
                                     modifier = Modifier.weight(0.5f)
                                 ) { trackNumber ->
-                                    propertiesCopy?.trackNumber = arrayOf(trackNumber)
+                                    modifiablePropertyMap?.put("TRACKNUMBER", trackNumber)
                                 }
                                 Spacer(modifier = Modifier.width(8.dp))
                                 PreConfiguredOutlinedTextField(
-                                    value = songProperties.discNumber.joinOrNullToString(),
+                                    value = songProperties.discNumber,
                                     label = stringResource(id = R.string.disc_number),
                                     modifier = Modifier.weight(0.5f)
                                 ) { discNumber ->
-                                    propertiesCopy?.discNumber = arrayOf(discNumber)
-
+                                    modifiablePropertyMap?.put("DISCNUMBER", discNumber)
                                 }
                             }
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
                             ) {
                                 PreConfiguredOutlinedTextField(
-                                    value = songProperties.date.joinOrNullToString(),
+                                    value = songProperties.date,
                                     label = stringResource(id = R.string.date),
                                     modifier = Modifier.weight(0.5f)
                                 ) { date ->
-                                    propertiesCopy?.date = arrayOf(date)
-
+                                    modifiablePropertyMap?.put("DATE", date)
                                 }
                                 Spacer(modifier = Modifier.width(8.dp))
                                 PreConfiguredOutlinedTextField(
-                                    value = songProperties.genre.joinOrNullToString(),
+                                    value = songProperties.genre,
                                     label = stringResource(id = R.string.genre),
                                     modifier = Modifier.weight(0.5f)
                                 ) { genre ->
-                                    propertiesCopy?.genre = arrayOf(genre)
+                                    modifiablePropertyMap?.put("GENRE", genre)
                                 }
                             }
                         }
@@ -384,49 +384,46 @@ fun ID3MetadataEditorPage(
                                 modifier = Modifier.fillMaxWidth(),
                             ) {
                                 PreConfiguredOutlinedTextField(
-                                    value = songProperties.composer.joinOrNullToString(),
+                                    value = songProperties.composer,
                                     label = stringResource(id = R.string.composer),
                                     modifier = Modifier.weight(0.5f)
                                 ) { composer ->
-                                    propertiesCopy?.composer = arrayOf(composer)
+                                    modifiablePropertyMap?.put("COMPOSER", composer)
                                 }
                                 Spacer(modifier = Modifier.width(8.dp))
                                 PreConfiguredOutlinedTextField(
-                                    value = songProperties.lyricist.joinOrNullToString(),
+                                    value = songProperties.lyricist,
                                     label = stringResource(id = R.string.lyricist),
                                     modifier = Modifier.weight(0.5f)
                                 ) { lyricist ->
-                                    propertiesCopy?.lyricist = arrayOf(lyricist)
+                                    modifiablePropertyMap?.put("LYRICIST", lyricist)
                                 }
                             }
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
                             ) {
                                 PreConfiguredOutlinedTextField(
-                                    value = songProperties.conductor.joinOrNullToString(),
+                                    value = songProperties.conductor,
                                     label = stringResource(id = R.string.conductor),
                                     modifier = Modifier.weight(0.5f)
                                 ) { conductor ->
-                                    propertiesCopy?.conductor = arrayOf(conductor)
+                                    modifiablePropertyMap?.put("CONDUCTOR", conductor)
                                 }
                                 Spacer(modifier = Modifier.width(8.dp))
                                 PreConfiguredOutlinedTextField(
-                                    value = songProperties.remixer.joinOrNullToString(),
+                                    value = songProperties.remixer,
                                     label = stringResource(id = R.string.remixer),
                                     modifier = Modifier.weight(0.5f)
                                 ) { remixer ->
-                                    propertiesCopy = propertiesCopy?.copy(
-                                        remixer = arrayOf(remixer)
-                                    )
+                                    modifiablePropertyMap?.put("REMIXER", remixer)
                                 }
                             }
                             PreConfiguredOutlinedTextField(
-                                value = songProperties.performer.joinOrNullToString(),
+                                value = songProperties.performer,
                                 label = stringResource(id = R.string.performer),
                                 modifier = Modifier.fillMaxWidth()
                             ) { performer ->
-                                propertiesCopy?.performer =
-                                    performer.split(",").map { it.trim() }.toTypedArray()
+                                modifiablePropertyMap?.put("PERFORMER", performer)
                             }
                         }
                     }

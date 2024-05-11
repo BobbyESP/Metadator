@@ -83,7 +83,7 @@ firebaseBom = "33.0.0"
 spotify-apiHandler = "4.1.1"
 
 #Others
-taglib = "53f7581088"
+taglib = "1.0.0-alpha17"
 
 #Tests
 junit = "4.13.2"

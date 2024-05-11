@@ -6,13 +6,10 @@ import android.content.Context
 import android.net.Uri
 import android.os.Build
 import android.util.Log
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.adamratzman.spotify.models.Track
 import com.bobbyesp.metadator.features.spotify.domain.repositories.SearchRepository
-import com.bobbyesp.utilities.mediastore.AudioFileMetadata
-import com.bobbyesp.utilities.mediastore.AudioFileMetadata.Companion.toAudioFileMetadata
 import com.bobbyesp.utilities.mediastore.MediaStoreReceiver
 import com.kyant.taglib.AudioProperties
 import com.kyant.taglib.AudioPropertiesReadStyle
@@ -39,44 +36,43 @@ class ID3MetadataEditorPageViewModel @Inject constructor(
     private val mutablePageViewState = MutableStateFlow(PageViewState())
     val pageViewState = mutablePageViewState.asStateFlow()
 
-    val propertiesCopy = mutableStateOf<AudioFileMetadata?>(null)
-
     data class PageViewState(
         val metadata: Metadata? = null,
-        val audioFileMetadata: AudioFileMetadata? = null,
         val audioProperties: AudioProperties? = null,
         val state: ID3MetadataEditorPageState = ID3MetadataEditorPageState.Loading,
     )
 
     suspend fun loadTrackMetadata(path: String) {
         updateState(ID3MetadataEditorPageState.Loading)
-        kotlin.runCatching {
+        runCatching {
             MediaStoreReceiver.getFileDescriptorFromPath(context, path, mode = "r")?.use { songFd ->
                 val fd = songFd.dup()?.detachFd()
                     ?: throw IllegalStateException("File descriptor is null")
 
-                val metadataDeferred =
+                val metadata =
                     withContext(viewModelScope.coroutineContext + Dispatchers.IO) {
                         async {
                             TagLib.getMetadata(
                                 fd = fd,
+                            )
+                        }.await()
+                    } ?: throw IllegalStateException("Metadata is null")
+
+                val fd2 = songFd.dup()?.detachFd()
+                    ?: throw IllegalStateException("File descriptor is null")
+                val audioProperties =
+                    withContext(viewModelScope.coroutineContext + Dispatchers.IO) {
+                        async {
+                            TagLib.getAudioProperties(
+                                fd = fd2,
                                 readStyle = AudioPropertiesReadStyle.Fast
                             )
-                        }
-                    }
+                        }.await()
+                    } ?: throw IllegalStateException("Audio properties are null")
 
-                val metadata = metadataDeferred.await()
-
-                if (metadata == null) {
-                    updateState(ID3MetadataEditorPageState.Error(Exception("Metadata is null")))
-                    return
-                }
-
-                updateMetadata(metadata)
+                updateStateMetadata(metadata, audioProperties)
 
                 updateState(ID3MetadataEditorPageState.Success)
-
-                propertiesCopy.value = metadata.propertyMap.toAudioFileMetadata()
             }
         }.onFailure { error ->
             Log.e(
@@ -148,15 +144,11 @@ class ID3MetadataEditorPageViewModel @Inject constructor(
             description = "Song cover - Metadator",
             pictureType = "Cover (front)"
         )
-        val saved = TagLib.savePictures(
-            fileDescriptorId,
-            pictures = arrayOf(picture)
-        )
-
-        if (saved) {
-            Log.i("ID3MetadataEditorPageViewModel", "Saved picture")
-        } else {
-            Log.e("ID3MetadataEditorPageViewModel", "Error while trying to save picture")
+        viewModelScope.launch(Dispatchers.IO) {
+            TagLib.savePictures(
+                fileDescriptorId,
+                pictures = arrayOf(picture)
+            )
         }
     }
 
@@ -178,12 +170,14 @@ class ID3MetadataEditorPageViewModel @Inject constructor(
         }
     }
 
-    private fun updateMetadata(metadata: Metadata? = null) {
+    private fun updateStateMetadata(
+        metadata: Metadata? = null,
+        audioProperties: AudioProperties? = null
+    ) {
         mutablePageViewState.update {
             it.copy(
                 metadata = metadata,
-                audioFileMetadata = metadata?.propertyMap?.toAudioFileMetadata(),
-                audioProperties = metadata?.audioProperties
+                audioProperties = audioProperties
             )
         }
     }
