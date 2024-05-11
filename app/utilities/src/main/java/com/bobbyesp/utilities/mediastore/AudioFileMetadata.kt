@@ -1,6 +1,7 @@
 package com.bobbyesp.utilities.mediastore
 
 import com.bobbyesp.ext.PropertyMap
+import com.bobbyesp.ext.formatForField
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -24,18 +25,18 @@ data class AudioFileMetadata(
         fun AudioFileMetadata.toPropertyMap(): PropertyMap {
             return hashMapOf(
                 "TITLE" to arrayOf(title ?: ""),
-                "ARTIST" to arrayOf(artist ?: ""),
+                "ARTIST" to artist.formatForField(),
                 "ALBUM" to arrayOf(album ?: ""),
-                "ALBUMARTIST" to arrayOf(albumArtist ?: ""),
+                "ALBUMARTIST" to albumArtist.formatForField(),
                 "TRACKNUMBER" to arrayOf(trackNumber ?: ""),
                 "DISCNUMBER" to arrayOf(discNumber ?: ""),
                 "DATE" to arrayOf(date ?: ""),
-                "GENRE" to arrayOf(genre ?: ""),
-                "COMPOSER" to arrayOf(composer ?: ""),
-                "LYRICIST" to arrayOf(lyricist ?: ""),
-                "CONDUCTOR" to arrayOf(conductor ?: ""),
-                "PERFORMER" to arrayOf(performer ?: ""),
-                "REMIXER" to arrayOf(remixer ?: ""),
+                "GENRE" to genre.formatForField(),
+                "COMPOSER" to composer.formatForField(),
+                "LYRICIST" to lyricist.formatForField(),
+                "CONDUCTOR" to conductor.formatForField(),
+                "PERFORMER" to performer.formatForField(),
+                "REMIXER" to remixer.formatForField(),
                 "COMMENT" to arrayOf(comment ?: ""),
             )
         }
