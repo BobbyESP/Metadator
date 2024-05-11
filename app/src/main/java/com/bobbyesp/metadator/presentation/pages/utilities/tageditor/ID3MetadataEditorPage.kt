@@ -7,6 +7,7 @@ import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,6 +17,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -26,6 +29,7 @@ import androidx.compose.material.icons.rounded.Downloading
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.Warning
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -34,10 +38,13 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberBottomSheetScaffoldState
+import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -61,6 +68,7 @@ import com.bobbyesp.metadator.R
 import com.bobbyesp.metadator.model.ParcelableSong
 import com.bobbyesp.metadator.presentation.common.LocalNavController
 import com.bobbyesp.metadator.presentation.components.image.ArtworkAsyncImage
+import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.spotify.SpMetadataBottomSheetContent
 import com.bobbyesp.ui.components.button.CloseButton
 import com.bobbyesp.ui.components.others.MetadataTag
 import com.bobbyesp.ui.components.text.LargeCategoryTitle
@@ -80,10 +88,17 @@ fun ID3MetadataEditorPage(
     val navController = LocalNavController.current
 
     val path = parcelableSong.localSongPath
+
     val scope = rememberCoroutineScope()
+    val scaffoldState = rememberBottomSheetScaffoldState(
+        bottomSheetState = rememberStandardBottomSheetState(
+            initialValue = SheetValue.Hidden, skipHiddenState = false
+        )
+    )
 
     val metadata = viewState.metadata
     val modifiablePropertyMap = viewState.metadata?.propertyMap?.toModifiableMap()
+
 
     var newArtworkAddress by remember {
         mutableStateOf<Uri?>(null)
@@ -104,9 +119,7 @@ fun ID3MetadataEditorPage(
                         viewModel.saveMetadata(
                             newMetadata = viewState.metadata.copy(
                                 propertyMap = it.toAudioFileMetadata().toPropertyMap()
-                            ),
-                            path = path!!,
-                            imageUri = newArtworkAddress
+                            ), path = path!!, imageUri = newArtworkAddress
                         )
                     }
                 }
@@ -125,55 +138,61 @@ fun ID3MetadataEditorPage(
         sendActivityIntent.launch(intent)
     }
 
-    val singleImagePickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.PickVisualMedia(),
-        onResult = { uri ->
-            newArtworkAddress = uri
-        })
-
-    Scaffold(
-        topBar = {
-            TopAppBar(title = {
-                Column(modifier = Modifier.fillMaxWidth()) {
-                    MarqueeText(
-                        text = stringResource(id = R.string.viewing_metadata),
-                        style = MaterialTheme.typography.bodyLarge,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-            }, navigationIcon = {
-                CloseButton { navController.popBackStack() }
-            }, actions = {
-                IconButton(onClick = {
-                    scope.launch(Dispatchers.IO) {
-                        //TODO: Implement the search results
-                    }
-                }) {
-                    Icon(
-                        imageVector = Icons.Rounded.Downloading,
-                        contentDescription = stringResource(
-                            id = R.string.retrieve_song_info
-                        )
-                    )
-                }
-                TextButton(onClick = {
-                    if (saveInMediaStore()) {
-                        navController.popBackStack()
-                    }
-                }) {
-                    Text(text = stringResource(id = R.string.save))
-                }
+    val singleImagePickerLauncher =
+        rememberLauncherForActivityResult(contract = ActivityResultContracts.PickVisualMedia(),
+            onResult = { uri ->
+                newArtworkAddress = uri
             })
-        }, modifier = Modifier.fillMaxSize()
-    ) { paddingValues ->
+
+
+    BottomSheetScaffold(topBar = {
+        TopAppBar(title = {
+            Column(modifier = Modifier.fillMaxWidth()) {
+                MarqueeText(
+                    text = stringResource(id = R.string.viewing_metadata),
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }, navigationIcon = {
+            CloseButton { navController.popBackStack() }
+        }, actions = {
+            IconButton(onClick = {
+                scope.launch {
+                    scaffoldState.bottomSheetState.partialExpand()
+                    //TODO: Add other things (if is I/O, use withContext(Dispatchers.IO) { ... })
+                }
+            }) {
+                Icon(
+                    imageVector = Icons.Rounded.Downloading,
+                    contentDescription = stringResource(
+                        id = R.string.retrieve_song_info
+                    )
+                )
+            }
+            TextButton(onClick = {
+                if (saveInMediaStore()) {
+                    navController.popBackStack()
+                }
+            }) {
+                Text(text = stringResource(id = R.string.save))
+            }
+        }, scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior())
+    },
+        modifier = Modifier.fillMaxSize(),
+        scaffoldState = scaffoldState,
+        sheetShadowElevation = 8.dp,
+        sheetContent = {
+            SpMetadataBottomSheetContent(state = scaffoldState.bottomSheetState)
+        }) { innerPadding ->
         Crossfade(
             targetState = viewState.state,
             animationSpec = tween(175),
             label = "Fade between pages (ID3MetadataEditorPage)",
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
+                .navigationBarsPadding()
         ) { actualPageState ->
             when (actualPageState) {
                 is ID3MetadataEditorPageViewModel.Companion.ID3MetadataEditorPageState.Loading -> {
@@ -201,8 +220,12 @@ fun ID3MetadataEditorPage(
 
                     val artworkUri = newArtworkAddress ?: parcelableSong.artworkPath
 
-                    val songProperties = metadata!!.propertyMap.toAudioFileMetadata()
-                    val audioStats = viewState.audioProperties!!
+                    var songProperties by remember {
+                        mutableStateOf(metadata!!.propertyMap.toAudioFileMetadata())
+                    }
+                    val audioStats by remember {
+                        mutableStateOf(viewState.audioProperties!!)
+                    }
 
                     val scrollState = rememberScrollState()
 
@@ -426,6 +449,11 @@ fun ID3MetadataEditorPage(
                                 modifiablePropertyMap?.put("PERFORMER", performer)
                             }
                         }
+                        val animatedBottomPadding by animateDpAsState(
+                            targetValue = if (scaffoldState.bottomSheetState.isVisible) innerPadding.calculateBottomPadding() + 6.dp else 0.dp,
+                            label = "animatedBottomPadding"
+                        )
+                        Spacer(modifier = Modifier.height(animatedBottomPadding))
                     }
 
                     if (showMediaStoreInfoDialog) {
