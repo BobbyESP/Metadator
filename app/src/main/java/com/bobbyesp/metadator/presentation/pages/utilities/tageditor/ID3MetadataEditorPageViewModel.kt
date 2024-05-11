@@ -59,7 +59,7 @@ class ID3MetadataEditorPageViewModel @Inject constructor(
                     withContext(viewModelScope.coroutineContext + Dispatchers.IO) {
                         async {
                             TagLib.getMetadata(
-                                fd,
+                                fd = fd,
                                 readStyle = AudioPropertiesReadStyle.Fast
                             )
                         }

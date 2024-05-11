@@ -232,7 +232,7 @@ fun Navigator() {
                             }
                             Surface(
                                 onClick = {
-
+                                    //TODO: Open settings
                                 },
                                 modifier = Modifier
                                     .semantics { role = Role.Tab }
