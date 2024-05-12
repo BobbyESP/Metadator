@@ -52,7 +52,10 @@ jobs:
 
         # Create the local.properties file with CLIENT_ID and CLIENT_SECRET
       - name: Create local.properties
-        run: echo "CLIENT_ID=${{ secrets.CLIENT_ID }}\nCLIENT_SECRET=${{ secrets.CLIENT_SECRET }}" > local.properties
+        run: |
+          echo "CLIENT_ID=${{ secrets.CLIENT_ID }}" >> local.properties
+          echo "CLIENT_SECRET=${{ secrets.CLIENT_SECRET }}" >> local.properties
+
 
       # Initialize CodeQL tools for scanning
       - name: Initialize CodeQL
