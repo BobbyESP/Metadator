@@ -449,6 +449,24 @@ fun ID3MetadataEditorPage(
                                 modifiablePropertyMap?.put("PERFORMER", performer)
                             }
                         }
+                        LargeCategoryTitle(
+                            modifier = Modifier.padding(vertical = 6.dp),
+                            text = stringResource(id = R.string.others)
+                        )
+
+                        Column(
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            PreConfiguredOutlinedTextField(
+                                value = songProperties.comment,
+                                label = stringResource(id = R.string.comment),
+                                modifier = Modifier.fillMaxWidth(),
+                                maxLines = 3
+                            ) { comment ->
+                                modifiablePropertyMap?.put("COMMENT", comment)
+                            }
+                        }
+
                         val animatedBottomPadding by animateDpAsState(
                             targetValue = if (scaffoldState.bottomSheetState.isVisible) innerPadding.calculateBottomPadding() + 6.dp else 0.dp,
                             label = "animatedBottomPadding"

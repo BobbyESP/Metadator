@@ -57,5 +57,7 @@
     <string name="empty_media_store_desc">Seems like you have no songs on your device. Come back when there\'s something to edit!</string>
     <string name="retrieve_song_info">Retrieve song information</string>
     <string name="settings">Settings</string>
+    <string name="comment">Comment</string>
+    <string name="others">Others</string>
 
 </resources>
