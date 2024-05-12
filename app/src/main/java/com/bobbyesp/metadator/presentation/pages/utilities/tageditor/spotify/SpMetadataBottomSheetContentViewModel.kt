@@ -11,6 +11,7 @@ import com.adamratzman.spotify.models.Track
 import com.bobbyesp.metadator.features.spotify.domain.pagination.TracksPagingSource
 import com.bobbyesp.metadator.features.spotify.domain.services.SpotifyService
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -38,9 +39,20 @@ class SpMetadataBottomSheetContentViewModel @Inject constructor(
     val viewStateFlow = mutableViewStateFlow.asStateFlow()
 
     data class ViewState(
-        val viewState: ViewSearchState = ViewSearchState.Idle,
+        val stage: BottomSheetStage = BottomSheetStage.SEARCH,
+        val viewState: SearchStageViewState = SearchStageViewState.Idle,
         val searchedTracks: Flow<PagingData<Track>> = emptyFlow(),
+        val selectedTrack: Track? = null
     )
+
+    fun searchTracks(query: String) {
+        searchJob?.cancel()
+        updateViewState(SearchStageViewState.Loading)
+        searchJob = viewModelScope.launch(Dispatchers.IO) {
+            getTracksPaginatedData(query)
+        }
+        updateViewState(SearchStageViewState.Success)
+    }
 
     private fun getTracksPaginatedData(query: String) {
         val tracksPager = Pager(
@@ -62,15 +74,45 @@ class SpMetadataBottomSheetContentViewModel @Inject constructor(
                 searchedTracks = tracksPager
             )
         }
+    }
 
+    fun chooseTrack(track: Track) {
+        mutableViewStateFlow.update {
+            it.copy(
+                selectedTrack = track
+            )
+        }
+        updateStage(BottomSheetStage.TRACK_DETAILS)
+    }
+
+    fun updateStage(stage: BottomSheetStage) {
+        mutableViewStateFlow.update {
+            it.copy(
+                stage = stage
+            )
+        }
+    }
+
+    private fun updateViewState(viewState: SearchStageViewState) {
+        mutableViewStateFlow.update {
+            it.copy(
+                viewState = viewState
+            )
+        }
     }
 
     companion object {
-        sealed class ViewSearchState {
-            data object Idle : ViewSearchState() // Initial state - May be deleted
-            data object Loading : ViewSearchState()
-            data object Success : ViewSearchState()
-            data class Error(val error: String) : ViewSearchState()
+        sealed class SearchStageViewState {
+            data object Idle : SearchStageViewState() // Initial state - May be deleted
+            data object Loading : SearchStageViewState()
+            data object Success : SearchStageViewState()
+            data class Error(val error: String) : SearchStageViewState()
+        }
+
+
+        enum class BottomSheetStage {
+            SEARCH,
+            TRACK_DETAILS
         }
     }
 }

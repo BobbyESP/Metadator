@@ -21,6 +21,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.DefaultAlpha
 import androidx.compose.ui.graphics.FilterQuality
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
@@ -127,8 +128,9 @@ fun AsyncImageImpl(
 @Composable
 fun ArtworkAsyncImage(
     modifier: Modifier = Modifier,
-    artworkPath: Any? = null,
-    imageModifier: Modifier = Modifier
+    imageModifier: Modifier = Modifier,
+    shape: Shape = MaterialTheme.shapes.small,
+    artworkPath: Any? = null
 ) {
     var showArtwork by remember { mutableStateOf(true) }
 
@@ -148,7 +150,7 @@ fun ArtworkAsyncImage(
             AsyncImageImpl(
                 modifier = imageModifier
                     .fillMaxSize()
-                    .clip(MaterialTheme.shapes.small),
+                    .clip(shape),
                 model = model!!,
                 onState = { state ->
                     //if it was successful, don't show the placeholder, else show it
@@ -168,7 +170,7 @@ fun ArtworkAsyncImage(
             PlaceholderCreator(
                 modifier = imageModifier
                     .fillMaxSize()
-                    .clip(MaterialTheme.shapes.small),
+                    .clip(shape),
                 icon = Icons.Rounded.MusicNote,
                 colorful = false,
                 contentDescription = "Song cover placeholder"

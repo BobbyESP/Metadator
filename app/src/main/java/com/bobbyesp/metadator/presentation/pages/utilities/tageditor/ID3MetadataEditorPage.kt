@@ -182,9 +182,14 @@ fun ID3MetadataEditorPage(
     },
         modifier = Modifier.fillMaxSize(),
         scaffoldState = scaffoldState,
+        sheetPeekHeight = 128.dp,
         sheetShadowElevation = 8.dp,
         sheetContent = {
-            SpMetadataBottomSheetContent(state = scaffoldState.bottomSheetState)
+            SpMetadataBottomSheetContent(
+                name = modifiablePropertyMap?.get("TITLE") ?: "",
+                artist = modifiablePropertyMap?.get("ARTIST") ?: "",
+                state = scaffoldState.bottomSheetState
+            )
         }) { innerPadding ->
         Crossfade(
             targetState = viewState.state,
@@ -215,12 +220,11 @@ fun ID3MetadataEditorPage(
                 }
 
                 is ID3MetadataEditorPageViewModel.Companion.ID3MetadataEditorPageState.Success -> {
-                    //TODO: SOME FIELDS LIKE ARTIST MIGHT WANT TO BE SAVED IN DIFFERENT INDEXES OF THE ARRAY
                     var showMediaStoreInfoDialog by remember { mutableStateOf(false) }
 
                     val artworkUri = newArtworkAddress ?: parcelableSong.artworkPath
 
-                    var songProperties by remember {
+                    val songProperties by remember {
                         mutableStateOf(metadata!!.propertyMap.toAudioFileMetadata())
                     }
                     val audioStats by remember {
