@@ -56,4 +56,10 @@
     <string name="toggle_repeat">Alternar modo de repetición</string>
     <string name="empty_media_store">MediaStore vacío</string>
     <string name="empty_media_store_desc">Parece que no tienes canciones en tu dispositivo. Vuelve cuando tengas algo que editar!</string>
+    <string name="retrieve_song_info">Obtener información de la canción online</string>
+    <string name="settings">Ajustes</string>
+    <string name="comment">Comentario</string>
+    <string name="others">Otros</string>
+    <string name="unknown">Desconocido</string>
+    <string name="showing_results_for">Mostrando resultados para %1$s de %2$s</string>
 </resources>
