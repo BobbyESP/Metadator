@@ -85,6 +85,15 @@ class SpMetadataBottomSheetContentViewModel @Inject constructor(
         updateStage(BottomSheetStage.TRACK_DETAILS)
     }
 
+    fun clearTrack() {
+        mutableViewStateFlow.update {
+            it.copy(
+                selectedTrack = null
+            )
+        }
+        updateStage(BottomSheetStage.SEARCH)
+    }
+
     fun updateStage(stage: BottomSheetStage) {
         mutableViewStateFlow.update {
             it.copy(

@@ -29,6 +29,7 @@ import com.bobbyesp.ui.components.text.MarqueeText
 fun SpotifyHorizontalSongCard(
     modifier: Modifier = Modifier,
     innerModifier: Modifier = Modifier,
+    imageModifier: Modifier = Modifier,
     surfaceColor: Color = MaterialTheme.colorScheme.surface,
     track: Track,
     listIndex: Int? = null,
@@ -63,7 +64,7 @@ fun SpotifyHorizontalSongCard(
             }
             Box(contentAlignment = Alignment.CenterStart) {
                 ArtworkAsyncImage(
-                    modifier = Modifier.size(64.dp),
+                    modifier = imageModifier.size(64.dp),
                     artworkPath = albumArtPath,
                     shape = MaterialTheme.shapes.extraSmall
                 )
