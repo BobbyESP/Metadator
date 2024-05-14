@@ -61,5 +61,6 @@
     <string name="others">Others</string>
     <string name="unknown">Unknown</string>
     <string name="showing_results_for">Showing results for %1$s by %2$s</string>
+    <string name="loading">Loading</string>
 
 </resources>

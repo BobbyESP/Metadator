@@ -5,7 +5,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.saveable.rememberSaveable
 
-
 /**
  * Static field, contains all scroll values
  */

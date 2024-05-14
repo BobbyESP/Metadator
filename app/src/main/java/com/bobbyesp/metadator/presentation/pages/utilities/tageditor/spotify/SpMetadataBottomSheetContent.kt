@@ -1,8 +1,6 @@
 package com.bobbyesp.metadator.presentation.pages.utilities.tageditor.spotify
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.ExperimentalSharedTransitionApi
-import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
@@ -12,6 +10,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -22,7 +21,7 @@ import com.bobbyesp.ui.motion.MotionConstants.DURATION_EXIT_SHORT
 import com.bobbyesp.ui.motion.tweenEnter
 import com.bobbyesp.ui.motion.tweenExit
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SpMetadataBottomSheetContent(
     name: String,
@@ -30,6 +29,7 @@ fun SpMetadataBottomSheetContent(
     state: SheetState,
     viewModel: SpMetadataBottomSheetContentViewModel = hiltViewModel()
 ) {
+    val scope = rememberCoroutineScope()
     val viewState = viewModel.viewStateFlow.collectAsStateWithLifecycle().value
 
     val bottomSheetState = viewState.stage
@@ -39,39 +39,33 @@ fun SpMetadataBottomSheetContent(
     if (name.isEmpty() && artist.isEmpty()) return
 
     LaunchedEffect(state.isVisible, name, artist) {
-        if (state.isVisible) {
+        val query = "$name $artist"
+        if (state.isVisible && viewState.lastQuery != query) {
             viewModel.updateStage(BottomSheetStage.SEARCH)
-            viewModel.searchTracks("$name $artist")
+            viewModel.searchTracks(query)
         }
     }
 
-    SharedTransitionLayout {
-        AnimatedContent(
-            targetState = bottomSheetState,
-            label = "Transition between bs states",
-            transitionSpec = {
-                fadeIn(
-                    tweenEnter(delayMillis = DURATION_EXIT_SHORT)
-                ) togetherWith fadeOut(
-                    tweenExit(durationMillis = DURATION_EXIT_SHORT)
+    AnimatedContent(targetState = bottomSheetState,
+        label = "Transition between bs states",
+        transitionSpec = {
+            fadeIn(
+                tweenEnter(delayMillis = DURATION_EXIT_SHORT)
+            ) togetherWith fadeOut(
+                tweenExit(durationMillis = DURATION_EXIT_SHORT)
+            )
+        }) { actualStage ->
+        when (actualStage) {
+            BottomSheetStage.SEARCH -> {
+                SpMetadataBsSearch(
+                    name = name, artist = artist, listState = lazyListState, viewModel = viewModel
                 )
-            }) { actualStage ->
-            when (actualStage) {
-                BottomSheetStage.SEARCH -> {
-                    SpMetadataBsSearch(
-                        name = name,
-                        artist = artist,
-                        listState = lazyListState,
-                        viewModel = viewModel
-                    )
-                }
+            }
 
-                BottomSheetStage.TRACK_DETAILS -> {
-                    SpMetadataBsDetails(
-                        modifier = Modifier.fillMaxSize(),
-                        viewModel = viewModel
-                    )
-                }
+            BottomSheetStage.TRACK_DETAILS -> {
+                SpMetadataBsDetails(
+                    modifier = Modifier.fillMaxSize(), viewModel = viewModel
+                )
             }
         }
     }

@@ -1,3 +1,0 @@
-package com.bobbyesp.utilities.storage
-
-object StorageAccessFrameworkHelper

@@ -2,6 +2,7 @@ package com.bobbyesp.metadator.presentation.pages.utilities.tageditor
 
 import android.app.Activity
 import android.net.Uri
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.PickVisualMediaRequest
@@ -145,6 +146,17 @@ fun ID3MetadataEditorPage(
             })
 
 
+    BackHandler {
+        if (scaffoldState.bottomSheetState.isVisible) {
+            scope.launch {
+                scaffoldState.bottomSheetState.hide()
+            }
+        } else {
+            navController.popBackStack()
+        }
+    }
+
+
     BottomSheetScaffold(topBar = {
         TopAppBar(title = {
             Column(modifier = Modifier.fillMaxWidth()) {
@@ -182,7 +194,7 @@ fun ID3MetadataEditorPage(
     },
         modifier = Modifier.fillMaxSize(),
         scaffoldState = scaffoldState,
-        sheetPeekHeight = 128.dp,
+        sheetPeekHeight = 148.dp,
         sheetShadowElevation = 8.dp,
         sheetContent = {
             SpMetadataBottomSheetContent(

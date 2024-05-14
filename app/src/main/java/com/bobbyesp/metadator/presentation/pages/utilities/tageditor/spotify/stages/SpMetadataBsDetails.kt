@@ -1,11 +1,7 @@
 package com.bobbyesp.metadator.presentation.pages.utilities.tageditor.spotify.stages
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
-import androidx.compose.animation.SharedTransitionScope
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -23,15 +19,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.adamratzman.spotify.models.Track
 import com.bobbyesp.metadator.presentation.components.cards.songs.spotify.SpotifyHorizontalSongCard
 import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.spotify.SpMetadataBottomSheetContentViewModel
-import com.bobbyesp.metadator.presentation.utils.SongCardBoundsTransformation
-import com.bobbyesp.ui.motion.MotionConstants.DURATION_EXIT_SHORT
-import com.bobbyesp.ui.motion.tweenEnter
-import com.bobbyesp.ui.motion.tweenExit
 
-context(SharedTransitionScope)
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun AnimatedVisibilityScope.SpMetadataBsDetails(
+fun SpMetadataBsDetails(
     modifier: Modifier = Modifier,
     viewModel: SpMetadataBottomSheetContentViewModel
 ) {
@@ -50,34 +41,11 @@ fun AnimatedVisibilityScope.SpMetadataBsDetails(
             .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        LaunchedEffect(true) {
+        LaunchedEffect(viewState.selectedTrack) {
             selectedTrack = viewState.selectedTrack
         }
         selectedTrack?.let {
             SpotifyHorizontalSongCard(
-                modifier = Modifier
-                    .sharedBounds(
-                        sharedContentState = rememberSharedContentState(
-                            key = "container_${it.id}"
-                        ),
-                        animatedVisibilityScope = this@SpMetadataBsDetails,
-                        placeHolderSize = SharedTransitionScope.PlaceHolderSize.animatedSize,
-                        boundsTransform = SongCardBoundsTransformation,
-                        enter = fadeIn(
-                            tweenEnter(delayMillis = DURATION_EXIT_SHORT)
-                        ),
-                        exit = fadeOut(
-                            tweenExit(durationMillis = DURATION_EXIT_SHORT)
-                        )
-                    ),
-                imageModifier = Modifier.sharedElement(
-                    state = rememberSharedContentState(
-                        key = it.id
-                    ),
-                    animatedVisibilityScope = this@SpMetadataBsDetails,
-                    placeHolderSize = SharedTransitionScope.PlaceHolderSize.animatedSize,
-                    boundsTransform = SongCardBoundsTransformation,
-                ),
                 innerModifier = Modifier.padding(8.dp),
                 surfaceColor = Color.Transparent,
                 track = it,

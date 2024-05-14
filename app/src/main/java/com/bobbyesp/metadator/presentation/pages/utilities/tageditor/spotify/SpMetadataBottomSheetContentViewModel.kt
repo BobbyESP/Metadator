@@ -12,7 +12,6 @@ import com.bobbyesp.metadator.features.spotify.domain.pagination.TracksPagingSou
 import com.bobbyesp.metadator.features.spotify.domain.services.SpotifyService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -33,25 +32,21 @@ class SpMetadataBottomSheetContentViewModel @Inject constructor(
         }
     }
 
-    private var searchJob: Job? = null
-
     private val mutableViewStateFlow = MutableStateFlow(ViewState())
     val viewStateFlow = mutableViewStateFlow.asStateFlow()
 
     data class ViewState(
         val stage: BottomSheetStage = BottomSheetStage.SEARCH,
-        val viewState: SearchStageViewState = SearchStageViewState.Idle,
         val searchedTracks: Flow<PagingData<Track>> = emptyFlow(),
-        val selectedTrack: Track? = null
+        val selectedTrack: Track? = null,
+        val lastQuery: String = "",
     )
 
     fun searchTracks(query: String) {
-        searchJob?.cancel()
-        updateViewState(SearchStageViewState.Loading)
-        searchJob = viewModelScope.launch(Dispatchers.IO) {
+        updateQuery(query)
+        viewModelScope.launch(Dispatchers.IO) {
             getTracksPaginatedData(query)
         }
-        updateViewState(SearchStageViewState.Success)
     }
 
     private fun getTracksPaginatedData(query: String) {
@@ -86,12 +81,12 @@ class SpMetadataBottomSheetContentViewModel @Inject constructor(
     }
 
     fun clearTrack() {
+        updateStage(BottomSheetStage.SEARCH)
         mutableViewStateFlow.update {
             it.copy(
                 selectedTrack = null
             )
         }
-        updateStage(BottomSheetStage.SEARCH)
     }
 
     fun updateStage(stage: BottomSheetStage) {
@@ -102,23 +97,15 @@ class SpMetadataBottomSheetContentViewModel @Inject constructor(
         }
     }
 
-    private fun updateViewState(viewState: SearchStageViewState) {
+    fun updateQuery(query: String) {
         mutableViewStateFlow.update {
             it.copy(
-                viewState = viewState
+                lastQuery = query
             )
         }
     }
 
     companion object {
-        sealed class SearchStageViewState {
-            data object Idle : SearchStageViewState() // Initial state - May be deleted
-            data object Loading : SearchStageViewState()
-            data object Success : SearchStageViewState()
-            data class Error(val error: String) : SearchStageViewState()
-        }
-
-
         enum class BottomSheetStage {
             SEARCH,
             TRACK_DETAILS

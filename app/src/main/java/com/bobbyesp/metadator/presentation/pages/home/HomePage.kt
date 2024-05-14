@@ -98,7 +98,7 @@ fun HomePage(
 
     var desiredLayout by remember {
         mutableStateOf(
-            Preferences.EnumPrefs.getValue(
+            Preferences.Enumerations.getValue(
                 DESIRED_OVERLAY, LayoutType.Grid
             )
         )
@@ -256,7 +256,7 @@ private fun DropdownMenuContent(
 
     var desiredOverlay by remember {
         mutableIntStateOf(
-            Preferences.EnumPrefs.getValue(
+            Preferences.Enumerations.getValue(
                 DESIRED_OVERLAY, LayoutType.Grid
             ).ordinal
         )
@@ -279,7 +279,7 @@ private fun DropdownMenuContent(
                         selected = desiredOverlay == listType.ordinal,
                         onClick = {
                             desiredOverlay = listType.ordinal
-                            Preferences.EnumPrefs.encodeValue(
+                            Preferences.Enumerations.encodeValue(
                                 DESIRED_OVERLAY, listType
                             )
                             onLayoutChanged(listType)

@@ -21,7 +21,7 @@ private val BooleanPreferenceDefaults: Map<String, Boolean> =
 
 private val IntPreferenceDefaults: Map<String, Int> =
     mapOf(
-        DARK_THEME_VALUE to DarkThemePreference.FOLLOW_SYSTEM,
+        DARK_THEME_VALUE to DarkThemePreference.FOLLOW_SYSTEM
     )
 
 object Preferences {
@@ -47,7 +47,7 @@ object Preferences {
     fun encodeString(key: String, string: String) = key.updateString(string)
     fun containsKey(key: String) = kv.containsKey(key)
 
-    object EnumPrefs {
+    object Enumerations {
         inline fun <reified T : Enum<T>> encodeValue(
             key: String,
             value: T
