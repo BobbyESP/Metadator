@@ -6,8 +6,11 @@ import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
 import android.util.Log
+import androidx.annotation.OptIn
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.media3.common.util.UnstableApi
+import androidx.media3.common.util.Util
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
@@ -16,16 +19,42 @@ import com.bobbyesp.mediaplayer.R
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
-class MediaNotificationManager @Inject constructor(
+@UnstableApi
+class MediaNotificationManager @OptIn(UnstableApi::class)
+@Inject constructor(
     @ApplicationContext private val context: Context,
     private val player: ExoPlayer
 ) {
     private val notificationManager: NotificationManager =
         context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
+    val notificationManagerCompat = NotificationManagerCompat.from(context)
+
     init {
-        Log.i("MediaNotificationManager", "init: creating notification manager")
-        createNotificationChannel()
+        ensureNotificationChannel(notificationManagerCompat)
+    }
+
+    val notificationListener = object : PlayerNotificationManager.NotificationListener {
+        override fun onNotificationCancelled(
+            notificationId: Int,
+            dismissedByUser: Boolean
+        ) {
+            Log.d(
+                "MediaNotificationManager",
+                "onNotificationCancelled: notification cancelled"
+            )
+        }
+
+        override fun onNotificationPosted(
+            notificationId: Int,
+            notification: Notification,
+            ongoing: Boolean
+        ) {
+            Log.d(
+                "MediaNotificationManager",
+                "onNotificationPosted: notification posted"
+            )
+        }
     }
 
     @UnstableApi
@@ -46,35 +75,15 @@ class MediaNotificationManager @Inject constructor(
                     pendingIntent = mediaSession.sessionActivity
                 )
             )
+            .setCustomActionReceiver(MediaCustomActionReceiver())
             .setSmallIconResourceId(R.drawable.metadator_logo_player)
-            .setNotificationListener(object : PlayerNotificationManager.NotificationListener {
-                override fun onNotificationCancelled(
-                    notificationId: Int,
-                    dismissedByUser: Boolean
-                ) {
-                    Log.d(
-                        "MediaNotificationManager",
-                        "onNotificationCancelled: notification cancelled"
-                    )
-                }
-
-                override fun onNotificationPosted(
-                    notificationId: Int,
-                    notification: Notification,
-                    ongoing: Boolean
-                ) {
-                    Log.d(
-                        "MediaNotificationManager",
-                        "onNotificationPosted: notification posted"
-                    )
-                }
-            })
+            .setNotificationListener(notificationListener)
             .build()
-            .also { playerNotificationManager ->
-                with(playerNotificationManager) {
+            .also {
+                with(it) {
                     setMediaSessionToken(mediaSession.sessionCompatToken)
                     setPriority(NotificationCompat.PRIORITY_LOW)
-                    setPlayer(player)
+                    setPlayer(mediaSession.player)
                 }
             }
     }
@@ -103,15 +112,21 @@ class MediaNotificationManager @Inject constructor(
         }
     }
 
-    private fun createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                NOTIFICATION_CHANNEL_ID,
-                NOTIFICATION_CHANNEL_NAME,
-                NotificationManager.IMPORTANCE_LOW
-            )
-            notificationManager.createNotificationChannel(channel)
+    @OptIn(UnstableApi::class)
+    private fun ensureNotificationChannel(notificationManagerCompat: NotificationManagerCompat) {
+        if (Util.SDK_INT < 26 || notificationManagerCompat.getNotificationChannel(
+                NOTIFICATION_CHANNEL_ID
+            ) != null
+        ) {
+            return
         }
+
+        val channel = NotificationChannel(
+            NOTIFICATION_CHANNEL_ID,
+            NOTIFICATION_CHANNEL_NAME,
+            NotificationManager.IMPORTANCE_DEFAULT
+        )
+        notificationManagerCompat.createNotificationChannel(channel)
     }
 
 

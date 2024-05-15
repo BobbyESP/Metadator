@@ -97,8 +97,7 @@ object MediaPlayerModule {
     @Singleton
     fun provideMediaSessionLayoutHandler(
         @ApplicationContext context: Context,
-        mediaLibrarySessionCallback: MediaLibrarySessionCallback,
         mediaLibrarySession: MediaLibrarySession
     ): MediaSessionLayoutHandler =
-        MediaSessionLayoutHandlerImpl(context, mediaLibrarySession, mediaLibrarySessionCallback)
+        MediaSessionLayoutHandlerImpl(context, mediaLibrarySession)
 }

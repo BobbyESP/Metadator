@@ -14,6 +14,7 @@ class MediaNotificationAdapter(
     private val context: Context,
     private val pendingIntent: PendingIntent?
 ) : PlayerNotificationManager.MediaDescriptionAdapter {
+
     override fun getCurrentContentTitle(player: Player): CharSequence {
         return player.mediaMetadata.albumTitle
             ?: context.getString(androidx.media3.ui.R.string.exo_track_unknown)
