@@ -10,11 +10,11 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.spotify.SpMetadataBottomSheetContentViewModel.Companion.BottomSheetStage
+import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.spotify.stages.NoSongInformationProvided
 import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.spotify.stages.SpMetadataBsDetails
 import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.spotify.stages.SpMetadataBsSearch
 import com.bobbyesp.ui.motion.MotionConstants.DURATION_EXIT_SHORT
@@ -29,20 +29,27 @@ fun SpMetadataBottomSheetContent(
     state: SheetState,
     viewModel: SpMetadataBottomSheetContentViewModel = hiltViewModel()
 ) {
-    val scope = rememberCoroutineScope()
     val viewState = viewModel.viewStateFlow.collectAsStateWithLifecycle().value
+    val lazyListState = rememberLazyListState()
 
     val bottomSheetState = viewState.stage
 
-    val lazyListState = rememberLazyListState()
+    fun search(query: String) {
+        viewModel.updateStage(BottomSheetStage.SEARCH)
+        viewModel.searchTracks(query)
+    }
 
-    if (name.isEmpty() && artist.isEmpty()) return
+    if (name.isEmpty() && artist.isEmpty()) {
+        NoSongInformationProvided { providedName, providedArtist ->
+            val query = "$providedName $providedArtist"
+            search(query)
+        }
+    }
 
     LaunchedEffect(state.isVisible, name, artist) {
         val query = "$name $artist"
         if (state.isVisible && viewState.lastQuery != query) {
-            viewModel.updateStage(BottomSheetStage.SEARCH)
-            viewModel.searchTracks(query)
+            search(query)
         }
     }
 

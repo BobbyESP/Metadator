@@ -38,6 +38,10 @@ import androidx.compose.ui.util.fastMap
 import androidx.compose.ui.window.PopupPositionProvider
 import com.bobbyesp.ui.components.dropdown.MenuPosition.Horizontal
 import com.bobbyesp.ui.components.dropdown.MenuPosition.Vertical
+import com.bobbyesp.ui.motion.MotionConstants.DURATION_ENTER
+import com.bobbyesp.ui.motion.MotionConstants.DURATION_EXIT
+import com.bobbyesp.ui.motion.emphasizedAccelerate
+import com.bobbyesp.ui.motion.emphasizedDecelerate
 
 /**
  * Interfaces for positioning a menu within a window. This is the same purpose as the interface
@@ -420,7 +424,7 @@ fun DropdownMenuContent(
     AnimatedVisibility(
         visibleState = expandedState, label = "", enter = EnterTransition.None, exit = fadeOut(
             animationSpec = tween(
-                delayMillis = ExitDuration - FadeOutDuration,
+                delayMillis = DURATION_EXIT - FadeOutDuration,
                 durationMillis = FadeOutDuration,
                 easing = LinearEasing
             )
@@ -436,31 +440,31 @@ fun DropdownMenuContent(
             AnimatedVisibility(
                 visibleState = expandedState, label = "", enter = fadeIn(
                     animationSpec = tween(
-                        durationMillis = EnterDuration, easing = EmphasizedDecelerate
+                        durationMillis = DURATION_ENTER, easing = emphasizedDecelerate
                     )
                 ) + expandVertically(
                     animationSpec = tween(
-                        durationMillis = EnterDuration, easing = EmphasizedDecelerate
+                        durationMillis = DURATION_ENTER, easing = emphasizedDecelerate
                     ),
                     expandFrom = Alignment.Top,
                 ) + slideInVertically(
                     animationSpec = tween(
-                        durationMillis = EnterDuration, easing = EmphasizedDecelerate
+                        durationMillis = DURATION_ENTER, easing = emphasizedDecelerate
                     ),
                     initialOffsetY = { -it / 10 },
                 ), exit = fadeOut(
                     animationSpec = tween(
                         // Why ???
-                        durationMillis = ExitDuration - 20,
-                        easing = EmphasizedAccelerate
+                        durationMillis = DURATION_EXIT - 20,
+                        easing = emphasizedAccelerate
                     )
                 ) + shrinkVertically(
                     animationSpec = tween(
-                        durationMillis = ExitDuration, easing = EmphasizedAccelerate
+                        durationMillis = DURATION_EXIT, easing = emphasizedAccelerate
                     ),
                     shrinkTowards = Alignment.Top,
                 ) + slideOutVertically(animationSpec = tween(
-                    durationMillis = ExitDuration, easing = EmphasizedAccelerate
+                    durationMillis = DURATION_EXIT, easing = emphasizedAccelerate
                 ), targetOffsetY = { -it / 10 }), modifier = Modifier
             ) {
                 Column(

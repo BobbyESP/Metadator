@@ -16,9 +16,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
  * (i.e. while this composable is not active).
  */
 @Composable
-fun <T : Any> rememberSaveableWithVolatileInitialValue(
-    initialValue: T
-): MutableState<T> {
+fun <T : Any?> rememberSaveableWithVolatileInitialValue(
+    initialValue: T?
+): MutableState<T?> {
     return key(initialValue) {
         rememberSaveable {
             mutableStateOf(initialValue)

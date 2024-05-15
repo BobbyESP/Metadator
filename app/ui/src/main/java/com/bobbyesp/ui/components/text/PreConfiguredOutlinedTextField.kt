@@ -15,12 +15,11 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import com.bobbyesp.ui.R
+import com.bobbyesp.ui.util.rememberSaveableWithVolatileInitialValue
 
 @Composable
 fun PreConfiguredOutlinedTextField(
@@ -36,7 +35,7 @@ fun PreConfiguredOutlinedTextField(
     minLines: Int = 1,
     returnModifiedValue: (String) -> Unit = {}
 ) {
-    val (text, setText) = remember(value) { mutableStateOf(value) }
+    val (text, setText) = rememberSaveableWithVolatileInitialValue(value)
 
     SideEffect {
         if (!text.isNullOrEmpty()) returnModifiedValue(text) else returnModifiedValue("")

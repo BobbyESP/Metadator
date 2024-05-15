@@ -47,33 +47,35 @@ fun SpMetadataBsSearch(
         state = listState,
         modifier = Modifier.fillMaxSize()
     ) {
-        stickyHeader {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(
-                        brush = Brush.verticalGradient(
-                            colors = listOf(
-                                MaterialTheme.colorScheme.surfaceContainerLow, Color.Transparent
-                            ),
-                            startY = 0f,
-                        )
-                    )
-                    .padding(8.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    text = stringResource(
-                        id = R.string.showing_results_for,
-                        name,
-                        artist
-                    ),
-                    style = MaterialTheme.typography.bodyMedium,
-                    textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.Bold,
+        if (name.isNotEmpty() && artist.isNotEmpty()) {
+            stickyHeader {
+                Row(
                     modifier = Modifier
-                )
+                        .fillMaxWidth()
+                        .background(
+                            brush = Brush.verticalGradient(
+                                colors = listOf(
+                                    MaterialTheme.colorScheme.surfaceContainerLow, Color.Transparent
+                                ),
+                                startY = 0f,
+                            )
+                        )
+                        .padding(8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = stringResource(
+                            id = R.string.showing_results_for,
+                            name,
+                            artist
+                        ),
+                        style = MaterialTheme.typography.bodyMedium,
+                        textAlign = TextAlign.Center,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier
+                    )
+                }
             }
         }
 
