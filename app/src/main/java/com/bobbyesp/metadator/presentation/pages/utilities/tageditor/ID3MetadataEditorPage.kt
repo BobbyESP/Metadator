@@ -2,6 +2,7 @@ package com.bobbyesp.metadator.presentation.pages.utilities.tageditor
 
 import android.app.Activity
 import android.net.Uri
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
@@ -100,7 +101,6 @@ fun ID3MetadataEditorPage(
     val metadata = viewState.metadata
     val modifiablePropertyMap = viewState.metadata?.propertyMap?.toModifiableMap()
 
-
     var newArtworkAddress by remember {
         mutableStateOf<Uri?>(null)
     }
@@ -116,10 +116,10 @@ fun ID3MetadataEditorPage(
         rememberLauncherForActivityResult(contract = ActivityResultContracts.StartIntentSenderForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 scope.launch(Dispatchers.IO) {
-                    modifiablePropertyMap?.let {
+                    modifiablePropertyMap?.let { newMetadata ->
                         viewModel.saveMetadata(
                             newMetadata = viewState.metadata.copy(
-                                propertyMap = it.toAudioFileMetadata().toPropertyMap()
+                                propertyMap = newMetadata.toAudioFileMetadata().toPropertyMap()
                             ), path = path!!, imageUri = newArtworkAddress
                         )
                     }
@@ -173,7 +173,6 @@ fun ID3MetadataEditorPage(
             IconButton(onClick = {
                 scope.launch {
                     scaffoldState.bottomSheetState.partialExpand()
-                    //TODO: Add other things (if is I/O, use withContext(Dispatchers.IO) { ... })
                 }
             }) {
                 Icon(
@@ -184,7 +183,8 @@ fun ID3MetadataEditorPage(
                 )
             }
             TextButton(onClick = {
-                if (saveInMediaStore()) {
+                val isInfoSavedInMediaStore = saveInMediaStore()
+                if (isInfoSavedInMediaStore) {
                     navController.popBackStack()
                 }
             }) {
@@ -200,7 +200,17 @@ fun ID3MetadataEditorPage(
             SpMetadataBottomSheetContent(
                 name = modifiablePropertyMap?.get("TITLE") ?: "",
                 artist = modifiablePropertyMap?.get("ARTIST") ?: "",
-                state = scaffoldState.bottomSheetState
+                state = scaffoldState.bottomSheetState,
+                onUpdateMetadata = { modifiedFields ->
+                    modifiablePropertyMap?.putAll(modifiedFields)
+                    Log.i("ID3MetadataEditorPage", "Modified fields: $modifiedFields")
+                    viewModel.updateStatePropertyMap(modifiedFields)
+                },
+                onCloseSheet = {
+                    scope.launch {
+                        scaffoldState.bottomSheetState.hide()
+                    }
+                }
             )
         }) { innerPadding ->
         Crossfade(

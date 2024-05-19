@@ -13,7 +13,9 @@ import com.bobbyesp.metadator.features.spotify.domain.services.SpotifyService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.update
@@ -34,6 +36,9 @@ class SpMetadataBottomSheetContentViewModel @Inject constructor(
 
     private val mutableViewStateFlow = MutableStateFlow(ViewState())
     val viewStateFlow = mutableViewStateFlow.asStateFlow()
+
+    private val _eventFlow = MutableSharedFlow<Events>()
+    val eventFlow = _eventFlow.asSharedFlow()
 
     data class ViewState(
         val stage: BottomSheetStage = BottomSheetStage.SEARCH,
@@ -97,12 +102,22 @@ class SpMetadataBottomSheetContentViewModel @Inject constructor(
         }
     }
 
-    fun updateQuery(query: String) {
+    fun saveMetadata(modifiedFields: Map<String, String>) {
+        viewModelScope.launch {
+            _eventFlow.emit(Events.SaveMetadata(modifiedFields))
+        }
+    }
+
+    private fun updateQuery(query: String) {
         mutableViewStateFlow.update {
             it.copy(
                 lastQuery = query
             )
         }
+    }
+
+    sealed class Events {
+        data class SaveMetadata(val modifiedFields: Map<String, String>) : Events()
     }
 
     companion object {

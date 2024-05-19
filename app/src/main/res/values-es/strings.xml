@@ -62,4 +62,8 @@
     <string name="others">Otros</string>
     <string name="unknown">Desconocido</string>
     <string name="showing_results_for">Mostrando resultados para %1$s de %2$s</string>
+    <string name="loading">Cargando</string>
+    <string name="no_song_information_provided">Información de la canción no proporcionada</string>
+    <string name="retry_search">Volver a buscar</string>
+    <string name="spotify_metadata">Metadatos de Spotify</string>
 </resources>

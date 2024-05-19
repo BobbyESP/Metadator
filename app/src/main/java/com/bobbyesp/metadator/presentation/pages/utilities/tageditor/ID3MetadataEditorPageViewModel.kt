@@ -8,8 +8,9 @@ import android.os.Build
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.adamratzman.spotify.models.Track
-import com.bobbyesp.metadator.features.spotify.domain.repositories.SearchRepository
+import com.bobbyesp.ext.toModifiableMap
+import com.bobbyesp.utilities.mediastore.AudioFileMetadata.Companion.toAudioFileMetadata
+import com.bobbyesp.utilities.mediastore.AudioFileMetadata.Companion.toPropertyMap
 import com.bobbyesp.utilities.mediastore.MediaStoreReceiver
 import com.kyant.taglib.AudioProperties
 import com.kyant.taglib.AudioPropertiesReadStyle
@@ -31,7 +32,6 @@ import javax.inject.Inject
 @HiltViewModel
 class ID3MetadataEditorPageViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val searchRepository: SearchRepository
 ) : ViewModel() {
     private val mutablePageViewState = MutableStateFlow(PageViewState())
     val pageViewState = mutablePageViewState.asStateFlow()
@@ -152,16 +152,20 @@ class ID3MetadataEditorPageViewModel @Inject constructor(
         }
     }
 
-    suspend fun getSpotifyResults(query: String): List<Track> {
-        val result = searchRepository.searchTracks(query)
-        return if (result.isSuccess) {
-            result.getOrNull() ?: emptyList()
-        } else {
-            result.exceptionOrNull()?.printStackTrace()
-            emptyList()
+    fun updateStatePropertyMap(propertyMap: Map<String, String>) {
+        val mutableStateMap = mutablePageViewState.value.metadata?.propertyMap?.toModifiableMap()
+        val updatedPropertyMap = mutableStateMap?.apply {
+            putAll(propertyMap)
+        } ?: propertyMap
+
+        mutablePageViewState.update {
+            it.copy(
+                metadata = it.metadata?.copy(
+                    propertyMap = updatedPropertyMap.toAudioFileMetadata().toPropertyMap()
+                )
+            )
         }
     }
-
     private fun updateState(state: ID3MetadataEditorPageState) {
         mutablePageViewState.update {
             it.copy(

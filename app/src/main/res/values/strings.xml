@@ -64,5 +64,6 @@
     <string name="loading">Loading</string>
     <string name="no_song_information_provided">No song information provided</string>
     <string name="retry_search">Retry search</string>
+    <string name="spotify_metadata">Spotify metadata</string>
 
 </resources>

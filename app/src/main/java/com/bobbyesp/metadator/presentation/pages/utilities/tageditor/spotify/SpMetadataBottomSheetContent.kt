@@ -20,6 +20,7 @@ import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.spotify.sta
 import com.bobbyesp.ui.motion.MotionConstants.DURATION_EXIT_SHORT
 import com.bobbyesp.ui.motion.tweenEnter
 import com.bobbyesp.ui.motion.tweenExit
+import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -27,6 +28,8 @@ fun SpMetadataBottomSheetContent(
     name: String,
     artist: String,
     state: SheetState,
+    onUpdateMetadata: (modifiedFields: Map<String, String>) -> Unit,
+    onCloseSheet: () -> Unit,
     viewModel: SpMetadataBottomSheetContentViewModel = hiltViewModel()
 ) {
     val viewState = viewModel.viewStateFlow.collectAsStateWithLifecycle().value
@@ -53,6 +56,16 @@ fun SpMetadataBottomSheetContent(
         }
     }
 
+    LaunchedEffect(key1 = true) {
+        viewModel.eventFlow.collectLatest { event ->
+            when (event) {
+                is SpMetadataBottomSheetContentViewModel.Events.SaveMetadata -> {
+                    onUpdateMetadata(event.modifiedFields)
+                }
+            }
+        }
+    }
+
     AnimatedContent(targetState = bottomSheetState,
         label = "Transition between bs states",
         transitionSpec = {
@@ -71,7 +84,9 @@ fun SpMetadataBottomSheetContent(
 
             BottomSheetStage.TRACK_DETAILS -> {
                 SpMetadataBsDetails(
-                    modifier = Modifier.fillMaxSize(), viewModel = viewModel
+                    modifier = Modifier.fillMaxSize(),
+                    viewModel = viewModel,
+                    onCloseSheet = onCloseSheet
                 )
             }
         }
