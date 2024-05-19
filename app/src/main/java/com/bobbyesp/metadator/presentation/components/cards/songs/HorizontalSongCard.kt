@@ -96,7 +96,8 @@ private fun HorizontalSongCardPreview() {
                 album = "Mercury - Acts 1 & 2",
                 artworkPath = null,
                 duration = 100.0,
-                path = "path"
+                path = "path",
+                fileName = "Bones"
             ), onClick = {})
     }
 }

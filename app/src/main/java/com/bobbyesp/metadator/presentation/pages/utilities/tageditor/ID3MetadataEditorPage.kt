@@ -108,7 +108,7 @@ fun ID3MetadataEditorPage(
     LaunchedEffect(parcelableSong.localSongPath) {
         newArtworkAddress = null
         viewModel.loadTrackMetadata(
-            path = parcelableSong.localSongPath!!
+            path = parcelableSong.localSongPath
         )
     }
 
@@ -120,7 +120,7 @@ fun ID3MetadataEditorPage(
                         viewModel.saveMetadata(
                             newMetadata = viewState.metadata.copy(
                                 propertyMap = newMetadata.toAudioFileMetadata().toPropertyMap()
-                            ), path = path!!, imageUri = newArtworkAddress
+                            ), path = path, imageUri = newArtworkAddress
                         )
                     }
                 }
@@ -133,7 +133,7 @@ fun ID3MetadataEditorPage(
     fun saveInMediaStore(): Boolean = viewModel.saveMetadata(
         newMetadata = viewState.metadata?.copy(
             propertyMap = modifiablePropertyMap!!.toAudioFileMetadata().toPropertyMap()
-        )!!, path = path!!, imageUri = newArtworkAddress
+        )!!, path = path, imageUri = newArtworkAddress
     ) {
         val intent = IntentSenderRequest.Builder(it).build()
         sendActivityIntent.launch(intent)

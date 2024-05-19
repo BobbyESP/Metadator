@@ -13,7 +13,7 @@ import kotlinx.serialization.Serializable
 data class ParcelableSong(
     val name: String,
     val mainArtist: String,
-    val localSongPath: String? = null,
+    val localSongPath: String,
     @Serializable(with = UriSerializer::class) val artworkPath: Uri? = null,
-    val fileName: String? = null
+    val fileName: String
 ) : Parcelable

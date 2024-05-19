@@ -46,7 +46,7 @@ fun PlayPauseAnimatedButton(
     ) {
         Box(
             modifier = Modifier
-                .background(MaterialTheme.colorScheme.onSecondary)
+                .background(MaterialTheme.colorScheme.primaryContainer)
                 .size(72.dp)
                 .clip(RoundedCornerShape(cornerRadius.value))
                 .clickable(

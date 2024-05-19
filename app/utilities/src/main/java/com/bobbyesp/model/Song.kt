@@ -23,7 +23,7 @@ data class Song(
     @Serializable(with = UriSerializer::class) val artworkPath: Uri? = null,
     val duration: Double,
     val path: String,
-    val fileName: String? = null
+    val fileName: String
 ) : Parcelable {
     constructor(parcel: android.os.Parcel) : this(
         parcel.readLong(),
