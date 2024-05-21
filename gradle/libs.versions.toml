@@ -24,26 +24,25 @@ constraintLayout = "1.1.0-alpha13"
 androidx-compose-material3 = "1.2.1"
 compose-util = "1.6.7"
 accompanist = "0.34.0"
-compose-pagination = "3.2.1"
 commonsIo = "2.15.0"
 commonsCompress = "1.24.0"
 
 #More UI
-androidx-paging = "3.2.1"
+androidx-paging = "3.3.0"
 qrcodeKotlinAndroid = "4.1.0"
 orbital = "0.3.3"
 shimmer = "1.0.3"
 palette = "1.0.0"
 
 #Navigation
-androidx-navigation = "2.7.7"
+androidx-navigation = "2.8.0-beta01"
 
 #Coroutines
 kotlinx-coroutines = "1.8.0"
 
 #Serialization and more related
 kotlinx-datetime = "0.5.0"
-kotlinx-serializationJson = "1.6.2"
+kotlinx-serializationJson = "1.6.3"
 kotlinx-collectionsImmutable = "0.3.7"
 
 #Image loading
@@ -133,7 +132,7 @@ scrollbar = { group = "com.github.nanihadesuka", name = "LazyColumnScrollbar", v
 
 #Paging3
 paging-runtime = { group = "androidx.paging", name = "paging-runtime", version.ref = "androidx-paging" }
-paging-compose = { group = "androidx.paging", name = "paging-compose", version.ref = "compose-pagination" }
+paging-compose = { group = "androidx.paging", name = "paging-compose", version.ref = "androidx-paging" }
 
 #Compose UI Navigation
 compose-navigation = { group = "androidx.navigation", name = "navigation-compose", version.ref = "androidx-navigation" }

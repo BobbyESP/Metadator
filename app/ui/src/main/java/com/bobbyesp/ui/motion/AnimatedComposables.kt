@@ -60,7 +60,7 @@ private val path = Path().apply {
     cubicTo(0.208333F, 0.82F, 0.25F, 1F, 1F, 1F)
 }
 
-private val enterTween =
+val enterTween =
     tween<IntOffset>(durationMillis = DURATION_ENTER, easing = emphasizeEasing)
 private val exitTween =
     tween<IntOffset>(durationMillis = DURATION_ENTER, easing = emphasizeEasing)
@@ -91,6 +91,27 @@ fun NavGraphBuilder.animatedComposable(
     },
     content = content
 )
+
+inline fun <reified T : Any> NavGraphBuilder.animatedComposable(
+    deepLinks: List<NavDeepLink> = emptyList(),
+    noinline content: @Composable AnimatedVisibilityScope.(NavBackStackEntry) -> Unit
+) = composable<T>(
+    deepLinks = deepLinks,
+    enterTransition = {
+        materialSharedAxisXIn(initialOffsetX = { (it * initialOffset).toInt() })
+    },
+    exitTransition = {
+        materialSharedAxisXOut(targetOffsetX = { -(it * initialOffset).toInt() })
+    },
+    popEnterTransition = {
+        materialSharedAxisXIn(initialOffsetX = { -(it * initialOffset).toInt() })
+    },
+    popExitTransition = {
+        materialSharedAxisXOut(targetOffsetX = { (it * initialOffset).toInt() })
+    },
+    content = content
+)
+
 
 
 fun NavGraphBuilder.animatedComposableLegacy(
@@ -162,6 +183,27 @@ fun NavGraphBuilder.slideInVerticallyComposable(
 ) = composable(
     route = route,
     arguments = arguments,
+    deepLinks = deepLinks,
+    enterTransition = {
+        slideInVertically(
+            initialOffsetY = { it }, animationSpec = enterTween
+        ) + fadeIn()
+    },
+    exitTransition = { slideOutVertically() },
+    popEnterTransition = { slideInVertically() },
+    popExitTransition = {
+        slideOutVertically(
+            targetOffsetY = { it },
+            animationSpec = enterTween
+        ) + fadeOut()
+    },
+    content = content
+)
+
+inline fun <reified T : Any> NavGraphBuilder.slideInVerticallyComposable(
+    deepLinks: List<NavDeepLink> = emptyList(),
+    noinline content: @Composable AnimatedVisibilityScope.(NavBackStackEntry) -> Unit
+) = composable<T>(
     deepLinks = deepLinks,
     enterTransition = {
         slideInVertically(
