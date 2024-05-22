@@ -1,25 +1,23 @@
 [versions]
 #General, lifecycle and core
-agp = "8.5.0-alpha06"
-firebaseCrashlyticsGradle = "3.0.0"
-gradle = "8.5.0-alpha06"
-kotlin = "1.9.23"
-appcompat = "1.7.0-alpha03"
+agp = "8.6.0-alpha02"
+firebaseCrashlyticsGradle = "3.0.1"
+gradle = "8.6.0-alpha02"
+kotlin = "2.0.0"
+appcompat = "1.7.0-rc01"
 core-ktx = "1.13.1"
 legacySupportV4 = "1.0.0"
-lifecycle-runtime-ktx = "2.7.0"
+lifecycle-runtime-ktx = "2.8.0"
 activity-compose = "1.9.0"
-compose-compiler = "1.5.11"
-ksp = "1.9.23-1.0.19"
+ksp = "2.0.0-1.0.21"
 lyricfier = "1.0"
 splashscreen = "1.0.1"
-material = "1.11.0"
 media3 = "1.4.0-alpha01"
 leakcanary = "2.13"
 
 #Compose
 compose-bom = "2024.05.00"
-compose-bom-canary = "2024.04.00-alpha02"
+compose-bom-canary = "2024.05.00-alpha02"
 constraintLayout = "1.1.0-alpha13"
 androidx-compose-material3 = "1.2.1"
 compose-util = "1.6.7"
@@ -249,18 +247,17 @@ material = { group = "com.google.android.material", name = "material", version.r
 androidx-media3-datasource-okhttp = { group = "androidx.media3", name = "media3-datasource-okhttp", version.ref = "media3DatasourceOkhttp" }
 
 [plugins]
-androidApplication = { id = "com.android.application", version.ref = "agp" }
-kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
+android-application = { id = "com.android.application", version.ref = "agp" }
+android-library = { id = "com.android.library", version.ref = "agp" }
+android-kotlin = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
-androidLibrary = { id = "com.android.library", version.ref = "agp" }
-google-gms = { id = "com.google.gms.google-services", version.ref = "googleServices" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 androidTest = { id = "com.android.test", version.ref = "agp" }
 androidx-baselineprofile = { id = "androidx.baselineprofile", version.ref = "androidx-baselineprofile" }
+google-gms = { id = "com.google.gms.google-services", version.ref = "googleServices" }
 
 [bundles]
 core = ["core-ktx", "lifecycle-runtime-ktx", "lifecycle-compose-runtime", "lifecycle-compose-viewModel", "activity-compose", "core-appcompat", "core-splashscreen"]
