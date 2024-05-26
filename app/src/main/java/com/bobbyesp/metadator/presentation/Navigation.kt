@@ -52,6 +52,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.fastAny
+import androidx.compose.ui.util.fastForEach
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
@@ -61,6 +62,7 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.toRoute
 import com.bobbyesp.metadator.App
 import com.bobbyesp.metadator.R
+import com.bobbyesp.metadator.ext.formatAsClassToRoute
 import com.bobbyesp.metadator.model.ParcelableSong
 import com.bobbyesp.metadator.presentation.common.Home
 import com.bobbyesp.metadator.presentation.common.LocalDrawerState
@@ -72,6 +74,8 @@ import com.bobbyesp.metadator.presentation.common.MediaplayerNavigator
 import com.bobbyesp.metadator.presentation.common.MetadatorNavigator
 import com.bobbyesp.metadator.presentation.common.NavigationUtilities.IconsUtil.getDestinationIcon
 import com.bobbyesp.metadator.presentation.common.NavigationUtilities.getDestinationTitle
+import com.bobbyesp.metadator.presentation.common.Settings
+import com.bobbyesp.metadator.presentation.common.SettingsNavigator
 import com.bobbyesp.metadator.presentation.common.TagEditor
 import com.bobbyesp.metadator.presentation.common.UtilitiesNavigator
 import com.bobbyesp.metadator.presentation.common.parcelableType
@@ -82,6 +86,7 @@ import com.bobbyesp.metadator.presentation.pages.mediaplayer.MediaplayerPage
 import com.bobbyesp.metadator.presentation.pages.mediaplayer.MediaplayerViewModel
 import com.bobbyesp.metadator.presentation.pages.mediaplayer.mediaplayer.CollapsedPlayerHeight
 import com.bobbyesp.metadator.presentation.pages.mediaplayer.mediaplayer.PlayerAnimationSpec
+import com.bobbyesp.metadator.presentation.pages.settings.SettingsPage
 import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.ID3MetadataEditorPage
 import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.ID3MetadataEditorPageViewModel
 import com.bobbyesp.ui.components.bottomsheet.draggable.rememberDraggableBottomSheetState
@@ -99,12 +104,13 @@ fun Navigator() {
 
     val currentRootRoute = rememberSaveable(navBackStackEntry, key = "currentRootRoute") {
         mutableStateOf(
-            navBackStackEntry?.destination?.parent
+            navBackStackEntry?.destination?.parent?.route
+                ?: MetadatorNavigator.formatAsClassToRoute()
         )
     }
     val currentRoute = rememberSaveable(navBackStackEntry, key = "currentRoute") {
         mutableStateOf(
-            navBackStackEntry?.destination
+            navBackStackEntry?.destination?.route ?: Home.formatAsClassToRoute()
         )
     }
 
@@ -114,7 +120,7 @@ fun Navigator() {
 
     //able to open drawer when the user is in one of the main routes (root routes)
     val canOpenDrawer by remember(currentRoute) {
-        mutableStateOf(routesToNavigate.fastAny { it == currentRootRoute.value })
+        mutableStateOf(routesToNavigate.fastAny { it.formatAsClassToRoute() == currentRootRoute.value })
     }
 
     val mediaStoreViewModel = hiltViewModel<MediaStorePageViewModel>()
@@ -176,13 +182,15 @@ fun Navigator() {
                             fontWeight = FontWeight.Bold,
                             fontFamily = FontFamily.Monospace
                         )
-                        routesToNavigate.forEachIndexed { _, route ->
-                            val isSelected = currentRootRoute.value == route
+                        routesToNavigate.fastForEach { route ->
+                            val formattedRoute = route.formatAsClassToRoute()
+                            val isSelected = currentRootRoute.value == formattedRoute
                             NavigationDrawerItem(
                                 label = {
                                     Text(
-                                        text = route.getDestinationTitle()
-                                            ?.let { stringResource(id = it) } ?: "")
+                                        text = route::class.getDestinationTitle()?.let {
+                                            stringResource(id = it)
+                                        } ?: "")
                                 },
                                 selected = isSelected,
                                 onClick = {
@@ -206,13 +214,10 @@ fun Navigator() {
                                 },
                                 icon = {
                                     Icon(
-                                        imageVector = route.getDestinationIcon()
+                                        imageVector = route::class.getDestinationIcon()
                                             ?: Icons.Rounded.Square,
-                                        contentDescription = route.getDestinationTitle()
+                                        contentDescription = route::class.getDestinationTitle()
                                             ?.let { stringResource(id = it) })
-                                },
-                                badge = {
-
                                 },
                                 modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
                             )
@@ -243,7 +248,10 @@ fun Navigator() {
                             }
                             Surface(
                                 onClick = {
-                                    //TODO: Open settings
+                                    navController.navigate(Settings)
+                                    scope.launch {
+                                        drawerState.close()
+                                    }
                                 },
                                 modifier = Modifier
                                     .semantics { role = Role.Tab }
@@ -312,7 +320,7 @@ fun Navigator() {
                             startDestination = TagEditor::class,
                         ) {
                             composable<TagEditor>(
-                                typeMap = mapOf(typeOf<ParcelableSong>() to parcelableType<ParcelableSong>())
+                                typeMap = mapOf(typeOf<ParcelableSong>() to parcelableType<ParcelableSong>()),
                             ) {
                                 val song =
                                     it.toRoute<TagEditor>()
@@ -323,6 +331,14 @@ fun Navigator() {
                                     viewModel = viewModel,
                                     parcelableSong = song.selectedSong
                                 )
+                            }
+                        }
+
+                        navigation<SettingsNavigator>(
+                            startDestination = Settings,
+                        ) {
+                            composable<Settings> {
+                                SettingsPage()
                             }
                         }
                     }

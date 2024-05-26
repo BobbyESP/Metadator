@@ -3,6 +3,7 @@ package com.bobbyesp.model
 import android.net.Uri
 import android.os.Parcelable
 import androidx.compose.runtime.Stable
+import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
@@ -14,6 +15,7 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
 @Serializable
+@Parcelize
 @Stable
 data class Song(
     val id: Long,
@@ -25,40 +27,8 @@ data class Song(
     val path: String,
     val fileName: String
 ) : Parcelable {
-    constructor(parcel: android.os.Parcel) : this(
-        parcel.readLong(),
-        parcel.readString()!!,
-        parcel.readString()!!,
-        parcel.readString()!!,
-        parcel.readParcelable(Uri::class.java.classLoader),
-        parcel.readDouble(),
-        parcel.readString()!!,
-        parcel.readString()!!
-    )
-
-    override fun writeToParcel(parcel: android.os.Parcel, flags: Int) {
-        parcel.writeLong(id)
-        parcel.writeString(title)
-        parcel.writeString(artist)
-        parcel.writeString(album)
-        parcel.writeParcelable(artworkPath, flags)
-        parcel.writeDouble(duration)
-        parcel.writeString(path)
-        parcel.writeString(fileName)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<Song> {
-        override fun createFromParcel(parcel: android.os.Parcel): Song {
-            return Song(parcel)
-        }
-
-        override fun newArray(size: Int): Array<Song?> {
-            return arrayOfNulls(size)
-        }
+    companion object {
+        val empty = Song(-1, "", "", "", null, 0.0, "", "")
     }
 }
 
