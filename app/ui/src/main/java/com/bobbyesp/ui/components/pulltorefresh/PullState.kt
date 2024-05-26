@@ -109,7 +109,7 @@ class PullState internal constructor(
         ): Offset {
             when {
                 !isEnabled -> return Offset.Zero
-                available.y > 0 && source == NestedScrollSource.Drag -> {
+                available.y > 0 && source == NestedScrollSource.UserInput -> {
                     // 1. User is dragging
                     // 2. Scrollable container reached the top (OR max drag reached and neither scroll container nor P2R are interested. Poor available Offset...)
                     // 3. There is still drag available that the scrollable container did not consume
@@ -127,7 +127,7 @@ class PullState internal constructor(
         override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
             when {
                 !isEnabled -> return Offset.Zero
-                offsetY > 0 && source == NestedScrollSource.Drag -> {
+                offsetY > 0 && source == NestedScrollSource.UserInput -> {
                     // Consumes the drag as long as the indicator is visible
                     isDragging = true
                     val newOffset = offsetY + available.y

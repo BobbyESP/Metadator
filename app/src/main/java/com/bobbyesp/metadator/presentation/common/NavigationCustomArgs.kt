@@ -3,44 +3,41 @@ package com.bobbyesp.metadator.presentation.common
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Parcelable
 import androidx.navigation.NavType
-import com.bobbyesp.metadator.model.ParcelableSong
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
-@Suppress("DEPRECATION")
-val ParcelableSongParamType = object : NavType<ParcelableSong>(isNullableAllowed = false) {
-    override fun get(bundle: Bundle, key: String): ParcelableSong? {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            bundle.getParcelable(NavArgs.SelectedSong.key, ParcelableSong::class.java)
+inline fun <reified T : Parcelable> parcelableType(
+    isNullableAllowed: Boolean = false,
+    json: Json = Json,
+) = object : NavType<T>(isNullableAllowed = isNullableAllowed) {
+    override fun get(bundle: Bundle, key: String) =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            bundle.getParcelable(key, T::class.java)
         } else {
-            bundle.getParcelable(NavArgs.SelectedSong.key)
+            @Suppress("DEPRECATION") bundle.getParcelable(key)
         }
-    }
 
-    override fun put(bundle: Bundle, key: String, value: ParcelableSong) {
-        bundle.putParcelable(key, value)
-    }
+    override fun parseValue(value: String): T = json.decodeFromString(value)
 
-    override fun parseValue(value: String): ParcelableSong {
-        return Json.decodeFromString(Uri.decode(value))
-    }
+    override fun serializeAsValue(value: T): String = Uri.encode(json.encodeToString(value))
+
+    override fun put(bundle: Bundle, key: String, value: T) = bundle.putParcelable(key, value)
 }
 
-@Suppress("DEPRECATION")
-val TagEditorParcelableSongParamType = object : NavType<ParcelableSong>(isNullableAllowed = false) {
-    override fun get(bundle: Bundle, key: String): ParcelableSong? {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            bundle.getParcelable(NavArgs.TagEditorSelectedSong.key, ParcelableSong::class.java)
-        } else {
-            bundle.getParcelable(NavArgs.TagEditorSelectedSong.key)
-        }
-    }
+inline fun <reified T : Any> serializableType(
+    isNullableAllowed: Boolean = false,
+    json: Json = Json,
+) = object : NavType<T>(isNullableAllowed = isNullableAllowed) {
+    override fun get(bundle: Bundle, key: String) =
+        bundle.getString(key)?.let<String, T>(json::decodeFromString)
 
-    override fun put(bundle: Bundle, key: String, value: ParcelableSong) {
-        bundle.putParcelable(key, value)
-    }
+    override fun parseValue(value: String): T = json.decodeFromString(value)
 
-    override fun parseValue(value: String): ParcelableSong {
-        return Json.decodeFromString(Uri.decode(value))
+    override fun serializeAsValue(value: T): String = Uri.encode(json.encodeToString(value))
+
+    override fun put(bundle: Bundle, key: String, value: T) {
+        bundle.putString(key, json.encodeToString(value))
     }
 }

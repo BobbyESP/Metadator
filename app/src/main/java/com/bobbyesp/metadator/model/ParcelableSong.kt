@@ -8,8 +8,8 @@ import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.Serializable
 
 @Parcelize
-@Serializable
 @Immutable
+@Serializable
 data class ParcelableSong(
     val name: String,
     val mainArtist: String,

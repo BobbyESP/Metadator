@@ -1,89 +1,85 @@
 package com.bobbyesp.metadator.presentation.common
 
 import android.content.Context
-import android.net.Uri
-import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Edit
-import androidx.compose.material.icons.rounded.Handyman
 import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.ui.graphics.vector.ImageVector
-import com.bobbyesp.metadator.App.Companion.json
 import com.bobbyesp.metadator.R
 import com.bobbyesp.metadator.model.ParcelableSong
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.serialization.encodeToString
+import kotlinx.serialization.Serializable
+import kotlin.reflect.KClass
 
-sealed class Route(
-    val route: String,
-    @StringRes val title: Int? = null,
-    val icon: ImageVector? = null,
-) {
-    data object MainHost : Route("main_host")
+@Serializable
+object MainHost
 
-    data object MetadatorNavigator : Route(
-        "metadator_navigator",
-        title = R.string.home,
-        icon = Icons.Rounded.Home
-    ) {
-        data object Home :
-            Route(
-                "home",
-                title = R.string.home,
-                icon = Icons.Rounded.Home
-            ) {
-        }
-    }
+@Serializable
+object MetadatorNavigator
 
-    data object MediaplayerNavigator : Route(
-        "mediaplayer_navigator",
-        title = R.string.mediaplayer,
-        icon = Icons.Rounded.PlayArrow
-    ) {
-        data object Mediaplayer :
-            Route(
-                "mediaplayer",
-                title = R.string.mediaplayer,
-                icon = Icons.Rounded.PlayArrow
-            ) {
-        }
-    }
+@Serializable
+object Home
 
-    data object UtilitiesNavigator :
-        Route(
-            "utilities",
-            title = R.string.utilities,
-            icon = Icons.Rounded.Handyman
-        ) {
-        data object TagEditor :
-            Route(
-                "utilities/tag_editor/{${NavArgs.TagEditorSelectedSong.key}}",
-                title = R.string.tag_editor,
-                icon = Icons.Rounded.Edit
-            ) {
-            fun createRoute(parcelableSong: ParcelableSong) =
-                "utilities/tag_editor/${
-                    Uri.encode(
-                        json.encodeToString<ParcelableSong>(
-                            parcelableSong
-                        )
-                    )
-                }"
-        }
-    }
-}
+@Serializable
+object MediaplayerNavigator
 
-val routesToNavigate = listOf(
-    Route.MetadatorNavigator,
-    Route.MediaplayerNavigator
+@Serializable
+object Mediaplayer
+
+@Serializable
+object UtilitiesNavigator
+
+@Serializable
+data class TagEditor(
+    val selectedSong: ParcelableSong
 )
 
-fun Route.getTitle(@ApplicationContext context: Context): String? {
-    return title?.let { context.getString(it) }
-}
+val routesToNavigate = listOf(
+    MetadatorNavigator,
+    MediaplayerNavigator
+)
 
-enum class NavArgs(val key: String) {
-    SelectedSong(key = "selectedSong"),
-    TagEditorSelectedSong(key = "tagEditorSelectedSong"),
+object NavigationUtilities {
+    fun KClass<*>.getDestinationTitle(@ApplicationContext context: Context): String? {
+        return when (this) {
+            MainHost::class -> context.getString(R.string.app_name)
+            Home::class -> context.getString(R.string.home)
+            Mediaplayer::class -> context.getString(R.string.mediaplayer)
+            TagEditor::class -> context.getString(R.string.tag_editor)
+            else -> null
+        }
+    }
+
+    fun Any.getDestinationTitle(): Int? {
+        return when (this) {
+            MainHost -> R.string.app_name
+            Home -> R.string.home
+            Mediaplayer -> R.string.mediaplayer
+            TagEditor -> R.string.tag_editor
+            else -> null
+        }
+    }
+
+    object IconsUtil {
+        fun KClass<*>.getDestinationIcon(): ImageVector? {
+            return when (this) {
+                MainHost::class -> Icons.Rounded.Home
+                Home::class -> Icons.Rounded.Home
+                Mediaplayer::class -> Icons.Rounded.PlayArrow
+                TagEditor::class -> Icons.Rounded.Edit
+                else -> null
+            }
+        }
+
+        fun Any.getDestinationIcon(): ImageVector? {
+            return when (this) {
+                MainHost -> Icons.Rounded.Home
+                Home -> Icons.Rounded.Home
+                Mediaplayer -> Icons.Rounded.PlayArrow
+                TagEditor -> Icons.Rounded.Edit
+                else -> null
+            }
+        }
+    }
 }

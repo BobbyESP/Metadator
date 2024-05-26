@@ -50,10 +50,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bobbyesp.metadator.R
-import com.bobbyesp.metadator.model.ParcelableSong
+import com.bobbyesp.metadator.ext.toParcelableSong
 import com.bobbyesp.metadator.presentation.common.LocalDrawerState
 import com.bobbyesp.metadator.presentation.common.LocalNavController
-import com.bobbyesp.metadator.presentation.common.Route
+import com.bobbyesp.metadator.presentation.common.TagEditor
 import com.bobbyesp.metadator.presentation.pages.MediaStorePage
 import com.bobbyesp.metadator.presentation.pages.MediaStorePageViewModel
 import com.bobbyesp.ui.components.dropdown.AnimatedDropdownMenu
@@ -230,18 +230,8 @@ fun HomePage(
                     lazyListState = mediaStoreLazyColumnState,
                     desiredLayout = desiredLayout,
                     onItemClicked = { song ->
-                        val artistsList = song.artist.toList()
-                        val mainArtist = artistsList.first().toString()
-                        val chosenSongParcel = ParcelableSong(
-                            name = song.title,
-                            mainArtist = mainArtist,
-                            localSongPath = song.path,
-                            artworkPath = song.artworkPath,
-                            fileName = song.fileName
-                        )
-
                         navController.navigate(
-                            Route.UtilitiesNavigator.TagEditor.createRoute(chosenSongParcel)
+                            TagEditor(song.toParcelableSong())
                         )
                     })
             })
