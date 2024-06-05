@@ -51,7 +51,7 @@ by [TagLib](https://github.com/Kyant0/taglib) and made with Material You and Jet
 ## ⬇️Download
 
 You can download the latest version of Metadator from
-the [releases page](https://github.com/BobbyESP/Metadator/releases/latest)
+the [releases page](https://github.com/BobbyESP/Metadator/releases/latest) or [the Play Store](https://play.google.com/store/apps/details?id=com.bobbyesp.metadator)
 
 ## 🔠Translation
 
