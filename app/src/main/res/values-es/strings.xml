@@ -66,4 +66,5 @@
     <string name="no_song_information_provided">Información de la canción no proporcionada</string>
     <string name="retry_search">Volver a buscar</string>
     <string name="spotify_metadata">Metadatos de Spotify</string>
+    <string name="made_by">Hecho con 💖 por BobbyESP</string>
 </resources>

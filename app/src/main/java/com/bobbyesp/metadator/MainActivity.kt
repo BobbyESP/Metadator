@@ -35,7 +35,6 @@ class MainActivity : ComponentActivity() {
 
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
-        Log.i("MainActivity", "onCreate")
         installSplashScreen()
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)

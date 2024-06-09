@@ -53,7 +53,7 @@ import com.bobbyesp.metadator.R
 import com.bobbyesp.metadator.ext.toParcelableSong
 import com.bobbyesp.metadator.presentation.common.LocalDrawerState
 import com.bobbyesp.metadator.presentation.common.LocalNavController
-import com.bobbyesp.metadator.presentation.common.TagEditor
+import com.bobbyesp.metadator.presentation.common.Route
 import com.bobbyesp.metadator.presentation.pages.MediaStorePage
 import com.bobbyesp.metadator.presentation.pages.MediaStorePageViewModel
 import com.bobbyesp.ui.components.dropdown.AnimatedDropdownMenu
@@ -231,7 +231,7 @@ fun HomePage(
                     desiredLayout = desiredLayout,
                     onItemClicked = { song ->
                         navController.navigate(
-                            TagEditor(song.toParcelableSong())
+                            Route.UtilitiesNavigator.TagEditor(song.toParcelableSong())
                         )
                     })
             })

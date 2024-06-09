@@ -1,8 +1,8 @@
 [versions]
 #General, lifecycle and core
-agp = "8.6.0-alpha03"
+agp = "8.6.0-alpha04"
 firebaseCrashlyticsGradle = "3.0.1"
-gradle = "8.6.0-alpha03"
+gradle = "8.6.0-alpha04"
 kotlin = "2.0.0"
 appcompat = "1.7.0-rc01"
 core-ktx = "1.13.1"
@@ -33,7 +33,7 @@ shimmer = "1.0.3"
 palette = "1.0.0"
 
 #Navigation
-androidx-navigation = "2.8.0-beta01"
+androidx-navigation = "2.8.0-beta02"
 
 #Coroutines
 kotlinx-coroutines = "1.8.0"

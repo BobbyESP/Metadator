@@ -64,20 +64,13 @@ import com.bobbyesp.metadator.App
 import com.bobbyesp.metadator.R
 import com.bobbyesp.metadator.ext.formatAsClassToRoute
 import com.bobbyesp.metadator.model.ParcelableSong
-import com.bobbyesp.metadator.presentation.common.Home
 import com.bobbyesp.metadator.presentation.common.LocalDrawerState
 import com.bobbyesp.metadator.presentation.common.LocalNavController
 import com.bobbyesp.metadator.presentation.common.LocalPlayerAwareWindowInsets
 import com.bobbyesp.metadator.presentation.common.LocalSnackbarHostState
-import com.bobbyesp.metadator.presentation.common.Mediaplayer
-import com.bobbyesp.metadator.presentation.common.MediaplayerNavigator
-import com.bobbyesp.metadator.presentation.common.MetadatorNavigator
 import com.bobbyesp.metadator.presentation.common.NavigationUtilities.IconsUtil.getDestinationIcon
 import com.bobbyesp.metadator.presentation.common.NavigationUtilities.getDestinationTitle
-import com.bobbyesp.metadator.presentation.common.Settings
-import com.bobbyesp.metadator.presentation.common.SettingsNavigator
-import com.bobbyesp.metadator.presentation.common.TagEditor
-import com.bobbyesp.metadator.presentation.common.UtilitiesNavigator
+import com.bobbyesp.metadator.presentation.common.Route
 import com.bobbyesp.metadator.presentation.common.parcelableType
 import com.bobbyesp.metadator.presentation.common.routesToNavigate
 import com.bobbyesp.metadator.presentation.pages.MediaStorePageViewModel
@@ -105,12 +98,13 @@ fun Navigator() {
     val currentRootRoute = rememberSaveable(navBackStackEntry, key = "currentRootRoute") {
         mutableStateOf(
             navBackStackEntry?.destination?.parent?.route
-                ?: MetadatorNavigator.formatAsClassToRoute()
+                ?: Route.MetadatorNavigator::class.qualifiedName
         )
     }
     val currentRoute = rememberSaveable(navBackStackEntry, key = "currentRoute") {
         mutableStateOf(
-            navBackStackEntry?.destination?.route ?: Home.formatAsClassToRoute()
+            navBackStackEntry?.destination?.route
+                ?: Route.MetadatorNavigator.Home::class.qualifiedName
         )
     }
 
@@ -188,7 +182,7 @@ fun Navigator() {
                             NavigationDrawerItem(
                                 label = {
                                     Text(
-                                        text = route::class.getDestinationTitle()?.let {
+                                        text = route.getDestinationTitle()?.let {
                                             stringResource(id = it)
                                         } ?: "")
                                 },
@@ -214,9 +208,9 @@ fun Navigator() {
                                 },
                                 icon = {
                                     Icon(
-                                        imageVector = route::class.getDestinationIcon()
+                                        imageVector = route.getDestinationIcon()
                                             ?: Icons.Rounded.Square,
-                                        contentDescription = route::class.getDestinationTitle()
+                                        contentDescription = route.getDestinationTitle()
                                             ?.let { stringResource(id = it) })
                                 },
                                 modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
@@ -248,7 +242,7 @@ fun Navigator() {
                             }
                             Surface(
                                 onClick = {
-                                    navController.navigate(Settings)
+                                    navController.navigate(Route.SettingsNavigator.Settings)
                                     scope.launch {
                                         drawerState.close()
                                     }
@@ -298,32 +292,32 @@ fun Navigator() {
                             .fillMaxWidth()
                             .align(Alignment.Center),
                         navController = navController,
-                        startDestination = MetadatorNavigator,
+                        startDestination = Route.MetadatorNavigator,
                     ) {
-                        navigation<MetadatorNavigator>(
-                            startDestination = Home,
+                        navigation<Route.MetadatorNavigator>(
+                            startDestination = Route.MetadatorNavigator.Home,
                         ) {
-                            composable<Home> {
+                            composable<Route.MetadatorNavigator.Home> {
                                 HomePage(viewModel = mediaStoreViewModel)
                             }
                         }
 
-                        navigation<MediaplayerNavigator>(
-                            startDestination = Mediaplayer,
+                        navigation<Route.MediaplayerNavigator>(
+                            startDestination = Route.MediaplayerNavigator.Mediaplayer,
                         ) {
-                            composable<Mediaplayer> {
+                            composable<Route.MediaplayerNavigator.Mediaplayer> {
                                 MediaplayerPage(mediaplayerViewModel, mediaPlayerSheetState)
                             }
                         }
 
-                        navigation<UtilitiesNavigator>(
-                            startDestination = TagEditor::class,
+                        navigation<Route.UtilitiesNavigator>(
+                            startDestination = Route.UtilitiesNavigator.TagEditor::class,
                         ) {
-                            composable<TagEditor>(
+                            composable<Route.UtilitiesNavigator.TagEditor>(
                                 typeMap = mapOf(typeOf<ParcelableSong>() to parcelableType<ParcelableSong>()),
                             ) {
                                 val song =
-                                    it.toRoute<TagEditor>()
+                                    it.toRoute<Route.UtilitiesNavigator.TagEditor>()
 
                                 val viewModel = hiltViewModel<ID3MetadataEditorPageViewModel>()
 
@@ -334,11 +328,15 @@ fun Navigator() {
                             }
                         }
 
-                        navigation<SettingsNavigator>(
-                            startDestination = Settings,
+                        navigation<Route.SettingsNavigator>(
+                            startDestination = Route.SettingsNavigator.Settings,
                         ) {
-                            composable<Settings> {
-                                SettingsPage()
+                            composable<Route.SettingsNavigator.Settings> {
+                                SettingsPage(
+                                    onBackPressed = {
+                                        navController.popBackStack()
+                                    }
+                                )
                             }
                         }
                     }

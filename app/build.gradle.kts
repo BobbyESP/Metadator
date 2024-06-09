@@ -96,7 +96,7 @@ android {
     }
     kotlinOptions {
         jvmTarget = "17"
-        freeCompilerArgs = listOf("-Xcontext-receivers")
+        freeCompilerArgs = listOf("-Xcontext-receivers", "-XXLanguage:+ExplicitBackingFields")
     }
     buildFeatures {
         compose = true
@@ -105,6 +105,13 @@ android {
     composeCompiler {
         enableStrongSkippingMode = true
         reportsDestination = layout.buildDirectory.dir("compose_compiler")
+    }
+    kotlin {
+        sourceSets.all {
+            languageSettings {
+                languageVersion = "2.0"
+            }
+        }
     }
     packaging {
         resources {
@@ -119,7 +126,6 @@ android {
     }
 
 }
-
 ksp {
     arg(RoomSchemaArgProvider(File(projectDir, "schemas")))
 }
@@ -140,7 +146,7 @@ dependencies {
 
 //Compose libraries
     implementation(libs.bundles.compose)
-    implementation(libs.material)
+    api(libs.material)
 
 //Pagination
     implementation(libs.bundles.pagination)

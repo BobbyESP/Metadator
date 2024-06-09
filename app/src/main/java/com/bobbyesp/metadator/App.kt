@@ -17,7 +17,6 @@ import dagger.hilt.android.HiltAndroidApp
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.serialization.json.Json
 import kotlin.properties.Delegates
 
 @HiltAndroidApp
@@ -58,12 +57,6 @@ class App : Application() {
         var isPlayStoreBuild by Delegates.notNull<Boolean>()
 
         val appVersion: String get() = packageInfo.versionName
-
-        val json = Json {
-            ignoreUnknownKeys = true
-            isLenient = true
-            encodeDefaults = true
-        }
 
         const val APP_PACKAGE_NAME = "com.bobbyesp.metadator"
         const val APP_FILE_PROVIDER = "$APP_PACKAGE_NAME.fileprovider"
