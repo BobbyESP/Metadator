@@ -4,26 +4,24 @@ agp = "8.6.0-alpha04"
 firebaseCrashlyticsGradle = "3.0.1"
 gradle = "8.6.0-alpha04"
 kotlin = "2.0.0"
-appcompat = "1.7.0-rc01"
+appcompat = "1.7.0"
 core-ktx = "1.13.1"
 legacySupportV4 = "1.0.0"
-lifecycle-runtime-ktx = "2.8.0"
+lifecycle-runtime-ktx = "2.8.2"
 activity-compose = "1.9.0"
 ksp = "2.0.0-1.0.21"
 lyricfier = "1.0"
 splashscreen = "1.0.1"
-media3 = "1.4.0-alpha01"
+media3 = "1.4.0-alpha02"
 leakcanary = "2.13"
 
 #Compose
-compose-bom = "2024.05.00"
-compose-bom-canary = "2024.05.00-alpha02"
+compose-bom = "2024.06.00"
+compose-bom-canary = "2024.05.00-alpha03"
 constraintLayout = "1.1.0-alpha13"
 androidx-compose-material3 = "1.2.1"
-compose-util = "1.6.7"
+compose-util = "1.6.8"
 accompanist = "0.34.0"
-commonsIo = "2.15.0"
-commonsCompress = "1.24.0"
 
 #More UI
 androidx-paging = "3.3.0"
@@ -33,7 +31,7 @@ shimmer = "1.0.3"
 palette = "1.0.0"
 
 #Navigation
-androidx-navigation = "2.8.0-beta02"
+androidx-navigation = "2.8.0-beta03"
 
 #Coroutines
 kotlinx-coroutines = "1.8.0"
@@ -48,10 +46,7 @@ coil = "2.6.0"
 landscapistCoil = "2.2.13"
 
 #Network
-okhttp = "5.0.0-alpha.11"
 ktor = "2.3.7" #For me the best client
-retrofit = "2.9.0"
-brotli = "0.1.2"
 
 #Dependency injection
 hilt = "2.51"
@@ -72,9 +67,9 @@ markdown = "0.3.7"
 
 #Firebase, GMS...
 firebaseAuth = "23.0.0"
-gmsPlayServicesAuth = "21.1.1"
-googleServices = "4.4.1"
-firebaseBom = "33.0.0"
+gmsPlayServicesAuth = "21.2.0"
+googleServices = "4.4.2"
+firebaseBom = "33.1.0"
 
 #Spotify API
 spotify-apiHandler = "4.1.1"
@@ -124,7 +119,6 @@ compose-material3 = { group = "androidx.compose.material3", name = "material3", 
 compose-material3-windowSizeClass = { group = "androidx.compose.material3", name = "material3-window-size-class", version.ref = "androidx-compose-material3" }
 compose-constraintLayout = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version.ref = "constraintLayout" }
 lyricfier = { module = "io.github.bobbyesp.lyricfier:lyricfier", version.ref = "lyricfier" }
-orbital = { module = "com.github.skydoves:orbital", version.ref = "orbital" }
 palette = { group = "androidx.palette", name = "palette-ktx", version.ref = "palette" }
 scrollbar = { group = "com.github.nanihadesuka", name = "LazyColumnScrollbar", version.ref = "scrollbar" }
 
@@ -141,7 +135,6 @@ kotlinx-collections-immutable = { group = "org.jetbrains.kotlinx", name = "kotli
 #Coroutines
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
-kotlinx-coroutines-guava = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-guava", version.ref = "kotlinx-coroutines" }
 
 #Accompanist
 accompanist-navigation-animation = { group = "com.google.accompanist", name = "accompanist-navigation-animation", version.ref = "accompanist" }
@@ -162,12 +155,7 @@ compose-coil = { group = "io.coil-kt", name = "coil-compose", version.ref = "coi
 landscapist-coil = { group = "com.github.skydoves", name = "landscapist-coil", version.ref = "landscapistCoil" }
 coil = { group = "io.coil-kt", name = "coil", version.ref = "coil" }
 
-#Network
-okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
-okhttp-logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
-retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
-
-#Ktor (also network)
+#KNetwork
 ktor-android = { group = "io.ktor", name = "ktor-client-android", version.ref = "ktor" }
 ktor-core = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor" }
 ktor-serialization = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
@@ -175,7 +163,6 @@ ktor-logging = { group = "io.ktor", name = "ktor-client-logging", version.ref = 
 ktor-contentnegotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-okhttp = { group = "io.ktor", name = "ktor-client-okhttp", version.ref = "ktor" }
 ktor-encoding = { group = "io.ktor", name = "ktor-client-encoding", version.ref = "ktor" }
-brotli = { group = "org.brotli", name = "dec", version.ref = "brotli" }
 
 #Dependency injection
 compose-hilt-navigation = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hilt-ext" }
@@ -197,8 +184,6 @@ room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 room-paging = { group = "androidx.room", name = "room-paging", version.ref = "room" }
-datastore = { group = "androidx.datastore", name = "datastore", version.ref = "datastore" }
-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
 
 #Serialization
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serializationJson" }
@@ -220,10 +205,6 @@ google-services = { group = "com.google.gms", name = "google-services", version.
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics-ktx" }
 firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics-ktx" }
-
-#File utils
-commons-io = { module = "commons-io:commons-io", version.ref = "commonsIo" }
-commons-compress = { module = "org.apache.commons:commons-compress", version.ref = "commonsCompress" }
 
 #Others
 qrcode-kotlin-android = { module = "io.github.g0dkar:qrcode-kotlin-android", version.ref = "qrcodeKotlinAndroid" }
@@ -265,7 +246,6 @@ ktor = ["ktor-android", "ktor-okhttp" ,"ktor-core", "ktor-serialization", "ktor-
 accompanist = ["accompanist-navigation-animation", "accompanist-permissions", "accompanist-webview", "accompanist-pager-layouts", "accompanist-pager-indicators", "accompanist-flowlayout", "accompanist-material"]
 compose = ["compose-ui-util", "compose-graphics", "compose-runtime", "compose-foundation", "compose-material-iconsExtended", "compose-animation", "compose-ui", "compose-material", "compose-material3", "compose-navigation", "compose-material3-windowSizeClass", "compose-constraintLayout"]
 hilt = ["compose-hilt-navigation", "hilt-android"]
-hilt-kapt = ["hilt-compiler", "hilt-ext-compiler"]
 pagination = ["paging-compose", "paging-runtime"]
 googleServices = ["firebase-auth", "gms-playservices-auth", "google-services"]
 coroutines = ["kotlinx-coroutines-core", "kotlinx-coroutines-android"]

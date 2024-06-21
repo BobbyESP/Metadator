@@ -2,9 +2,12 @@ package com.bobbyesp.ui.motion
 
 import android.graphics.Path
 import android.view.animation.PathInterpolator
+import androidx.compose.animation.BoundsTransform
+import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.Easing
 import androidx.compose.animation.core.tween
+import com.bobbyesp.ui.motion.MotionConstants.DURATION
 import com.bobbyesp.ui.motion.MotionConstants.DURATION_ENTER
 import com.bobbyesp.ui.motion.MotionConstants.DURATION_EXIT
 import com.bobbyesp.ui.motion.MotionConstants.DURATION_EXIT_SHORT
@@ -19,20 +22,19 @@ private val path = Path().apply {
     cubicTo(0.208333F, 0.82F, 0.25F, 1F, 1F, 1F)
 }
 
-val emphasizePathInterpolator = PathInterpolator(path)
-val emphasizeEasing = emphasizePathInterpolator.toEasing()
-val emphasizeEasingVariant = CubicBezierEasing(.2f, 0f, 0f, 1f)
-val emphasizedDecelerate = CubicBezierEasing(0.05f, 0.7f, 0.1f, 1f)
-val emphasizedAccelerate = CubicBezierEasing(0.3f, 0f, 1f, 1f)
+val EmphasizedPathInterpolator = PathInterpolator(path)
+val EmphasizedEasing = EmphasizedPathInterpolator.toEasing()
 
+val EmphasizeEasingVariant = CubicBezierEasing(.2f, 0f, 0f, 1f)
+val EmphasizedDecelerate = CubicBezierEasing(0.05f, 0.7f, 0.1f, 1f)
+val EmphasizedAccelerate = CubicBezierEasing(0.3f, 0f, 1f, 1f)
 val EmphasizedDecelerateEasing = CubicBezierEasing(0.05f, 0.7f, 0.1f, 1f)
 val EmphasizedAccelerateEasing = CubicBezierEasing(0.3f, 0f, 0.8f, 0.15f)
 
-val standardDecelerate = CubicBezierEasing(.0f, .0f, 0f, 1f)
+val StandardDecelerate = CubicBezierEasing(.0f, .0f, 0f, 1f)
+val MotionEasingStandard = CubicBezierEasing(0.4F, 0.0F, 0.2F, 1F)
 
-val motionEasingStandard = CubicBezierEasing(0.4F, 0.0F, 0.2F, 1F)
-
-val tweenSpec = tween<Float>(durationMillis = DURATION_ENTER, easing = emphasizeEasing)
+val tweenSpec = tween<Float>(durationMillis = DURATION_ENTER, easing = EmphasizedEasing)
 
 fun <T> tweenEnter(
     delayMillis: Int = DURATION_EXIT,
@@ -50,3 +52,9 @@ fun <T> tweenExit(
     durationMillis = durationMillis,
     easing = EmphasizedAccelerateEasing
 )
+
+@OptIn(ExperimentalSharedTransitionApi::class)
+val DefaultBoundsTransform = BoundsTransform { _, _ ->
+    tween(easing = EmphasizedEasing, durationMillis = DURATION)
+}
+
