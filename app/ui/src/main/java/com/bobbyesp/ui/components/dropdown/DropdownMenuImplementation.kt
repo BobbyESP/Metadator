@@ -422,7 +422,10 @@ fun DropdownMenuContent(
     content: @Composable ColumnScope.() -> Unit
 ) {
     AnimatedVisibility(
-        visibleState = expandedState, label = "", enter = EnterTransition.None, exit = fadeOut(
+        visibleState = expandedState,
+        label = "Dropdown menu animation",
+        enter = EnterTransition.None,
+        exit = fadeOut(
             animationSpec = tween(
                 delayMillis = DURATION_EXIT - FadeOutDuration,
                 durationMillis = FadeOutDuration,
@@ -432,10 +435,10 @@ fun DropdownMenuContent(
     ) {
         Surface(
             modifier = Modifier,
-            shape = MaterialTheme.shapes.extraSmall,
+            shape = MaterialTheme.shapes.medium,
             color = MaterialTheme.colorScheme.surface,
             tonalElevation = ElevationTokens.Level2.dp,
-            shadowElevation = ElevationTokens.Level1.dp
+            shadowElevation = ElevationTokens.Level1.dp,
         ) {
             AnimatedVisibility(
                 visibleState = expandedState, label = "", enter = fadeIn(
@@ -469,7 +472,10 @@ fun DropdownMenuContent(
             ) {
                 Column(
                     modifier = Modifier
-                        .padding(vertical = DropdownMenuVerticalPadding)
+                        .padding(
+                            vertical = DropdownMenuVerticalPadding,
+                            horizontal = DropdownMenuVerticalPadding / 2
+                        )
                         .width(IntrinsicSize.Max)
                         .verticalScroll(scrollState), content = content
                 )
@@ -481,4 +487,4 @@ fun DropdownMenuContent(
 
 // Size defaults.
 internal val MenuVerticalMargin = 48.dp
-internal val DropdownMenuVerticalPadding = 8.dp
+internal val DropdownMenuVerticalPadding = 16.dp
