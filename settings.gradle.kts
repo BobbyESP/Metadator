@@ -9,6 +9,7 @@ pluginManagement {
         }
         mavenCentral()
         gradlePluginPortal()
+        maven("https://maven.google.com/")
         maven("https://jitpack.io")
     }
 }
@@ -23,7 +24,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "Metadator"
 include(":app")
-include(":color")
 include(":app:utilities")
 include(":app:ui")
 include(":crashhandler")

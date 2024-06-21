@@ -131,7 +131,6 @@ ksp {
 }
 
 dependencies {
-    implementation(project(":color"))
     implementation(project(":app:utilities"))
     implementation(project(":app:ui"))
 //---------------Core----------------//
@@ -139,13 +138,14 @@ dependencies {
 
 //---------------User Interface---------------//
 //Core UI libraries
-    api(platform(libs.compose.bom.canary))
+    api(platform(libs.compose.bom))
 
 //Accompanist libraries
     implementation(libs.bundles.accompanist)
 
 //Compose libraries
     implementation(libs.bundles.compose)
+    implementation(libs.compose.ui.utilities)
     api(libs.material)
 
 //Pagination

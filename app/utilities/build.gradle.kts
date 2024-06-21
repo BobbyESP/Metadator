@@ -43,12 +43,12 @@ android {
 }
 
 dependencies {
-    implementation(project(":color"))
     implementation(libs.core.ktx)
     implementation(libs.kotlinx.datetime)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.mmkv)
     implementation(libs.bundles.compose)
+    implementation(libs.compose.ui.utilities)
     implementation(libs.material)
     implementation(libs.coil)
     implementation(libs.bundles.coroutines)

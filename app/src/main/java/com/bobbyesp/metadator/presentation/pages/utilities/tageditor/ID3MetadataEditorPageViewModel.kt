@@ -124,7 +124,6 @@ class ID3MetadataEditorPageViewModel @Inject constructor(
         securityException: SecurityException,
         intentPassthrough: (PendingIntent) -> Unit
     ) {
-        Log.i("ID3MetadataEditorPageViewModel", "Security exception caught")
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             val recoverableSecurityException = securityException as? RecoverableSecurityException
                 ?: throw RuntimeException(securityException.message, securityException)

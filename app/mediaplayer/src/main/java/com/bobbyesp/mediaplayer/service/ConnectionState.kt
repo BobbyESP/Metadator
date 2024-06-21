@@ -3,7 +3,8 @@ package com.bobbyesp.mediaplayer.service
 import android.util.Log
 import androidx.annotation.OptIn
 import androidx.media3.common.util.UnstableApi
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
@@ -24,7 +25,7 @@ class ConnectionHandler {
     init {
         connectionState.onEach { newState ->
             Log.d("ConnectionHandler", "Connection state changed: $newState")
-        }.launchIn(GlobalScope)
+        }.launchIn(CoroutineScope(Dispatchers.Default))
     }
 
     fun connect(serviceHandler: MediaServiceHandler) {

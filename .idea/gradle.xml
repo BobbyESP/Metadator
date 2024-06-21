@@ -25,7 +25,6 @@
             <option value="$PROJECT_DIR$/app/ui" />
             <option value="$PROJECT_DIR$/app/utilities" />
             <option value="$PROJECT_DIR$/buildSrc" />
-            <option value="$PROJECT_DIR$/color" />
             <option value="$PROJECT_DIR$/crashhandler" />
           </set>
         </option>
