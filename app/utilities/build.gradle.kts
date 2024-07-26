@@ -27,18 +27,19 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeCompiler {
         enableStrongSkippingMode = true
         reportsDestination = layout.buildDirectory.dir("compose_compiler")
     }
     kotlinOptions {
-        jvmTarget = "17"
+        jvmTarget = "21"
     }
 }
 
@@ -49,6 +50,8 @@ dependencies {
     implementation(libs.mmkv)
     implementation(libs.bundles.compose)
     implementation(libs.compose.ui.utilities)
+    implementation(libs.paging.compose)
+    implementation(libs.paging.runtime)
     implementation(libs.material)
     implementation(libs.coil)
     implementation(libs.bundles.coroutines)

@@ -1,7 +1,7 @@
 package com.bobbyesp.metadator.ext
 
 import com.bobbyesp.metadator.model.ParcelableSong
-import com.bobbyesp.model.Song
+import com.bobbyesp.utilities.model.Song
 
 fun Song.toParcelableSong(): ParcelableSong {
     val artistsList = this.artist.toList()

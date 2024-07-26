@@ -1,4 +1,4 @@
-package com.bobbyesp.metadator.presentation.utils
+package com.bobbyesp.metadator.presentation.common
 
 import androidx.compose.animation.BoundsTransform
 import androidx.compose.animation.ExperimentalSharedTransitionApi

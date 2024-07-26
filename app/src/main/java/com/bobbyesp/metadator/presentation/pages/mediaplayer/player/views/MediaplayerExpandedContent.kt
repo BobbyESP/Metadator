@@ -1,4 +1,4 @@
-package com.bobbyesp.metadator.presentation.pages.mediaplayer.mediaplayer.views
+package com.bobbyesp.metadator.presentation.pages.mediaplayer.player.views
 
 import android.content.res.Configuration
 import androidx.activity.compose.BackHandler
@@ -48,8 +48,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bobbyesp.metadator.R
 import com.bobbyesp.metadator.presentation.components.image.ArtworkAsyncImage
 import com.bobbyesp.metadator.presentation.pages.mediaplayer.MediaplayerViewModel
-import com.bobbyesp.metadator.presentation.pages.mediaplayer.mediaplayer.MediaplayerSheetView
-import com.bobbyesp.metadator.presentation.pages.mediaplayer.mediaplayer.PlayerControls
+import com.bobbyesp.metadator.presentation.pages.mediaplayer.player.MediaplayerSheetView
+import com.bobbyesp.metadator.presentation.pages.mediaplayer.player.PlayerControls
 import com.bobbyesp.ui.components.bottomsheet.draggable.DraggableBottomSheetState
 import com.bobbyesp.ui.motion.MotionConstants
 import com.bobbyesp.ui.motion.tweenEnter

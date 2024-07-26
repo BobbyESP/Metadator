@@ -30,7 +30,7 @@ import androidx.paging.compose.itemKey
 import com.bobbyesp.metadator.R
 import com.bobbyesp.metadator.presentation.components.cards.songs.spotify.SpotifyHorizontalSongCard
 import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.spotify.SpMetadataBottomSheetContentViewModel
-import com.bobbyesp.metadator.presentation.utils.pagination.pagingStateHandler
+import com.bobbyesp.utilities.ui.pagingStateHandler
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

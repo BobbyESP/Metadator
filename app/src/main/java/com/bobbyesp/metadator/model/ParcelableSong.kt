@@ -3,7 +3,7 @@ package com.bobbyesp.metadator.model
 import android.net.Uri
 import android.os.Parcelable
 import androidx.compose.runtime.Immutable
-import com.bobbyesp.model.UriSerializer
+import com.bobbyesp.utilities.model.UriSerializer
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.Serializable
 

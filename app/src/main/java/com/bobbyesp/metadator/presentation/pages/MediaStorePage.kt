@@ -22,11 +22,12 @@ import com.bobbyesp.metadator.presentation.components.cards.songs.HorizontalSong
 import com.bobbyesp.metadator.presentation.components.cards.songs.VerticalSongCard
 import com.bobbyesp.metadator.presentation.components.others.status.EmptyMediaStore
 import com.bobbyesp.metadator.presentation.pages.home.LayoutType
-import com.bobbyesp.model.Song
+import com.bobbyesp.utilities.model.Song
 import com.bobbyesp.utilities.states.ResourceState
 import my.nanihadesuka.compose.LazyColumnScrollbar
-import my.nanihadesuka.compose.LazyGridVerticalScrollbar
+import my.nanihadesuka.compose.LazyVerticalGridScrollbar
 import my.nanihadesuka.compose.ScrollbarSelectionActionable
+import my.nanihadesuka.compose.ScrollbarSettings
 
 @Composable
 fun MediaStorePage(
@@ -63,11 +64,12 @@ fun MediaStorePage(
                         val songs = songsState.data!!
                         when (type) {
                             LayoutType.Grid -> {
-                                LazyGridVerticalScrollbar(
+                                LazyVerticalGridScrollbar(
                                     state = lazyGridState,
-                                    thumbColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    thumbSelectedColor = MaterialTheme.colorScheme.primary,
-                                    selectionActionable = ScrollbarSelectionActionable.WhenVisible,
+                                    settings = ScrollbarSettings(
+                                        thumbSelectedColor = MaterialTheme.colorScheme.primary,
+                                        selectionActionable = ScrollbarSelectionActionable.WhenVisible,
+                                    )
                                 ) {
                                     LazyVerticalGrid(
                                         columns = GridCells.Adaptive(125.dp),
@@ -97,10 +99,11 @@ fun MediaStorePage(
 
                             LayoutType.List -> {
                                 LazyColumnScrollbar(
-                                    listState = lazyListState,
-                                    thumbColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    thumbSelectedColor = MaterialTheme.colorScheme.primary,
-                                    selectionActionable = ScrollbarSelectionActionable.WhenVisible,
+                                    state = lazyListState,
+                                    settings = ScrollbarSettings(
+                                        thumbSelectedColor = MaterialTheme.colorScheme.primary,
+                                        selectionActionable = ScrollbarSelectionActionable.WhenVisible,
+                                    )
                                 ) {
                                     LazyColumn(
                                         modifier = Modifier
@@ -112,13 +115,15 @@ fun MediaStorePage(
                                             key = { index -> songs[index].id },
                                             contentType = { index -> songs[index].id.toString() }) { index ->
                                             val song = songs[index]
-                                            HorizontalSongCard(song = song,
+                                            HorizontalSongCard(
+                                                song = song,
                                                 modifier = Modifier.animateItem(
                                                     fadeInSpec = null, fadeOutSpec = null
                                                 ),
                                                 onClick = {
                                                     onItemClicked(song)
-                                                })
+                                                }
+                                            )
                                         }
                                     }
                                 }

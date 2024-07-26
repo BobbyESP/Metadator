@@ -1,11 +1,11 @@
-package com.bobbyesp.metadator.presentation.utils.pagination
+package com.bobbyesp.utilities.ui
 
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
-import com.bobbyesp.metadator.BuildConfig
+import com.bobbyesp.utilities.BuildConfig
 
 fun <T : Any> LazyListScope.pagingStateHandler(
     items: LazyPagingItems<T>?,

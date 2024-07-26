@@ -1,4 +1,4 @@
-package com.bobbyesp.metadator.presentation.pages.mediaplayer.mediaplayer
+package com.bobbyesp.metadator.presentation.pages.mediaplayer.player
 
 import androidx.compose.animation.ContentTransform
 import androidx.compose.animation.SizeTransform
@@ -10,7 +10,7 @@ import androidx.compose.ui.unit.dp
 import com.bobbyesp.ui.motion.materialSharedAxisXIn
 import com.bobbyesp.ui.motion.materialSharedAxisXOut
 
-val CollapsedPlayerHeight = 84.dp
+val CollapsedPlayerHeight = 78.dp
 val SeekToButtonSize = 48.dp
 val PlayerCommandsButtonSize = 48.dp
 

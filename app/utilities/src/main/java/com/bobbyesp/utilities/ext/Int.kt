@@ -1,4 +1,4 @@
-package com.bobbyesp.ext
+package com.bobbyesp.utilities.ext
 
 fun Int.bigQuantityFormatter(): String {
     return when (this) {

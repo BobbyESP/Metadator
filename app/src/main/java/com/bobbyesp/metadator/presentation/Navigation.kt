@@ -14,8 +14,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material.icons.rounded.Square
@@ -42,6 +44,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
@@ -61,7 +64,6 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.toRoute
 import com.bobbyesp.metadator.App
 import com.bobbyesp.metadator.R
-import com.bobbyesp.metadator.ext.formatAsClassToRoute
 import com.bobbyesp.metadator.model.ParcelableSong
 import com.bobbyesp.metadator.presentation.common.DestinationInfo
 import com.bobbyesp.metadator.presentation.common.LocalDrawerState
@@ -69,14 +71,14 @@ import com.bobbyesp.metadator.presentation.common.LocalNavController
 import com.bobbyesp.metadator.presentation.common.LocalPlayerAwareWindowInsets
 import com.bobbyesp.metadator.presentation.common.LocalSnackbarHostState
 import com.bobbyesp.metadator.presentation.common.Route
-import com.bobbyesp.metadator.presentation.common.parcelableType
+import com.bobbyesp.metadator.presentation.common.qualifiedName
 import com.bobbyesp.metadator.presentation.common.routesToNavigate
 import com.bobbyesp.metadator.presentation.pages.MediaStorePageViewModel
 import com.bobbyesp.metadator.presentation.pages.home.HomePage
 import com.bobbyesp.metadator.presentation.pages.mediaplayer.MediaplayerPage
 import com.bobbyesp.metadator.presentation.pages.mediaplayer.MediaplayerViewModel
-import com.bobbyesp.metadator.presentation.pages.mediaplayer.mediaplayer.CollapsedPlayerHeight
-import com.bobbyesp.metadator.presentation.pages.mediaplayer.mediaplayer.PlayerAnimationSpec
+import com.bobbyesp.metadator.presentation.pages.mediaplayer.player.CollapsedPlayerHeight
+import com.bobbyesp.metadator.presentation.pages.mediaplayer.player.PlayerAnimationSpec
 import com.bobbyesp.metadator.presentation.pages.settings.SettingsPage
 import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.ID3MetadataEditorPage
 import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.ID3MetadataEditorPageViewModel
@@ -84,6 +86,7 @@ import com.bobbyesp.ui.components.bottomsheet.draggable.rememberDraggableBottomS
 import com.bobbyesp.ui.components.tags.RoundedTag
 import com.bobbyesp.ui.motion.animatedComposable
 import com.bobbyesp.ui.motion.slideInVerticallyComposable
+import com.bobbyesp.utilities.navigation.parcelableType
 import kotlinx.coroutines.launch
 import kotlin.reflect.typeOf
 
@@ -112,20 +115,20 @@ fun Navigator() {
 
     //able to open drawer when the user is in one of the main routes (root routes)
     val canOpenDrawer by remember(currentRoute) {
-        mutableStateOf(routesToNavigate.fastAny { it.formatAsClassToRoute() == currentRootRoute.value })
+        mutableStateOf(routesToNavigate.fastAny { it.qualifiedName() == currentRootRoute.value })
     }
 
     val mediaStoreViewModel = hiltViewModel<MediaStorePageViewModel>()
     val mediaplayerViewModel = hiltViewModel<MediaplayerViewModel>()
+
+    val density = LocalDensity.current
+    val windowsInsets = WindowInsets.systemBars
 
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        val density = LocalDensity.current
-        val windowsInsets = WindowInsets.systemBars
-
         val bottomInset = with(density) { windowsInsets.getBottom(density).toDp() }
         val mediaPlayerSheetState = rememberDraggableBottomSheetState(
             dismissedBound = 0.dp,
@@ -156,15 +159,17 @@ fun Navigator() {
                 .add(WindowInsets(bottom = insetsBottom))
         }
 
-
         CompositionLocalProvider(
             LocalPlayerAwareWindowInsets provides playerAwareWindowInsets
         ) {
             ModalNavigationDrawer(
+                modifier = Modifier,
                 drawerState = drawerState,
                 gesturesEnabled = canOpenDrawer,
                 drawerContent = {
-                    ModalDrawerSheet {
+                    ModalDrawerSheet(
+                        modifier = Modifier,
+                    ) {
                         Text(
                             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                             text = stringResource(id = R.string.app_name).uppercase(),
@@ -175,7 +180,7 @@ fun Navigator() {
                             fontFamily = FontFamily.Monospace
                         )
                         routesToNavigate.fastForEach { route ->
-                            val formattedRoute = route.formatAsClassToRoute()
+                            val formattedRoute = route.qualifiedName()
                             val isSelected = currentRootRoute.value == formattedRoute
                             val destinationInfo = DestinationInfo.fromRoute(route)
                             NavigationDrawerItem(
@@ -275,18 +280,31 @@ fun Navigator() {
                     }
                 },
             ) {
-                Scaffold(snackbarHost = {
-                    SnackbarHost(
-                        hostState = snackbarHostState
-                    ) { dataReceived ->
-                        Snackbar(
-                            modifier = Modifier,
-                            snackbarData = dataReceived,
-                            containerColor = MaterialTheme.colorScheme.inverseSurface,
-                            contentColor = MaterialTheme.colorScheme.inverseOnSurface,
+                Scaffold(
+                    modifier = Modifier.windowInsetsPadding(
+                        insets = WindowInsets(
+                            left = WindowInsets.safeDrawing.getLeft(
+                                density,
+                                layoutDirection = LocalLayoutDirection.current
+                            ),
+                            right = WindowInsets.safeDrawing.getRight(
+                                density,
+                                layoutDirection = LocalLayoutDirection.current
+                            ),
                         )
-                    }
-                }) {
+                    ),
+                    snackbarHost = {
+                        SnackbarHost(
+                            hostState = snackbarHostState
+                        ) { dataReceived ->
+                            Snackbar(
+                                modifier = Modifier,
+                                snackbarData = dataReceived,
+                                containerColor = MaterialTheme.colorScheme.inverseSurface,
+                                contentColor = MaterialTheme.colorScheme.inverseOnSurface,
+                            )
+                        }
+                    }) {
                     NavHost(
                         modifier = Modifier
                             .fillMaxWidth()

@@ -63,9 +63,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.bobbyesp.ext.toAudioFileMetadata
-import com.bobbyesp.ext.toMinutes
-import com.bobbyesp.ext.toModifiableMap
 import com.bobbyesp.metadator.R
 import com.bobbyesp.metadator.model.ParcelableSong
 import com.bobbyesp.metadator.presentation.common.LocalNavController
@@ -76,6 +73,9 @@ import com.bobbyesp.ui.components.others.MetadataTag
 import com.bobbyesp.ui.components.text.LargeCategoryTitle
 import com.bobbyesp.ui.components.text.MarqueeText
 import com.bobbyesp.ui.components.text.PreConfiguredOutlinedTextField
+import com.bobbyesp.utilities.ext.toAudioFileMetadata
+import com.bobbyesp.utilities.ext.toMinutes
+import com.bobbyesp.utilities.ext.toModifiableMap
 import com.bobbyesp.utilities.mediastore.AudioFileMetadata.Companion.toAudioFileMetadata
 import com.bobbyesp.utilities.mediastore.AudioFileMetadata.Companion.toPropertyMap
 import kotlinx.coroutines.Dispatchers

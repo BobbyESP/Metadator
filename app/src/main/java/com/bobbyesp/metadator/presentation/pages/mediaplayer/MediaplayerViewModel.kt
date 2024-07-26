@@ -16,10 +16,10 @@ import com.bobbyesp.mediaplayer.service.MediaServiceHandler
 import com.bobbyesp.mediaplayer.service.MediaState
 import com.bobbyesp.mediaplayer.service.PlayerEvent
 import com.bobbyesp.mediaplayer.service.queue.SongsQueue
-import com.bobbyesp.model.Song
 import com.bobbyesp.utilities.Time.formatDuration
 import com.bobbyesp.utilities.mediastore.MediaStoreReceiver.Advanced.getSongs
 import com.bobbyesp.utilities.mediastore.MediaStoreReceiver.Advanced.observeSongs
+import com.bobbyesp.utilities.model.Song
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers

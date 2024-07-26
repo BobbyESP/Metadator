@@ -1,7 +1,7 @@
 package com.bobbyesp.metadator.ext
 
 import androidx.media3.common.MediaItem
-import com.bobbyesp.model.Song
+import com.bobbyesp.utilities.model.Song
 
 fun MediaItem.toSong(): Song {
     val mediaMetadata =

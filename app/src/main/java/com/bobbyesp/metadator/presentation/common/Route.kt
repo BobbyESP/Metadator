@@ -37,3 +37,5 @@ val routesToNavigate = listOf(
     Route.MetadatorNavigator,
     Route.MediaplayerNavigator
 )
+
+fun Any.qualifiedName(): String = this::class.qualifiedName.toString()

@@ -1,7 +1,7 @@
 package com.bobbyesp.utilities.mediastore
 
-import com.bobbyesp.ext.PropertyMap
-import com.bobbyesp.ext.formatForField
+import com.bobbyesp.utilities.ext.PropertyMap
+import com.bobbyesp.utilities.ext.formatForField
 import kotlinx.serialization.Serializable
 
 @Serializable

@@ -17,8 +17,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bobbyesp.metadator.presentation.components.image.ArtworkAsyncImage
 import com.bobbyesp.metadator.presentation.theme.MetadatorTheme
-import com.bobbyesp.model.Song
 import com.bobbyesp.ui.components.text.MarqueeText
+import com.bobbyesp.utilities.model.Song
 
 @Composable
 fun VerticalSongCard(

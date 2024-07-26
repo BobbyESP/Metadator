@@ -8,10 +8,10 @@ import android.net.Uri
 import android.os.ParcelFileDescriptor
 import android.provider.MediaStore
 import android.util.Log
-import com.bobbyesp.model.Song
 import com.bobbyesp.utilities.R
 import com.bobbyesp.utilities.mediastore.advanced.advancedQuery
 import com.bobbyesp.utilities.mediastore.advanced.observe
+import com.bobbyesp.utilities.model.Song
 import kotlinx.coroutines.flow.map
 import java.io.FileNotFoundException
 

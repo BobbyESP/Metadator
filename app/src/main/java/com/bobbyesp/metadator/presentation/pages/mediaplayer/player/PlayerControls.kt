@@ -1,4 +1,4 @@
-package com.bobbyesp.metadator.presentation.pages.mediaplayer.mediaplayer
+package com.bobbyesp.metadator.presentation.pages.mediaplayer.player
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.EaseInOutSine

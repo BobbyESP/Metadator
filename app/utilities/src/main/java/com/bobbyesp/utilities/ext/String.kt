@@ -1,4 +1,4 @@
-package com.bobbyesp.ext
+package com.bobbyesp.utilities.ext
 
 import androidx.core.text.isDigitsOnly
 

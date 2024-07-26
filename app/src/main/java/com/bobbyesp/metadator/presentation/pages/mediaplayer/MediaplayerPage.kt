@@ -40,11 +40,12 @@ import com.bobbyesp.metadator.R
 import com.bobbyesp.metadator.presentation.common.LocalDrawerState
 import com.bobbyesp.metadator.presentation.common.LocalPlayerAwareWindowInsets
 import com.bobbyesp.metadator.presentation.components.cards.songs.HorizontalSongCard
-import com.bobbyesp.metadator.presentation.pages.mediaplayer.mediaplayer.MediaplayerSheet
+import com.bobbyesp.metadator.presentation.pages.mediaplayer.player.MediaplayerSheet
 import com.bobbyesp.ui.components.bottomsheet.draggable.DraggableBottomSheetState
 import kotlinx.coroutines.launch
 import my.nanihadesuka.compose.LazyColumnScrollbar
 import my.nanihadesuka.compose.ScrollbarSelectionActionable
+import my.nanihadesuka.compose.ScrollbarSettings
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -125,10 +126,11 @@ fun MediaplayerPage(
                     .padding(it)
             ) {
                 LazyColumnScrollbar(
-                    listState = mediaStoreLazyColumnState,
-                    thumbColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                    thumbSelectedColor = MaterialTheme.colorScheme.primary,
-                    selectionActionable = ScrollbarSelectionActionable.WhenVisible,
+                    state = mediaStoreLazyColumnState,
+                    settings = ScrollbarSettings(
+                        thumbSelectedColor = MaterialTheme.colorScheme.primary,
+                        selectionActionable = ScrollbarSelectionActionable.WhenVisible,
+                    ),
                 ) {
                     LazyColumn(
                         modifier = Modifier
@@ -141,7 +143,8 @@ fun MediaplayerPage(
                             key = { index -> songs[index].id },
                             contentType = { index -> songs[index].id.toString() }) { index ->
                             val song = songs[index]
-                            HorizontalSongCard(song = song,
+                            HorizontalSongCard(
+                                song = song,
                                 modifier = Modifier.animateItem(
                                     fadeInSpec = null,
                                     fadeOutSpec = null
@@ -152,7 +155,8 @@ fun MediaplayerPage(
                                     if (mediaPlayerSheetState.isDismissed) {
                                         mediaPlayerSheetState.collapseSoft()
                                     }
-                                })
+                                }
+                            )
                         }
                     }
                 }

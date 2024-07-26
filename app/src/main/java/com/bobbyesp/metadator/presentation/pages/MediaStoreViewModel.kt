@@ -3,8 +3,8 @@ package com.bobbyesp.metadator.presentation.pages
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.bobbyesp.model.Song
 import com.bobbyesp.utilities.mediastore.MediaStoreReceiver.Advanced.observeSongs
+import com.bobbyesp.utilities.model.Song
 import com.bobbyesp.utilities.states.ResourceState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext

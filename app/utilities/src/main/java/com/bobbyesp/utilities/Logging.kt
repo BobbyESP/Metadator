@@ -58,8 +58,9 @@ object Logging {
             Build.VERSION.RELEASE
         }
 
+        val appName = packageInfo.applicationInfo.name
         return StringBuilder()
-            .append("App version: Clippy $versionName ($versionCode)\n")
+            .append("App version: $appName $versionName ($versionCode)\n")
             .append("Android version: Android $release (API ${Build.VERSION.SDK_INT})\n")
             .append("Device: ${Build.MANUFACTURER} ${Build.MODEL}\n")
             .append("Supported ABIs: ${Build.SUPPORTED_ABIS.contentToString()}\n")

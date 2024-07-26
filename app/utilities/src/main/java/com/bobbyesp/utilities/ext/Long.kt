@@ -1,4 +1,4 @@
-package com.bobbyesp.ext
+package com.bobbyesp.utilities.ext
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
