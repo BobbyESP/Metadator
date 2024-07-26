@@ -168,6 +168,7 @@ fun Navigator() {
                 gesturesEnabled = canOpenDrawer,
                 drawerContent = {
                     ModalDrawerSheet(
+                        drawerState = drawerState,
                         modifier = Modifier,
                     ) {
                         Text(
