@@ -10,8 +10,6 @@ import android.os.Build
 import androidx.core.content.getSystemService
 import com.bobbyesp.crashhandler.CrashHandler.setupCrashHandler
 import com.bobbyesp.crashhandler.ReportInfo
-import com.bobbyesp.utilities.Theme
-import com.google.android.material.color.DynamicColors
 import com.tencent.mmkv.MMKV
 import dagger.hilt.android.HiltAndroidApp
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -33,9 +31,7 @@ class App : Application() {
         applicationScope = CoroutineScope(SupervisorJob())
         clipboard = getSystemService()!!
         connectivityManager = getSystemService()!!
-        Theme.applicationScope = applicationScope
         isPlayStoreBuild = BuildConfig.FLAVOR == "playstore"
-        DynamicColors.applyToActivitiesIfAvailable(this)
         super.onCreate()
 
         if (!isPlayStoreBuild) setupCrashHandler(

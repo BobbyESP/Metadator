@@ -23,7 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.bobbyesp.ui.ext.harmonizeWithPrimary
+import com.materialkolor.ktx.harmonizeWithPrimary
 
 @Composable
 fun SelectableSurface(
@@ -58,7 +58,9 @@ fun SelectableSurface(
 private fun selectColorHandler(
     isSelected: Boolean
 ): Color {
-    return if (isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.onSecondary.harmonizeWithPrimary()
+    return if (isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.harmonizeWithPrimary(
+        MaterialTheme.colorScheme.onSecondary
+    )
 }
 
 @Preview

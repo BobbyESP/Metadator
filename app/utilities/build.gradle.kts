@@ -52,7 +52,6 @@ dependencies {
     implementation(libs.compose.ui.utilities)
     implementation(libs.paging.compose)
     implementation(libs.paging.runtime)
-    implementation(libs.material)
     implementation(libs.coil)
     implementation(libs.bundles.coroutines)
     //Accompanist libraries

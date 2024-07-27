@@ -4,11 +4,13 @@ import android.annotation.SuppressLint
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.add
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -18,6 +20,8 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material.icons.rounded.Square
@@ -180,47 +184,59 @@ fun Navigator() {
                             fontWeight = FontWeight.Bold,
                             fontFamily = FontFamily.Monospace
                         )
-                        routesToNavigate.fastForEach { route ->
-                            val formattedRoute = route.qualifiedName()
-                            val isSelected = currentRootRoute.value == formattedRoute
-                            val destinationInfo = DestinationInfo.fromRoute(route)
-                            NavigationDrawerItem(
-                                label = {
-                                    Text(
-                                        text = stringResource(
-                                            id = destinationInfo?.title ?: R.string.unknown
+                        Column(
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .weight(1f)
+                                .verticalScroll(
+                                    rememberScrollState()
+                                )
+                        ) {
+                            routesToNavigate.fastForEach { route ->
+                                val formattedRoute = route.qualifiedName()
+                                val isSelected = remember(currentRootRoute.value, formattedRoute) {
+                                    currentRootRoute.value == formattedRoute
+                                }
+                                val destinationInfo = DestinationInfo.fromRoute(route)
+
+                                NavigationDrawerItem(
+                                    label = {
+                                        Text(
+                                            text = stringResource(
+                                                id = destinationInfo?.title ?: R.string.unknown
+                                            )
                                         )
-                                    )
-                                },
-                                selected = isSelected,
-                                onClick = {
-                                    if (isSelected) {
-                                        scope.launch {
-                                            drawerState.close()
-                                        }
-                                        return@NavigationDrawerItem
-                                    } else {
-                                        navController.navigate(route) {
-                                            popUpTo(navController.graph.findStartDestination().id) {
-                                                saveState = true
+                                    },
+                                    selected = isSelected,
+                                    onClick = {
+                                        if (isSelected) {
+                                            scope.launch {
+                                                drawerState.close()
                                             }
-                                            launchSingleTop = true
-                                            restoreState = true
+                                            return@NavigationDrawerItem
+                                        } else {
+                                            navController.navigate(route) {
+                                                popUpTo(navController.graph.findStartDestination().id) {
+                                                    saveState = true
+                                                }
+                                                launchSingleTop = true
+                                                restoreState = true
+                                            }
+                                            scope.launch {
+                                                drawerState.close()
+                                            }
                                         }
-                                        scope.launch {
-                                            drawerState.close()
-                                        }
-                                    }
-                                },
-                                icon = {
-                                    Icon(
-                                        imageVector = destinationInfo?.icon
-                                            ?: Icons.Rounded.Square,
-                                        contentDescription = destinationInfo?.title
-                                            ?.let { stringResource(id = it) })
-                                },
-                                modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
-                            )
+                                    },
+                                    icon = {
+                                        Icon(
+                                            imageVector = destinationInfo?.icon
+                                                ?: Icons.Rounded.Square,
+                                            contentDescription = destinationInfo?.title
+                                                ?.let { stringResource(id = it) })
+                                    },
+                                    modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+                                )
+                            }
                         }
                         Spacer(modifier = Modifier.weight(1f))
 

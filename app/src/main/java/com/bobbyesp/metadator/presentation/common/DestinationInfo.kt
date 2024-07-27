@@ -9,7 +9,7 @@ import com.bobbyesp.metadator.R
 
 enum class DestinationInfo(
     val icon: ImageVector,
-    @StringRes val title: Int
+    @StringRes val title: Int,
 ) {
     HOME(
         icon = Icons.Rounded.Home,
@@ -19,6 +19,9 @@ enum class DestinationInfo(
         icon = Icons.Rounded.PlayArrow,
         title = R.string.mediaplayer
     );
+
+    val qualifiedName
+        get() = this::class.qualifiedName.toString()
 
     companion object {
         fun fromRoute(route: Route): DestinationInfo? {

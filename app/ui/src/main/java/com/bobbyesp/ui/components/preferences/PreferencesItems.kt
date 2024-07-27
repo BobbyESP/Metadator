@@ -53,8 +53,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bobbyesp.ui.R
-import com.bobbyesp.ui.ext.applyOpacity
-import com.bobbyesp.ui.ext.harmonizeWithPrimary
+import com.bobbyesp.ui.ext.applyAlpha
+import com.materialkolor.ktx.harmonizeWithPrimary
 
 /* THESE PREFERENCES ITEMS CAME FROM SEAL ("https://github.com/junkfood02/Seal") */
 
@@ -107,7 +107,7 @@ fun PreferenceItem(
                         modifier = Modifier
                             .padding(start = 8.dp, end = 16.dp)
                             .size(24.dp),
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant.applyOpacity(enabled)
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant.applyAlpha(enabled)
                     )
                 }
 
@@ -118,7 +118,7 @@ fun PreferenceItem(
                         modifier = Modifier
                             .padding(start = 8.dp, end = 16.dp)
                             .size(24.dp),
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant.applyOpacity(enabled)
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant.applyAlpha(enabled)
                     )
                 }
             }
@@ -204,7 +204,7 @@ fun PreferenceItemVariant(
                     modifier = Modifier
                         .padding(start = 8.dp, end = 16.dp)
                         .size(24.dp),
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant.applyOpacity(enabled)
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant.applyAlpha(enabled)
                 )
             }
             Column(
@@ -281,7 +281,7 @@ internal fun PreferenceItemTitle(
         text = text,
         maxLines = maxLines,
         style = style,
-        color = color.applyOpacity(enabled),
+        color = color.applyAlpha(enabled),
         overflow = overflow
     )
 }
@@ -301,7 +301,7 @@ internal fun PreferenceItemDescription(
         text = text,
         maxLines = maxLines,
         style = style,
-        color = color.applyOpacity(enabled),
+        color = color.applyAlpha(enabled),
         overflow = overflow
     )
 }
@@ -384,7 +384,7 @@ fun PreferenceSwitchVariant(
                     modifier = Modifier
                         .padding(start = 8.dp, end = 16.dp)
                         .size(24.dp),
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant.applyOpacity(enabled)
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant.applyAlpha(enabled)
                 )
             }
             Column(
@@ -444,7 +444,7 @@ fun PreferenceSwitch(
                     modifier = Modifier
                         .padding(start = 8.dp, end = 16.dp)
                         .size(24.dp),
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant.applyOpacity(enabled)
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant.applyAlpha(enabled)
                 )
             }
             Column(
@@ -504,7 +504,7 @@ fun PreferenceSwitchWithDivider(
                     modifier = Modifier
                         .padding(start = 8.dp, end = 16.dp)
                         .size(24.dp),
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant.applyOpacity(enabled)
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant.applyAlpha(enabled)
                 )
             }
             Column(
@@ -551,7 +551,7 @@ fun PreferencesCautionCard(
             .fillMaxWidth()
             .padding(horizontal = 8.dp, vertical = 12.dp)
             .clip(MaterialTheme.shapes.extraLarge)
-            .background(MaterialTheme.colorScheme.errorContainer.harmonizeWithPrimary())
+            .background(MaterialTheme.colorScheme.harmonizeWithPrimary(MaterialTheme.colorScheme.errorContainer))
             .clickable { onClick() }
             .padding(horizontal = 12.dp, vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -563,7 +563,7 @@ fun PreferencesCautionCard(
                 modifier = Modifier
                     .padding(start = 8.dp, end = 16.dp)
                     .size(24.dp),
-                tint = MaterialTheme.colorScheme.error.harmonizeWithPrimary()
+                tint = MaterialTheme.colorScheme.harmonizeWithPrimary(MaterialTheme.colorScheme.error)
 
             )
         }
@@ -573,16 +573,15 @@ fun PreferencesCautionCard(
                 .padding(start = if (icon == null) 12.dp else 0.dp, end = 12.dp)
         ) {
             with(MaterialTheme) {
-
                 Text(
                     text = title,
                     maxLines = 1,
                     style = PreferenceTitleVariant,
-                    color = colorScheme.onErrorContainer.harmonizeWithPrimary()
+                    color = colorScheme.harmonizeWithPrimary(colorScheme.onErrorContainer)
                 )
                 if (description != null) Text(
                     text = description,
-                    color = colorScheme.onErrorContainer.harmonizeWithPrimary(),
+                    color = colorScheme.harmonizeWithPrimary(colorScheme.onErrorContainer),
                     maxLines = 2, overflow = TextOverflow.Ellipsis,
                     style = typography.bodyMedium,
                 )
@@ -738,12 +737,12 @@ fun CreditItem(
                         text = title,
                         maxLines = 1,
                         style = typography.titleMedium,
-                        color = colorScheme.onSurface.applyOpacity(enabled)
+                        color = colorScheme.onSurface.applyAlpha(enabled)
                     )
                     license?.let {
                         Text(
                             text = it,
-                            color = colorScheme.onSurfaceVariant.applyOpacity(enabled),
+                            color = colorScheme.onSurfaceVariant.applyAlpha(enabled),
                             maxLines = 2, overflow = TextOverflow.Ellipsis,
                             style = typography.bodyMedium,
                         )

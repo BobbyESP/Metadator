@@ -1,14 +1,13 @@
 package com.bobbyesp.utilities.preferences
 
-import com.bobbyesp.utilities.DarkThemePreference
 import com.bobbyesp.utilities.preferences.PreferencesKeys.DARK_THEME_VALUE
 import com.bobbyesp.utilities.preferences.PreferencesKeys.DYNAMIC_COLOR
 import com.bobbyesp.utilities.preferences.PreferencesKeys.HIGH_CONTRAST
 import com.bobbyesp.utilities.preferences.PreferencesKeys.MMKV_PREFERENCES_NAME
-import com.bobbyesp.utilities.preferences.PreferencesKeys.PALETTE_STYLE
 import com.bobbyesp.utilities.preferences.PreferencesKeys.THEME_COLOR
+import com.bobbyesp.utilities.preferences.settings.AppMainSettings
+import com.bobbyesp.utilities.theme.DarkThemePreference
 import com.bobbyesp.utilities.ui.DEFAULT_SEED_COLOR
-import com.google.android.material.color.DynamicColors
 import com.tencent.mmkv.MMKV
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -64,28 +63,20 @@ object Preferences {
         }
     }
 
-    data class AppSettings(
-        val darkTheme: DarkThemePreference = DarkThemePreference(),
-        val isDynamicColorEnabled: Boolean = false,
-        val seedColor: Int = DEFAULT_SEED_COLOR,
-        val paletteStyleIndex: Int = 0
-    )
-
-    val mutableAppSettingsStateFlow = MutableStateFlow(
-        AppSettings(
+    val mutableAppMainSettingsStateFlow = MutableStateFlow(
+        AppMainSettings(
             DarkThemePreference(
                 darkThemeValue = kv.decodeInt(
                     DARK_THEME_VALUE,
                     DarkThemePreference.FOLLOW_SYSTEM
                 ), isHighContrastModeEnabled = kv.decodeBool(HIGH_CONTRAST, false)
             ),
-            isDynamicColorEnabled = kv.decodeBool(
+            useDynamicColoring = kv.decodeBool(
                 DYNAMIC_COLOR,
-                DynamicColors.isDynamicColorAvailable()
+                true
             ),
             seedColor = kv.decodeInt(THEME_COLOR, DEFAULT_SEED_COLOR),
-            paletteStyleIndex = kv.decodeInt(PALETTE_STYLE, 0)
         )
     )
-    val AppSettingsStateFlow = mutableAppSettingsStateFlow.asStateFlow()
+    val AppMainSettingsStateFlow = mutableAppMainSettingsStateFlow.asStateFlow()
 }

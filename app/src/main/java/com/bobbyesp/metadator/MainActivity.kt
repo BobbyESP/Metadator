@@ -19,7 +19,6 @@ import com.bobbyesp.mediaplayer.service.ConnectionHandler
 import com.bobbyesp.mediaplayer.service.MediaplayerService
 import com.bobbyesp.metadator.presentation.Navigator
 import com.bobbyesp.metadator.presentation.common.AppLocalSettingsProvider
-import com.bobbyesp.metadator.presentation.common.LocalDarkTheme
 import com.bobbyesp.metadator.presentation.theme.MetadatorTheme
 import dagger.hilt.android.AndroidEntryPoint
 import setupFirebase
@@ -48,10 +47,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             val windowSizeClass = calculateWindowSizeClass(this)
             AppLocalSettingsProvider(windowSizeClass.widthSizeClass, connectionHandler) {
-                MetadatorTheme(
-                    darkTheme = LocalDarkTheme.current.isDarkTheme(),
-                    isHighContrastModeEnabled = LocalDarkTheme.current.isHighContrastModeEnabled,
-                ) {
+                MetadatorTheme {
                     Navigator()
                 }
             }

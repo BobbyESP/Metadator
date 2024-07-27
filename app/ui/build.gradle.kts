@@ -56,8 +56,8 @@ dependencies {
 
     implementation(libs.core.ktx)
     implementation(libs.bundles.compose)
-    implementation(libs.material)
     implementation(libs.compose.tooling.preview)
+    implementation(libs.materialKolor)
 
     //Compose testing and tooling libraries
     androidTestImplementation(platform(libs.compose.bom))

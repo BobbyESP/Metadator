@@ -145,9 +145,7 @@ dependencies {
 
 //Compose libraries
     implementation(libs.bundles.compose)
-    implementation(libs.compose.ui.utilities)
-    api(libs.material)
-
+    implementation(libs.materialKolor)
 //Pagination
     implementation(libs.bundles.pagination)
 
