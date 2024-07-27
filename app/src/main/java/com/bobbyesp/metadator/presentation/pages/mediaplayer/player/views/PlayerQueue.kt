@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.MediaMetadata
-import com.bobbyesp.metadator.presentation.components.image.ArtworkAsyncImage
+import com.bobbyesp.metadator.presentation.components.image.AsyncImage
 
 @Composable
 fun PlayerQueue(
@@ -32,8 +32,8 @@ fun PlayerQueue(
                 .fillMaxWidth()
                 .padding(24.dp)
         ) {
-            ArtworkAsyncImage(
-                artworkPath = nowPlaying?.artworkUri,
+            AsyncImage(
+                imageModel = nowPlaying?.artworkUri,
                 modifier = imageModifier
                     .clip(MaterialTheme.shapes.small)
             )

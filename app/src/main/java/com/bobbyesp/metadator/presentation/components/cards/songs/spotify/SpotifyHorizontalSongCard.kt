@@ -21,7 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.adamratzman.spotify.models.Track
 import com.bobbyesp.metadator.ext.formatArtistsName
-import com.bobbyesp.metadator.presentation.components.image.ArtworkAsyncImage
+import com.bobbyesp.metadator.presentation.components.image.AsyncImage
 import com.bobbyesp.ui.components.text.MarqueeText
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -63,9 +63,9 @@ fun SpotifyHorizontalSongCard(
                 )
             }
             Box(contentAlignment = Alignment.CenterStart) {
-                ArtworkAsyncImage(
+                AsyncImage(
                     modifier = imageModifier.size(64.dp),
-                    artworkPath = albumArtPath,
+                    imageModel = albumArtPath,
                     shape = MaterialTheme.shapes.extraSmall
                 )
             }

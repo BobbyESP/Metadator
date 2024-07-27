@@ -66,6 +66,7 @@ class MediaplayerViewModel @Inject constructor(
                             calculateProgressValues(mediaState.progress)
                         }
                     }
+
                     is MediaState.Playing -> mutableMediaplayerPageState.update {
                         (it.uiState as? PlayerState.Ready)?.let { readyState ->
                             it.copy(
@@ -80,6 +81,7 @@ class MediaplayerViewModel @Inject constructor(
                             calculateProgressValues(mediaState.progress)
                         }
                     }
+
                     is MediaState.Ready -> {
                         mutableMediaplayerPageState.update {
                             it.copy(

@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.media3.common.MediaMetadata
 import com.bobbyesp.metadator.R
-import com.bobbyesp.metadator.presentation.components.image.ArtworkAsyncImage
+import com.bobbyesp.metadator.presentation.components.image.AsyncImage
 import com.bobbyesp.metadator.presentation.pages.mediaplayer.player.AnimatedTextContentTransformation
 import com.bobbyesp.ui.components.button.DynamicButton
 import com.bobbyesp.ui.components.text.MarqueeText
@@ -70,11 +70,11 @@ fun MiniplayerContent(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-            ArtworkAsyncImage(
+            AsyncImage(
                 modifier = Modifier
                     .size(52.dp)
                     .clip(MaterialTheme.shapes.extraSmall),
-                artworkPath = songCardArtworkUri
+                imageModel = songCardArtworkUri
             )
             Column(
                 horizontalAlignment = Alignment.Start,

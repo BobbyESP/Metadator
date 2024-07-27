@@ -216,5 +216,6 @@ data class MarqueeTextGradientOptions(
     val right: Boolean = true,
     val left: Boolean = true
 )
+
 private enum class MarqueeLayers { MainText, SecondaryText, EdgesGradient }
 private data class TextLayoutInfo(val textWidth: Int, val containerWidth: Int)

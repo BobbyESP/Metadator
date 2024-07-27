@@ -15,7 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.bobbyesp.metadator.presentation.components.image.ArtworkAsyncImage
+import com.bobbyesp.metadator.presentation.components.image.AsyncImage
 import com.bobbyesp.metadator.presentation.theme.MetadatorTheme
 import com.bobbyesp.ui.components.text.MarqueeText
 import com.bobbyesp.utilities.model.Song
@@ -32,11 +32,11 @@ fun VerticalSongCard(
         onClick = onClick
     ) {
         Column {
-            ArtworkAsyncImage(
+            AsyncImage(
                 modifier = Modifier
                     .fillMaxWidth()
                     .aspectRatio(1f),
-                artworkPath = song.artworkPath
+                imageModel = song.artworkPath
             )
             Column(
                 horizontalAlignment = Alignment.Start, modifier = Modifier.padding(8.dp)

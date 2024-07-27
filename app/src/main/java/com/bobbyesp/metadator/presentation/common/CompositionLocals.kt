@@ -60,6 +60,7 @@ fun AppLocalSettingsProvider(
     val appSettingsState = AppMainSettingsStateFlow.collectAsStateWithLifecycle().value
     val bottomSheetNavigator = rememberBottomSheetNavigator()
     val navController = rememberNavController(bottomSheetNavigator)
+
     val imageLoader = ImageLoader.Builder(context)
         .memoryCache {
             MemoryCache.Builder(context)
@@ -75,9 +76,10 @@ fun AppLocalSettingsProvider(
         .respectCacheHeaders(false)
         .allowHardware(true)
         .crossfade(true)
-        .bitmapFactoryMaxParallelism(8)
+        .bitmapFactoryMaxParallelism(12)
         .dispatcher(Dispatchers.IO)
         .build()
+
     val config = LocalConfiguration.current
     val snackbarHostState = remember { SnackbarHostState() }
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)

@@ -128,6 +128,7 @@ fun MediaplayerPage(
                 LazyColumnScrollbar(
                     state = mediaStoreLazyColumnState,
                     settings = ScrollbarSettings(
+                        thumbUnselectedColor = MaterialTheme.colorScheme.onSurfaceVariant,
                         thumbSelectedColor = MaterialTheme.colorScheme.primary,
                         selectionActionable = ScrollbarSelectionActionable.WhenVisible,
                     ),

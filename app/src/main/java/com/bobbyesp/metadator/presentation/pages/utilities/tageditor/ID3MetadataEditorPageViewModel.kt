@@ -165,6 +165,7 @@ class ID3MetadataEditorPageViewModel @Inject constructor(
             )
         }
     }
+
     private fun updateState(state: ID3MetadataEditorPageState) {
         mutablePageViewState.update {
             it.copy(

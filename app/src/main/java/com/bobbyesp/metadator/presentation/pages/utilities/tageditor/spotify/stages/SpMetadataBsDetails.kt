@@ -37,7 +37,7 @@ import com.bobbyesp.metadator.R
 import com.bobbyesp.metadator.ext.TagLib.toImageVector
 import com.bobbyesp.metadator.ext.TagLib.toLocalizedName
 import com.bobbyesp.metadator.ext.formatArtistsName
-import com.bobbyesp.metadator.presentation.components.image.ArtworkAsyncImage
+import com.bobbyesp.metadator.presentation.components.image.AsyncImage
 import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.spotify.SpMetadataBottomSheetContentViewModel
 import com.bobbyesp.ui.components.button.BackButton
 import com.bobbyesp.ui.components.others.SelectableSurface
@@ -173,9 +173,9 @@ private fun TrackInfo(
         modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        ArtworkAsyncImage(
+        AsyncImage(
             modifier = Modifier.size(64.dp),
-            artworkPath = albumArtPath,
+            imageModel = albumArtPath,
             shape = MaterialTheme.shapes.extraSmall
         )
         Row(

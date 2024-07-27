@@ -46,7 +46,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bobbyesp.metadator.R
-import com.bobbyesp.metadator.presentation.components.image.ArtworkAsyncImage
+import com.bobbyesp.metadator.presentation.components.image.AsyncImage
 import com.bobbyesp.metadator.presentation.pages.mediaplayer.MediaplayerViewModel
 import com.bobbyesp.metadator.presentation.pages.mediaplayer.player.MediaplayerSheetView
 import com.bobbyesp.metadator.presentation.pages.mediaplayer.player.PlayerControls
@@ -99,8 +99,8 @@ fun MediaplayerExpandedContent(
                                 .weight(1f),
                             contentAlignment = Alignment.Center,
                         ) {
-                            ArtworkAsyncImage(
-                                artworkPath = playingSong?.artworkUri,
+                            AsyncImage(
+                                imageModel = playingSong?.artworkUri,
                                 modifier = Modifier
                                     .fillMaxHeight(0.9f)
                                     .aspectRatio(1f)
@@ -192,8 +192,8 @@ fun MediaplayerExpandedContent(
                                         modifier = Modifier,
                                         verticalArrangement = Arrangement.spacedBy(24.dp)
                                     ) {
-                                        ArtworkAsyncImage(
-                                            artworkPath = playingSong?.artworkUri,
+                                        AsyncImage(
+                                            imageModel = playingSong?.artworkUri,
                                             modifier = Modifier
                                                 .fillMaxWidth()
                                                 .aspectRatio(1f)

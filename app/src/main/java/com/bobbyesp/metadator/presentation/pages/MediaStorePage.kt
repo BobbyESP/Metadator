@@ -67,6 +67,7 @@ fun MediaStorePage(
                                 LazyVerticalGridScrollbar(
                                     state = lazyGridState,
                                     settings = ScrollbarSettings(
+                                        thumbUnselectedColor = MaterialTheme.colorScheme.onSurfaceVariant,
                                         thumbSelectedColor = MaterialTheme.colorScheme.primary,
                                         selectionActionable = ScrollbarSelectionActionable.WhenVisible,
                                     )
@@ -101,6 +102,7 @@ fun MediaStorePage(
                                 LazyColumnScrollbar(
                                     state = lazyListState,
                                     settings = ScrollbarSettings(
+                                        thumbUnselectedColor = MaterialTheme.colorScheme.onSurfaceVariant,
                                         thumbSelectedColor = MaterialTheme.colorScheme.primary,
                                         selectionActionable = ScrollbarSelectionActionable.WhenVisible,
                                     )

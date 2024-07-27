@@ -10,7 +10,7 @@ import androidx.compose.ui.unit.dp
 import com.bobbyesp.ui.motion.materialSharedAxisXIn
 import com.bobbyesp.ui.motion.materialSharedAxisXOut
 
-val CollapsedPlayerHeight = 78.dp
+val CollapsedPlayerHeight = 84.dp
 val SeekToButtonSize = 48.dp
 val PlayerCommandsButtonSize = 48.dp
 

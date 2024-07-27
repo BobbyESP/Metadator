@@ -18,7 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.bobbyesp.metadator.presentation.components.image.ArtworkAsyncImage
+import com.bobbyesp.metadator.presentation.components.image.AsyncImage
 import com.bobbyesp.metadator.presentation.theme.MetadatorTheme
 import com.bobbyesp.ui.components.text.MarqueeText
 import com.bobbyesp.utilities.Time
@@ -39,11 +39,11 @@ fun HorizontalSongCard(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-            ArtworkAsyncImage(
+            AsyncImage(
                 modifier = Modifier
                     .size(64.dp)
                     .padding(4.dp),
-                artworkPath = song.artworkPath
+                imageModel = song.artworkPath
             )
             Column(
                 horizontalAlignment = Alignment.Start, modifier = Modifier

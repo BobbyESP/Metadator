@@ -66,7 +66,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bobbyesp.metadator.R
 import com.bobbyesp.metadator.model.ParcelableSong
 import com.bobbyesp.metadator.presentation.common.LocalNavController
-import com.bobbyesp.metadator.presentation.components.image.ArtworkAsyncImage
+import com.bobbyesp.metadator.presentation.components.image.AsyncImage
 import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.spotify.SpMetadataBottomSheetContent
 import com.bobbyesp.ui.components.button.CloseButton
 import com.bobbyesp.ui.components.others.MetadataTag
@@ -269,12 +269,12 @@ fun ID3MetadataEditorPage(
                                 .aspectRatio(1f)
                                 .align(Alignment.CenterHorizontally),
                         ) {
-                            ArtworkAsyncImage(
+                            AsyncImage(
                                 modifier = Modifier
                                     .fillMaxSize()
                                     .clip(MaterialTheme.shapes.small)
                                     .align(Alignment.Center),
-                                artworkPath = artworkUri,
+                                imageModel = artworkUri,
                             )
                             Box(
                                 modifier = Modifier
