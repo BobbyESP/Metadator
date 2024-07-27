@@ -4,9 +4,11 @@ import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.PlayArrow
+import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.bobbyesp.metadator.R
 
+@Immutable
 enum class DestinationInfo(
     val icon: ImageVector,
     @StringRes val title: Int,
@@ -19,9 +21,6 @@ enum class DestinationInfo(
         icon = Icons.Rounded.PlayArrow,
         title = R.string.mediaplayer
     );
-
-    val qualifiedName
-        get() = this::class.qualifiedName.toString()
 
     companion object {
         fun fromRoute(route: Route): DestinationInfo? {

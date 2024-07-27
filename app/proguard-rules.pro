@@ -62,6 +62,21 @@
     volatile <fields>;
 }
 
+# Keep all classes in the specified package
+-keep class com.bobbyesp.metadator.presentation.common.** { *; }
+
+# Keep all serialization-related annotations
+-keepattributes *Annotation*
+
+# Keep classes and members information for serialization
+-keepclassmembers class com.bobbyesp.metadator.presentation.common.** {
+    @kotlinx.serialization.Serializable <fields>;
+    @kotlinx.serialization.Serializable <methods>;
+}
+
+# Keep classes and members in the specified package
+-keepnames class com.bobbyesp.metadator.presentation.common.** { *; }
+
 # Only used in `kotlinx.coroutines.internal.ExceptionsConstructor`.
 # The case when it is not available is hidden in a `try`-`catch`, as well as a check for Android.
 -dontwarn java.lang.ClassValue

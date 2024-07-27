@@ -15,9 +15,9 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bobbyesp.metadator.presentation.components.cards.songs.HorizontalSongCard
 import com.bobbyesp.metadator.presentation.components.cards.songs.VerticalSongCard
 import com.bobbyesp.metadator.presentation.components.others.status.EmptyMediaStore
@@ -32,21 +32,19 @@ import my.nanihadesuka.compose.ScrollbarSettings
 @Composable
 fun MediaStorePage(
     modifier: Modifier = Modifier,
-    viewModel: MediaStorePageViewModel,
+    songs: State<ResourceState<List<Song>>>,
     lazyGridState: LazyGridState,
     lazyListState: LazyListState,
     desiredLayout: LayoutType,
     onItemClicked: (Song) -> Unit
 ) {
-    val songsState = viewModel.songs.collectAsStateWithLifecycle().value
-
     Box(
         modifier = modifier.fillMaxSize()
     ) {
         Crossfade(
             targetState = desiredLayout, label = "List item transition", animationSpec = tween(200)
         ) { type ->
-            when (songsState) {
+            when (songs.value) {
                 is ResourceState.Loading -> {
                     CircularProgressIndicator()
                 }
@@ -56,12 +54,12 @@ fun MediaStorePage(
                 }
 
                 is ResourceState.Success -> {
-                    if (songsState.data!!.isEmpty()) {
+                    if (songs.value.data!!.isEmpty()) {
                         EmptyMediaStore(
                             modifier = Modifier.fillMaxSize()
                         )
                     } else {
-                        val songs = songsState.data!!
+                        val songsList = songs.value.data!!
                         when (type) {
                             LayoutType.Grid -> {
                                 LazyVerticalGridScrollbar(
@@ -82,10 +80,10 @@ fun MediaStorePage(
                                             .background(MaterialTheme.colorScheme.background),
                                         state = lazyGridState
                                     ) {
-                                        items(count = songs.size,
-                                            key = { index -> songs[index].id },
-                                            contentType = { index -> songs[index].id.toString() }) { index ->
-                                            val song = songs[index]
+                                        items(count = songsList.size,
+                                            key = { index -> songsList[index].id },
+                                            contentType = { index -> songsList[index].id.toString() }) { index ->
+                                            val song = songsList[index]
                                             VerticalSongCard(song = song,
                                                 modifier = Modifier.animateItem(
                                                     fadeInSpec = null, fadeOutSpec = null
@@ -113,10 +111,10 @@ fun MediaStorePage(
                                             .background(MaterialTheme.colorScheme.background),
                                         state = lazyListState,
                                     ) {
-                                        items(count = songs.size,
-                                            key = { index -> songs[index].id },
-                                            contentType = { index -> songs[index].id.toString() }) { index ->
-                                            val song = songs[index]
+                                        items(count = songsList.size,
+                                            key = { index -> songsList[index].id },
+                                            contentType = { index -> songsList[index].id.toString() }) { index ->
+                                            val song = songsList[index]
                                             HorizontalSongCard(
                                                 song = song,
                                                 modifier = Modifier.animateItem(

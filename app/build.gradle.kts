@@ -66,6 +66,7 @@ android {
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("debug")
         }
         debug {
             buildConfigField(
@@ -138,7 +139,7 @@ dependencies {
 
 //---------------User Interface---------------//
 //Core UI libraries
-    api(platform(libs.compose.bom))
+    api(platform(libs.compose.bom.canary))
 
 //Accompanist libraries
     implementation(libs.bundles.accompanist)

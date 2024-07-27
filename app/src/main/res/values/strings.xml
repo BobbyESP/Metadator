@@ -66,5 +66,7 @@
     <string name="retry_search">Retry search</string>
     <string name="spotify_metadata">Spotify metadata</string>
     <string name="made_by">Made with 💖 by BobbyESP</string>
+    <string name="appearance">Appearance</string>
+    <string name="appearance_description">Customize how the app looks like</string>
 
 </resources>

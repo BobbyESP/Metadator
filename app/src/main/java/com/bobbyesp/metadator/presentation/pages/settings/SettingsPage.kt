@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Palette
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.LargeTopAppBar
@@ -19,7 +21,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.bobbyesp.metadator.R
+import com.bobbyesp.metadator.presentation.common.LocalNavController
+import com.bobbyesp.metadator.presentation.common.Route
 import com.bobbyesp.ui.components.button.BackButton
+import com.bobbyesp.ui.components.preferences.SettingItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -27,7 +32,7 @@ fun SettingsPage(
     onBackPressed: () -> Unit
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
-
+    val navController = LocalNavController.current
     Scaffold(
         topBar = {
             LargeTopAppBar(
@@ -52,6 +57,16 @@ fun SettingsPage(
                 .nestedScroll(scrollBehavior.nestedScrollConnection),
             contentPadding = paddingValues
         ) {
+            item {
+                SettingItem(
+                    title = stringResource(id = R.string.appearance),
+                    description = stringResource(id = R.string.appearance_description),
+                    icon = Icons.Rounded.Palette,
+                    onClick = {
+                        navController.navigate(Route.SettingsNavigator.Settings.Appearance)
+                    }
+                )
+            }
             item {
                 HorizontalDivider(modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp))
                 Text(

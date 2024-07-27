@@ -59,9 +59,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.fastAny
-import androidx.compose.ui.util.fastForEach
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigation
@@ -75,8 +76,8 @@ import com.bobbyesp.metadator.presentation.common.LocalNavController
 import com.bobbyesp.metadator.presentation.common.LocalPlayerAwareWindowInsets
 import com.bobbyesp.metadator.presentation.common.LocalSnackbarHostState
 import com.bobbyesp.metadator.presentation.common.Route
+import com.bobbyesp.metadator.presentation.common.mainNavigators
 import com.bobbyesp.metadator.presentation.common.qualifiedName
-import com.bobbyesp.metadator.presentation.common.routesToNavigate
 import com.bobbyesp.metadator.presentation.pages.MediaStorePageViewModel
 import com.bobbyesp.metadator.presentation.pages.home.HomePage
 import com.bobbyesp.metadator.presentation.pages.mediaplayer.MediaplayerPage
@@ -102,7 +103,7 @@ fun Navigator() {
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
 
-    val currentRootRoute = rememberSaveable(navBackStackEntry, key = "currentRootRoute") {
+    val currentNavigator = rememberSaveable(navBackStackEntry, key = "currentRootRoute") {
         mutableStateOf(
             navBackStackEntry?.destination?.parent?.route
         )
@@ -119,7 +120,7 @@ fun Navigator() {
 
     //able to open drawer when the user is in one of the main routes (root routes)
     val canOpenDrawer by remember(currentRoute) {
-        mutableStateOf(routesToNavigate.fastAny { it.qualifiedName() == currentRootRoute.value })
+        mutableStateOf(mainNavigators.fastAny { navigator -> navigator.qualifiedName() == currentNavigator.value })
     }
 
     val mediaStoreViewModel = hiltViewModel<MediaStorePageViewModel>()
@@ -192,11 +193,12 @@ fun Navigator() {
                                     rememberScrollState()
                                 )
                         ) {
-                            routesToNavigate.fastForEach { route ->
-                                val formattedRoute = route.qualifiedName()
-                                val isSelected = remember(currentRootRoute.value, formattedRoute) {
-                                    currentRootRoute.value == formattedRoute
-                                }
+                            mainNavigators.forEach { route ->
+                                val actualNavigator = route.qualifiedName()
+//                                val isSelected by remember(currentNavigator, actualNavigator) {
+//                                    mutableStateOf(currentNavigator.value == actualNavigator)
+//                                }
+                                val isSelected = currentNavigator.value == actualNavigator
                                 val destinationInfo = DestinationInfo.fromRoute(route)
 
                                 NavigationDrawerItem(
@@ -213,7 +215,6 @@ fun Navigator() {
                                             scope.launch {
                                                 drawerState.close()
                                             }
-                                            return@NavigationDrawerItem
                                         } else {
                                             navController.navigate(route) {
                                                 popUpTo(navController.graph.findStartDestination().id) {
@@ -238,7 +239,6 @@ fun Navigator() {
                                 )
                             }
                         }
-                        Spacer(modifier = Modifier.weight(1f))
 
                         OutlinedCard(
                             modifier = Modifier
@@ -334,7 +334,9 @@ fun Navigator() {
                             startDestination = Route.MetadatorNavigator.Home,
                         ) {
                             animatedComposable<Route.MetadatorNavigator.Home> {
-                                HomePage(viewModel = mediaStoreViewModel)
+                                val songsState =
+                                    mediaStoreViewModel.songs.collectAsStateWithLifecycle()
+                                HomePage(songs = songsState)
                             }
                         }
 
@@ -364,20 +366,36 @@ fun Navigator() {
                             }
                         }
 
-                        navigation<Route.SettingsNavigator>(
-                            startDestination = Route.SettingsNavigator.Settings,
-                        ) {
-                            animatedComposable<Route.SettingsNavigator.Settings> {
-                                SettingsPage(
-                                    onBackPressed = {
-                                        navController.popBackStack()
-                                    }
-                                )
-                            }
-                        }
+                        settingsNavigation { navController.popBackStack() }
                     }
                 }
             }
+        }
+    }
+}
+
+fun NavGraphBuilder.settingsNavigation(
+    onNavigateBack: () -> Unit
+) {
+    navigation<Route.SettingsNavigator>(
+        startDestination = Route.SettingsNavigator.Settings,
+    ) {
+        animatedComposable<Route.SettingsNavigator.Settings> {
+            SettingsPage(
+                onBackPressed = onNavigateBack
+            )
+        }
+
+        animatedComposable<Route.SettingsNavigator.Settings.General> {
+            Text("General")
+        }
+
+        animatedComposable<Route.SettingsNavigator.Settings.Appearance> {
+            Text("Appearance")
+        }
+
+        animatedComposable<Route.SettingsNavigator.Settings.About> {
+            Text("About")
         }
     }
 }

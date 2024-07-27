@@ -29,11 +29,20 @@ sealed interface Route {
     @Serializable
     data object SettingsNavigator : Route {
         @Serializable
-        data object Settings : Route
+        data object Settings : Route {
+            @Serializable
+            data object General : Route
+
+            @Serializable
+            data object Appearance : Route
+
+            @Serializable
+            data object About : Route
+        }
     }
 }
 
-val routesToNavigate = listOf(
+val mainNavigators = listOf(
     Route.MetadatorNavigator,
     Route.MediaplayerNavigator
 )

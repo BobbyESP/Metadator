@@ -12,6 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -29,7 +30,16 @@ class MediaStorePageViewModel @Inject constructor(
     init {
         viewModelScope.launch(Dispatchers.IO) {
             mediaStoreSongsFlow.collectLatest { songs ->
-                _songs.value = ResourceState.Success(songs)
+                _songs.update { ResourceState.Success(songs) }
+            }
+        }
+    }
+
+    fun reloadMediaStore() {
+        viewModelScope.launch(Dispatchers.IO) {
+            _songs.update { ResourceState.Loading() }
+            mediaStoreSongsFlow.collectLatest { songs ->
+                _songs.update { ResourceState.Success(songs) }
             }
         }
     }

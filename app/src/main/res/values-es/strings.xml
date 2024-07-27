@@ -67,4 +67,6 @@
     <string name="retry_search">Volver a buscar</string>
     <string name="spotify_metadata">Metadatos de Spotify</string>
     <string name="made_by">Hecho con 💖 por BobbyESP</string>
+    <string name="appearance">Apariencia</string>
+    <string name="appearance_description">Personaliza como se ve la aplicación</string>
 </resources>

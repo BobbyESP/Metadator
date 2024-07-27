@@ -17,7 +17,7 @@ leakcanary = "2.13"
 
 #Compose
 compose-bom = "2024.06.00"
-compose-bom-canary = "2024.05.00-alpha03"
+compose-bom-canary = "2024.07.00-alpha02"
 constraintLayout = "1.1.0-alpha13"
 androidx-compose-material3 = "1.2.1"
 compose-util = "1.6.8"

@@ -34,6 +34,7 @@ import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -56,12 +57,13 @@ import com.bobbyesp.metadator.presentation.common.LocalDrawerState
 import com.bobbyesp.metadator.presentation.common.LocalNavController
 import com.bobbyesp.metadator.presentation.common.Route
 import com.bobbyesp.metadator.presentation.pages.MediaStorePage
-import com.bobbyesp.metadator.presentation.pages.MediaStorePageViewModel
 import com.bobbyesp.ui.components.dropdown.AnimatedDropdownMenu
 import com.bobbyesp.ui.components.dropdown.DropdownItemContainer
 import com.bobbyesp.ui.components.text.AutoResizableText
+import com.bobbyesp.utilities.model.Song
 import com.bobbyesp.utilities.preferences.Preferences
 import com.bobbyesp.utilities.preferences.PreferencesKeys.DESIRED_OVERLAY
+import com.bobbyesp.utilities.states.ResourceState
 import com.bobbyesp.utilities.ui.permission.PermissionNotGrantedDialog
 import com.bobbyesp.utilities.ui.permission.PermissionRequestHandler
 import com.bobbyesp.utilities.ui.permission.toPermissionType
@@ -74,7 +76,7 @@ import okhttp3.internal.toImmutableList
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
 @Composable
 fun HomePage(
-    modifier: Modifier = Modifier, viewModel: MediaStorePageViewModel
+    modifier: Modifier = Modifier, songs: State<ResourceState<List<Song>>>
 ) {
     val context = LocalContext.current as Activity
     val currentApiVersion = Build.VERSION.SDK_INT
@@ -123,7 +125,7 @@ fun HomePage(
                 }
             }, title = {
                 Column(
-                    horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally,
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     Text(
                         text = stringResource(id = R.string.app_name).uppercase(),
@@ -225,8 +227,9 @@ fun HomePage(
                 )
             },
             content = {
-                MediaStorePage(modifier = Modifier.padding(paddingValues = paddingValues),
-                    viewModel = viewModel,
+                MediaStorePage(
+                    modifier = Modifier.padding(paddingValues = paddingValues),
+                    songs = songs,
                     lazyGridState = mediaStoreLazyGridState,
                     lazyListState = mediaStoreLazyColumnState,
                     desiredLayout = desiredLayout,
