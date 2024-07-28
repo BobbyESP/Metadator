@@ -1,10 +1,12 @@
 package com.bobbyesp.utilities.mediastore
 
+import androidx.compose.runtime.Stable
 import com.bobbyesp.utilities.ext.PropertyMap
 import com.bobbyesp.utilities.ext.formatForField
 import kotlinx.serialization.Serializable
 
 @Serializable
+@Stable
 data class AudioFileMetadata(
     val title: String?,
     val artist: String?,

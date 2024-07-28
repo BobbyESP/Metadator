@@ -68,5 +68,6 @@
     <string name="made_by">Made with 💖 by BobbyESP</string>
     <string name="appearance">Appearance</string>
     <string name="appearance_description">Customize how the app looks like</string>
+    <string name="loading_audio_information">Loading audio information</string>
 
 </resources>

@@ -2,8 +2,18 @@ package com.bobbyesp.utilities.ext
 
 import com.bobbyesp.utilities.mediastore.AudioFileMetadata
 
+/**
+ * Type alias for a HashMap where the key is a String and the value is an Array of Strings.
+ * This is used to represent a map of properties where each property can have multiple values.
+ */
 typealias PropertyMap = HashMap<String, Array<String>>
 
+/**
+ * Extension function for PropertyMap to convert it to an AudioFileMetadata object.
+ *
+ * @param separator The separator to use when joining array elements into a single string. Default is ", ".
+ * @return An AudioFileMetadata object populated with values from the PropertyMap.
+ */
 fun PropertyMap.toAudioFileMetadata(separator: String = ", "): AudioFileMetadata {
     return AudioFileMetadata(
         title = this["TITLE"]?.getOrNull(0),
@@ -23,6 +33,12 @@ fun PropertyMap.toAudioFileMetadata(separator: String = ", "): AudioFileMetadata
     )
 }
 
+/**
+ * Extension function for PropertyMap to convert it to a modifiable map.
+ *
+ * @param separator The separator to use when joining array elements into a single string. Default is ", ".
+ * @return A MutableMap where the key is a String and the value is a nullable String.
+ */
 fun PropertyMap.toModifiableMap(separator: String = ", "): MutableMap<String, String?> {
     return mutableMapOf(
         "TITLE" to this["TITLE"]?.getOrNull(0),

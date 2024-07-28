@@ -1,6 +1,11 @@
 package com.bobbyesp.metadator.presentation
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.IntentSenderRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -39,6 +44,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -85,13 +91,14 @@ import com.bobbyesp.metadator.presentation.pages.mediaplayer.MediaplayerViewMode
 import com.bobbyesp.metadator.presentation.pages.mediaplayer.player.CollapsedPlayerHeight
 import com.bobbyesp.metadator.presentation.pages.mediaplayer.player.PlayerAnimationSpec
 import com.bobbyesp.metadator.presentation.pages.settings.SettingsPage
-import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.ID3MetadataEditorPage
-import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.ID3MetadataEditorPageViewModel
+import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.rework.MetadataEditorPage
+import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.rework.MetadataEditorVM
 import com.bobbyesp.ui.components.bottomsheet.draggable.rememberDraggableBottomSheetState
 import com.bobbyesp.ui.components.tags.RoundedTag
 import com.bobbyesp.ui.motion.animatedComposable
 import com.bobbyesp.ui.motion.slideInVerticallyComposable
 import com.bobbyesp.utilities.navigation.parcelableType
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlin.reflect.typeOf
 
@@ -149,18 +156,14 @@ fun Navigator() {
         }
 
         val animatedBottom by animateDpAsState(
-            targetValue = targetBottom,
-            label = "Animated bottom insets for player sheet"
+            targetValue = targetBottom, label = "Animated bottom insets for player sheet"
         )
 
         val playerAwareWindowInsets = remember(
-            bottomInset,
-            mediaPlayerSheetState.isDismissed,
-            animatedBottom
+            bottomInset, mediaPlayerSheetState.isDismissed, animatedBottom
         ) {
             val insetsBottom = animatedBottom
-            windowsInsets
-                .only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top)
+            windowsInsets.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top)
                 .add(WindowInsets(bottom = insetsBottom))
         }
 
@@ -229,11 +232,11 @@ fun Navigator() {
                                         }
                                     },
                                     icon = {
-                                        Icon(
-                                            imageVector = destinationInfo?.icon
-                                                ?: Icons.Rounded.Square,
-                                            contentDescription = destinationInfo?.title
-                                                ?.let { stringResource(id = it) })
+                                        Icon(imageVector = destinationInfo?.icon
+                                            ?: Icons.Rounded.Square,
+                                            contentDescription = destinationInfo?.title?.let {
+                                                stringResource(id = it)
+                                            })
                                     },
                                     modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
                                 )
@@ -246,8 +249,7 @@ fun Navigator() {
                                 .padding(horizontal = 12.dp),
                         ) {
                             Row(
-                                modifier = Modifier,
-                                verticalAlignment = Alignment.CenterVertically
+                                modifier = Modifier, verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
                                     modifier = Modifier.padding(16.dp),
@@ -262,19 +264,17 @@ fun Navigator() {
                                     shape = MaterialTheme.shapes.small
                                 )
                             }
-                            Surface(
-                                onClick = {
-                                    navController.navigate(Route.SettingsNavigator.Settings)
-                                    scope.launch {
-                                        drawerState.close()
-                                    }
-                                },
+                            Surface(onClick = {
+                                navController.navigate(Route.SettingsNavigator.Settings)
+                                scope.launch {
+                                    drawerState.close()
+                                }
+                            },
                                 modifier = Modifier
                                     .semantics { role = Role.Tab }
                                     .height(56.dp)
                                     .fillMaxWidth(),
-                                color = Color.Transparent
-                            ) {
+                                color = Color.Transparent) {
                                 Row(
                                     Modifier.padding(start = 16.dp, end = 24.dp),
                                     verticalAlignment = Alignment.CenterVertically
@@ -297,31 +297,27 @@ fun Navigator() {
                     }
                 },
             ) {
-                Scaffold(
-                    modifier = Modifier.windowInsetsPadding(
-                        insets = WindowInsets(
-                            left = WindowInsets.safeDrawing.getLeft(
-                                density,
-                                layoutDirection = LocalLayoutDirection.current
-                            ),
-                            right = WindowInsets.safeDrawing.getRight(
-                                density,
-                                layoutDirection = LocalLayoutDirection.current
-                            ),
+                Scaffold(modifier = Modifier.windowInsetsPadding(
+                    insets = WindowInsets(
+                        left = WindowInsets.safeDrawing.getLeft(
+                            density, layoutDirection = LocalLayoutDirection.current
+                        ),
+                        right = WindowInsets.safeDrawing.getRight(
+                            density, layoutDirection = LocalLayoutDirection.current
+                        ),
+                    )
+                ), snackbarHost = {
+                    SnackbarHost(
+                        hostState = snackbarHostState
+                    ) { dataReceived ->
+                        Snackbar(
+                            modifier = Modifier,
+                            snackbarData = dataReceived,
+                            containerColor = MaterialTheme.colorScheme.inverseSurface,
+                            contentColor = MaterialTheme.colorScheme.inverseOnSurface,
                         )
-                    ),
-                    snackbarHost = {
-                        SnackbarHost(
-                            hostState = snackbarHostState
-                        ) { dataReceived ->
-                            Snackbar(
-                                modifier = Modifier,
-                                snackbarData = dataReceived,
-                                containerColor = MaterialTheme.colorScheme.inverseSurface,
-                                contentColor = MaterialTheme.colorScheme.inverseOnSurface,
-                            )
-                        }
-                    }) {
+                    }
+                }) {
                     NavHost(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -354,15 +350,47 @@ fun Navigator() {
                             slideInVerticallyComposable<Route.UtilitiesNavigator.TagEditor>(
                                 typeMap = mapOf(typeOf<ParcelableSong>() to parcelableType<ParcelableSong>()),
                             ) {
-                                val song =
-                                    it.toRoute<Route.UtilitiesNavigator.TagEditor>()
+                                val song = it.toRoute<Route.UtilitiesNavigator.TagEditor>()
 
-                                val viewModel = hiltViewModel<ID3MetadataEditorPageViewModel>()
+                                val viewModel = hiltViewModel<MetadataEditorVM>()
+                                val state = viewModel.state.collectAsStateWithLifecycle()
 
-                                ID3MetadataEditorPage(
-                                    viewModel = viewModel,
-                                    parcelableSong = song.selectedSong
-                                )
+                                val securityErrorHandler =
+                                    rememberLauncherForActivityResult(
+                                        contract = ActivityResultContracts.StartIntentSenderForResult()
+                                    ) { result ->
+                                        if (result.resultCode == Activity.RESULT_OK) {
+                                            viewModel.savePropertyMap(
+                                                audioPath = song.selectedSong.localSongPath
+                                            )
+                                            navController.popBackStack()
+                                        }
+                                    }
+
+                                LaunchedEffect(true) {
+                                    viewModel.eventFlow.collectLatest { event ->
+                                        Log.i("MetadataEditor", "Event received: $event")
+                                        when (event) {
+                                            is MetadataEditorVM.Companion.UiEvent.RequestPermission -> {
+                                                val intent =
+                                                    IntentSenderRequest.Builder(event.intent)
+                                                        .build()
+                                                securityErrorHandler.launch(intent)
+                                            }
+
+                                            MetadataEditorVM.Companion.UiEvent.SaveSuccess -> {
+                                                navController.popBackStack()
+                                            }
+                                        }
+                                    }
+                                }
+
+                                MetadataEditorPage(
+                                    state = state,
+                                    receivedSong = song.selectedSong,
+                                ) { receivedEvent ->
+                                    viewModel.onEvent(receivedEvent)
+                                }
                             }
                         }
 

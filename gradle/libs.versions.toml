@@ -67,7 +67,7 @@ firebaseBom = "33.1.2"
 spotify-apiHandler = "4.1.3"
 
 #Others
-taglib = "1.0.0-alpha17"
+taglib = "1.0.0-alpha18"
 qrcodeKotlinAndroid = "4.1.0"
 
 #Tests
@@ -230,7 +230,7 @@ google-gms = { id = "com.google.gms.google-services", version.ref = "googleServi
 core = ["core-ktx", "lifecycle-runtime-ktx", "lifecycle-compose-runtime", "lifecycle-compose-viewModel", "activity-compose", "core-appcompat", "core-splashscreen"]
 ktor = ["ktor-android", "ktor-okhttp" ,"ktor-core", "ktor-serialization", "ktor-logging", "ktor-contentnegotiation", "ktor-encoding"]
 accompanist = ["accompanist-navigation-animation", "accompanist-permissions", "accompanist-webview", "accompanist-pager-layouts", "accompanist-pager-indicators", "accompanist-flowlayout", "accompanist-material"]
-compose = ["compose-ui-util", "compose-graphics", "compose-runtime", "compose-foundation", "compose-material-iconsExtended", "compose-animation", "compose-ui", "compose-material", "compose-material3", "compose-navigation", "compose-material3-windowSizeClass", "compose-constraintLayout"]
+compose = ["compose-ui-util", "compose-graphics", "compose-runtime", "compose-foundation", "compose-material-iconsExtended", "compose-animation", "compose-ui", "compose-material3", "compose-navigation", "compose-material3-windowSizeClass", "compose-constraintLayout"]
 hilt = ["compose-hilt-navigation", "hilt-android"]
 pagination = ["paging-compose", "paging-runtime"]
 googleServices = ["firebase-auth", "gms-playservices-auth", "google-services"]

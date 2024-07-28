@@ -4,6 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.autoSaver
 import androidx.compose.runtime.saveable.rememberSaveable
 
 /**
@@ -17,10 +19,11 @@ import androidx.compose.runtime.saveable.rememberSaveable
  */
 @Composable
 fun <T : Any?> rememberSaveableWithVolatileInitialValue(
-    initialValue: T?
+    initialValue: T?,
+    saver: Saver<T?, out Any> = autoSaver()
 ): MutableState<T?> {
     return key(initialValue) {
-        rememberSaveable {
+        rememberSaveable(stateSaver = saver) {
             mutableStateOf(initialValue)
         }
     }
@@ -38,10 +41,11 @@ fun <T : Any?> rememberSaveableWithVolatileInitialValue(
 @JvmName("rememberSaveableWithVolatileInitialValueNotNull")
 @Composable
 fun <T : Any> rememberSaveableWithVolatileInitialValue(
-    initialValue: T
+    initialValue: T,
+    saver: Saver<T, out Any> = autoSaver()
 ): MutableState<T> {
     return key(initialValue) {
-        rememberSaveable {
+        rememberSaveable(stateSaver = saver) {
             mutableStateOf(initialValue)
         }
     }

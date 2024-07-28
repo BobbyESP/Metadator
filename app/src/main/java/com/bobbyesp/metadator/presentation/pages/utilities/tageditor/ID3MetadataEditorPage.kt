@@ -157,41 +157,42 @@ fun ID3MetadataEditorPage(
     }
 
 
-    BottomSheetScaffold(topBar = {
-        TopAppBar(title = {
-            Column(modifier = Modifier.fillMaxWidth()) {
-                MarqueeText(
-                    text = stringResource(id = R.string.viewing_metadata),
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-        }, navigationIcon = {
-            CloseButton { navController.popBackStack() }
-        }, actions = {
-            IconButton(onClick = {
-                scope.launch {
-                    scaffoldState.bottomSheetState.partialExpand()
-                }
-            }) {
-                Icon(
-                    imageVector = Icons.Rounded.Downloading,
-                    contentDescription = stringResource(
-                        id = R.string.retrieve_song_info
+    BottomSheetScaffold(
+        topBar = {
+            TopAppBar(title = {
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    MarqueeText(
+                        text = stringResource(id = R.string.viewing_metadata),
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold
                     )
-                )
-            }
-            TextButton(onClick = {
-                val isInfoSavedInMediaStore = saveInMediaStore()
-                if (isInfoSavedInMediaStore) {
-                    navController.popBackStack()
                 }
-            }) {
-                Text(text = stringResource(id = R.string.save))
-            }
-        }, scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior())
-    },
+            }, navigationIcon = {
+                CloseButton { navController.popBackStack() }
+            }, actions = {
+                IconButton(onClick = {
+                    scope.launch {
+                        scaffoldState.bottomSheetState.partialExpand()
+                    }
+                }) {
+                    Icon(
+                        imageVector = Icons.Rounded.Downloading,
+                        contentDescription = stringResource(
+                            id = R.string.retrieve_song_info
+                        )
+                    )
+                }
+                TextButton(onClick = {
+                    val isInfoSavedInMediaStore = saveInMediaStore()
+                    if (isInfoSavedInMediaStore) {
+                        navController.popBackStack()
+                    }
+                }) {
+                    Text(text = stringResource(id = R.string.save))
+                }
+            }, scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior())
+        },
         modifier = Modifier.fillMaxSize(),
         scaffoldState = scaffoldState,
         sheetPeekHeight = 148.dp,

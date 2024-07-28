@@ -8,13 +8,13 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.Undo
+import androidx.compose.material.icons.rounded.Undo
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -35,16 +35,16 @@ fun PreConfiguredOutlinedTextField(
     minLines: Int = 1,
     returnModifiedValue: (String) -> Unit = {}
 ) {
-    val (text, setText) = rememberSaveableWithVolatileInitialValue(value)
-
-    SideEffect {
-        if (!text.isNullOrEmpty()) returnModifiedValue(text) else returnModifiedValue("")
-    }
+    val (text, setText) = rememberSaveableWithVolatileInitialValue(value ?: "")
+    val originalValue = remember { value ?: "" }
 
     OutlinedTextField(
         modifier = modifier,
-        value = text ?: "",
-        onValueChange = setText,
+        value = text,
+        onValueChange = { newValue ->
+            setText(newValue)
+            returnModifiedValue(newValue)
+        },
         label = { Text(text = label, maxLines = 1, overflow = TextOverflow.Ellipsis) },
         enabled = enabled,
         readOnly = readOnly,
@@ -55,22 +55,20 @@ fun PreConfiguredOutlinedTextField(
         minLines = minLines,
         trailingIcon = {
             AnimatedVisibility(
-                visible = text != value,
+                visible = text != originalValue,
                 enter = fadeIn() + slideInHorizontally(),
                 exit = fadeOut() + slideOutHorizontally()
             ) {
                 IconButton(onClick = {
-                    setText(value)
+                    setText(originalValue)
+                    returnModifiedValue(originalValue)
                 }) {
                     Icon(
-                        imageVector = Icons.AutoMirrored.Rounded.Undo,
-                        contentDescription = stringResource(
-                            id = R.string.undo
-                        )
+                        imageVector = Icons.Rounded.Undo,
+                        contentDescription = stringResource(id = R.string.undo)
                     )
                 }
             }
         }
     )
-
 }
