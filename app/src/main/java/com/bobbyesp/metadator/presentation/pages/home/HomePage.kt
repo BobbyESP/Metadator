@@ -34,6 +34,7 @@ import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -57,6 +58,7 @@ import com.bobbyesp.metadator.presentation.common.LocalDrawerState
 import com.bobbyesp.metadator.presentation.common.LocalNavController
 import com.bobbyesp.metadator.presentation.common.Route
 import com.bobbyesp.metadator.presentation.pages.MediaStorePage
+import com.bobbyesp.metadator.presentation.pages.MediaStorePageViewModel
 import com.bobbyesp.ui.components.dropdown.AnimatedDropdownMenu
 import com.bobbyesp.ui.components.dropdown.DropdownItemContainer
 import com.bobbyesp.ui.components.text.AutoResizableText
@@ -69,24 +71,32 @@ import com.bobbyesp.utilities.ui.permission.PermissionRequestHandler
 import com.bobbyesp.utilities.ui.permission.toPermissionType
 import com.bobbyesp.utilities.ui.rememberForeverLazyGridState
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.launch
-import okhttp3.internal.toImmutableList
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
 @Composable
 fun HomePage(
-    modifier: Modifier = Modifier, songs: State<ResourceState<List<Song>>>
+    modifier: Modifier = Modifier,
+    songs: State<ResourceState<List<Song>>>,
+    onEvent: (MediaStorePageViewModel.Companion.Events) -> Unit = {}
 ) {
     val context = LocalContext.current as Activity
-    val currentApiVersion = Build.VERSION.SDK_INT
     val readAudioFiles = when {
-        currentApiVersion < Build.VERSION_CODES.TIRAMISU -> Manifest.permission.READ_EXTERNAL_STORAGE
+        Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU -> Manifest.permission.READ_EXTERNAL_STORAGE
 
         else -> Manifest.permission.READ_MEDIA_AUDIO
     }
 
     val storagePermissionState = rememberPermissionState(permission = readAudioFiles)
+
+    LaunchedEffect(storagePermissionState.status.isGranted) {
+        if (storagePermissionState.status.isGranted && songs.value !is ResourceState.Success) {
+            onEvent(MediaStorePageViewModel.Companion.Events.StartObservingMediaStore)
+        }
+    }
 
     val navController = LocalNavController.current
     val drawerState = LocalDrawerState.current
@@ -210,10 +220,9 @@ fun HomePage(
                 }
             }
         }
-        //for scrolling up to the top
-
     }) { paddingValues ->
-        PermissionRequestHandler(permissionState = storagePermissionState,
+        PermissionRequestHandler(
+            permissionState = storagePermissionState,
             deniedContent = { shouldShowRationale ->
                 PermissionNotGrantedDialog(
                     neededPermissions = listOf(readAudioFiles.toPermissionType()),

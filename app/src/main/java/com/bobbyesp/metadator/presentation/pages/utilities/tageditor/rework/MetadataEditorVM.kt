@@ -54,7 +54,7 @@ class MetadataEditorVM @Inject constructor(
         val mutablePropertiesMap: SnapshotStateMap<String, String> = mutableStateMapOf()
     )
 
-    suspend fun loadTrackMetadata(path: String) {
+    private suspend fun loadTrackMetadata(path: String) {
         updateState(ScreenState.Loading)
         mutableState.value.mutablePropertiesMap.clear()
         runCatching {
@@ -103,7 +103,7 @@ class MetadataEditorVM @Inject constructor(
         }
     }
 
-    suspend fun loadAudioMetadata(songFd: ParcelFileDescriptor): Metadata? {
+    private suspend fun loadAudioMetadata(songFd: ParcelFileDescriptor): Metadata? {
         val fd = songFd.dup()?.detachFd()
             ?: throw NullAudioFileDescriptorException(isAudioProperties = false)
 
@@ -113,7 +113,7 @@ class MetadataEditorVM @Inject constructor(
     }
 
 
-    suspend fun loadAudioProperties(
+    private suspend fun loadAudioProperties(
         songFd: ParcelFileDescriptor,
         readStyle: AudioPropertiesReadStyle = AudioPropertiesReadStyle.Average
     ): AudioProperties? {
@@ -160,7 +160,7 @@ class MetadataEditorVM @Inject constructor(
         }
     }
 
-    fun savePictures(
+    private fun savePictures(
         context: Context = this.context,
         imagesUri: List<Uri> = emptyList(),
         audioPath: String,
@@ -180,8 +180,8 @@ class MetadataEditorVM @Inject constructor(
                     val picture = Picture(
                         data = byteArray,
                         mimeType = mimeType,
-                        description = "Song image $index - Metadator",
-                        pictureType = "Cover (front)"
+                        description = "Audio image $index - Metadator",
+                        pictureType = "Front cover"
                     )
 
                     mutablePicturesList.add(picture)
@@ -223,8 +223,8 @@ class MetadataEditorVM @Inject constructor(
             val picture = Picture(
                 data = byteArray,
                 mimeType = mimeType,
-                description = "Song cover - Metadator",
-                pictureType = "Cover (front)"
+                description = "Audio image $index - Metadator",
+                pictureType = "Front cover"
             )
 
             mutablePicturesList.add(picture)
@@ -276,7 +276,7 @@ class MetadataEditorVM @Inject constructor(
         }
     }
 
-    fun emitUiEvent(event: UiEvent) {
+    private fun emitUiEvent(event: UiEvent) {
         viewModelScope.launch {
             _eventFlow.emit(event)
         }

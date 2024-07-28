@@ -332,7 +332,7 @@ fun Navigator() {
                             animatedComposable<Route.MetadatorNavigator.Home> {
                                 val songsState =
                                     mediaStoreViewModel.songs.collectAsStateWithLifecycle()
-                                HomePage(songs = songsState)
+                                HomePage(songs = songsState, onEvent = mediaStoreViewModel::onEvent)
                             }
                         }
 

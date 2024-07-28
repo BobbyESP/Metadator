@@ -55,7 +55,7 @@ hilt-ext = "1.2.0"
 room = "2.6.1"
 
 #High performance Key-value storage
-mmkv = "1.3.6"
+mmkv = "1.3.9"
 
 #Firebase, GMS...
 firebaseAuth = "23.0.0"
