@@ -71,6 +71,12 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew assembleFoss
 
+      - name: Upload APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: Metadator-${{ github.sha }}.apk
+          path: app/build/outputs/apk/foss/*.apk
+
       # Perform CodeQL analysis
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
