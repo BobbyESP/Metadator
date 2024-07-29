@@ -53,6 +53,7 @@ dependencies {
     implementation(libs.paging.compose)
     implementation(libs.paging.runtime)
     implementation(libs.coil)
+    implementation(libs.kotlinx.collections.immutable)
     implementation(libs.bundles.coroutines)
     //Accompanist libraries
     implementation(libs.bundles.accompanist)

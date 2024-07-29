@@ -31,7 +31,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
@@ -64,6 +63,8 @@ import com.bobbyesp.metadator.presentation.common.LocalOrientation
 import com.bobbyesp.metadator.presentation.components.image.AsyncImage
 import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.spotify.MetadataBsVM
 import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.spotify.SpMetadataBottomSheetContent
+import com.bobbyesp.ui.common.pages.ErrorPage
+import com.bobbyesp.ui.common.pages.LoadingPage
 import com.bobbyesp.ui.components.button.CloseButton
 import com.bobbyesp.ui.components.others.MetadataTag
 import com.bobbyesp.ui.components.text.LargeCategoryTitle
@@ -179,8 +180,16 @@ fun MetadataEditorPage(
                 .navigationBarsPadding()
         ) { state ->
             when (state) {
-                is ScreenState.Error -> TODO()
-                ScreenState.Loading -> LoadingState(modifier = Modifier.fillMaxSize())
+                is ScreenState.Error -> ErrorPage(error = state.exception.stackTrace.toString()) {
+                    onEvent(
+                        MetadataEditorVM.Event.LoadMetadata(receivedAudio.localPath)
+                    )
+                }
+
+                ScreenState.Loading -> LoadingPage(
+                    modifier = Modifier.fillMaxSize(),
+                    text = stringResource(id = R.string.loading_metadata)
+                )
 
                 is ScreenState.Success -> {
                     val scrollState = rememberScrollState()
@@ -514,23 +523,5 @@ fun SongProperties(mutablePropertiesMap: SnapshotStateMap<String, String>) {
                 mutablePropertiesMap["COMMENT"] = comment
             }
         }
-    }
-}
-
-@Composable
-private fun LoadingState(modifier: Modifier = Modifier) {
-    Column(
-        modifier = modifier, verticalArrangement = Arrangement.spacedBy(
-            8.dp, alignment = Alignment.CenterVertically
-        ), horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = stringResource(id = R.string.loading_audio_information),
-            style = MaterialTheme.typography.bodyMedium,
-            fontWeight = FontWeight.SemiBold
-        )
-        LinearProgressIndicator(
-            modifier = Modifier.fillMaxWidth(0.7f)
-        )
     }
 }

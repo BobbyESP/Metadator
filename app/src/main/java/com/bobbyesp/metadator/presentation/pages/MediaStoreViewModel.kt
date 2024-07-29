@@ -1,7 +1,6 @@
 package com.bobbyesp.metadator.presentation.pages
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bobbyesp.utilities.mediastore.MediaStoreReceiver.Advanced.observeSongs
@@ -28,31 +27,34 @@ class MediaStorePageViewModel @Inject constructor(
     private val mediaStoreSongsFlow =
         applicationContext.contentResolver.observeSongs()
 
-    fun reloadMediaStore() {
+
+    private fun songsCollection() {
         viewModelScope.launch(Dispatchers.IO) {
-            _songs.update { ResourceState.Loading() }
             mediaStoreSongsFlow.collectLatest { songs ->
                 _songs.update { ResourceState.Success(songs) }
             }
         }
     }
 
+    private fun reloadMediaStore() {
+        _songs.update { ResourceState.Loading() }
+        songsCollection()
+    }
+
     fun onEvent(event: Events) {
         when (event) {
             is Events.StartObservingMediaStore -> {
-                Log.i("MediaStorePageViewModel", "Start observing media store")
-                viewModelScope.launch(Dispatchers.IO) {
-                    mediaStoreSongsFlow.collectLatest { songs ->
-                        _songs.update { ResourceState.Success(songs) }
-                    }
-                }
+                songsCollection()
             }
+
+            is Events.ReloadMediaStore -> reloadMediaStore()
         }
     }
 
     companion object {
         interface Events {
             data object StartObservingMediaStore : Events
+            data object ReloadMediaStore : Events
         }
     }
 }

@@ -27,11 +27,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.bobbyesp.utilities.R
+import kotlinx.collections.immutable.PersistentList
+import kotlinx.collections.immutable.persistentListOf
 
 @Composable
 fun PermissionNotGrantedDialog(
     modifier: Modifier = Modifier,
-    neededPermissions: List<PermissionType>,
+    neededPermissions: PersistentList<PermissionType>,
     shouldShowRationale: Boolean = false,
     onGrantRequest: () -> Unit,
     onDismissRequest: () -> Unit,
@@ -155,7 +157,7 @@ fun PermissionNotGrantedPreview() {
     PermissionNotGrantedDialog(
         onGrantRequest = {},
         onDismissRequest = {},
-        neededPermissions = listOf(
+        neededPermissions = persistentListOf(
             PermissionType.READ_EXTERNAL_STORAGE, PermissionType.WRITE_EXTERNAL_STORAGE
         )
     )

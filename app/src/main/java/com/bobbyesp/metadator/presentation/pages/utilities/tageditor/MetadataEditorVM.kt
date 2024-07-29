@@ -9,6 +9,7 @@ import android.os.ParcelFileDescriptor
 import android.util.Log
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.snapshots.SnapshotStateMap
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bobbyesp.utilities.ext.toModifiableMap
@@ -38,6 +39,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MetadataEditorVM @Inject constructor(
     @ApplicationContext private val context: Context,
+    private val stateHandle: SavedStateHandle
 ) : ViewModel() {
     private val mutableState = MutableStateFlow(PageViewState())
     val state = mutableState.asStateFlow()
@@ -47,6 +49,12 @@ class MetadataEditorVM @Inject constructor(
 
     private var latestLoadedSongPath: String? = null
 
+    init {
+        stateHandle.get<String>("path")?.let {
+            onEvent(Event.LoadMetadata(it))
+        }
+    }
+
     data class PageViewState(
         val metadata: ResourceState<Metadata?> = ResourceState.Loading(),
         val audioProperties: ResourceState<AudioProperties?> = ResourceState.Loading(),
@@ -54,10 +62,22 @@ class MetadataEditorVM @Inject constructor(
         val mutablePropertiesMap: SnapshotStateMap<String, String> = mutableStateMapOf()
     )
 
+    override fun onCleared() {
+        super.onCleared()
+        updateState(ScreenState.Loading)
+        mutableState.update {
+            it.copy(
+                metadata = ResourceState.Loading(),
+                audioProperties = ResourceState.Loading()
+            )
+        }
+    }
+
     private suspend fun loadTrackMetadata(path: String) {
         updateState(ScreenState.Loading)
         mutableState.value.mutablePropertiesMap.clear()
         runCatching {
+            stateHandle["path"] = path
             MediaStoreReceiver.getFileDescriptorFromPath(context, path, mode = "r")?.use { songFd ->
 
                 val metadata = loadAudioMetadata(songFd)
@@ -371,7 +391,6 @@ class MetadataEditorVM @Inject constructor(
         data class RequestPermission(val intent: PendingIntent) : UiEvent
         data class SaveSuccess(val pictures: Boolean? = null, val properties: Boolean? = null) :
             UiEvent
-
         data object SaveFailed : UiEvent
     }
 

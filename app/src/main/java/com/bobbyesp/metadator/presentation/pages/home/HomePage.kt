@@ -73,6 +73,7 @@ import com.bobbyesp.utilities.ui.rememberForeverLazyGridState
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.launch
 
@@ -225,7 +226,7 @@ fun HomePage(
             permissionState = storagePermissionState,
             deniedContent = { shouldShowRationale ->
                 PermissionNotGrantedDialog(
-                    neededPermissions = listOf(readAudioFiles.toPermissionType()),
+                    neededPermissions = persistentListOf(readAudioFiles.toPermissionType()),
                     onGrantRequest = {
                         storagePermissionState.launchPermissionRequest()
                     },
@@ -242,6 +243,9 @@ fun HomePage(
                     lazyGridState = mediaStoreLazyGridState,
                     lazyListState = mediaStoreLazyColumnState,
                     desiredLayout = desiredLayout,
+                    onReloadMediaStore = {
+                        onEvent(MediaStorePageViewModel.Companion.Events.ReloadMediaStore)
+                    },
                     onItemClicked = { song ->
                         navController.navigate(
                             Route.UtilitiesNavigator.TagEditor(song.toParcelableSong())

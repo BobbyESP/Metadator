@@ -18,7 +18,9 @@ fun PermissionRequestHandler(
         }
 
         is PermissionStatus.Denied -> {
-            deniedContent((permissionState.status as PermissionStatus.Denied).shouldShowRationale)
+            deniedContent(
+                (permissionState.status as PermissionStatus.Denied).shouldShowRationale
+            )
         }
     }
 }

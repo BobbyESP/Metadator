@@ -1,5 +1,6 @@
 package com.bobbyesp.metadator.presentation.pages.utilities.tageditor.spotify.stages
 
+import android.content.Context
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
@@ -28,6 +29,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -38,6 +40,7 @@ import com.adamratzman.spotify.models.Track
 import com.bobbyesp.metadator.R
 import com.bobbyesp.metadator.ext.TagLib.toImageVector
 import com.bobbyesp.metadator.ext.TagLib.toLocalizedName
+import com.bobbyesp.metadator.ext.format
 import com.bobbyesp.metadator.ext.formatArtistsName
 import com.bobbyesp.metadator.presentation.components.image.AsyncImage
 import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.spotify.MetadataBsVM
@@ -99,7 +102,8 @@ fun SpMetadataBsDetails(
             }
         }
         pageViewState.value.selectedTrack?.let { track ->
-            val metadataMap = createMetadataMap(track)
+            val context = LocalContext.current
+            val metadataMap = createMetadataMap(context, track)
 
             TrackInfo(
                 modifier = Modifier.padding(vertical = 6.dp, horizontal = 8.dp),
@@ -154,7 +158,7 @@ fun SpMetadataBsDetails(
 }
 
 @Composable
-fun createMetadataMap(track: Track) = rememberSaveable {
+fun createMetadataMap(context: Context, track: Track) = rememberSaveable {
     mutableMapOf(
         "TITLE" to track.name,
         "ARTIST" to track.artists.formatArtistsName(),
@@ -162,7 +166,8 @@ fun createMetadataMap(track: Track) = rememberSaveable {
         "ALBUMARTIST" to track.album.artists.formatArtistsName(),
         "TRACKNUMBER" to track.trackNumber.toString(),
         "DISCNUMBER" to track.discNumber.toString(),
-        "DATE" to track.album.releaseDate.toString(),
+        "DATE" to (track.album.releaseDate?.format(track.album.releaseDatePrecisionString)
+            ?: context.getString(R.string.unknown)),
     )
 }
 

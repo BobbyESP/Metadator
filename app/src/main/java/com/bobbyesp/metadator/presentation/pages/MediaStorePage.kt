@@ -12,16 +12,19 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.bobbyesp.metadator.R
 import com.bobbyesp.metadator.presentation.components.cards.songs.HorizontalSongCard
 import com.bobbyesp.metadator.presentation.components.cards.songs.VerticalSongCard
 import com.bobbyesp.metadator.presentation.components.others.status.EmptyMediaStore
 import com.bobbyesp.metadator.presentation.pages.home.LayoutType
+import com.bobbyesp.ui.common.pages.ErrorPage
+import com.bobbyesp.ui.common.pages.LoadingPage
 import com.bobbyesp.utilities.model.Song
 import com.bobbyesp.utilities.states.ResourceState
 import my.nanihadesuka.compose.LazyColumnScrollbar
@@ -36,6 +39,7 @@ fun MediaStorePage(
     lazyGridState: LazyGridState,
     lazyListState: LazyListState,
     desiredLayout: LayoutType,
+    onReloadMediaStore: () -> Unit,
     onItemClicked: (Song) -> Unit
 ) {
     Box(
@@ -45,13 +49,11 @@ fun MediaStorePage(
             targetState = desiredLayout, label = "List item transition", animationSpec = tween(200)
         ) { type ->
             when (songs.value) {
-                is ResourceState.Loading -> {
-                    CircularProgressIndicator()
-                }
+                is ResourceState.Loading -> LoadingPage(text = stringResource(R.string.loading_mediastore))
 
-                is ResourceState.Error -> {
-
-                }
+                is ResourceState.Error -> ErrorPage(
+                    error = songs.value.message ?: "Unknown"
+                ) { onReloadMediaStore() }
 
                 is ResourceState.Success -> {
                     if (songs.value.data!!.isEmpty()) {
