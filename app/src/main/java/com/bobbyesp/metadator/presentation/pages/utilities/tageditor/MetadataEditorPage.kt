@@ -6,6 +6,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -162,6 +164,12 @@ fun MetadataEditorPage(
             }
         },
     ) { innerPadding ->
+
+        val animatedBottomPadding by animateDpAsState(
+            targetValue = if (scaffoldState.bottomSheetState.isVisible) innerPadding.calculateBottomPadding() + 6.dp else 0.dp,
+            label = "animatedBottomPadding"
+        )
+
         Crossfade(
             targetState = pageState.pageState,
             animationSpec = tween(175),
@@ -236,11 +244,7 @@ fun MetadataEditorPage(
 
                                 if (pageState.metadata is ResourceState.Success) {
                                     SongProperties(pageState.mutablePropertiesMap)
-                                    //Lo iremos modificando en cada cambio que se realicen en los textfields
-                                    //Cuando le demos a guardar, se enviará el mapa mutable al view model, que se encargará de
-                                    //guardar los cambios en el archivo de audio.
-                                    //Si se cancela, se descartarán los cambios (mostrar un dialogo de confirmación antes)
-                                    //y se cerrará la pantalla.
+                                    Spacer(modifier = Modifier.height(animatedBottomPadding))
                                 }
                             }
                         }

@@ -129,13 +129,7 @@ class MetadataEditorVM @Inject constructor(
     }
 
     private fun updateMapProperty(key: String, value: String) {
-        Log.i("MetadataEditorVM", "Updating property $key with value $value")
         mutableState.value.mutablePropertiesMap[key] = value
-        //check
-        Log.i(
-            "MetadataEditorVM",
-            "Property $key has value ${mutableState.value.mutablePropertiesMap[key]}"
-        )
     }
 
     fun savePropertyMap(
