@@ -2,7 +2,6 @@ package com.bobbyesp.metadator.presentation
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -91,8 +90,10 @@ import com.bobbyesp.metadator.presentation.pages.mediaplayer.MediaplayerViewMode
 import com.bobbyesp.metadator.presentation.pages.mediaplayer.player.CollapsedPlayerHeight
 import com.bobbyesp.metadator.presentation.pages.mediaplayer.player.PlayerAnimationSpec
 import com.bobbyesp.metadator.presentation.pages.settings.SettingsPage
+import com.bobbyesp.metadator.presentation.pages.settings.modules.GeneralSettingsPage
 import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.rework.MetadataEditorPage
 import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.rework.MetadataEditorVM
+import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.spotify.MetadataBsVM
 import com.bobbyesp.ui.components.bottomsheet.draggable.rememberDraggableBottomSheetState
 import com.bobbyesp.ui.components.tags.RoundedTag
 import com.bobbyesp.ui.motion.animatedComposable
@@ -344,60 +345,84 @@ fun Navigator() {
                             }
                         }
 
-                        navigation<Route.UtilitiesNavigator>(
-                            startDestination = Route.UtilitiesNavigator.TagEditor::class,
-                        ) {
-                            slideInVerticallyComposable<Route.UtilitiesNavigator.TagEditor>(
-                                typeMap = mapOf(typeOf<ParcelableSong>() to parcelableType<ParcelableSong>()),
-                            ) {
-                                val song = it.toRoute<Route.UtilitiesNavigator.TagEditor>()
-
-                                val viewModel = hiltViewModel<MetadataEditorVM>()
-                                val state = viewModel.state.collectAsStateWithLifecycle()
-
-                                val securityErrorHandler =
-                                    rememberLauncherForActivityResult(
-                                        contract = ActivityResultContracts.StartIntentSenderForResult()
-                                    ) { result ->
-                                        if (result.resultCode == Activity.RESULT_OK) {
-                                            viewModel.savePropertyMap(
-                                                audioPath = song.selectedSong.localSongPath
-                                            )
-                                            navController.popBackStack()
-                                        }
-                                    }
-
-                                LaunchedEffect(true) {
-                                    viewModel.eventFlow.collectLatest { event ->
-                                        Log.i("MetadataEditor", "Event received: $event")
-                                        when (event) {
-                                            is MetadataEditorVM.Companion.UiEvent.RequestPermission -> {
-                                                val intent =
-                                                    IntentSenderRequest.Builder(event.intent)
-                                                        .build()
-                                                securityErrorHandler.launch(intent)
-                                            }
-
-                                            MetadataEditorVM.Companion.UiEvent.SaveSuccess -> {
-                                                navController.popBackStack()
-                                            }
-                                        }
-                                    }
-                                }
-
-                                MetadataEditorPage(
-                                    state = state,
-                                    receivedSong = song.selectedSong,
-                                ) { receivedEvent ->
-                                    viewModel.onEvent(receivedEvent)
-                                }
-                            }
-                        }
-
+                        utilitiesNavigation { navController.popBackStack() }
                         settingsNavigation { navController.popBackStack() }
                     }
                 }
             }
+        }
+    }
+}
+
+fun NavGraphBuilder.utilitiesNavigation(
+    onNavigateBack: () -> Unit
+) {
+    navigation<Route.UtilitiesNavigator>(
+        startDestination = Route.UtilitiesNavigator.TagEditor::class,
+    ) {
+        slideInVerticallyComposable<Route.UtilitiesNavigator.TagEditor>(
+            typeMap = mapOf(typeOf<ParcelableSong>() to parcelableType<ParcelableSong>()),
+        ) {
+            val song = it.toRoute<Route.UtilitiesNavigator.TagEditor>()
+
+            val viewModel = hiltViewModel<MetadataEditorVM>()
+            val bsViewModel = hiltViewModel<MetadataBsVM>()
+
+            val state = viewModel.state.collectAsStateWithLifecycle()
+            val bsState = bsViewModel.viewStateFlow.collectAsStateWithLifecycle()
+            val securityErrorHandler =
+                rememberLauncherForActivityResult(
+                    contract = ActivityResultContracts.StartIntentSenderForResult()
+                ) { result ->
+                    if (result.resultCode == Activity.RESULT_OK) {
+                        viewModel.savePropertyMap(
+                            audioPath = song.selectedSong.localPath
+                        )
+                        onNavigateBack()
+                    }
+                }
+
+            LaunchedEffect(true) {
+                viewModel.eventFlow.collectLatest { event ->
+                    when (event) {
+                        is MetadataEditorVM.UiEvent.RequestPermission -> {
+                            val intent =
+                                IntentSenderRequest.Builder(event.intent)
+                                    .build()
+                            securityErrorHandler.launch(intent)
+                        }
+
+                        is MetadataEditorVM.UiEvent.SaveSuccess -> {
+                            onNavigateBack()
+                        }
+                    }
+                }
+            }
+
+            LaunchedEffect(true) {
+                bsViewModel.outerEventsFlow.collectLatest { event ->
+                    when (event) {
+                        is MetadataBsVM.OuterEvent.SaveMetadata -> {
+                            event.modifiedFields.forEach { field ->
+                                viewModel.onEvent(
+                                    MetadataEditorVM.Event.UpdateProperty(
+                                        field.key,
+                                        field.value
+                                    )
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+
+            MetadataEditorPage(
+                state = state,
+                bsViewState = bsState,
+                receivedAudio = song.selectedSong,
+                onBsEvent = bsViewModel::onEvent,
+                onEvent = viewModel::onEvent
+            )
         }
     }
 }
@@ -415,7 +440,7 @@ fun NavGraphBuilder.settingsNavigation(
         }
 
         animatedComposable<Route.SettingsNavigator.Settings.General> {
-            Text("General")
+            GeneralSettingsPage()
         }
 
         animatedComposable<Route.SettingsNavigator.Settings.Appearance> {

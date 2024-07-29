@@ -127,7 +127,7 @@ fun materialSharedAxisY(
     targetOffsetY: (fullWidth: Int) -> Int,
     durationMillis: Int = MotionConstants.DefaultMotionDuration,
 ): ContentTransform = materialSharedAxisYIn(
-    initialOffsetX = initialOffsetX,
+    initialOffsetY = initialOffsetX,
     durationMillis = durationMillis
 ) togetherWith materialSharedAxisYOut(
     targetOffsetY = targetOffsetY,
@@ -139,14 +139,14 @@ fun materialSharedAxisY(
  *
  */
 fun materialSharedAxisYIn(
-    initialOffsetX: (fullWidth: Int) -> Int,
+    initialOffsetY: (fullWidth: Int) -> Int,
     durationMillis: Int = MotionConstants.DefaultMotionDuration,
 ): EnterTransition = slideInVertically(
     animationSpec = tween(
         durationMillis = durationMillis,
         easing = FastOutSlowInEasing
     ),
-    initialOffsetY = initialOffsetX
+    initialOffsetY = initialOffsetY
 ) + fadeIn(
     animationSpec = tween(
         durationMillis = durationMillis.ForIncoming,

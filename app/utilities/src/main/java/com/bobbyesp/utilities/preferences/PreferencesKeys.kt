@@ -4,6 +4,8 @@ object PreferencesKeys {
     //------------GENERAL--------------
     const val DESIRED_OVERLAY = "desired_overlay"
 
+    const val MARQUEE_TEXT = "marquee_text"
+
     //------------THEME----------------
     const val DARK_THEME_VALUE = "dark_theme_value"
     const val HIGH_CONTRAST = "high_contrast"

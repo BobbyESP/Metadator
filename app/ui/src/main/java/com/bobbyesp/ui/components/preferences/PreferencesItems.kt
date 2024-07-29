@@ -152,7 +152,7 @@ fun PreferenceItem(
 
 @Composable
 @Preview
-fun PreferenceItemPreview() {
+private fun PreferenceItemPreview() {
     MaterialTheme {
         Surface {
             Column {
@@ -308,7 +308,7 @@ internal fun PreferenceItemDescription(
 
 @Composable
 @Preview
-fun PreferenceSwitchPreview() {
+private fun PreferenceSwitchPreview() {
     var b by remember { mutableStateOf(false) }
     MaterialTheme {
         PreferenceSwitch(
@@ -324,7 +324,7 @@ fun PreferenceSwitchPreview() {
 
 @Composable
 @Preview
-fun PreferenceSwitchWithDividerPreview() {
+private fun PreferenceSwitchWithDividerPreview() {
     PreferenceSwitchWithDivider(
         title = "PreferenceSwitch",
         description = "Supporting text",

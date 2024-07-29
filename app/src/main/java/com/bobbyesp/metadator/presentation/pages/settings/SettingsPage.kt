@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Palette
+import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.LargeTopAppBar
@@ -57,6 +58,16 @@ fun SettingsPage(
                 .nestedScroll(scrollBehavior.nestedScrollConnection),
             contentPadding = paddingValues
         ) {
+            item {
+                SettingItem(
+                    title = stringResource(id = R.string.general),
+                    description = stringResource(id = R.string.general_description),
+                    icon = Icons.Rounded.Settings,
+                    onClick = {
+                        navController.navigate(Route.SettingsNavigator.Settings.General)
+                    }
+                )
+            }
             item {
                 SettingItem(
                     title = stringResource(id = R.string.appearance),

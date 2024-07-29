@@ -15,6 +15,7 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -23,13 +24,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
+import com.adamratzman.spotify.models.Track
 import com.bobbyesp.metadator.R
 import com.bobbyesp.metadator.presentation.components.cards.songs.spotify.SpotifyHorizontalSongCard
-import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.spotify.SpMetadataBottomSheetContentViewModel
+import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.spotify.MetadataBsVM
 import com.bobbyesp.utilities.ui.pagingStateHandler
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -38,10 +39,10 @@ fun SpMetadataBsSearch(
     name: String,
     artist: String,
     listState: LazyListState = rememberLazyListState(),
-    viewModel: SpMetadataBottomSheetContentViewModel,
+    pageViewState: State<MetadataBsVM.ViewState>,
+    onChooseTrack: (Track) -> Unit
 ) {
-    val viewState = viewModel.viewStateFlow.collectAsStateWithLifecycle().value
-    val paginatedTracks = viewState.searchedTracks.collectAsLazyPagingItems()
+    val paginatedTracks = pageViewState.value.searchedTracks.collectAsLazyPagingItems()
 
     LazyColumn(
         state = listState,
@@ -90,7 +91,7 @@ fun SpMetadataBsSearch(
                 surfaceColor = Color.Transparent,
                 track = item,
                 onClick = {
-                    viewModel.chooseTrack(item)
+                    onChooseTrack(item)
                 }
             )
         }

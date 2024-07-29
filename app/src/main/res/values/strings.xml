@@ -69,5 +69,8 @@
     <string name="appearance">Appearance</string>
     <string name="appearance_description">Customize how the app looks like</string>
     <string name="loading_audio_information">Loading audio information</string>
-
+    <string name="general">General</string>
+    <string name="general_description">Some main settings of the app</string>
+    <string name="marquee_text">Marquee text</string>
+    <string name="marquee_text_description">The text that overflows the limits of the screen has an animation to show its entire content (this may lag the app).</string>
 </resources>

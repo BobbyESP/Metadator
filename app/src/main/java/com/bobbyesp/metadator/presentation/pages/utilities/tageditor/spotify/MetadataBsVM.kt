@@ -23,7 +23,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SpMetadataBottomSheetContentViewModel @Inject constructor(
+class MetadataBsVM @Inject constructor(
     private val spotifyService: SpotifyService
 ) : ViewModel() {
     private lateinit var spotifyApi: SpotifyAppApi
@@ -37,8 +37,8 @@ class SpMetadataBottomSheetContentViewModel @Inject constructor(
     private val mutableViewStateFlow = MutableStateFlow(ViewState())
     val viewStateFlow = mutableViewStateFlow.asStateFlow()
 
-    private val _eventFlow = MutableSharedFlow<Events>()
-    val eventFlow = _eventFlow.asSharedFlow()
+    private val _outerEventsFlow = MutableSharedFlow<OuterEvent>()
+    val outerEventsFlow = _outerEventsFlow.asSharedFlow()
 
     data class ViewState(
         val stage: BottomSheetStage = BottomSheetStage.SEARCH,
@@ -47,7 +47,7 @@ class SpMetadataBottomSheetContentViewModel @Inject constructor(
         val lastQuery: String = "",
     )
 
-    fun searchTracks(query: String) {
+    private fun searchTracks(query: String) {
         updateQuery(query)
         viewModelScope.launch(Dispatchers.IO) {
             getTracksPaginatedData(query)
@@ -76,7 +76,7 @@ class SpMetadataBottomSheetContentViewModel @Inject constructor(
         }
     }
 
-    fun chooseTrack(track: Track) {
+    private fun chooseTrack(track: Track?) {
         mutableViewStateFlow.update {
             it.copy(
                 selectedTrack = track
@@ -85,16 +85,7 @@ class SpMetadataBottomSheetContentViewModel @Inject constructor(
         updateStage(BottomSheetStage.TRACK_DETAILS)
     }
 
-    fun clearTrack() {
-        updateStage(BottomSheetStage.SEARCH)
-        mutableViewStateFlow.update {
-            it.copy(
-                selectedTrack = null
-            )
-        }
-    }
-
-    fun updateStage(stage: BottomSheetStage) {
+    private fun updateStage(stage: BottomSheetStage) {
         mutableViewStateFlow.update {
             it.copy(
                 stage = stage
@@ -102,9 +93,9 @@ class SpMetadataBottomSheetContentViewModel @Inject constructor(
         }
     }
 
-    fun saveMetadata(modifiedFields: Map<String, String>) {
+    private fun saveMetadata(modifiedFields: Map<String, String>) {
         viewModelScope.launch {
-            _eventFlow.emit(Events.SaveMetadata(modifiedFields))
+            _outerEventsFlow.emit(OuterEvent.SaveMetadata(modifiedFields))
         }
     }
 
@@ -116,8 +107,36 @@ class SpMetadataBottomSheetContentViewModel @Inject constructor(
         }
     }
 
-    sealed class Events {
-        data class SaveMetadata(val modifiedFields: Map<String, String>) : Events()
+    fun onEvent(event: Event) {
+        when (event) {
+            is Event.Search -> {
+                searchTracks(event.query)
+            }
+
+            is Event.ChangeState -> {
+                updateStage(event.state)
+            }
+
+            is Event.SelectTrack -> {
+                chooseTrack(event.track)
+                if (event.track == null) updateStage(BottomSheetStage.SEARCH)
+            }
+
+            is Event.UpdateMetadataFields -> {
+                saveMetadata(event.properties)
+            }
+        }
+    }
+
+    interface OuterEvent {
+        data class SaveMetadata(val modifiedFields: Map<String, String>) : OuterEvent
+    }
+
+    interface Event {
+        data class Search(val query: String) : Event
+        data class ChangeState(val state: BottomSheetStage) : Event
+        data class SelectTrack(val track: Track?) : Event
+        data class UpdateMetadataFields(val properties: Map<String, String>) : Event
     }
 
     companion object {

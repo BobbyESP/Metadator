@@ -10,36 +10,31 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.spotify.SpMetadataBottomSheetContentViewModel.Companion.BottomSheetStage
+import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.spotify.MetadataBsVM.Companion.BottomSheetStage
 import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.spotify.stages.NoSongInformationProvided
 import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.spotify.stages.SpMetadataBsDetails
 import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.spotify.stages.SpMetadataBsSearch
 import com.bobbyesp.ui.motion.MotionConstants.DURATION_EXIT_SHORT
 import com.bobbyesp.ui.motion.tweenEnter
 import com.bobbyesp.ui.motion.tweenExit
-import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SpMetadataBottomSheetContent(
     name: String,
     artist: String,
-    state: SheetState,
-    onUpdateMetadata: (modifiedFields: Map<String, String>) -> Unit,
-    onCloseSheet: () -> Unit,
-    viewModel: SpMetadataBottomSheetContentViewModel = hiltViewModel()
+    sheetState: SheetState,
+    bsViewState: State<MetadataBsVM.ViewState>,
+    onEvent: (MetadataBsVM.Event) -> Unit,
+    onCloseSheet: () -> Unit
 ) {
-    val viewState = viewModel.viewStateFlow.collectAsStateWithLifecycle().value
     val lazyListState = rememberLazyListState()
 
-    val bottomSheetState = viewState.stage
-
     fun search(query: String) {
-        viewModel.updateStage(BottomSheetStage.SEARCH)
-        viewModel.searchTracks(query)
+        onEvent(MetadataBsVM.Event.ChangeState(BottomSheetStage.SEARCH))
+        onEvent(MetadataBsVM.Event.Search(query))
     }
 
     if (name.isEmpty() && artist.isEmpty()) {
@@ -49,24 +44,15 @@ fun SpMetadataBottomSheetContent(
         }
     }
 
-    LaunchedEffect(state.isVisible, name, artist) {
+    LaunchedEffect(sheetState.isVisible, name, artist) {
         val query = "$name $artist"
-        if (state.isVisible && viewState.lastQuery != query) {
+        if (sheetState.isVisible && bsViewState.value.lastQuery != query) {
             search(query)
         }
     }
 
-    LaunchedEffect(key1 = true) {
-        viewModel.eventFlow.collectLatest { event ->
-            when (event) {
-                is SpMetadataBottomSheetContentViewModel.Events.SaveMetadata -> {
-                    onUpdateMetadata(event.modifiedFields)
-                }
-            }
-        }
-    }
-
-    AnimatedContent(targetState = bottomSheetState,
+    AnimatedContent(
+        targetState = bsViewState.value.stage,
         label = "Transition between bs states",
         transitionSpec = {
             fadeIn(
@@ -78,14 +64,21 @@ fun SpMetadataBottomSheetContent(
         when (actualStage) {
             BottomSheetStage.SEARCH -> {
                 SpMetadataBsSearch(
-                    name = name, artist = artist, listState = lazyListState, viewModel = viewModel
+                    name = name,
+                    artist = artist,
+                    listState = lazyListState,
+                    pageViewState = bsViewState,
+                    onChooseTrack = { track ->
+                        onEvent(MetadataBsVM.Event.SelectTrack(track))
+                    }
                 )
             }
 
             BottomSheetStage.TRACK_DETAILS -> {
                 SpMetadataBsDetails(
                     modifier = Modifier.fillMaxSize(),
-                    viewModel = viewModel,
+                    onEvent = onEvent,
+                    pageViewState = bsViewState,
                     onCloseSheet = onCloseSheet
                 )
             }

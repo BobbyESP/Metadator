@@ -5,9 +5,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
-import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.IntOffset
@@ -84,20 +82,16 @@ inline fun <reified T : Any> NavGraphBuilder.animatedComposableVariant(
 ) = composable<T>(
     deepLinks = deepLinks,
     enterTransition = {
-        slideInHorizontally(
-            enterTween,
-            initialOffsetX = { (it * InitialOffset).toInt() }) + fadeIn(fadeTween)
+        materialSharedAxisYIn(initialOffsetY = { (it * InitialOffset).toInt() })
     },
     exitTransition = {
-        fadeOut(fadeTween)
+        materialSharedAxisYOut(targetOffsetY = { -(it * InitialOffset).toInt() })
     },
     popEnterTransition = {
-        fadeIn(fadeTween)
+        materialSharedAxisYIn(initialOffsetY = { -(it * InitialOffset).toInt() })
     },
     popExitTransition = {
-        slideOutHorizontally(
-            exitTween,
-            targetOffsetX = { (it * InitialOffset).toInt() }) + fadeOut(fadeTween)
+        materialSharedAxisYOut(targetOffsetY = { (it * InitialOffset).toInt() })
     },
     content = content
 )

@@ -3,6 +3,7 @@ package com.bobbyesp.utilities.preferences
 import com.bobbyesp.utilities.preferences.PreferencesKeys.DARK_THEME_VALUE
 import com.bobbyesp.utilities.preferences.PreferencesKeys.DYNAMIC_COLOR
 import com.bobbyesp.utilities.preferences.PreferencesKeys.HIGH_CONTRAST
+import com.bobbyesp.utilities.preferences.PreferencesKeys.MARQUEE_TEXT
 import com.bobbyesp.utilities.preferences.PreferencesKeys.MMKV_PREFERENCES_NAME
 import com.bobbyesp.utilities.preferences.PreferencesKeys.THEME_COLOR
 import com.bobbyesp.utilities.preferences.settings.AppMainSettings
@@ -16,7 +17,9 @@ private val StringPreferenceDefaults: Map<String, String> =
     mapOf()
 
 private val BooleanPreferenceDefaults: Map<String, Boolean> =
-    mapOf()
+    mapOf(
+        MARQUEE_TEXT to true
+    )
 
 private val IntPreferenceDefaults: Map<String, Int> =
     mapOf(

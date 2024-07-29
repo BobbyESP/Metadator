@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Downloading
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -42,6 +43,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateMap
@@ -58,6 +60,8 @@ import com.bobbyesp.metadator.model.ParcelableSong
 import com.bobbyesp.metadator.presentation.common.LocalNavController
 import com.bobbyesp.metadator.presentation.common.LocalOrientation
 import com.bobbyesp.metadator.presentation.components.image.AsyncImage
+import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.spotify.MetadataBsVM
+import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.spotify.SpMetadataBottomSheetContent
 import com.bobbyesp.ui.components.button.CloseButton
 import com.bobbyesp.ui.components.others.MetadataTag
 import com.bobbyesp.ui.components.text.LargeCategoryTitle
@@ -68,20 +72,23 @@ import com.bobbyesp.utilities.states.ResourceState
 import com.bobbyesp.utilities.states.ScreenState
 import com.kyant.taglib.AudioProperties
 import com.materialkolor.ktx.harmonize
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MetadataEditorPage(
     state: State<MetadataEditorVM.PageViewState>,
-    receivedSong: ParcelableSong,
-    onEvent: (MetadataEditorVM.Companion.Event) -> Unit
+    bsViewState: State<MetadataBsVM.ViewState>,
+    receivedAudio: ParcelableSong,
+    onBsEvent: (MetadataBsVM.Event) -> Unit,
+    onEvent: (MetadataEditorVM.Event) -> Unit
 ) {
     val navController = LocalNavController.current
-
+    val scope = rememberCoroutineScope()
     val pageState = state.value
 
-    LaunchedEffect(receivedSong) {
-        onEvent(MetadataEditorVM.Companion.Event.LoadMetadata(receivedSong.localSongPath))
+    LaunchedEffect(receivedAudio) {
+        onEvent(MetadataEditorVM.Event.LoadMetadata(receivedAudio.localPath))
     }
 
     var newArtworkAddress by rememberSaveable(key = "newArtworkAddress") {
@@ -114,9 +121,23 @@ fun MetadataEditorPage(
             }, navigationIcon = {
                 CloseButton { navController.popBackStack() }
             }, actions = {
+                IconButton(
+                    onClick = {
+                        scope.launch {
+                            scaffoldState.bottomSheetState.partialExpand()
+                        }
+                    }
+                ) {
+                    Icon(
+                        imageVector = Icons.Rounded.Downloading,
+                        contentDescription = stringResource(
+                            id = R.string.retrieve_song_info
+                        )
+                    )
+                }
                 TextButton(
                     onClick = {
-                        onEvent(MetadataEditorVM.Companion.Event.SaveProperties(receivedSong.localSongPath))
+                        onEvent(MetadataEditorVM.Event.SaveProperties(receivedAudio.localPath))
                     }
                 ) {
                     Text(text = stringResource(id = R.string.save))
@@ -127,7 +148,19 @@ fun MetadataEditorPage(
         scaffoldState = scaffoldState,
         sheetPeekHeight = 148.dp,
         sheetShadowElevation = 8.dp,
-        sheetContent = { /* TODO */ },
+        sheetContent = {
+            SpMetadataBottomSheetContent(
+                name = receivedAudio.name,
+                artist = receivedAudio.mainArtist,
+                sheetState = scaffoldState.bottomSheetState,
+                bsViewState = bsViewState,
+                onEvent = onBsEvent,
+            ) {
+                scope.launch {
+                    scaffoldState.bottomSheetState.hide()
+                }
+            }
+        },
     ) { innerPadding ->
         Crossfade(
             targetState = pageState.pageState,
@@ -145,7 +178,7 @@ fun MetadataEditorPage(
                     val scrollState = rememberScrollState()
                     val orientation = LocalOrientation.current
 
-                    val artworkUri = newArtworkAddress ?: receivedSong.artworkPath
+                    val artworkUri = newArtworkAddress ?: receivedAudio.artworkPath
 
                     when (orientation) {
                         Configuration.ORIENTATION_PORTRAIT -> {
@@ -203,7 +236,6 @@ fun MetadataEditorPage(
 
                                 if (pageState.metadata is ResourceState.Success) {
                                     SongProperties(pageState.mutablePropertiesMap)
-                                    //TODO: Crear el mapa mutable basándonos en lo recibido por el viewmodel.
                                     //Lo iremos modificando en cada cambio que se realicen en los textfields
                                     //Cuando le demos a guardar, se enviará el mapa mutable al view model, que se encargará de
                                     //guardar los cambios en el archivo de audio.

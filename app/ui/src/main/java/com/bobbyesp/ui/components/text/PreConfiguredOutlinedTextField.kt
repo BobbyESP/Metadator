@@ -8,7 +8,7 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Undo
+import androidx.compose.material.icons.automirrored.rounded.Undo
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
@@ -31,7 +31,7 @@ fun PreConfiguredOutlinedTextField(
     keyboardOptions: KeyboardOptions = KeyboardOptions(),
     keyboardActions: KeyboardActions = KeyboardActions(),
     singleLine: Boolean = false,
-    maxLines: Int = 1,
+    maxLines: Int = 2,
     minLines: Int = 1,
     returnModifiedValue: (String) -> Unit = {}
 ) {
@@ -64,7 +64,7 @@ fun PreConfiguredOutlinedTextField(
                     returnModifiedValue(originalValue)
                 }) {
                     Icon(
-                        imageVector = Icons.Rounded.Undo,
+                        imageVector = Icons.AutoMirrored.Rounded.Undo,
                         contentDescription = stringResource(id = R.string.undo)
                     )
                 }

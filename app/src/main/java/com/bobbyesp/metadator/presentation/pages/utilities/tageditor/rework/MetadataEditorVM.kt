@@ -68,8 +68,7 @@ class MetadataEditorVM @Inject constructor(
             }
         }.onFailure { error ->
             Log.e(
-                "MetadataEditorVM",
-                "Error while trying to load the audio file: ${error.message}"
+                "MetadataEditorVM", "Error while trying to load the audio file: ${error.message}"
             )
             when (error) {
                 is NullAudioFileDescriptorException -> {
@@ -104,8 +103,9 @@ class MetadataEditorVM @Inject constructor(
     }
 
     private suspend fun loadAudioMetadata(songFd: ParcelFileDescriptor): Metadata? {
-        val fd = songFd.dup()?.detachFd()
-            ?: throw NullAudioFileDescriptorException(isAudioProperties = false)
+        val fd = songFd.dup()?.detachFd() ?: throw NullAudioFileDescriptorException(
+            isAudioProperties = false
+        )
 
         return withContext(Dispatchers.IO) {
             TagLib.getMetadata(fd = fd)
@@ -117,15 +117,25 @@ class MetadataEditorVM @Inject constructor(
         songFd: ParcelFileDescriptor,
         readStyle: AudioPropertiesReadStyle = AudioPropertiesReadStyle.Average
     ): AudioProperties? {
-        val fd = songFd.dup()?.detachFd()
-            ?: throw NullAudioFileDescriptorException(isAudioProperties = true)
+        val fd = songFd.dup()?.detachFd() ?: throw NullAudioFileDescriptorException(
+            isAudioProperties = true
+        )
 
         return withContext(Dispatchers.IO) {
             TagLib.getAudioProperties(
-                fd = fd,
-                readStyle = readStyle
+                fd = fd, readStyle = readStyle
             )
         }
+    }
+
+    private fun updateMapProperty(key: String, value: String) {
+        Log.i("MetadataEditorVM", "Updating property $key with value $value")
+        mutableState.value.mutablePropertiesMap[key] = value
+        //check
+        Log.i(
+            "MetadataEditorVM",
+            "Property $key has value ${mutableState.value.mutablePropertiesMap[key]}"
+        )
     }
 
     fun savePropertyMap(
@@ -141,8 +151,7 @@ class MetadataEditorVM @Inject constructor(
 
             fd.dup().detachFd().let {
                 TagLib.savePropertyMap(
-                    it,
-                    propertyMap = newPropertiesMap
+                    it, propertyMap = newPropertiesMap
                 )
             }
 
@@ -188,8 +197,7 @@ class MetadataEditorVM @Inject constructor(
                 }
 
                 TagLib.savePictures(
-                    it,
-                    pictures = mutablePicturesList.toTypedArray()
+                    it, pictures = mutablePicturesList.toTypedArray()
                 )
             }
             true
@@ -232,8 +240,7 @@ class MetadataEditorVM @Inject constructor(
 
         kotlin.runCatching {
             TagLib.savePictures(
-                fileDescriptorId,
-                pictures = mutablePicturesList.toTypedArray()
+                fileDescriptorId, pictures = mutablePicturesList.toTypedArray()
             )
         }.onFailure {
             return false
@@ -245,12 +252,13 @@ class MetadataEditorVM @Inject constructor(
     }
 
     private fun handleSecurityException(
-        securityException: SecurityException,
-        intentPassthrough: (PendingIntent) -> Unit
+        securityException: SecurityException, intentPassthrough: (PendingIntent) -> Unit
     ) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            val recoverableSecurityException = securityException as? RecoverableSecurityException
-                ?: throw RuntimeException(securityException.message, securityException)
+            val recoverableSecurityException =
+                securityException as? RecoverableSecurityException ?: throw RuntimeException(
+                    securityException.message, securityException
+                )
 
             intentPassthrough(recoverableSecurityException.userAction.actionIntent)
         } else {
@@ -294,12 +302,17 @@ class MetadataEditorVM @Inject constructor(
             }
 
             is Event.SaveProperties -> {
-                val succeeded = savePropertyMap(audioPath = event.path, intentPassthrough = {
-                    emitUiEvent(UiEvent.RequestPermission(it))
-                })
+                val succeeded = savePropertyMap(
+                    audioPath = event.path,
+                    intentPassthrough = {
+                        emitUiEvent(UiEvent.RequestPermission(it))
+                    }
+                )
 
                 if (succeeded) {
-                    emitUiEvent(UiEvent.SaveSuccess)
+                    emitUiEvent(UiEvent.SaveSuccess(properties = true))
+                } else {
+                    emitUiEvent(UiEvent.SaveFailed)
                 }
             }
 
@@ -309,35 +322,67 @@ class MetadataEditorVM @Inject constructor(
                     audioPath = event.path,
                     intentPassthrough = {
                         emitUiEvent(UiEvent.RequestPermission(it))
-                    }
-                )
+                    })
 
                 if (succeeded) {
-                    emitUiEvent(UiEvent.SaveSuccess)
+                    emitUiEvent(UiEvent.SaveSuccess(pictures = true))
+                } else {
+                    emitUiEvent(UiEvent.SaveFailed)
                 }
             }
 
             is Event.SaveAll -> {
-                //TODO
+                val propertiesSaved = savePropertyMap(audioPath = event.path, intentPassthrough = {
+                    emitUiEvent(UiEvent.RequestPermission(it))
+                })
+
+                val succeededPictures = savePictures(
+                    audioPath = event.path,
+                    imagesUri = emptyList(),
+                    intentPassthrough = {
+                        emitUiEvent(UiEvent.RequestPermission(it))
+                    })
+
+                if (propertiesSaved || succeededPictures) {
+                    emitUiEvent(
+                        UiEvent.SaveSuccess(
+                            pictures = succeededPictures, properties = propertiesSaved
+                        )
+                    )
+                } else {
+                    emitUiEvent(UiEvent.SaveFailed)
+                }
+            }
+
+            is Event.UpdateProperty -> {
+                Log.i(
+                    "MetadataEditorVM",
+                    "Received property ${event.key} with value ${event.value}"
+                )
+                updateMapProperty(event.key, event.value)
             }
         }
     }
 
 
+    interface Event {
+        data class LoadMetadata(val path: String) : Event
+        data class SaveAll(val path: String) : Event
+        data class SaveProperties(val path: String) : Event
+        data class SavePictures(val path: String, val imagesUri: List<Uri>) : Event
+        data class UpdateProperty(val key: String, val value: String) : Event
+    }
+
+    interface UiEvent {
+        data class RequestPermission(val intent: PendingIntent) : UiEvent
+        data class SaveSuccess(val pictures: Boolean? = null, val properties: Boolean? = null) :
+            UiEvent
+
+        data object SaveFailed : UiEvent
+    }
+
     companion object {
         class NullAudioFileDescriptorException(val isAudioProperties: Boolean) :
             Exception("Audio file descriptor is null")
-
-        interface Event {
-            data class LoadMetadata(val path: String) : Event
-            data class SaveAll(val path: String) : Event
-            data class SaveProperties(val path: String) : Event
-            data class SavePictures(val path: String, val imagesUri: List<Uri>) : Event
-        }
-
-        interface UiEvent {
-            data class RequestPermission(val intent: PendingIntent) : UiEvent
-            data object SaveSuccess : UiEvent
-        }
     }
 }

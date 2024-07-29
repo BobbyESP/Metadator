@@ -3,6 +3,7 @@ package com.bobbyesp.metadator.presentation.pages.utilities.tageditor.spotify.st
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -17,9 +18,11 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -31,14 +34,13 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.adamratzman.spotify.models.Track
 import com.bobbyesp.metadator.R
 import com.bobbyesp.metadator.ext.TagLib.toImageVector
 import com.bobbyesp.metadator.ext.TagLib.toLocalizedName
 import com.bobbyesp.metadator.ext.formatArtistsName
 import com.bobbyesp.metadator.presentation.components.image.AsyncImage
-import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.spotify.SpMetadataBottomSheetContentViewModel
+import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.spotify.MetadataBsVM
 import com.bobbyesp.ui.components.button.BackButton
 import com.bobbyesp.ui.components.others.SelectableSurface
 import com.bobbyesp.ui.components.text.MarqueeText
@@ -47,18 +49,18 @@ import com.bobbyesp.ui.util.rememberSaveableWithVolatileInitialValue
 @Composable
 fun SpMetadataBsDetails(
     modifier: Modifier = Modifier,
+    pageViewState: State<MetadataBsVM.ViewState>,
+    onEvent: (MetadataBsVM.Event) -> Unit,
     onCloseSheet: () -> Unit,
-    viewModel: SpMetadataBottomSheetContentViewModel,
 ) {
     BackHandler {
-        viewModel.clearTrack()
+        onEvent(MetadataBsVM.Event.SelectTrack(null))
     }
 
     val chosenMetadata = rememberSaveable(key = "chosenMetadata") {
         mutableMapOf<String, String>()
     }
 
-    val viewState = viewModel.viewStateFlow.collectAsStateWithLifecycle().value
     val lazyGirdState = rememberLazyGridState()
 
     Column(
@@ -74,7 +76,7 @@ fun SpMetadataBsDetails(
         ) {
             BackButton(
                 onClick = {
-                    viewModel.clearTrack()
+                    onEvent(MetadataBsVM.Event.SelectTrack(null))
                 }
             )
             Text(
@@ -87,14 +89,16 @@ fun SpMetadataBsDetails(
                 modifier = Modifier
             )
             Spacer(modifier = Modifier.weight(1f))
-            TextButton(onClick = {
-                viewModel.saveMetadata(chosenMetadata)
-                onCloseSheet()
-            }) {
+            TextButton(
+                onClick = {
+                    onEvent(MetadataBsVM.Event.UpdateMetadataFields(chosenMetadata.toMap()))
+                    onCloseSheet()
+                }
+            ) {
                 Text(text = stringResource(id = R.string.save))
             }
         }
-        viewState.selectedTrack?.let { track ->
+        pageViewState.value.selectedTrack?.let { track ->
             val metadataMap = createMetadataMap(track)
 
             TrackInfo(
@@ -228,32 +232,43 @@ private fun SelectableMetadataField(
         },
         shape = MaterialTheme.shapes.medium,
     ) {
-        Column(
-            modifier = Modifier
-                .padding(8.dp),
-            verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.Top),
-            horizontalAlignment = Alignment.Start
-        ) {
-            Row(
-                modifier = Modifier,
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.Start)
+        Box {
+            Column(
+                modifier = Modifier
+                    .padding(8.dp),
+                verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.Top),
+                horizontalAlignment = Alignment.Start
             ) {
-                if (useIcon) {
-                    Icon(imageVector = title.toImageVector(), contentDescription = null)
+                Row(
+                    modifier = Modifier,
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.Start)
+                ) {
+                    if (useIcon) {
+                        Icon(imageVector = title.toImageVector(), contentDescription = null)
+                    }
+                    Text(
+                        text = title.toLocalizedName(),
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            fontWeight = FontWeight.Bold
+                        )
+                    )
                 }
                 Text(
-                    text = title.toLocalizedName(),
-                    style = MaterialTheme.typography.bodyMedium.copy(
-                        fontWeight = FontWeight.Bold
-                    )
+                    text = value,
+                    style = MaterialTheme.typography.bodyMedium,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
-            Text(
-                text = value,
-                style = MaterialTheme.typography.bodyMedium,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis
+
+            RadioButton(
+                selected = isSelected,
+                onClick = {
+                    isSelected = !isSelected
+                    if (isSelected) onSelectMetadata(title, value) else onDeleteMetadata(title)
+                },
+                modifier = Modifier.align(Alignment.BottomEnd)
             )
         }
     }
