@@ -13,10 +13,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: set up JDK 17
+      - name: set up JDK 21
         uses: actions/setup-java@v3
         with:
-          java-version: '17'
+          java-version: '21'
           distribution: 'temurin'
           cache: gradle
 
@@ -29,7 +29,15 @@ jobs:
           echo "CLIENT_SECRET=${{ secrets.CLIENT_SECRET }}" >> local.properties
 
       - uses: gradle/actions/setup-gradle@v3
+
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
+
       - name: Build with Gradle
         run: ./gradlew assembleFoss
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: Metadator-${{ github.sha }}.apk
+          path: app/build/outputs/apk/foss/*.apk
