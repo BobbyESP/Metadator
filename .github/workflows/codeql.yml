@@ -39,11 +39,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Set up JDK 17 for Java analysis
-      - name: set up JDK 17
+      # Set up JDK 21 for Java analysis
+      - name: set up JDK 21
         uses: actions/setup-java@v3
         with:
-          java-version: '17'
+          java-version: '21'
           distribution: 'temurin'
           cache: gradle
 
