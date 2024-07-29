@@ -63,8 +63,7 @@ fun MediaStorePage(
                         when (type) {
                             LayoutType.Grid -> {
                                 LazyVerticalGridScrollbar(
-                                    state = lazyGridState,
-                                    settings = ScrollbarSettings(
+                                    state = lazyGridState, settings = ScrollbarSettings(
                                         thumbUnselectedColor = MaterialTheme.colorScheme.onSurfaceVariant,
                                         thumbSelectedColor = MaterialTheme.colorScheme.primary,
                                         selectionActionable = ScrollbarSelectionActionable.WhenVisible,
@@ -98,8 +97,7 @@ fun MediaStorePage(
 
                             LayoutType.List -> {
                                 LazyColumnScrollbar(
-                                    state = lazyListState,
-                                    settings = ScrollbarSettings(
+                                    state = lazyListState, settings = ScrollbarSettings(
                                         thumbUnselectedColor = MaterialTheme.colorScheme.onSurfaceVariant,
                                         thumbSelectedColor = MaterialTheme.colorScheme.primary,
                                         selectionActionable = ScrollbarSelectionActionable.WhenVisible,
@@ -115,15 +113,13 @@ fun MediaStorePage(
                                             key = { index -> songsList[index].id },
                                             contentType = { index -> songsList[index].id.toString() }) { index ->
                                             val song = songsList[index]
-                                            HorizontalSongCard(
-                                                song = song,
+                                            HorizontalSongCard(song = song,
                                                 modifier = Modifier.animateItem(
                                                     fadeInSpec = null, fadeOutSpec = null
                                                 ),
                                                 onClick = {
                                                     onItemClicked(song)
-                                                }
-                                            )
+                                                })
                                         }
                                     }
                                 }

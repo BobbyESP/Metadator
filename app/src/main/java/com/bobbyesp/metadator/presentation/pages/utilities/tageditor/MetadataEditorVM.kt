@@ -1,4 +1,4 @@
-package com.bobbyesp.metadator.presentation.pages.utilities.tageditor.rework
+package com.bobbyesp.metadator.presentation.pages.utilities.tageditor
 
 import android.app.PendingIntent
 import android.app.RecoverableSecurityException

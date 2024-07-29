@@ -91,8 +91,8 @@ import com.bobbyesp.metadator.presentation.pages.mediaplayer.player.CollapsedPla
 import com.bobbyesp.metadator.presentation.pages.mediaplayer.player.PlayerAnimationSpec
 import com.bobbyesp.metadator.presentation.pages.settings.SettingsPage
 import com.bobbyesp.metadator.presentation.pages.settings.modules.GeneralSettingsPage
-import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.rework.MetadataEditorPage
-import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.rework.MetadataEditorVM
+import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.MetadataEditorPage
+import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.MetadataEditorVM
 import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.spotify.MetadataBsVM
 import com.bobbyesp.ui.components.bottomsheet.draggable.rememberDraggableBottomSheetState
 import com.bobbyesp.ui.components.tags.RoundedTag
