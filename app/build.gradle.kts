@@ -14,7 +14,7 @@ plugins {
 
 if (isFullBuild) {
     apply(plugin = libs.plugins.google.gms.get().pluginId)
-    apply(plugin = "com.google.firebase.crashlytics")
+    apply(plugin = libs.plugins.firebase.crashlytics.get().pluginId)
     apply<CrashlyticsBuildConfig>()
 }
 
@@ -40,7 +40,7 @@ android {
     defaultConfig {
         applicationId = "com.bobbyesp.metadator"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 35
 
         versionCode = currentVersion.toVersionCode()
         versionName = currentVersion.toVersionName()
