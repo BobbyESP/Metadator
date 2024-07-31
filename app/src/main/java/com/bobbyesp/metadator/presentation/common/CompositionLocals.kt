@@ -13,6 +13,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -20,7 +21,6 @@ import coil.ImageLoader
 import coil.disk.DiskCache
 import coil.memory.MemoryCache
 import com.bobbyesp.mediaplayer.service.ConnectionHandler
-import com.bobbyesp.metadator.App.Companion.context
 import com.bobbyesp.utilities.preferences.Preferences.AppMainSettingsStateFlow
 import com.bobbyesp.utilities.theme.DarkThemePreference
 import com.bobbyesp.utilities.ui.DEFAULT_SEED_COLOR
@@ -57,6 +57,8 @@ fun AppLocalSettingsProvider(
     playerConnectionHandler: ConnectionHandler,
     content: @Composable () -> Unit
 ) {
+    val context = LocalContext.current
+
     val appSettingsState = AppMainSettingsStateFlow.collectAsStateWithLifecycle().value
     val bottomSheetNavigator = rememberBottomSheetNavigator()
     val navController = rememberNavController(bottomSheetNavigator)

@@ -2,7 +2,6 @@ package com.bobbyesp.metadator
 
 import android.app.Application
 import android.content.ClipboardManager
-import android.content.Context
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.net.ConnectivityManager
@@ -12,7 +11,6 @@ import com.bobbyesp.crashhandler.CrashHandler.setupCrashHandler
 import com.bobbyesp.crashhandler.ReportInfo
 import com.tencent.mmkv.MMKV
 import dagger.hilt.android.HiltAndroidApp
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlin.properties.Delegates
@@ -27,7 +25,6 @@ class App : Application() {
             ) else
                 getPackageInfo(packageName, 0)
         }
-        context = applicationContext
         applicationScope = CoroutineScope(SupervisorJob())
         clipboard = getSystemService()!!
         connectivityManager = getSystemService()!!
@@ -44,8 +41,6 @@ class App : Application() {
     }
 
     companion object {
-        @ApplicationContext
-        lateinit var context: Context
         lateinit var clipboard: ClipboardManager
         lateinit var applicationScope: CoroutineScope
         lateinit var connectivityManager: ConnectivityManager
