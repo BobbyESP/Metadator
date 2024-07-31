@@ -1,3 +1,4 @@
+import com.google.firebase.crashlytics.buildtools.gradle.CrashlyticsExtension
 import java.util.Properties
 
 val isFullBuild: Boolean by rootProject.extra
@@ -70,7 +71,7 @@ android {
                 "String", "CLIENT_SECRET", "\"${localProperties.getProperty("CLIENT_SECRET")}\""
             )
             isMinifyEnabled = false
-            applicationIdSuffix = ".debug"
+//            applicationIdSuffix = ".debug"
         }
     }
 
@@ -79,6 +80,12 @@ android {
     productFlavors {
         create("playstore") {
             dimension = "version"
+            apply(plugin = libs.plugins.google.gms.get().pluginId)
+            apply(plugin = libs.plugins.firebase.crashlytics.get().pluginId)
+            configure<CrashlyticsExtension> {
+                mappingFileUploadEnabled = false //Todo: SET TO TRUE WHEN FIXED
+                nativeSymbolUploadEnabled = false
+            }
         }
 
         create("foss") {
@@ -173,9 +180,9 @@ dependencies {
     implementation(libs.landscapist.coil)
 
 //-------------------FIREBASE-------------------//
-//    "playstoreImplementation"(platform(libs.firebase.bom))
-//    "playstoreImplementation"(libs.firebase.analytics)
-//    "playstoreImplementation"(libs.firebase.crashlytics)
+    "playstoreImplementation"(platform(libs.firebase.bom))
+    "playstoreImplementation"(libs.firebase.analytics)
+    "playstoreImplementation"(libs.firebase.crashlytics)
 
 //-------------------Utilities-------------------//
     implementation(libs.kotlinx.collections.immutable)

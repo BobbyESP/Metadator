@@ -9,13 +9,11 @@ plugins {
     alias(libs.plugins.kotlin.ksp) apply false
     alias(libs.plugins.compose.compiler) apply false
     alias(libs.plugins.androidTest) apply false
+
+    alias(libs.plugins.google.gms) apply false
+    alias(libs.plugins.firebase.crashlytics) apply false
 }
 
-buildscript {
-    val isFullBuild by extra {
-        gradle.startParameter.taskNames.none { task -> task.contains("foss", ignoreCase = true) }
-    }
-    dependencies {
-        classpath(libs.gradle)
-    }
+val isGoogleMobileServicesBuild by extra {
+    gradle.startParameter.taskNames.none { task -> task.contains("foss", ignoreCase = true) }
 }

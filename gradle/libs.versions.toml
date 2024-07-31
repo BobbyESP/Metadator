@@ -1,7 +1,7 @@
 [versions]
 #General, lifecycle and core
 agp = "8.7.0-alpha02"
-firebaseCrashlyticsGradle = "3.0.2"
+firebaseCrashlyticsGradle = "2.9.0"
 gradle = "8.7.0-alpha02"
 kotlin = "2.0.0"
 appcompat = "1.7.0"
@@ -93,7 +93,6 @@ firebase-crashlytics-gradle = { group = "com.google.firebase", name = "firebase-
 lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle-runtime-ktx" }
 lifecycle-compose-runtime = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycle-runtime-ktx" }
 lifecycle-compose-viewModel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "lifecycle-runtime-ktx" }
-gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
 
 #Compose UI
 compose-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
@@ -216,8 +215,8 @@ hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 androidTest = { id = "com.android.test", version.ref = "agp" }
 firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlyticsGradle" }
-androidx-baselineprofile = { id = "androidx.baselineprofile", version.ref = "androidx-baselineprofile" }
 google-gms = { id = "com.google.gms.google-services", version.ref = "googleServices" }
+androidx-baselineprofile = { id = "androidx.baselineprofile", version.ref = "androidx-baselineprofile" }
 
 [bundles]
 core = ["core-ktx", "lifecycle-runtime-ktx", "lifecycle-compose-runtime", "lifecycle-compose-viewModel", "activity-compose", "core-appcompat", "core-splashscreen"]
