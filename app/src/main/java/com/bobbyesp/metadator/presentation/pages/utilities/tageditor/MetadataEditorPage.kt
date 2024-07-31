@@ -140,7 +140,12 @@ fun MetadataEditorPage(
                 }
                 TextButton(
                     onClick = {
-                        onEvent(MetadataEditorVM.Event.SaveProperties(receivedAudio.localPath))
+                        onEvent(
+                            MetadataEditorVM.Event.SaveAll(
+                                receivedAudio.localPath,
+                                listOf(newArtworkAddress ?: receivedAudio.artworkPath ?: Uri.EMPTY)
+                            )
+                        )
                     }
                 ) {
                     Text(text = stringResource(id = R.string.save))

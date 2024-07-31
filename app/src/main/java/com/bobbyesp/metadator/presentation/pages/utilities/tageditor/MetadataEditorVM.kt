@@ -346,16 +346,20 @@ class MetadataEditorVM @Inject constructor(
             }
 
             is Event.SaveAll -> {
-                val propertiesSaved = savePropertyMap(audioPath = event.path, intentPassthrough = {
-                    emitUiEvent(UiEvent.RequestPermission(it))
-                })
+                val propertiesSaved = savePropertyMap(
+                    audioPath = event.path,
+                    intentPassthrough = {
+                        emitUiEvent(UiEvent.RequestPermission(it))
+                    }
+                )
 
                 val succeededPictures = savePictures(
                     audioPath = event.path,
-                    imagesUri = emptyList(),
+                    imagesUri = event.imagesUri,
                     intentPassthrough = {
                         emitUiEvent(UiEvent.RequestPermission(it))
-                    })
+                    }
+                )
 
                 if (propertiesSaved || succeededPictures) {
                     emitUiEvent(
@@ -369,10 +373,6 @@ class MetadataEditorVM @Inject constructor(
             }
 
             is Event.UpdateProperty -> {
-                Log.i(
-                    "MetadataEditorVM",
-                    "Received property ${event.key} with value ${event.value}"
-                )
                 updateMapProperty(event.key, event.value)
             }
         }
@@ -381,7 +381,7 @@ class MetadataEditorVM @Inject constructor(
 
     interface Event {
         data class LoadMetadata(val path: String) : Event
-        data class SaveAll(val path: String) : Event
+        data class SaveAll(val path: String, val imagesUri: List<Uri>) : Event
         data class SaveProperties(val path: String) : Event
         data class SavePictures(val path: String, val imagesUri: List<Uri>) : Event
         data class UpdateProperty(val key: String, val value: String) : Event
@@ -391,6 +391,7 @@ class MetadataEditorVM @Inject constructor(
         data class RequestPermission(val intent: PendingIntent) : UiEvent
         data class SaveSuccess(val pictures: Boolean? = null, val properties: Boolean? = null) :
             UiEvent
+
         data object SaveFailed : UiEvent
     }
 
