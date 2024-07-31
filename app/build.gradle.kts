@@ -12,12 +12,6 @@ plugins {
     alias(libs.plugins.compose.compiler)
 }
 
-if (isFullBuild) {
-    apply(plugin = libs.plugins.google.gms.get().pluginId)
-    apply(plugin = libs.plugins.firebase.crashlytics.get().pluginId)
-    apply<CrashlyticsBuildConfig>()
-}
-
 val commitSignature = providers.exec {
     commandLine("git", "rev-parse", "--short", "HEAD")
 }.standardOutput.asText.get().substringBefore("\n")
@@ -179,9 +173,9 @@ dependencies {
     implementation(libs.landscapist.coil)
 
 //-------------------FIREBASE-------------------//
-    "playstoreImplementation"(platform(libs.firebase.bom))
-    "playstoreImplementation"(libs.firebase.analytics)
-    "playstoreImplementation"(libs.firebase.crashlytics)
+//    "playstoreImplementation"(platform(libs.firebase.bom))
+//    "playstoreImplementation"(libs.firebase.analytics)
+//    "playstoreImplementation"(libs.firebase.crashlytics)
 
 //-------------------Utilities-------------------//
     implementation(libs.kotlinx.collections.immutable)

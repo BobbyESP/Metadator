@@ -17,9 +17,5 @@ buildscript {
     }
     dependencies {
         classpath(libs.gradle)
-        if(isFullBuild) {
-            classpath(libs.google.services)
-            classpath(libs.firebase.crashlytics.gradle)
-        }
     }
 }
