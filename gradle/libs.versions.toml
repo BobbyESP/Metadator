@@ -1,7 +1,7 @@
 [versions]
 #General, lifecycle and core
 agp = "8.7.0-alpha02"
-firebaseCrashlyticsGradle = "2.9.0"
+firebaseCrashlyticsGradle = "3.0.2"
 kotlin = "2.0.0"
 appcompat = "1.7.0"
 core-ktx = "1.13.1"
@@ -59,7 +59,7 @@ mmkv = "1.3.9"
 #Firebase, GMS...
 gmsPlayServicesAuth = "21.2.0"
 googleServices = "4.4.2"
-firebaseBom = "33.1.2"
+firebaseBom = "33.1.1"
 
 #Spotify API
 spotify-apiHandler = "4.1.3"

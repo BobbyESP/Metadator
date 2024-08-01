@@ -21,7 +21,7 @@ import com.bobbyesp.metadator.presentation.Navigator
 import com.bobbyesp.metadator.presentation.common.AppLocalSettingsProvider
 import com.bobbyesp.metadator.presentation.theme.MetadatorTheme
 import dagger.hilt.android.AndroidEntryPoint
-import setupFirebase
+import setCrashlyticsCollection
 import javax.inject.Inject
 
 @androidx.annotation.OptIn(UnstableApi::class)
@@ -43,7 +43,7 @@ class MainActivity : ComponentActivity() {
             insets
         }
         activity = this
-        setupFirebase()
+        setCrashlyticsCollection()
         setContent {
             val windowSizeClass = calculateWindowSizeClass(this)
             AppLocalSettingsProvider(windowSizeClass.widthSizeClass, connectionHandler) {

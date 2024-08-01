@@ -1,7 +1,7 @@
 import com.google.firebase.crashlytics.buildtools.gradle.CrashlyticsExtension
 import java.util.Properties
 
-val isFullBuild: Boolean by rootProject.extra
+val isGoogleMobileServicesBuild: Boolean by rootProject.extra
 
 plugins {
     alias(libs.plugins.android.application)
@@ -11,6 +11,11 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.compose.compiler)
+}
+
+if (isGoogleMobileServicesBuild) {
+    apply(plugin = libs.plugins.google.gms.get().pluginId)
+    apply(plugin = libs.plugins.firebase.crashlytics.get().pluginId)
 }
 
 val commitSignature = providers.exec {
@@ -80,8 +85,6 @@ android {
     productFlavors {
         create("playstore") {
             dimension = "version"
-            apply(plugin = libs.plugins.google.gms.get().pluginId)
-            apply(plugin = libs.plugins.firebase.crashlytics.get().pluginId)
             configure<CrashlyticsExtension> {
                 mappingFileUploadEnabled = false //Todo: SET TO TRUE WHEN FIXED
                 nativeSymbolUploadEnabled = false
