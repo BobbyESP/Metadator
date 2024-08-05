@@ -13,11 +13,6 @@ plugins {
     alias(libs.plugins.compose.compiler)
 }
 
-if (isGoogleMobileServicesBuild) {
-    apply(plugin = libs.plugins.google.gms.get().pluginId)
-    apply(plugin = libs.plugins.firebase.crashlytics.get().pluginId)
-}
-
 val commitSignature = providers.exec {
     commandLine("git", "rev-parse", "--short", "HEAD")
 }.standardOutput.asText.get().substringBefore("\n")
@@ -85,9 +80,11 @@ android {
     productFlavors {
         create("playstore") {
             dimension = "version"
+            apply(plugin = libs.plugins.google.gms.get().pluginId)
+            apply(plugin = libs.plugins.firebase.crashlytics.get().pluginId)
             configure<CrashlyticsExtension> {
-                mappingFileUploadEnabled = false //Todo: SET TO TRUE WHEN FIXED
-                nativeSymbolUploadEnabled = false
+                mappingFileUploadEnabled = true
+                nativeSymbolUploadEnabled = true
             }
         }
 
@@ -95,6 +92,7 @@ android {
             dimension = "version"
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
@@ -143,7 +141,7 @@ dependencies {
 
 //---------------User Interface---------------//
 //Core UI libraries
-    api(platform(libs.compose.bom.canary))
+    api(platform(libs.compose.bom))
 
 //Accompanist libraries
     implementation(libs.bundles.accompanist)
@@ -157,7 +155,7 @@ dependencies {
 //-------------------Network-------------------//
     implementation(libs.bundles.ktor)
 
-//    //---------------Media3---------------//
+    //---------------Media3---------------//
     implementation(libs.bundles.media3)
     implementation(libs.androidx.media3.datasource.okhttp)
     implementation(project(":app:mediaplayer"))
@@ -183,7 +181,7 @@ dependencies {
     implementation(libs.landscapist.coil)
 
 //-------------------FIREBASE-------------------//
-    "playstoreImplementation"(platform(libs.firebase.bom))
+    "playstoreApi"(platform(libs.firebase.bom))
     "playstoreImplementation"(libs.firebase.analytics)
     "playstoreImplementation"(libs.firebase.crashlytics)
 

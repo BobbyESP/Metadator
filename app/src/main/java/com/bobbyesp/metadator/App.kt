@@ -11,7 +11,6 @@ import com.bobbyesp.crashhandler.CrashHandler.setupCrashHandler
 import com.bobbyesp.crashhandler.ReportInfo
 import com.tencent.mmkv.MMKV
 import dagger.hilt.android.HiltAndroidApp
-import initializeFirebase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlin.properties.Delegates
@@ -20,7 +19,6 @@ import kotlin.properties.Delegates
 class App : Application() {
     override fun onCreate() {
         MMKV.initialize(this)
-        initializeFirebase()
         packageInfo = packageManager.run {
             if (Build.VERSION.SDK_INT >= 33) getPackageInfo(
                 packageName, PackageManager.PackageInfoFlags.of(0)
