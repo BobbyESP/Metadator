@@ -527,6 +527,22 @@ fun SongProperties(mutablePropertiesMap: SnapshotStateMap<String, String>) {
             ) { comment ->
                 mutablePropertiesMap["COMMENT"] = comment
             }
+            PreConfiguredOutlinedTextField(
+                value = mutablePropertiesMap["USLT"],
+                label = stringResource(id = R.string.lyrics) + (" (USLT)"),
+                modifier = Modifier.fillMaxWidth(),
+                maxLines = 20
+            ) { uslt_lyrics ->
+                mutablePropertiesMap["USLT"] = uslt_lyrics
+            }
+            PreConfiguredOutlinedTextField(
+                value = mutablePropertiesMap["SYLT"],
+                label = stringResource(id = R.string.lyrics) + (" (SYLT)"),
+                modifier = Modifier.fillMaxWidth(),
+                maxLines = 20
+            ) { sylt_lyrics ->
+                mutablePropertiesMap["SYLT"] = sylt_lyrics
+            }
         }
     }
 }
