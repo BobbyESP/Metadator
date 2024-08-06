@@ -30,8 +30,7 @@ fun PropertyMap.toAudioFileMetadata(separator: String = ", "): AudioFileMetadata
         conductor = this["CONDUCTOR"]?.joinOrNullToString(separator),
         remixer = this["REMIXER"]?.joinOrNullToString(separator),
         comment = this["COMMENT"]?.getOrNull(0),
-        sylt = this["SYLT"]?.getOrNull(0),
-        uslt = this["USLT"]?.getOrNull(0),
+        lyrics = this["LYRICS"]?.getOrNull(0),
     )
 }
 
@@ -57,7 +56,6 @@ fun PropertyMap.toModifiableMap(separator: String = ", "): MutableMap<String, St
         "CONDUCTOR" to this["CONDUCTOR"]?.joinOrNullToString(separator),
         "REMIXER" to this["REMIXER"]?.joinOrNullToString(separator),
         "COMMENT" to this["COMMENT"]?.getOrNull(0),
-        "SYLT" to this["SYLT"]?.getOrNull(0),
-        "USLT" to this["USLT"]?.getOrNull(0),
+        "LYRICS" to this["LYRICS"]?.getOrNull(0),
     )
 }
