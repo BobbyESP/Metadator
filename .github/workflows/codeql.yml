@@ -59,7 +59,7 @@ jobs:
       - name: Create Google Service file
         env:
           DATA: ${{ secrets.GOOGLE_SERVICES_JSON }}
-        run: echo $DATA | base64 -di > app/google-services.json
+        run: echo $DATA | base64 -d > app/google-services.json
 
 
       # Initialize CodeQL tools for scanning
