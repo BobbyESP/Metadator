@@ -1,5 +1,6 @@
 package com.bobbyesp.metadator.presentation.pages.utilities.tageditor.spotify.stages
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -11,8 +12,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
@@ -31,6 +32,8 @@ import com.adamratzman.spotify.models.Track
 import com.bobbyesp.metadator.R
 import com.bobbyesp.metadator.presentation.components.cards.songs.spotify.SpotifyHorizontalSongCard
 import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.spotify.MetadataBsVM
+import com.bobbyesp.ui.components.state.LoadingState
+import com.bobbyesp.utilities.states.ResourceState
 import com.bobbyesp.utilities.ui.pagingStateHandler
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -42,7 +45,8 @@ fun SpMetadataBsSearch(
     pageViewState: State<MetadataBsVM.ViewState>,
     onChooseTrack: (Track) -> Unit
 ) {
-    val paginatedTracks = pageViewState.value.searchedTracks.collectAsLazyPagingItems()
+    val paginatedTracksState = pageViewState.value.searchedTracks
+    val paginatedTracks = paginatedTracksState.data?.collectAsLazyPagingItems()
 
     LazyColumn(
         state = listState,
@@ -80,37 +84,67 @@ fun SpMetadataBsSearch(
             }
         }
 
-        items(
-            count = paginatedTracks.itemCount,
-            key = paginatedTracks.itemKey(),
-            contentType = paginatedTracks.itemContentType()
-        ) { index ->
-            val item = paginatedTracks[index] ?: return@items
-            SpotifyHorizontalSongCard(
-                innerModifier = Modifier.padding(8.dp),
-                surfaceColor = Color.Transparent,
-                track = item,
-                onClick = {
-                    onChooseTrack(item)
+        when (paginatedTracksState) {
+            is ResourceState.Loading -> {
+                item {
+                    LoadingState(stringResource(id = R.string.retrieving_spotify_token))
                 }
-            )
-        }
-        pagingStateHandler(paginatedTracks, itemCount = 1) {
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = stringResource(id = R.string.loading),
-                    style = MaterialTheme.typography.bodyMedium,
-                    textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.fillMaxWidth()
-                )
-                LinearProgressIndicator(
-                    modifier = Modifier.fillMaxWidth(0.8f)
-                )
+            }
+
+            is ResourceState.Success -> {
+                items(
+                    count = paginatedTracks!!.itemCount,
+                    key = paginatedTracks.itemKey(),
+                    contentType = paginatedTracks.itemContentType()
+                ) { index ->
+                    val item = paginatedTracks[index] ?: return@items
+                    SpotifyHorizontalSongCard(
+                        innerModifier = Modifier.padding(8.dp),
+                        surfaceColor = Color.Transparent,
+                        track = item,
+                        onClick = {
+                            onChooseTrack(item)
+                        }
+                    )
+                }
+
+                pagingStateHandler(paginatedTracks, itemCount = 1) {
+                    LoadingState(stringResource(id = R.string.loading))
+                }
+            }
+
+            is ResourceState.Error -> {
+                item {
+                    Surface(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp),
+                        border = BorderStroke(
+                            1.dp,
+                            MaterialTheme.colorScheme.error.copy(alpha = 0.5f)
+                        ),
+                        contentColor = MaterialTheme.colorScheme.error,
+                        shape = MaterialTheme.shapes.medium
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(4.dp),
+                            verticalArrangement = Arrangement.spacedBy(
+                                8.dp,
+                                Alignment.CenterVertically
+                            ),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(
+                                modifier = Modifier,
+                                text = paginatedTracksState.message
+                                    ?: stringResource(id = com.bobbyesp.ui.R.string.unknown_error_title),
+                                style = MaterialTheme.typography.bodyMedium,
+                                textAlign = TextAlign.Center,
+                                fontWeight = FontWeight.Normal
+                            )
+                        }
+                    }
+                }
             }
         }
     }

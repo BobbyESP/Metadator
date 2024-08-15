@@ -23,7 +23,8 @@ class SpotifyServiceImpl @Inject constructor(
         if (api == null) {
             buildApi()
         }
-        return api ?: throw IllegalStateException("Spotify API is null")
+        return api
+            ?: throw IllegalStateException("The connection to the Spotify API was not established. This may be due to a network error or a servers outage")
     }
 
     override suspend fun getSpotifyToken(): Token {

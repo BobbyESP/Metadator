@@ -2,14 +2,11 @@ package com.bobbyesp.metadator.presentation.pages.utilities.tageditor.spotify
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.adamratzman.spotify.SpotifyAppApi
 import com.adamratzman.spotify.models.Track
-import com.bobbyesp.metadator.features.spotify.domain.pagination.TracksPagingSource
-import com.bobbyesp.metadator.features.spotify.domain.services.SpotifyService
+import com.bobbyesp.metadator.features.spotify.domain.services.search.SpotifySearchService
+import com.bobbyesp.utilities.states.ResourceState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -17,23 +14,14 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MetadataBsVM @Inject constructor(
-    private val spotifyService: SpotifyService
+    private val searchService: SpotifySearchService
 ) : ViewModel() {
-    private lateinit var spotifyApi: SpotifyAppApi
-
-    init {
-        viewModelScope.launch {
-            spotifyApi = spotifyService.getSpotifyApi()
-        }
-    }
-
     private val mutableViewStateFlow = MutableStateFlow(ViewState())
     val viewStateFlow = mutableViewStateFlow.asStateFlow()
 
@@ -42,7 +30,7 @@ class MetadataBsVM @Inject constructor(
 
     data class ViewState(
         val stage: BottomSheetStage = BottomSheetStage.SEARCH,
-        val searchedTracks: Flow<PagingData<Track>> = emptyFlow(),
+        val searchedTracks: ResourceState<Flow<PagingData<Track>>> = ResourceState.Loading(null),
         val selectedTrack: Track? = null,
         val lastQuery: String = "",
     )
@@ -54,25 +42,26 @@ class MetadataBsVM @Inject constructor(
         }
     }
 
-    private fun getTracksPaginatedData(query: String) {
-        val tracksPager = Pager(
-            config = PagingConfig(
-                pageSize = 20,
-                enablePlaceholders = false,
-                initialLoadSize = 40,
-            ),
-            pagingSourceFactory = {
-                TracksPagingSource(
-                    spotifyApi = spotifyApi,
-                    query = query,
+    private suspend fun getTracksPaginatedData(query: String) {
+        try {
+            val tracksPager = searchService.searchPaginatedTracks(
+                query = query,
+                filters = emptyList()
+            ).flow.cachedIn(viewModelScope)
+
+            mutableViewStateFlow.update {
+                it.copy(
+                    searchedTracks = ResourceState.Success(tracksPager)
                 )
             }
-        ).flow.cachedIn(viewModelScope)
-
-        mutableViewStateFlow.update {
-            it.copy(
-                searchedTracks = tracksPager
-            )
+        } catch (th: Throwable) {
+            mutableViewStateFlow.update {
+                it.copy(
+                    searchedTracks = ResourceState.Error(
+                        message = th.message ?: th.stackTrace.toString()
+                    )
+                )
+            }
         }
     }
 
