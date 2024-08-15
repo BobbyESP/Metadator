@@ -28,6 +28,11 @@ jobs:
           echo "CLIENT_ID=${{ secrets.CLIENT_ID }}" >> local.properties
           echo "CLIENT_SECRET=${{ secrets.CLIENT_SECRET }}" >> local.properties
 
+      - name: Create Google Service file
+        env:
+          DATA: ${{ secrets.GOOGLE_SERVICES_JSON }}
+        run: echo $DATA | base64 -di > app/google-services.json
+
       - uses: gradle/actions/setup-gradle@v3
 
       - name: Grant execute permission for gradlew
