@@ -126,8 +126,12 @@ fun MetadataEditorPage(
             }, actions = {
                 IconButton(
                     onClick = {
-                        scope.launch {
-                            scaffoldState.bottomSheetState.partialExpand()
+                        if (scaffoldState.bottomSheetState.isVisible) {
+                            onBsEvent(MetadataBsVM.Event.Search(receivedAudio.name + " " + receivedAudio.mainArtist))
+                        } else {
+                            scope.launch {
+                                scaffoldState.bottomSheetState.partialExpand()
+                            }
                         }
                     }
                 ) {

@@ -1,6 +1,5 @@
 package com.bobbyesp.metadator.presentation.pages.utilities.tageditor.spotify
 
-import android.util.Log
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -47,7 +46,6 @@ fun SpMetadataBottomSheetContent(
 
     LaunchedEffect(sheetState.isVisible, name, artist) {
         val query = "$name $artist"
-        Log.i("SpMetadataBottomSheetContent", "Query: $query")
         if (sheetState.isVisible && bsViewState.value.lastQuery != query) {
             search(query)
         }

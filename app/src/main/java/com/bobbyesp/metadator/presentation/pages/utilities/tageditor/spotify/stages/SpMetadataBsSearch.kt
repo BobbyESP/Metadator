@@ -68,7 +68,7 @@ fun SpMetadataBsSearch(
                         .padding(8.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center
-                ) {
+                ) { // TODO: Be able to change the query
                     Text(
                         text = stringResource(
                             id = R.string.showing_results_for,
