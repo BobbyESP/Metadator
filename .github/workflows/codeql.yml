@@ -56,6 +56,11 @@ jobs:
           echo "CLIENT_ID=${{ secrets.CLIENT_ID }}" >> local.properties
           echo "CLIENT_SECRET=${{ secrets.CLIENT_SECRET }}" >> local.properties
 
+      - name: Create Google Service file
+        env:
+          DATA: ${{ secrets.GOOGLE_SERVICES_JSON }}
+        run: echo $DATA | base64 -di > app/google-services.json
+
 
       # Initialize CodeQL tools for scanning
       - name: Initialize CodeQL
