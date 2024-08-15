@@ -17,7 +17,6 @@ class SpotifyServiceImpl @Inject constructor(
     private var api: SpotifyAppApi? = null
 
     private var recursionDepth = 0
-    private val MAX_RECURSION_DEPTH = 3
 
     override suspend fun getSpotifyApi(): SpotifyAppApi {
         if (api == null) {
@@ -81,5 +80,9 @@ class SpotifyServiceImpl @Inject constructor(
     private fun clearApi() {
         api = null
         token = null
+    }
+
+    companion object {
+        private const val MAX_RECURSION_DEPTH = 3
     }
 }
