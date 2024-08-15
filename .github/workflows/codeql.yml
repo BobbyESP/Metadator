@@ -57,7 +57,7 @@ jobs:
           echo "CLIENT_SECRET=${{ secrets.CLIENT_SECRET }}" >> local.properties
 
       - name: Create Google Service file
-        run: echo ${{ secrets.GOOGLE_SERVICES_JSON }} | base64 -di > app/google-services.json
+        run: echo ${{ secrets.GOOGLE_SERVICES_JSON }} | base64 -di >> /home/runner/work/Metadator/Metadator/app/google-services.json
 
 
       # Initialize CodeQL tools for scanning
