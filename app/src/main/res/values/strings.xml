@@ -72,7 +72,7 @@
     <string name="general">General</string>
     <string name="general_description">Some main settings of the app</string>
     <string name="marquee_text">Marquee text</string>
-    <string name="marquee_text_description">The text that overflows the limits of the screen has an animation to show its entire content (this may lag the app).</string>
+    <string name="marquee_text_description">The text that overflows the limits of the screen has a lateral animation to show its entire content (this may worsen the app performance).</string>
     <string name="lyrics">Lyrics</string>
-    <string name="retrieving_spotify_token">Retrieveing Spotify API token...</string>
+    <string name="retrieving_spotify_token">Retrieving Spotify API token…</string>
 </resources>

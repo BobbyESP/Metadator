@@ -69,4 +69,11 @@
     <string name="made_by">Hecho con 💖 por BobbyESP</string>
     <string name="appearance">Apariencia</string>
     <string name="appearance_description">Personaliza como se ve la aplicación</string>
+    <string name="loading_audio_information">Cargando información del audio</string>
+    <string name="general">General</string>
+    <string name="general_description">Algunos ajustes principales de la aplicación</string>
+    <string name="marquee_text">Texto en movimiento</string>
+    <string name="marquee_text_description">El texto que sobrepase los límites de la pantalla tienen una animación en lateral para que se vea todo su contenido (esto puede empeorar el rendimiento de la aplicación).</string>
+    <string name="lyrics">Letras</string>
+    <string name="retrieving_spotify_token">Obteniendo credenciales de la API de Spotify…</string>
 </resources>
