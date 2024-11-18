@@ -12,7 +12,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.media3.common.util.UnstableApi
 import com.bobbyesp.mediaplayer.service.ConnectionHandler
 import com.bobbyesp.mediaplayer.service.MediaplayerService
 import com.bobbyesp.metadator.presentation.Navigator
@@ -22,7 +21,6 @@ import org.koin.android.ext.android.inject
 import org.koin.compose.KoinContext
 import setCrashlyticsCollection
 
-@androidx.annotation.OptIn(UnstableApi::class)
 class MainActivity : ComponentActivity() {
     private var isMusicPlayerServiceStarted = false
 
@@ -58,6 +56,7 @@ class MainActivity : ComponentActivity() {
         isMusicPlayerServiceStarted = false
     }
 
+    @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
     private fun startMediaPlayerService() {
         val intent = Intent(this, MediaplayerService::class.java)
         if (!isMusicPlayerServiceStarted) {

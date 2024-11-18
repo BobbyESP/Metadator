@@ -5,6 +5,7 @@ import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.rememberDrawerState
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -24,8 +25,6 @@ import com.bobbyesp.mediaplayer.service.ConnectionHandler
 import com.bobbyesp.utilities.preferences.Preferences.AppMainSettingsStateFlow
 import com.bobbyesp.utilities.theme.DarkThemePreference
 import com.bobbyesp.utilities.ui.DEFAULT_SEED_COLOR
-import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
-import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
 import com.materialkolor.DynamicMaterialThemeState
 import com.materialkolor.rememberDynamicMaterialThemeState
 import com.skydoves.landscapist.coil.LocalCoilImageLoader
@@ -50,7 +49,6 @@ val LocalMediaplayerConnection =
 val LocalPlayerAwareWindowInsets =
     compositionLocalOf<WindowInsets> { error("No WindowInsets provided") }
 
-@OptIn(ExperimentalMaterialNavigationApi::class)
 @Composable
 fun AppLocalSettingsProvider(
     windowWidthSize: WindowWidthSizeClass,
@@ -60,8 +58,7 @@ fun AppLocalSettingsProvider(
     val context = LocalContext.current
 
     val appSettingsState = AppMainSettingsStateFlow.collectAsStateWithLifecycle().value
-    val bottomSheetNavigator = rememberBottomSheetNavigator()
-    val navController = rememberNavController(bottomSheetNavigator)
+    val navController = rememberNavController()
 
     val imageLoader = ImageLoader.Builder(context)
         .memoryCache {

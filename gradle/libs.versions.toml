@@ -121,15 +121,8 @@ kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-cor
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
 
 #Accompanist
-accompanist-navigation-animation = { group = "com.google.accompanist", name = "accompanist-navigation-animation", version.ref = "accompanist" }
 accompanist-permissions = { group = "com.google.accompanist", name = "accompanist-permissions", version.ref = "accompanist" }
 accompanist-webview = { group = "com.google.accompanist", name = "accompanist-webview", version.ref = "accompanist" }
-accompanist-pager-layouts = { group = "com.google.accompanist", name = "accompanist-pager", version.ref = "accompanist" }
-accompanist-pager-indicators = { group = "com.google.accompanist", name = "accompanist-pager-indicators", version.ref = "accompanist" }
-accompanist-flowlayout = { group = "com.google.accompanist", name = "accompanist-flowlayout", version.ref = "accompanist" }
-
-#Accompanist Material components
-accompanist-material = { group = "com.google.accompanist", name = "accompanist-navigation-material", version.ref = "accompanist" }
 
 #Image loading
 landscapist-coil = { group = "com.github.skydoves", name = "landscapist-coil", version.ref = "landscapistCoil" }
@@ -184,7 +177,6 @@ firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashly
 qrcode-kotlin-android = { module = "io.github.g0dkar:qrcode-kotlin-android", version.ref = "qrcodeKotlinAndroid" }
 taglib = { group = "com.github.Kyant0", name = "taglib", version.ref = "taglib" }
 spotify-api-android = { group = "com.adamratzman", name = "spotify-api-kotlin-core", version.ref = "spotify-apiHandler" }
-lyricfier = { module = "io.github.bobbyesp.lyricfier:lyricfier", version.ref = "lyricfier" }
 palette = { group = "androidx.palette", name = "palette-ktx", version.ref = "palette" }
 scrollbar = { group = "com.github.nanihadesuka", name = "LazyColumnScrollbar", version.ref = "scrollbar" }
 
@@ -216,7 +208,7 @@ androidx-baselineprofile = { id = "androidx.baselineprofile", version.ref = "and
 [bundles]
 core = ["core-ktx", "lifecycle-runtime-ktx", "lifecycle-compose-runtime", "lifecycle-compose-viewModel", "activity-compose", "core-appcompat", "core-splashscreen"]
 ktor = ["ktor-android", "ktor-okhttp" ,"ktor-core", "ktor-serialization", "ktor-logging", "ktor-contentnegotiation", "ktor-encoding"]
-accompanist = ["accompanist-navigation-animation", "accompanist-permissions", "accompanist-webview", "accompanist-pager-layouts", "accompanist-pager-indicators", "accompanist-flowlayout", "accompanist-material"]
+accompanist = ["accompanist-permissions", "accompanist-webview"]
 compose = ["compose-ui-util", "compose-graphics", "compose-runtime", "compose-foundation", "compose-material-iconsExtended", "compose-animation", "compose-ui", "compose-material3", "compose-navigation", "compose-material3-windowSizeClass", "compose-constraintLayout"]
 koin = ["koin-android", "koin-compose"]
 pagination = ["paging-compose", "paging-runtime"]

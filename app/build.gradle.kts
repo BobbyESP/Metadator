@@ -163,7 +163,6 @@ dependencies {
 
     //---------------Media3---------------//
     implementation(libs.bundles.media3)
-    implementation(libs.androidx.media3.datasource.okhttp)
     implementation(project(":app:mediaplayer"))
 
 //---------------Dependency Injection---------------//
@@ -178,9 +177,6 @@ dependencies {
 //-------------------Key-value Storage-------------------//
     implementation(libs.mmkv)
 
-//-------------------Markdown-------------------//
-//    implementation(libs.markdown)
-
 //-------------------Image Loading-------------------//
     implementation(libs.landscapist.coil)
 
@@ -191,13 +187,11 @@ dependencies {
 
 //-------------------Utilities-------------------//
     implementation(libs.kotlinx.collections.immutable)
-    implementation(libs.qrcode.kotlin.android)
     implementation(libs.profileinstaller)
     implementation(libs.kotlinx.datetime)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.taglib)
     implementation(libs.scrollbar)
-    implementation(libs.lyricfier)
     implementation(libs.spotify.api.android)
     implementation(project(":crashhandler"))
 
