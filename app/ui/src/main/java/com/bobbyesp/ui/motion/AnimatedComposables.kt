@@ -25,6 +25,8 @@ import com.bobbyesp.ui.motion.MotionConstants.DURATION_ENTER
 import com.bobbyesp.ui.motion.MotionConstants.DURATION_EXIT
 import com.bobbyesp.ui.motion.MotionConstants.InitialOffset
 import kotlin.reflect.KType
+import kotlin.text.toInt
+import kotlin.times
 
 fun <T> enterTween() = tween<T>(durationMillis = DURATION_ENTER, easing = EmphasizedEasing)
 
@@ -45,6 +47,19 @@ inline fun <reified T : Any> NavGraphBuilder.animatedComposable(
         animatedComposablePredictiveBack<T>(deepLinks, content)
     } else {
         animatedComposableLegacy<T>(deepLinks, content)
+    }
+}
+
+inline fun <reified T : Any> NavGraphBuilder.slideInVerticallyComposable(
+    deepLinks: List<NavDeepLink> = emptyList(),
+    typeMap: Map<KType, @JvmSuppressWildcards NavType<*>> = emptyMap(),
+    usePredictiveBack: Boolean = Build.VERSION.SDK_INT >= 34,
+    noinline content: @Composable AnimatedVisibilityScope.(NavBackStackEntry) -> Unit,
+) {
+    if (usePredictiveBack) {
+        slideInVerticallyComposablePredictiveBack<T>(deepLinks, typeMap, content)
+    } else {
+        slideInVerticallyComposableLegacy<T>(deepLinks, typeMap ,content)
     }
 }
 
@@ -117,7 +132,7 @@ inline fun <reified T : Any> NavGraphBuilder.animatedComposableVariant(
 val springSpec =
     spring(stiffness = Spring.StiffnessMedium, visibilityThreshold = IntOffset.VisibilityThreshold)
 
-inline fun <reified T : Any> NavGraphBuilder.slideInVerticallyComposable(
+inline fun <reified T : Any> NavGraphBuilder.slideInVerticallyComposableLegacy(
     deepLinks: List<NavDeepLink> = emptyList(),
     typeMap: Map<KType, @JvmSuppressWildcards NavType<*>> = emptyMap(),
     noinline content: @Composable AnimatedVisibilityScope.(NavBackStackEntry) -> Unit,
@@ -132,6 +147,34 @@ inline fun <reified T : Any> NavGraphBuilder.slideInVerticallyComposable(
         popEnterTransition = { slideInVertically() },
         popExitTransition = {
             slideOutVertically(targetOffsetY = { it }, animationSpec = enterTween()) + fadeOut()
+        },
+        content = content,
+    )
+
+inline fun <reified T : Any> NavGraphBuilder.slideInVerticallyComposablePredictiveBack(
+    deepLinks: List<NavDeepLink> = emptyList(),
+    typeMap: Map<KType, @JvmSuppressWildcards NavType<*>> = emptyMap(),
+    noinline content: @Composable AnimatedVisibilityScope.(NavBackStackEntry) -> Unit,
+) =
+    composable<T>(
+        deepLinks = deepLinks,
+        typeMap = typeMap,
+        enterTransition = { materialSharedAxisYIn(initialOffsetY = { (it * 0.25f).toInt() }) },
+        exitTransition = {
+            materialSharedAxisYOut(targetOffsetY = { -(it * InitialOffset * 1.5f).toInt() })
+        },
+        popEnterTransition = {
+            scaleIn(
+                animationSpec = tween(durationMillis = 400, easing = EmphasizedDecelerate),
+                initialScale = 0.85f,
+            ) + materialSharedAxisYIn(initialOffsetY = { -(it * InitialOffset * 1.5f).toInt() })
+        },
+        popExitTransition = {
+            materialSharedAxisYOut(targetOffsetY = { (it * InitialOffset * 1.5f).toInt() }) +
+                    scaleOut(
+                        targetScale = 0.85f,
+                        animationSpec = tween(durationMillis = 400, easing = EmphasizedAccelerate),
+                    )
         },
         content = content,
     )

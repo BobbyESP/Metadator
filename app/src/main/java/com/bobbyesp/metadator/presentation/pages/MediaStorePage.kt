@@ -42,26 +42,27 @@ fun MediaStorePage(
     onReloadMediaStore: () -> Unit,
     onItemClicked: (Song) -> Unit
 ) {
+    val songsList = songs.value
     Box(
         modifier = modifier.fillMaxSize()
     ) {
         Crossfade(
             targetState = desiredLayout, label = "List item transition", animationSpec = tween(200)
         ) { type ->
-            when (songs.value) {
+            when (songsList) {
                 is ResourceState.Loading -> LoadingPage(text = stringResource(R.string.loading_mediastore))
 
                 is ResourceState.Error -> ErrorPage(
-                    error = songs.value.message ?: "Unknown"
+                    error = songsList.message ?: "Unknown"
                 ) { onReloadMediaStore() }
 
                 is ResourceState.Success -> {
-                    if (songs.value.data!!.isEmpty()) {
+                    if (songsList.data!!.isEmpty()) {
                         EmptyMediaStore(
                             modifier = Modifier.fillMaxSize()
                         )
                     } else {
-                        val songsList = songs.value.data!!
+                        val dataSongsList = songsList.data!!
                         when (type) {
                             LayoutType.Grid -> {
                                 LazyVerticalGridScrollbar(
@@ -82,10 +83,10 @@ fun MediaStorePage(
                                         state = lazyGridState
                                     ) {
                                         items(
-                                            count = songsList.size,
-                                            key = { index -> songsList[index].id },
-                                            contentType = { index -> songsList[index].id.toString() }) { index ->
-                                            val song = songsList[index]
+                                            count = dataSongsList.size,
+                                            key = { index -> dataSongsList[index].id },
+                                            contentType = { _ -> "songItem" }) { index ->
+                                            val song = dataSongsList[index]
                                             VerticalSongCard(
                                                 song = song,
                                                 modifier = Modifier.animateItem(
@@ -114,10 +115,10 @@ fun MediaStorePage(
                                         state = lazyListState,
                                     ) {
                                         items(
-                                            count = songsList.size,
-                                            key = { index -> songsList[index].id },
-                                            contentType = { index -> songsList[index].id.toString() }) { index ->
-                                            val song = songsList[index]
+                                            count = dataSongsList.size,
+                                            key = { index -> dataSongsList[index].id },
+                                            contentType = { index -> dataSongsList[index].id.toString() }) { index ->
+                                            val song = dataSongsList[index]
                                             HorizontalSongCard(
                                                 song = song,
                                                 modifier = Modifier.animateItem(
