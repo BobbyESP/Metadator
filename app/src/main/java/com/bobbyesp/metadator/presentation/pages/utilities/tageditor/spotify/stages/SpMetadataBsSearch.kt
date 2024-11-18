@@ -78,7 +78,9 @@ fun SpMetadataBsSearch(
                     horizontalArrangement = Arrangement.Center
                 ) { // TODO: Be able to change the query
                     Row(
-                        modifier = Modifier.fillMaxWidth().padding(4.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(4.dp),
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
                         Column(

@@ -24,26 +24,22 @@ import com.kyant.taglib.Metadata
 import com.kyant.taglib.Picture
 import com.kyant.taglib.PropertyMap
 import com.kyant.taglib.TagLib
-import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
+import org.koin.core.component.KoinComponent
 
-@HiltViewModel
-class MetadataEditorVM @Inject constructor(
-    @ApplicationContext private val context: Context,
+class MetadataEditorVM(
+    private val context: Context,
     private val stateHandle: SavedStateHandle
-) : ViewModel() {
+) : KoinComponent, ViewModel() {
     private val mutableState = MutableStateFlow(PageViewState())
     val state = mutableState.onStart {
         stateHandle.get<String>("path")?.let {

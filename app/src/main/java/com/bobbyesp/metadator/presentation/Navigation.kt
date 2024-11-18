@@ -55,7 +55,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.fastAny
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavGraphBuilder
@@ -92,9 +91,10 @@ import com.bobbyesp.ui.motion.slideInVerticallyComposable
 import com.bobbyesp.utilities.navigation.parcelableType
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
 import kotlin.reflect.typeOf
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UnusedBoxWithConstraintsScope")
 @Composable
 fun Navigator() {
     val navController = LocalNavController.current
@@ -122,8 +122,8 @@ fun Navigator() {
         mutableStateOf(mainNavigators.fastAny { navigator -> navigator.qualifiedName() == currentNavigator.value })
     }
 
-    val mediaStoreViewModel = hiltViewModel<MediaStorePageViewModel>()
-    val mediaplayerViewModel = hiltViewModel<MediaplayerViewModel>()
+    val mediaStoreViewModel = koinViewModel<MediaStorePageViewModel>()
+    val mediaplayerViewModel = koinViewModel<MediaplayerViewModel>()
 
     val density = LocalDensity.current
     val windowsInsets = WindowInsets.systemBars
@@ -224,8 +224,9 @@ fun Navigator() {
                                         }
                                     },
                                     icon = {
-                                        Icon(imageVector = destinationInfo?.icon
-                                            ?: Icons.Rounded.Square,
+                                        Icon(
+                                            imageVector = destinationInfo?.icon
+                                                ?: Icons.Rounded.Square,
                                             contentDescription = destinationInfo?.title?.let {
                                                 stringResource(id = it)
                                             })
@@ -291,27 +292,28 @@ fun Navigator() {
                     }
                 },
             ) {
-                Scaffold(modifier = Modifier.windowInsetsPadding(
-                    insets = WindowInsets(
-                        left = WindowInsets.safeDrawing.getLeft(
-                            density, layoutDirection = LocalLayoutDirection.current
-                        ),
-                        right = WindowInsets.safeDrawing.getRight(
-                            density, layoutDirection = LocalLayoutDirection.current
-                        ),
-                    )
-                ), snackbarHost = {
-                    SnackbarHost(
-                        hostState = snackbarHostState
-                    ) { dataReceived ->
-                        Snackbar(
-                            modifier = Modifier,
-                            snackbarData = dataReceived,
-                            containerColor = MaterialTheme.colorScheme.inverseSurface,
-                            contentColor = MaterialTheme.colorScheme.inverseOnSurface,
+                Scaffold(
+                    modifier = Modifier.windowInsetsPadding(
+                        insets = WindowInsets(
+                            left = WindowInsets.safeDrawing.getLeft(
+                                density, layoutDirection = LocalLayoutDirection.current
+                            ),
+                            right = WindowInsets.safeDrawing.getRight(
+                                density, layoutDirection = LocalLayoutDirection.current
+                            ),
                         )
-                    }
-                }) {
+                    ), snackbarHost = {
+                        SnackbarHost(
+                            hostState = snackbarHostState
+                        ) { dataReceived ->
+                            Snackbar(
+                                modifier = Modifier,
+                                snackbarData = dataReceived,
+                                containerColor = MaterialTheme.colorScheme.inverseSurface,
+                                contentColor = MaterialTheme.colorScheme.inverseOnSurface,
+                            )
+                        }
+                    }) {
                     NavHost(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -358,8 +360,8 @@ fun NavGraphBuilder.utilitiesNavigation(
         ) {
             val song = it.toRoute<Route.UtilitiesNavigator.TagEditor>()
 
-            val viewModel = hiltViewModel<MetadataEditorVM>()
-            val bsViewModel = hiltViewModel<MetadataBsVM>()
+            val viewModel = koinViewModel<MetadataEditorVM>()
+            val bsViewModel = koinViewModel<MetadataBsVM>()
 
             val state = viewModel.state.collectAsStateWithLifecycle()
             val bsState = bsViewModel.viewStateFlow.collectAsStateWithLifecycle()

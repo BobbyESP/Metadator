@@ -16,15 +16,13 @@ import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
 import androidx.media3.ui.PlayerNotificationManager
 import com.bobbyesp.mediaplayer.R
-import dagger.hilt.android.qualifiers.ApplicationContext
-import javax.inject.Inject
+import org.koin.core.component.KoinComponent
 
 @UnstableApi
-class MediaNotificationManager @OptIn(UnstableApi::class)
-@Inject constructor(
-    @ApplicationContext private val context: Context,
+class MediaNotificationManager @OptIn(UnstableApi::class) constructor(
+    private val context: Context,
     private val player: ExoPlayer
-) {
+) : KoinComponent {
     private val notificationManager: NotificationManager =
         context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 

@@ -27,7 +27,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
+import org.koin.core.component.KoinComponent
 
 /**
  * This class is responsible for handling media playback events and managing the state of the media player.
@@ -35,9 +35,9 @@ import javax.inject.Inject
  * It also provides methods to manage the media queue such as set, add, and remove media items.
  */
 @UnstableApi
-class MediaServiceHandler @Inject constructor(
+class MediaServiceHandler(
     private val player: ExoPlayer
-) : Player.Listener, PlaybackStatsListener.Callback {
+) : KoinComponent, Player.Listener, PlaybackStatsListener.Callback {
 
     private val _mediaState = MutableStateFlow<MediaState>(MediaState.Idle)
     val mediaState = _mediaState.asStateFlow()

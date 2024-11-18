@@ -1,10 +1,6 @@
-package com.bobbyesp.mediaplayer.di
-
 import android.app.PendingIntent
-import android.content.Context
 import android.os.Build
 import androidx.annotation.OptIn
-import androidx.annotation.RequiresApi
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.common.util.UnstableApi
@@ -17,87 +13,69 @@ import com.bobbyesp.mediaplayer.service.MediaServiceHandler
 import com.bobbyesp.mediaplayer.service.notifications.MediaNotificationManager
 import com.bobbyesp.mediaplayer.service.notifications.customLayout.MediaSessionLayoutHandler
 import com.bobbyesp.mediaplayer.service.notifications.customLayout.MediaSessionLayoutHandlerImpl
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
-import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.module.Module
+import org.koin.dsl.module
 
 @OptIn(UnstableApi::class)
-@Module
-@InstallIn(SingletonComponent::class)
-object MediaPlayerModule {
-    @Provides
-    @Singleton
-    fun provideAudioAttributes(): AudioAttributes =
-        AudioAttributes.Builder().setContentType(C.AUDIO_CONTENT_TYPE_MOVIE).setUsage(C.USAGE_MEDIA)
+val mediaplayerInternalsModule: Module = module {
+    single {
+        AudioAttributes.Builder()
+            .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
+            .setUsage(C.USAGE_MEDIA)
             .build()
+    }
 
-    @Provides
-    @Singleton
-    @UnstableApi
-    fun providePlayer(
-        @ApplicationContext context: Context, audioAttributes: AudioAttributes
-    ): ExoPlayer = ExoPlayer.Builder(context)
-        .setSeekBackIncrementMs(5000)
-        .setSeekForwardIncrementMs(5000)
-        .setAudioAttributes(audioAttributes, true)
-        .setHandleAudioBecomingNoisy(true)
-        .setTrackSelector(DefaultTrackSelector(context))
-        .setAudioAttributes(
-            AudioAttributes.Builder()
-                .setUsage(C.USAGE_MEDIA)
-                .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
-                .build(), true
-        )
-        .build()
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    @Provides
-    @Singleton
-    fun provideNotificationManager(
-        @ApplicationContext context: Context, player: ExoPlayer
-    ): MediaNotificationManager = MediaNotificationManager(
-        context = context, player = player
-    )
-
-    @Provides
-    @Singleton
-    fun provideMediaLibrarySession(
-        @ApplicationContext context: Context,
-        player: ExoPlayer,
-        mediaLibrarySessionCallback: MediaLibrarySessionCallback,
-    ): MediaLibrarySession =
-        MediaLibrarySession.Builder(context, player, mediaLibrarySessionCallback)
-            .setSessionActivity(
-                PendingIntent.getActivity(
-                    context,
-                    0,
-                    context.packageManager.getLaunchIntentForPackage(context.packageName),
-                    PendingIntent.FLAG_IMMUTABLE
-                )
+    single {
+        ExoPlayer.Builder(androidContext())
+            .setSeekBackIncrementMs(5000)
+            .setSeekForwardIncrementMs(5000)
+            .setAudioAttributes(get(), true)
+            .setHandleAudioBecomingNoisy(true)
+            .setTrackSelector(DefaultTrackSelector(androidContext()))
+            .setAudioAttributes(
+                get<AudioAttributes>(),
+                true
             )
             .build()
+    }
 
-    @Provides
-    @Singleton
-    fun provideServiceHandler(
-        player: ExoPlayer
-    ): MediaServiceHandler =
+    single {
         MediaServiceHandler(
-            player = player
+            player = get<ExoPlayer>()
         )
+    }
 
-    @Provides
-    @Singleton
-    fun provideConnectionHandler(): ConnectionHandler = ConnectionHandler()
+    single { ConnectionHandler() }
 
-    @Provides
-    @Singleton
-    fun provideMediaSessionLayoutHandler(
-        @ApplicationContext context: Context,
-        mediaLibrarySession: MediaLibrarySession
-    ): MediaSessionLayoutHandler =
-        MediaSessionLayoutHandlerImpl(context, mediaLibrarySession)
+    single {
+        MediaLibrarySession.Builder(
+            androidContext(),
+            get<ExoPlayer>(),
+            MediaLibrarySessionCallback(androidContext())
+        ).setSessionActivity(
+            PendingIntent.getActivity(
+                androidContext(),
+                0,
+                androidContext().packageManager.getLaunchIntentForPackage(androidContext().packageName),
+                PendingIntent.FLAG_IMMUTABLE
+            )
+        ).build()
+    }
+
+    single<MediaSessionLayoutHandler> {
+        MediaSessionLayoutHandlerImpl(
+            androidContext(),
+            get<MediaLibrarySession>()
+        )
+    }
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        single {
+            MediaNotificationManager(
+                context = androidContext(),
+                player = get()
+            )
+        }
+    }
 }

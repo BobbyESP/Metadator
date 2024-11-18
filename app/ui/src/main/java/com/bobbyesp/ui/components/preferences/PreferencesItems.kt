@@ -779,12 +779,13 @@ fun PreferenceInfo(
     icon: ImageVector = Icons.Outlined.Info,
     applyPaddings: Boolean = true
 ) {
-    Column(modifier = modifier
-        .fillMaxWidth()
-        .run {
-            if (applyPaddings) padding(horizontal = 16.dp, vertical = 16.dp)
-            else this
-        }) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .run {
+                if (applyPaddings) padding(horizontal = 16.dp, vertical = 16.dp)
+                else this
+            }) {
         Icon(
             modifier = Modifier.padding(), imageVector = icon, contentDescription = null
         )

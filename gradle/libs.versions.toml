@@ -48,6 +48,7 @@ ktor = "3.0.0" #For me the best client
 #Dependency injection
 hilt = "2.51.1"
 hilt-ext = "1.2.0"
+koin = "4.0.0"
 
 #Database
 room = "2.6.1"
@@ -150,6 +151,10 @@ hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref
 hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
 hilt-ext-compiler = { group = "androidx.hilt", name = "hilt-compiler", version.ref = "hilt-ext" }
 
+koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = "koin" }
+koin-compose = { group = "io.insert-koin", name = "koin-androidx-compose", version.ref = "koin" }
+koin-ksp-compiler = { group = "io.insert-koin", name = "koin-ksp-compiler", version.ref = "koin" }
+
 #Media 3
 media3-exoplayer = { group = "androidx.media3", name = "media3-exoplayer", version.ref = "media3" }
 media3-ui = { group = "androidx.media3", name = "media3-ui", version.ref = "media3" }
@@ -221,6 +226,7 @@ ktor = ["ktor-android", "ktor-okhttp" ,"ktor-core", "ktor-serialization", "ktor-
 accompanist = ["accompanist-navigation-animation", "accompanist-permissions", "accompanist-webview", "accompanist-pager-layouts", "accompanist-pager-indicators", "accompanist-flowlayout", "accompanist-material"]
 compose = ["compose-ui-util", "compose-graphics", "compose-runtime", "compose-foundation", "compose-material-iconsExtended", "compose-animation", "compose-ui", "compose-material3", "compose-navigation", "compose-material3-windowSizeClass", "compose-constraintLayout"]
 hilt = ["compose-hilt-navigation", "hilt-android"]
+koin = ["koin-android", "koin-compose"]
 pagination = ["paging-compose", "paging-runtime"]
 googleServices = ["firebase-auth", "gms-playservices-auth", "google-services"]
 coroutines = ["kotlinx-coroutines-core", "kotlinx-coroutines-android"]

@@ -235,15 +235,16 @@ fun MetadataEditorPage(
                                             .padding(8.dp),
                                         contentAlignment = Alignment.BottomEnd
                                     ) {
-                                        IconButton(colors = IconButtonDefaults.iconButtonColors(
-                                            containerColor = Color.Black.copy(alpha = 0.5f)
-                                        ), onClick = {
-                                            singleImagePickerLauncher.launch(
-                                                PickVisualMediaRequest(
-                                                    ActivityResultContracts.PickVisualMedia.ImageOnly
+                                        IconButton(
+                                            colors = IconButtonDefaults.iconButtonColors(
+                                                containerColor = Color.Black.copy(alpha = 0.5f)
+                                            ), onClick = {
+                                                singleImagePickerLauncher.launch(
+                                                    PickVisualMediaRequest(
+                                                        ActivityResultContracts.PickVisualMedia.ImageOnly
+                                                    )
                                                 )
-                                            )
-                                        }) {
+                                            }) {
                                             Icon(
                                                 imageVector = Icons.Rounded.Edit,
                                                 tint = Color.White.harmonize(Color.Black.copy(alpha = 0.5f)),
@@ -291,15 +292,16 @@ fun MetadataEditorPage(
                                             .padding(8.dp),
                                         contentAlignment = Alignment.BottomEnd
                                     ) {
-                                        IconButton(colors = IconButtonDefaults.iconButtonColors(
-                                            containerColor = Color.Black.copy(alpha = 0.5f)
-                                        ), onClick = {
-                                            singleImagePickerLauncher.launch(
-                                                PickVisualMediaRequest(
-                                                    ActivityResultContracts.PickVisualMedia.ImageOnly
+                                        IconButton(
+                                            colors = IconButtonDefaults.iconButtonColors(
+                                                containerColor = Color.Black.copy(alpha = 0.5f)
+                                            ), onClick = {
+                                                singleImagePickerLauncher.launch(
+                                                    PickVisualMediaRequest(
+                                                        ActivityResultContracts.PickVisualMedia.ImageOnly
+                                                    )
                                                 )
-                                            )
-                                        }) {
+                                            }) {
                                             Icon(
                                                 imageVector = Icons.Rounded.Edit,
                                                 tint = Color.White.harmonize(Color.Black.copy(alpha = 0.5f)),

@@ -17,12 +17,11 @@ import com.bobbyesp.mediaplayer.service.MediaSessionConstants.CommandToggleRepea
 import com.bobbyesp.mediaplayer.service.MediaSessionConstants.CommandToggleShuffle
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
-import dagger.hilt.android.qualifiers.ApplicationContext
-import javax.inject.Inject
+import org.koin.core.component.KoinComponent
 
-class MediaLibrarySessionCallback @Inject constructor(
-    @ApplicationContext val context: Context,
-) : MediaLibrarySession.Callback {
+class MediaLibrarySessionCallback(
+    val context: Context,
+) : KoinComponent, MediaLibrarySession.Callback {
 
     private val availableCommands = listOf(
         CommandToggleShuffle,

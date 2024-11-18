@@ -11,13 +11,12 @@ import com.bobbyesp.mediaplayer.R
 import com.bobbyesp.mediaplayer.service.MediaSessionConstants.CommandToggleRepeatMode
 import com.bobbyesp.mediaplayer.service.MediaSessionConstants.CommandToggleShuffle
 import com.google.common.collect.ImmutableList
-import dagger.hilt.android.qualifiers.ApplicationContext
-import javax.inject.Inject
+import org.koin.core.component.KoinComponent
 
-class MediaSessionLayoutHandlerImpl @Inject constructor(
-    @ApplicationContext private val context: Context,
+class MediaSessionLayoutHandlerImpl(
+    private val context: Context,
     private val mediaSession: MediaLibraryService.MediaLibrarySession,
-) : MediaSessionLayoutHandler {
+) : KoinComponent, MediaSessionLayoutHandler {
 
     override fun updateNotificationLayout() {
         val commandButtons = ImmutableList.of<CommandButton>(

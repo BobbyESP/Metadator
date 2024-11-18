@@ -7,7 +7,6 @@ import androidx.paging.cachedIn
 import com.adamratzman.spotify.models.Track
 import com.bobbyesp.metadator.features.spotify.domain.services.search.SpotifySearchService
 import com.bobbyesp.utilities.states.ResourceState
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -16,12 +15,11 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
+import org.koin.core.component.KoinComponent
 
-@HiltViewModel
-class MetadataBsVM @Inject constructor(
+class MetadataBsVM(
     private val searchService: SpotifySearchService
-) : ViewModel() {
+) : KoinComponent, ViewModel() {
     private val mutableViewStateFlow = MutableStateFlow(ViewState())
     val viewStateFlow = mutableViewStateFlow.asStateFlow()
 

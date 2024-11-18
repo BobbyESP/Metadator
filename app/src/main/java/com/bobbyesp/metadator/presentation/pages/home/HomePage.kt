@@ -59,6 +59,7 @@ import com.bobbyesp.metadator.presentation.common.LocalNavController
 import com.bobbyesp.metadator.presentation.common.Route
 import com.bobbyesp.metadator.presentation.pages.MediaStorePage
 import com.bobbyesp.metadator.presentation.pages.MediaStorePageViewModel
+import com.bobbyesp.metadator.presentation.pages.home.LayoutType.entries
 import com.bobbyesp.ui.components.dropdown.AnimatedDropdownMenu
 import com.bobbyesp.ui.components.dropdown.DropdownItemContainer
 import com.bobbyesp.ui.components.text.AutoResizableText

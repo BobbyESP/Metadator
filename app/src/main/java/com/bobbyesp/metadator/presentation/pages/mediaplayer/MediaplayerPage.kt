@@ -140,7 +140,8 @@ fun MediaplayerPage(
                         contentPadding = PaddingValues(horizontal = 8.dp),
                         state = mediaStoreLazyColumnState,
                     ) {
-                        items(count = songs.size,
+                        items(
+                            count = songs.size,
                             key = { index -> songs[index].id },
                             contentType = { index -> songs[index].id.toString() }) { index ->
                             val song = songs[index]

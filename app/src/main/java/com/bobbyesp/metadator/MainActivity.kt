@@ -12,43 +12,36 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowCompat
 import androidx.media3.common.util.UnstableApi
 import com.bobbyesp.mediaplayer.service.ConnectionHandler
 import com.bobbyesp.mediaplayer.service.MediaplayerService
 import com.bobbyesp.metadator.presentation.Navigator
 import com.bobbyesp.metadator.presentation.common.AppLocalSettingsProvider
 import com.bobbyesp.metadator.presentation.theme.MetadatorTheme
-import dagger.hilt.android.AndroidEntryPoint
+import org.koin.android.ext.android.inject
+import org.koin.compose.KoinContext
 import setCrashlyticsCollection
-import javax.inject.Inject
 
 @androidx.annotation.OptIn(UnstableApi::class)
-@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private var isMusicPlayerServiceStarted = false
 
-    @Inject
-    lateinit var connectionHandler: ConnectionHandler
+    private val connectionHandler: ConnectionHandler by inject()
 
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-        ViewCompat.setOnApplyWindowInsetsListener(window.decorView) { view, insets ->
-            view.setPadding(0, 0, 0, 0)
-            insets
-        }
         activity = this
         setCrashlyticsCollection()
         setContent {
-            val windowSizeClass = calculateWindowSizeClass(this)
-            AppLocalSettingsProvider(windowSizeClass.widthSizeClass, connectionHandler) {
-                MetadatorTheme {
-                    Navigator()
+            KoinContext {
+                val windowSizeClass = calculateWindowSizeClass(this)
+                AppLocalSettingsProvider(windowSizeClass.widthSizeClass, connectionHandler) {
+                    MetadatorTheme {
+                        Navigator()
+                    }
                 }
             }
         }
@@ -92,7 +85,6 @@ class MainActivity : ComponentActivity() {
             connectionHandler.disconnect()
         }
     }
-
 
     companion object {
         private lateinit var activity: MainActivity

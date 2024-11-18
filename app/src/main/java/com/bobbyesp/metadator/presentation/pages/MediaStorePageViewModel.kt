@@ -6,27 +6,23 @@ import androidx.lifecycle.viewModelScope
 import com.bobbyesp.utilities.mediastore.MediaStoreReceiver.Advanced.observeSongs
 import com.bobbyesp.utilities.model.Song
 import com.bobbyesp.utilities.states.ResourceState
-import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
+import org.koin.core.component.KoinComponent
 
-@HiltViewModel
-class MediaStorePageViewModel @Inject constructor(
-    @ApplicationContext private val applicationContext: Context
-) : ViewModel() {
+class MediaStorePageViewModel(
+    context: Context
+) : KoinComponent, ViewModel() {
     private val _songs: MutableStateFlow<ResourceState<List<Song>>> =
         MutableStateFlow(ResourceState.Loading())
     val songs = _songs.asStateFlow()
 
     private val mediaStoreSongsFlow =
-        applicationContext.contentResolver.observeSongs()
-
+        context.contentResolver.observeSongs()
 
     private fun songsCollection() {
         viewModelScope.launch(Dispatchers.IO) {

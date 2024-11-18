@@ -103,9 +103,10 @@ fun MiniplayerContent(
                 }
             }
 
-            DynamicButton(modifier = Modifier
-                .size(42.dp)
-                .padding(4.dp), icon = {
+            DynamicButton(
+                modifier = Modifier
+                    .size(42.dp)
+                    .padding(4.dp), icon = {
                 Icon(
                     imageVector = Icons.Rounded.Pause,
                     contentDescription = stringResource(

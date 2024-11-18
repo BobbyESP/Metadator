@@ -100,9 +100,10 @@ fun PlayerControls(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
-        transition.AnimatedContent(modifier = Modifier
-            .padding(horizontal = 24.dp)
-            .align(Alignment.Start),
+        transition.AnimatedContent(
+            modifier = Modifier
+                .padding(horizontal = 24.dp)
+                .align(Alignment.Start),
             transitionSpec = { AnimatedTextContentTransformation }) {
             Column {
                 Text(
@@ -199,7 +200,8 @@ fun PlayerControls(
                         isShuffleEnabled = isShuffleEnabled
                     )
                 }
-                IconButton(modifier = Modifier.size(SeekToButtonSize),
+                IconButton(
+                    modifier = Modifier.size(SeekToButtonSize),
                     onClick = { viewModel.seekToPrevious() }) {
                     Icon(
                         modifier = Modifier.fillMaxSize(),

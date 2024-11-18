@@ -10,26 +10,16 @@ import androidx.media3.session.MediaSession
 import com.bobbyesp.mediaplayer.service.notifications.MediaNotificationManager
 import com.bobbyesp.mediaplayer.service.notifications.customLayout.MediaSessionLayoutHandler
 import com.google.common.util.concurrent.MoreExecutors
-import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
+import org.koin.android.ext.android.inject
 
 @UnstableApi
-@AndroidEntryPoint
 class MediaplayerService : MediaLibraryService(), MediaController.Listener {
-    @Inject
-    lateinit var mediaSession: MediaLibrarySession
 
-    @Inject
-    lateinit var mediaServiceHandler: MediaServiceHandler
-
-    @Inject
-    lateinit var notificationManager: MediaNotificationManager
-
-    @Inject
-    lateinit var mediaSessionLayoutHandler: MediaSessionLayoutHandler
-
-    @Inject
-    lateinit var connectionHandler: ConnectionHandler
+    val mediaSession: MediaLibrarySession by inject()
+    val mediaServiceHandler: MediaServiceHandler by inject()
+    val notificationManager: MediaNotificationManager by inject()
+    val mediaSessionLayoutHandler: MediaSessionLayoutHandler by inject()
+    val connectionHandler: ConnectionHandler by inject()
 
     /**
      * This method is called by the system every time a client explicitly starts the service by calling

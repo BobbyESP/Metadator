@@ -7,7 +7,6 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.android.kotlin)
     alias(libs.plugins.kotlin.ksp)
-    alias(libs.plugins.hilt)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.compose.compiler)
@@ -121,6 +120,12 @@ android {
         }
     }
     applicationVariants.all {
+        val variantName = name
+        sourceSets {
+            getByName("main") {
+                java.srcDir(File("build/generated/ksp/$variantName/kotlin"))
+            }
+        }
         outputs.all {
             (this as com.android.build.gradle.internal.api.BaseVariantOutputImpl).outputFileName =
                 "Metadator-${defaultConfig.versionName}-${name}.apk"
@@ -128,8 +133,10 @@ android {
     }
 
 }
+
 ksp {
     arg(RoomSchemaArgProvider(File(projectDir, "schemas")))
+    arg("KOIN_CONFIG_CHECK", "true")
 }
 
 dependencies {
@@ -160,9 +167,7 @@ dependencies {
     implementation(project(":app:mediaplayer"))
 
 //---------------Dependency Injection---------------//
-    implementation(libs.bundles.hilt)
-    ksp(libs.hilt.ext.compiler)
-    ksp(libs.hilt.compiler)
+    implementation(libs.bundles.koin)
 
 //-------------------Database-------------------//
     implementation(libs.room.runtime)

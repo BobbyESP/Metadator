@@ -2,7 +2,6 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.android.kotlin)
     alias(libs.plugins.kotlin.ksp)
-    alias(libs.plugins.hilt)
     alias(libs.plugins.compose.compiler)
 }
 
@@ -26,6 +25,14 @@ android {
             )
         }
     }
+    libraryVariants.all {
+        val variantName = name
+        sourceSets {
+            getByName("main") {
+                java.srcDir(File("build/generated/ksp/$variantName/kotlin"))
+            }
+        }
+    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
@@ -35,15 +42,17 @@ android {
     }
 }
 
+ksp {
+    arg("KOIN_CONFIG_CHECK", "true")
+}
+
 dependencies {
     implementation(libs.core.ktx)
     implementation(libs.core.appcompat)
     implementation(libs.androidx.legacy.support.v4) // Needed MediaSessionCompat.Token
 
     //DI (Dependency Injection - Hilt)
-    implementation(libs.bundles.hilt)
-    ksp(libs.hilt.ext.compiler)
-    ksp(libs.hilt.compiler)
+    implementation(libs.bundles.koin)
 
     //Media3
     implementation(libs.bundles.media3)

@@ -81,11 +81,13 @@ fun MediaStorePage(
                                             .background(MaterialTheme.colorScheme.background),
                                         state = lazyGridState
                                     ) {
-                                        items(count = songsList.size,
+                                        items(
+                                            count = songsList.size,
                                             key = { index -> songsList[index].id },
                                             contentType = { index -> songsList[index].id.toString() }) { index ->
                                             val song = songsList[index]
-                                            VerticalSongCard(song = song,
+                                            VerticalSongCard(
+                                                song = song,
                                                 modifier = Modifier.animateItem(
                                                     fadeInSpec = null, fadeOutSpec = null
                                                 ),
@@ -111,11 +113,13 @@ fun MediaStorePage(
                                             .background(MaterialTheme.colorScheme.background),
                                         state = lazyListState,
                                     ) {
-                                        items(count = songsList.size,
+                                        items(
+                                            count = songsList.size,
                                             key = { index -> songsList[index].id },
                                             contentType = { index -> songsList[index].id.toString() }) { index ->
                                             val song = songsList[index]
-                                            HorizontalSongCard(song = song,
+                                            HorizontalSongCard(
+                                                song = song,
                                                 modifier = Modifier.animateItem(
                                                     fadeInSpec = null, fadeOutSpec = null
                                                 ),

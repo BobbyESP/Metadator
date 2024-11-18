@@ -20,8 +20,6 @@ import com.bobbyesp.utilities.Time.formatDuration
 import com.bobbyesp.utilities.mediastore.MediaStoreReceiver.Advanced.getSongs
 import com.bobbyesp.utilities.mediastore.MediaStoreReceiver.Advanced.observeSongs
 import com.bobbyesp.utilities.model.Song
-import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -29,12 +27,10 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.File
-import javax.inject.Inject
 
 @OptIn(UnstableApi::class)
-@HiltViewModel
-class MediaplayerViewModel @Inject constructor(
-    @ApplicationContext private val applicationContext: Context,
+class MediaplayerViewModel(
+    private val applicationContext: Context,
     private val serviceHandler: MediaServiceHandler,
     private val mediaSession: MediaLibrarySession,
     val connectionHandler: ConnectionHandler

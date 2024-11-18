@@ -9,16 +9,30 @@ import android.os.Build
 import androidx.core.content.getSystemService
 import com.bobbyesp.crashhandler.CrashHandler.setupCrashHandler
 import com.bobbyesp.crashhandler.ReportInfo
+import com.bobbyesp.metadator.di.appMainViewModels
+import com.bobbyesp.metadator.di.mediaplayerViewModels
+import com.bobbyesp.metadator.di.utilitiesViewModels
+import com.bobbyesp.metadator.features.spotify.di.spotifyMainModule
+import com.bobbyesp.metadator.features.spotify.di.spotifyServicesModule
 import com.tencent.mmkv.MMKV
-import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
+import mediaplayerInternalsModule
+import org.koin.android.ext.koin.androidContext
+import org.koin.android.ext.koin.androidLogger
+import org.koin.core.context.GlobalContext.startKoin
 import kotlin.properties.Delegates
 
-@HiltAndroidApp
 class App : Application() {
     override fun onCreate() {
         MMKV.initialize(this)
+        startKoin {
+            androidLogger()
+            androidContext(this@App)
+            modules(mediaplayerInternalsModule)
+            modules(appMainViewModels, utilitiesViewModels, mediaplayerViewModels)
+            modules(spotifyMainModule, spotifyServicesModule)
+        }
         packageInfo = packageManager.run {
             if (Build.VERSION.SDK_INT >= 33) getPackageInfo(
                 packageName, PackageManager.PackageInfoFlags.of(0)

@@ -466,9 +466,10 @@ fun DropdownMenuContent(
                         durationMillis = DURATION_EXIT, easing = EmphasizedAccelerate
                     ),
                     shrinkTowards = Alignment.Top,
-                ) + slideOutVertically(animationSpec = tween(
-                    durationMillis = DURATION_EXIT, easing = EmphasizedAccelerate
-                ), targetOffsetY = { -it / 10 }), modifier = Modifier
+                ) + slideOutVertically(
+                    animationSpec = tween(
+                        durationMillis = DURATION_EXIT, easing = EmphasizedAccelerate
+                    ), targetOffsetY = { -it / 10 }), modifier = Modifier
             ) {
                 Column(
                     modifier = Modifier
