@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "com.bobbyesp.ui"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         minSdk = 24
@@ -42,7 +42,6 @@ android {
         compose = true
     }
     composeCompiler {
-        enableStrongSkippingMode = true
         reportsDestination = layout.buildDirectory.dir("compose_compiler")
     }
     packaging {

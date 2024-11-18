@@ -58,7 +58,7 @@ object Logging {
             Build.VERSION.RELEASE
         }
 
-        val appName = packageInfo.applicationInfo.name
+        val appName = packageInfo.applicationInfo?.name
         return StringBuilder()
             .append("App version: $appName $versionName ($versionCode)\n")
             .append("Android version: Android $release (API ${Build.VERSION.SDK_INT})\n")

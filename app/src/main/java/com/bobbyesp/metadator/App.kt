@@ -47,7 +47,7 @@ class App : Application() {
         lateinit var packageInfo: PackageInfo
         var isPlayStoreBuild by Delegates.notNull<Boolean>()
 
-        val appVersion: String get() = packageInfo.versionName
+        val appVersion: String get() = packageInfo.versionName.toString()
 
         const val APP_PACKAGE_NAME = "com.bobbyesp.metadator"
         const val APP_FILE_PROVIDER = "$APP_PACKAGE_NAME.fileprovider"

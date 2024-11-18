@@ -30,7 +30,7 @@ val localProperties = Properties().apply {
 
 android {
     namespace = "com.bobbyesp.metadator"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.bobbyesp.metadator"
@@ -106,7 +106,6 @@ android {
         buildConfig = true
     }
     composeCompiler {
-        enableStrongSkippingMode = true
         reportsDestination = layout.buildDirectory.dir("compose_compiler")
     }
     kotlin {

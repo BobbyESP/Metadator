@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "com.bobbyesp.crashhandler"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         minSdk = 24
@@ -32,7 +32,6 @@ android {
         compose = true
     }
     composeCompiler {
-        enableStrongSkippingMode = true
         reportsDestination = layout.buildDirectory.dir("compose_compiler")
     }
     kotlinOptions {

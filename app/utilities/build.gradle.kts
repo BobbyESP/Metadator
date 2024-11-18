@@ -8,7 +8,7 @@ plugins {
 
 android {
     namespace = "com.bobbyesp.utilities"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         minSdk = 24
@@ -35,7 +35,6 @@ android {
         buildConfig = true
     }
     composeCompiler {
-        enableStrongSkippingMode = true
         reportsDestination = layout.buildDirectory.dir("compose_compiler")
     }
     kotlinOptions {
