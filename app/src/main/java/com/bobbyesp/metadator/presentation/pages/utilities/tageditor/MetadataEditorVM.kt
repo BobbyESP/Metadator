@@ -29,8 +29,11 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -42,18 +45,20 @@ class MetadataEditorVM @Inject constructor(
     private val stateHandle: SavedStateHandle
 ) : ViewModel() {
     private val mutableState = MutableStateFlow(PageViewState())
-    val state = mutableState.asStateFlow()
+    val state = mutableState.onStart {
+        stateHandle.get<String>("path")?.let {
+            onEvent(Event.LoadMetadata(it))
+        }
+    }.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(5000),
+        PageViewState()
+    )
 
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
 
     private var latestLoadedSongPath: String? = null
-
-    init {
-        stateHandle.get<String>("path")?.let {
-            onEvent(Event.LoadMetadata(it))
-        }
-    }
 
     data class PageViewState(
         val metadata: ResourceState<Metadata?> = ResourceState.Loading(),
@@ -252,7 +257,7 @@ class MetadataEditorVM @Inject constructor(
             mutablePicturesList.add(picture)
         }
 
-        kotlin.runCatching {
+        runCatching {
             TagLib.savePictures(
                 fileDescriptorId, pictures = mutablePicturesList.toTypedArray()
             )

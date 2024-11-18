@@ -41,7 +41,7 @@ import com.bobbyesp.metadator.R
 import com.bobbyesp.metadator.ext.TagLib.toImageVector
 import com.bobbyesp.metadator.ext.TagLib.toLocalizedName
 import com.bobbyesp.metadator.ext.format
-import com.bobbyesp.metadator.ext.formatArtistsName
+import com.bobbyesp.metadator.ext.formatArtists
 import com.bobbyesp.metadator.presentation.components.image.AsyncImage
 import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.spotify.MetadataBsVM
 import com.bobbyesp.ui.components.button.BackButton
@@ -161,9 +161,9 @@ fun SpMetadataBsDetails(
 fun createMetadataMap(context: Context, track: Track) = rememberSaveable {
     mutableMapOf(
         "TITLE" to track.name,
-        "ARTIST" to track.artists.formatArtistsName(),
+        "ARTIST" to track.artists.formatArtists(),
         "ALBUM" to track.album.name,
-        "ALBUMARTIST" to track.album.artists.formatArtistsName(),
+        "ALBUMARTIST" to track.album.artists.formatArtists(),
         "TRACKNUMBER" to track.trackNumber.toString(),
         "DISCNUMBER" to track.discNumber.toString(),
         "DATE" to (track.album.releaseDate?.format(track.album.releaseDatePrecisionString)
@@ -204,7 +204,7 @@ private fun TrackInfo(
                     fontWeight = FontWeight.Bold,
                 )
                 Text(
-                    text = track.artists.formatArtistsName(),
+                    text = track.artists.formatArtists(),
                     style = MaterialTheme.typography.bodyMedium.copy(
                         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                     ),

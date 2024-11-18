@@ -20,7 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.adamratzman.spotify.models.Track
-import com.bobbyesp.metadator.ext.formatArtistsName
+import com.bobbyesp.metadator.ext.formatArtists
 import com.bobbyesp.metadator.presentation.components.image.AsyncImage
 import com.bobbyesp.ui.components.text.MarqueeText
 
@@ -86,7 +86,7 @@ fun SpotifyHorizontalSongCard(
                         fontWeight = FontWeight.Bold,
                     )
                     MarqueeText(
-                        text = track.artists.formatArtistsName(),
+                        text = track.artists.formatArtists(),
                         style = MaterialTheme.typography.bodyMedium.copy(
                             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                         )

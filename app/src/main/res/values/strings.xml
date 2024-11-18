@@ -60,7 +60,7 @@
     <string name="comment">Comment</string>
     <string name="others">Others</string>
     <string name="unknown">Unknown</string>
-    <string name="showing_results_for">Showing results for %1$s by %2$s</string>
+    <string name="showing_results_for">Showing results for</string>
     <string name="loading">Loading</string>
     <string name="no_song_information_provided">No song information provided</string>
     <string name="retry_search">Retry search</string>
@@ -75,4 +75,6 @@
     <string name="marquee_text_description">The text that overflows the limits of the screen has a lateral animation to show its entire content (this may worsen the app performance).</string>
     <string name="lyrics">Lyrics</string>
     <string name="retrieving_spotify_token">Retrieving Spotify API token…</string>
+    <string name="by">by</string>
+    <string name="edit_query">Edit query</string>
 </resources>
