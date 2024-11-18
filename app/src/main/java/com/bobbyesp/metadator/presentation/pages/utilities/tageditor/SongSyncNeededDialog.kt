@@ -38,7 +38,6 @@ fun SongSyncNeededDialog(
                     append(stringResource(id = R.string.song_sync_needed_desc))
                     append(" \n")
                     append(stringResource(id = R.string.song_sync_not_installed))
-                    append(".")
                 },
             )
         }, confirmButton = {
