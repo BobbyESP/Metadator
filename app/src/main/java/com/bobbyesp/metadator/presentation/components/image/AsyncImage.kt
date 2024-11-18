@@ -3,6 +3,7 @@ package com.bobbyesp.metadator.presentation.components.image
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
@@ -71,11 +72,19 @@ fun AsyncImage(
                     contentDescription = "Song cover placeholder"
                 )
             },
-            failure = {
+            failure = { error ->
+                //if the error exception if FileNotFoundException, then the icon is a music note, else error outline
+
+                val icon = if (error.reason != null && error.reason is java.io.FileNotFoundException) {
+                    Icons.Rounded.MusicNote
+                } else {
+                    Icons.Rounded.ErrorOutline
+                }
+
                 PlaceholderCreator(
                     modifier = imageModifier
                         .fillMaxSize(),
-                    icon = Icons.Rounded.ErrorOutline,
+                    icon = icon,
                     colorful = false,
                     contentDescription = "Song cover failed to load"
                 )

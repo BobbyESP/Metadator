@@ -4,6 +4,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -28,7 +29,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun ButtonWithIconAndText(
+fun VerticalButtonWithIconAndText(
     modifier: Modifier = Modifier,
     icon: ImageVector,
     text: String,
@@ -63,6 +64,55 @@ fun ButtonWithIconAndText(
                     minHeight = ButtonDefaults.MinHeight
                 )
                 .fillMaxWidth()
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurface
+            )
+            Text(
+                text = text,
+                style = MaterialTheme.typography.bodySmall.copy(
+                    fontWeight = FontWeight.Medium,
+                ),
+                color = MaterialTheme.colorScheme.onSurface,
+                overflow = TextOverflow.Ellipsis,
+            )
+        }
+    }
+}
+
+@Composable
+fun HorizontalButtonWithIconAndText(
+    modifier: Modifier = Modifier,
+    icon: ImageVector,
+    text: String,
+    enabled: Boolean = true,
+    border: Boolean = false,
+    backgroundColor: Color = MaterialTheme.colorScheme.secondaryContainer,
+    shape: CornerBasedShape = MaterialTheme.shapes.small,
+    onClick: () -> Unit = {}
+) {
+
+    val animatedAlpha by animateFloatAsState(
+        targetValue = if (enabled) 1f else 0.4f
+    )
+
+    Surface(
+        modifier = modifier
+            .semantics { role = Role.Button }
+            .alpha(animatedAlpha),
+        onClick = onClick,
+        enabled = enabled,
+        shape = shape,
+        border = if (border) BorderStroke(1.dp, MaterialTheme.colorScheme.outline) else null,
+        color = backgroundColor
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .padding(8.dp)
         ) {
             Icon(
                 imageVector = icon,

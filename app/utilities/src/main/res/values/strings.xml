@@ -24,6 +24,10 @@
     <string name="change_wifi_state">Change WiFi state</string>
     <string name="read_media_audio">Read audio files</string>
     <string name="manage_external_storage">Manage external storage</string>
+    <string name="song_sync_needed">SongSync needed</string>
+    <string name="song_sync_needed_desc">SongSync is a simple yet powerful lyrics downloader that lets users fetch lyrics from multiple sources. \nMetadator leverages its integrated bridge to retrieve the lyrics.</string>
+    <string name="song_sync_not_installed">It seems the app isn\'t installed on your device. Please download it to access this feature</string>
+    <string name="download">Download</string>
 
 
 </resources>

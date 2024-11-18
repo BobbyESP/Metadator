@@ -34,12 +34,11 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.koin.core.component.KoinComponent
 
 class MetadataEditorVM(
     private val context: Context,
     private val stateHandle: SavedStateHandle
-) : KoinComponent, ViewModel() {
+) : ViewModel() {
     private val mutableState = MutableStateFlow(PageViewState())
     val state = mutableState.onStart {
         stateHandle.get<String>("path")?.let {

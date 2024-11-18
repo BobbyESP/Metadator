@@ -39,7 +39,7 @@ import com.adamratzman.spotify.models.Track
 import com.bobbyesp.metadator.R
 import com.bobbyesp.metadator.presentation.components.cards.songs.spotify.SpotifyHorizontalSongCard
 import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.spotify.MetadataBsVM
-import com.bobbyesp.ui.components.button.ButtonWithIconAndText
+import com.bobbyesp.ui.components.button.VerticalButtonWithIconAndText
 import com.bobbyesp.ui.components.state.LoadingState
 import com.bobbyesp.utilities.states.ResourceState
 import com.bobbyesp.utilities.ui.pagingStateHandler
@@ -114,7 +114,7 @@ fun SpMetadataBsSearch(
                             horizontalArrangement = Arrangement.SpaceEvenly,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            ButtonWithIconAndText(
+                            VerticalButtonWithIconAndText(
                                 icon = Icons.Rounded.Edit,
                                 text = stringResource(R.string.edit_query),
                                 modifier = Modifier.weight(1f),

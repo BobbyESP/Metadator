@@ -77,4 +77,8 @@
     <string name="retrieving_spotify_token">Retrieving Spotify API token…</string>
     <string name="by">by</string>
     <string name="edit_query">Edit query</string>
+    <string name="retrieve_lyrics">Retrieve lyrics</string>
+    <string name="lyrics_retrieve_cancelled">The lyrics retrievement process has been cancelled</string>
+    <string name="empty_lyrics_received">The lyrics sent from the provider app were null or empty</string>
+    <string name="something_unexpected_occurred">Something unexpected occurred!</string>
 </resources>

@@ -1,7 +1,11 @@
 package com.bobbyesp.metadator.presentation.pages.utilities.tageditor
 
+import android.app.Activity
+import android.content.ActivityNotFoundException
+import android.content.Intent
 import android.content.res.Configuration
 import android.net.Uri
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -20,12 +24,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Downloading
 import androidx.compose.material.icons.rounded.Edit
+import androidx.compose.material.icons.rounded.Lyrics
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -44,6 +48,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -52,6 +57,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -60,6 +66,7 @@ import com.bobbyesp.metadator.R
 import com.bobbyesp.metadator.model.ParcelableSong
 import com.bobbyesp.metadator.presentation.common.LocalNavController
 import com.bobbyesp.metadator.presentation.common.LocalOrientation
+import com.bobbyesp.metadator.presentation.common.LocalSnackbarHostState
 import com.bobbyesp.metadator.presentation.components.image.AsyncImage
 import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.spotify.MetadataBsVM
 import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.spotify.SpMetadataBottomSheetContent
@@ -70,6 +77,7 @@ import com.bobbyesp.ui.components.others.MetadataTag
 import com.bobbyesp.ui.components.text.LargeCategoryTitle
 import com.bobbyesp.ui.components.text.MarqueeText
 import com.bobbyesp.ui.components.text.PreConfiguredOutlinedTextField
+import com.bobbyesp.utilities.ext.isNotNullOrBlank
 import com.bobbyesp.utilities.ext.toMinutes
 import com.bobbyesp.utilities.states.ResourceState
 import com.bobbyesp.utilities.states.ScreenState
@@ -87,6 +95,8 @@ fun MetadataEditorPage(
     onEvent: (MetadataEditorVM.Event) -> Unit
 ) {
     val navController = LocalNavController.current
+    val snackbarHost = LocalSnackbarHostState.current
+    val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val pageState = state.value
 
@@ -94,67 +104,118 @@ fun MetadataEditorPage(
         onEvent(MetadataEditorVM.Event.LoadMetadata(receivedAudio.localPath))
     }
 
-    var newArtworkAddress by rememberSaveable(key = "newArtworkAddress") {
-        mutableStateOf<Uri?>(null)
-    }
+    var newArtworkAddress by rememberSaveable { mutableStateOf<Uri?>(null) }
 
     val singleImagePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
-        onResult = { uri ->
-            newArtworkAddress = uri
-        })
+        onResult = { uri -> newArtworkAddress = uri }
+    )
 
     val scaffoldState = rememberBottomSheetScaffoldState(
         bottomSheetState = rememberStandardBottomSheetState(
-            initialValue = SheetValue.Hidden, skipHiddenState = false
+            initialValue = SheetValue.Hidden,
+            skipHiddenState = false
         )
     )
 
+    var showInstallSongSyncDialog by remember {
+        mutableStateOf(false)
+    }
+
+    val lyricsActivityLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        Log.i("MetadataEditorPage", "Received result: $result")
+        when (result.resultCode) {
+            Activity.RESULT_OK -> {
+                val receivedLyrics = result.data?.getStringExtra("lyrics")
+                if (receivedLyrics.isNotNullOrBlank()) {
+                    pageState.mutablePropertiesMap["LYRICS"] = receivedLyrics!!
+                } else {
+                    scope.launch { snackbarHost.showSnackbar(context.getString(R.string.empty_lyrics_received)) }
+                }
+            }
+
+            Activity.RESULT_CANCELED -> {
+                scope.launch { snackbarHost.showSnackbar(context.getString(R.string.lyrics_retrieve_cancelled)) }
+            }
+
+            else -> {
+                scope.launch { snackbarHost.showSnackbar(context.getString(R.string.something_unexpected_occurred)) }
+            }
+        }
+    }
+
+    val lyricsRetrieveIntent = Intent("android.intent.action.SEND").apply {
+        putExtra("songName", pageState.mutablePropertiesMap["TITLE"])
+        putExtra("artistName", pageState.mutablePropertiesMap["ARTIST"])
+        type = "text/plain"
+        setPackage("pl.lambada.songsync")
+    }
+
+    fun launchLyricsRetrieveIntent() {
+        try {
+            lyricsActivityLauncher.launch(lyricsRetrieveIntent)
+        } catch (e: Exception) {
+            when (e) {
+                is ActivityNotFoundException -> showInstallSongSyncDialog = true
+                else -> scope.launch { snackbarHost.showSnackbar(context.getString(R.string.something_unexpected_occurred)) }
+            }
+        }
+    }
+
+    if (showInstallSongSyncDialog) {
+        SongSyncNeededDialog(
+            onDismissRequest = { showInstallSongSyncDialog = false }
+        )
+    }
+
     BottomSheetScaffold(
         topBar = {
-            TopAppBar(title = {
-                Column(modifier = Modifier.fillMaxWidth()) {
-                    MarqueeText(
-                        text = stringResource(id = R.string.viewing_metadata),
-                        style = MaterialTheme.typography.bodyLarge,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-            }, navigationIcon = {
-                CloseButton { navController.popBackStack() }
-            }, actions = {
-                IconButton(
-                    onClick = {
-                        if (scaffoldState.bottomSheetState.isVisible) {
-                            onBsEvent(MetadataBsVM.Event.Search(receivedAudio.name + " " + receivedAudio.mainArtist))
-                        } else {
-                            scope.launch {
-                                scaffoldState.bottomSheetState.partialExpand()
+            TopAppBar(
+                title = {
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        MarqueeText(
+                            text = stringResource(id = R.string.viewing_metadata),
+                            style = MaterialTheme.typography.bodyLarge,
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                },
+                navigationIcon = { CloseButton { navController.popBackStack() } },
+                actions = {
+                    IconButton(
+                        onClick = {
+                            if (scaffoldState.bottomSheetState.isVisible) {
+                                onBsEvent(MetadataBsVM.Event.Search(receivedAudio.name + " " + receivedAudio.mainArtist))
+                            } else {
+                                scope.launch { scaffoldState.bottomSheetState.partialExpand() }
                             }
                         }
-                    }
-                ) {
-                    Icon(
-                        imageVector = Icons.Rounded.Downloading,
-                        contentDescription = stringResource(
-                            id = R.string.retrieve_song_info
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.Downloading,
+                            contentDescription = stringResource(id = R.string.retrieve_song_info)
                         )
-                    )
-                }
-                TextButton(
-                    onClick = {
-                        onEvent(
-                            MetadataEditorVM.Event.SaveAll(
-                                receivedAudio.localPath,
-                                listOf(newArtworkAddress ?: receivedAudio.artworkPath ?: Uri.EMPTY)
+                    }
+                    TextButton(
+                        onClick = {
+                            onEvent(
+                                MetadataEditorVM.Event.SaveAll(
+                                    receivedAudio.localPath,
+                                    listOf(
+                                        newArtworkAddress ?: receivedAudio.artworkPath ?: Uri.EMPTY
+                                    )
+                                )
                             )
-                        )
+                        }
+                    ) {
+                        Text(text = stringResource(id = R.string.save))
                     }
-                ) {
-                    Text(text = stringResource(id = R.string.save))
-                }
-            }, scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior())
+                },
+                scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+            )
         },
         modifier = Modifier.fillMaxSize(),
         scaffoldState = scaffoldState,
@@ -168,13 +229,10 @@ fun MetadataEditorPage(
                 bsViewState = bsViewState,
                 onEvent = onBsEvent,
             ) {
-                scope.launch {
-                    scaffoldState.bottomSheetState.hide()
-                }
+                scope.launch { scaffoldState.bottomSheetState.hide() }
             }
         },
     ) { innerPadding ->
-
         val animatedBottomPadding by animateDpAsState(
             targetValue = if (scaffoldState.bottomSheetState.isVisible) innerPadding.calculateBottomPadding() + 6.dp else 0.dp,
             label = "animatedBottomPadding"
@@ -190,9 +248,7 @@ fun MetadataEditorPage(
         ) { state ->
             when (state) {
                 is ScreenState.Error -> ErrorPage(error = state.exception.stackTrace.toString()) {
-                    onEvent(
-                        MetadataEditorVM.Event.LoadMetadata(receivedAudio.localPath)
-                    )
+                    onEvent(MetadataEditorVM.Event.LoadMetadata(receivedAudio.localPath))
                 }
 
                 ScreenState.Loading -> LoadingPage(
@@ -203,7 +259,6 @@ fun MetadataEditorPage(
                 is ScreenState.Success -> {
                     val scrollState = rememberScrollState()
                     val orientation = LocalOrientation.current
-
                     val artworkUri = newArtworkAddress ?: receivedAudio.artworkPath
 
                     when (orientation) {
@@ -218,7 +273,6 @@ fun MetadataEditorPage(
                                     modifier = Modifier
                                         .size(250.dp)
                                         .padding(8.dp)
-                                        .padding(bottom = 8.dp)
                                         .aspectRatio(1f)
                                         .align(Alignment.CenterHorizontally),
                                 ) {
@@ -238,13 +292,13 @@ fun MetadataEditorPage(
                                         IconButton(
                                             colors = IconButtonDefaults.iconButtonColors(
                                                 containerColor = Color.Black.copy(alpha = 0.5f)
-                                            ), onClick = {
+                                            ),
+                                            onClick = {
                                                 singleImagePickerLauncher.launch(
-                                                    PickVisualMediaRequest(
-                                                        ActivityResultContracts.PickVisualMedia.ImageOnly
-                                                    )
+                                                    PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
                                                 )
-                                            }) {
+                                            }
+                                        ) {
                                             Icon(
                                                 imageVector = Icons.Rounded.Edit,
                                                 tint = Color.White.harmonize(Color.Black.copy(alpha = 0.5f)),
@@ -262,7 +316,10 @@ fun MetadataEditorPage(
                                 }
 
                                 if (pageState.metadata is ResourceState.Success) {
-                                    SongProperties(pageState.mutablePropertiesMap)
+                                    SongProperties(
+                                        mutablePropertiesMap = pageState.mutablePropertiesMap,
+                                        retrieveLyrics = { launchLyricsRetrieveIntent() }
+                                    )
                                     Spacer(modifier = Modifier.height(animatedBottomPadding))
                                 }
                             }
@@ -295,13 +352,13 @@ fun MetadataEditorPage(
                                         IconButton(
                                             colors = IconButtonDefaults.iconButtonColors(
                                                 containerColor = Color.Black.copy(alpha = 0.5f)
-                                            ), onClick = {
+                                            ),
+                                            onClick = {
                                                 singleImagePickerLauncher.launch(
-                                                    PickVisualMediaRequest(
-                                                        ActivityResultContracts.PickVisualMedia.ImageOnly
-                                                    )
+                                                    PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
                                                 )
-                                            }) {
+                                            }
+                                        ) {
                                             Icon(
                                                 imageVector = Icons.Rounded.Edit,
                                                 tint = Color.White.harmonize(Color.Black.copy(alpha = 0.5f)),
@@ -322,10 +379,12 @@ fun MetadataEditorPage(
                                         )
                                     }
                                     if (pageState.metadata is ResourceState.Success) {
-                                        SongProperties(pageState.mutablePropertiesMap)
+                                        SongProperties(
+                                            mutablePropertiesMap = pageState.mutablePropertiesMap,
+                                            retrieveLyrics = { launchLyricsRetrieveIntent() }
+                                        )
                                     }
                                 }
-
                             }
                         }
                     }
@@ -383,7 +442,10 @@ private fun AudioProperties(modifier: Modifier = Modifier, audioProperties: Audi
 }
 
 @Composable
-fun SongProperties(mutablePropertiesMap: SnapshotStateMap<String, String>) {
+private fun SongProperties(
+    mutablePropertiesMap: SnapshotStateMap<String, String>,
+    retrieveLyrics: () -> Unit
+) {
     LargeCategoryTitle(
         modifier = Modifier.padding(vertical = 6.dp),
         text = stringResource(id = R.string.general_tags)
@@ -393,129 +455,100 @@ fun SongProperties(mutablePropertiesMap: SnapshotStateMap<String, String>) {
         value = mutablePropertiesMap["TITLE"],
         label = stringResource(id = R.string.title),
         modifier = Modifier.fillMaxWidth()
-    ) { title ->
-        mutablePropertiesMap["TITLE"] = title
-    }
+    ) { title -> mutablePropertiesMap["TITLE"] = title }
 
     PreConfiguredOutlinedTextField(
         value = mutablePropertiesMap["ARTIST"],
         label = stringResource(id = R.string.artist),
         modifier = Modifier.fillMaxWidth()
-    ) { artists ->
-        mutablePropertiesMap["ARTIST"] = artists
-    }
+    ) { artists -> mutablePropertiesMap["ARTIST"] = artists }
 
     PreConfiguredOutlinedTextField(
         value = mutablePropertiesMap["ALBUM"],
         label = stringResource(id = R.string.album),
         modifier = Modifier.fillMaxWidth()
-    ) { album ->
-        mutablePropertiesMap["ALBUM"] = album
-    }
+    ) { album -> mutablePropertiesMap["ALBUM"] = album }
 
     PreConfiguredOutlinedTextField(
         value = mutablePropertiesMap["ALBUMARTIST"],
         label = stringResource(id = R.string.album_artist),
         modifier = Modifier.fillMaxWidth()
-    ) { albumArtist ->
-        mutablePropertiesMap["ALBUMARTIST"] = albumArtist
-    }
+    ) { albumArtist -> mutablePropertiesMap["ALBUMARTIST"] = albumArtist }
 
-    Column(
-        modifier = Modifier.fillMaxWidth()
-    ) {
+    Column(modifier = Modifier.fillMaxWidth()) {
         Row(
             modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             PreConfiguredOutlinedTextField(
                 value = mutablePropertiesMap["TRACKNUMBER"],
                 label = stringResource(id = R.string.track_number),
                 modifier = Modifier.weight(0.5f)
-            ) { trackNumber ->
-                mutablePropertiesMap["TRACKNUMBER"] = trackNumber
-            }
-            Spacer(modifier = Modifier.width(8.dp))
+            ) { trackNumber -> mutablePropertiesMap["TRACKNUMBER"] = trackNumber }
             PreConfiguredOutlinedTextField(
                 value = mutablePropertiesMap["DISCNUMBER"],
                 label = stringResource(id = R.string.disc_number),
                 modifier = Modifier.weight(0.5f)
-            ) { discNumber ->
-                mutablePropertiesMap["DISCNUMBER"] = discNumber
-            }
+            ) { discNumber -> mutablePropertiesMap["DISCNUMBER"] = discNumber }
         }
         Row(
             modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             PreConfiguredOutlinedTextField(
                 value = mutablePropertiesMap["DATE"],
                 label = stringResource(id = R.string.date),
                 modifier = Modifier.weight(0.5f)
-            ) { date ->
-                mutablePropertiesMap["DATE"] = date
-            }
-            Spacer(modifier = Modifier.width(8.dp))
+            ) { date -> mutablePropertiesMap["DATE"] = date }
             PreConfiguredOutlinedTextField(
                 value = mutablePropertiesMap["GENRE"],
                 label = stringResource(id = R.string.genre),
                 modifier = Modifier.weight(0.5f)
-            ) { genre ->
-                mutablePropertiesMap["GENRE"] = genre
-            }
+            ) { genre -> mutablePropertiesMap["GENRE"] = genre }
         }
     }
 
     LargeCategoryTitle(
-        modifier = Modifier.padding(vertical = 6.dp), text = stringResource(id = R.string.credits)
+        modifier = Modifier.padding(vertical = 6.dp),
+        text = stringResource(id = R.string.credits)
     )
 
-    Column(
-        modifier = Modifier.fillMaxWidth()
-    ) {
+    Column(modifier = Modifier.fillMaxWidth()) {
         Row(
             modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             PreConfiguredOutlinedTextField(
                 value = mutablePropertiesMap["COMPOSER"],
                 label = stringResource(id = R.string.composer),
                 modifier = Modifier.weight(0.5f)
-            ) { composer ->
-                mutablePropertiesMap["COMPOSER"] = composer
-            }
-            Spacer(modifier = Modifier.width(8.dp))
+            ) { composer -> mutablePropertiesMap["COMPOSER"] = composer }
             PreConfiguredOutlinedTextField(
                 value = mutablePropertiesMap["LYRICIST"],
                 label = stringResource(id = R.string.lyricist),
                 modifier = Modifier.weight(0.5f)
-            ) { lyricist ->
-                mutablePropertiesMap["LYRICIST"] = lyricist
-            }
+            ) { lyricist -> mutablePropertiesMap["LYRICIST"] = lyricist }
         }
         Row(
             modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             PreConfiguredOutlinedTextField(
                 value = mutablePropertiesMap["CONDUCTOR"],
                 label = stringResource(id = R.string.conductor),
                 modifier = Modifier.weight(0.5f)
-            ) { conductor ->
-                mutablePropertiesMap["CONDUCTOR"] = conductor
-            }
-            Spacer(modifier = Modifier.width(8.dp))
+            ) { conductor -> mutablePropertiesMap["CONDUCTOR"] = conductor }
             PreConfiguredOutlinedTextField(
                 value = mutablePropertiesMap["REMIXER"],
                 label = stringResource(id = R.string.remixer),
                 modifier = Modifier.weight(0.5f)
-            ) { remixer ->
-                mutablePropertiesMap["REMIXER"] = remixer
-            }
+            ) { remixer -> mutablePropertiesMap["REMIXER"] = remixer }
         }
         PreConfiguredOutlinedTextField(
             value = mutablePropertiesMap["PERFORMER"],
             label = stringResource(id = R.string.performer),
             modifier = Modifier.fillMaxWidth()
-        ) { performer ->
-            mutablePropertiesMap["PERFORMER"] = performer
-        }
+        ) { performer -> mutablePropertiesMap["PERFORMER"] = performer }
 
         LargeCategoryTitle(
             modifier = Modifier.padding(vertical = 6.dp),
@@ -523,23 +556,39 @@ fun SongProperties(mutablePropertiesMap: SnapshotStateMap<String, String>) {
         )
 
         Column(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             PreConfiguredOutlinedTextField(
                 value = mutablePropertiesMap["COMMENT"],
                 label = stringResource(id = R.string.comment),
                 modifier = Modifier.fillMaxWidth(),
                 maxLines = 3
-            ) { comment ->
-                mutablePropertiesMap["COMMENT"] = comment
-            }
-            PreConfiguredOutlinedTextField(
-                value = mutablePropertiesMap["LYRICS"],
-                label = stringResource(id = R.string.lyrics),
-                modifier = Modifier.fillMaxWidth(),
-                maxLines = 20
-            ) { lyrics ->
-                mutablePropertiesMap["LYRICS"] = lyrics
+            ) { comment -> mutablePropertiesMap["COMMENT"] = comment }
+            Column(modifier = Modifier.fillMaxWidth()) {
+                TextButton(
+                    modifier = Modifier.align(Alignment.End),
+                    onClick = retrieveLyrics
+                ) {
+                    Row(
+                        modifier = Modifier,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.Lyrics,
+                            contentDescription = stringResource(id = R.string.retrieve_lyrics)
+                        )
+
+                        Text(text = stringResource(id = R.string.retrieve_lyrics))
+                    }
+                }
+                PreConfiguredOutlinedTextField(
+                    value = mutablePropertiesMap["LYRICS"],
+                    label = stringResource(id = R.string.lyrics),
+                    modifier = Modifier.fillMaxWidth(),
+                    maxLines = 20
+                ) { lyrics -> mutablePropertiesMap["LYRICS"] = lyrics }
             }
         }
     }
