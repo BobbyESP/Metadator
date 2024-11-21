@@ -58,12 +58,12 @@ fun MediaStorePage(
                 ) { onReloadMediaStore() }
 
                 is ResourceState.Success -> {
-                    if (songsList.data!!.isEmpty()) {
+                    val dataSongsList = songsList.data!!
+                    if (dataSongsList.isEmpty()) {
                         EmptyMediaStore(
                             modifier = Modifier.fillMaxSize()
                         )
                     } else {
-                        val dataSongsList = songsList.data!!
                         when (type) {
                             LayoutType.Grid -> {
                                 LazyVerticalGridScrollbar(
@@ -118,7 +118,7 @@ fun MediaStorePage(
                                         items(
                                             count = dataSongsList.size,
                                             key = { index -> dataSongsList[index].id },
-                                            contentType = { index -> dataSongsList[index].id.toString() }) { index ->
+                                            contentType = { _ -> "songItem" }) { index ->
                                             val song = dataSongsList[index]
                                             HorizontalSongCard(
                                                 song = song,

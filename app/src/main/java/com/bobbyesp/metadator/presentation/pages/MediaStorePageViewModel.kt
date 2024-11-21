@@ -12,11 +12,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.koin.core.component.KoinComponent
 
 class MediaStorePageViewModel(
     context: Context
-) : KoinComponent, ViewModel() {
+) : ViewModel() {
     private val _songs: MutableStateFlow<ResourceState<List<Song>>> =
         MutableStateFlow(ResourceState.Loading())
     val songs = _songs.asStateFlow()
@@ -39,9 +38,7 @@ class MediaStorePageViewModel(
 
     fun onEvent(event: Events) {
         when (event) {
-            is Events.StartObservingMediaStore -> {
-                songsCollection()
-            }
+            is Events.StartObservingMediaStore -> songsCollection()
 
             is Events.ReloadMediaStore -> reloadMediaStore()
         }
