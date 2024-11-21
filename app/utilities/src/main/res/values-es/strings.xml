@@ -21,7 +21,7 @@
     <string name="read_media_audio">Leer archivos de audio</string>
     <string name="manage_external_storage">Administrar almacenamiento externo</string>
     <string name="song_sync_needed">SongSync necesario</string>
-    <string name="song_sync_needed_desc">SongSyn es una simple pero poderoso descargador de letras que permite a los usuarios obtener las letras desde múltiples fuentes. \nMetadator usa su puente integrado para obtener las letras.</string>
+    <string name="song_sync_needed_desc">SongSync es un simple pero poderoso descargador de letras que permite a los usuarios obtener las letras desde múltiples fuentes. \nMetadator usa su puente integrado para recibir las letras.</string>
     <string name="song_sync_not_installed">Parece que la aplicación no está instalada en tu dispositivo. Por favor, descárgala para acceder a esta funcionalidad.</string>
     <string name="download">Descargar</string>
 </resources>

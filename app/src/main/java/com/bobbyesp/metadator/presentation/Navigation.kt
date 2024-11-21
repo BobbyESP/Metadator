@@ -8,30 +8,17 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.add
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.only
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Square
-import androidx.compose.material3.Icon
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalDrawerSheet
-import androidx.compose.material3.ModalNavigationDrawer
-import androidx.compose.material3.NavigationDrawerItem
-import androidx.compose.material3.NavigationDrawerItemDefaults
-import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
@@ -39,33 +26,25 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.fastAny
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigation
 import androidx.navigation.toRoute
-import com.bobbyesp.metadator.App
-import com.bobbyesp.metadator.R
 import com.bobbyesp.metadator.model.ParcelableSong
-import com.bobbyesp.metadator.presentation.common.DestinationInfo
 import com.bobbyesp.metadator.presentation.common.LocalDrawerState
 import com.bobbyesp.metadator.presentation.common.LocalNavController
 import com.bobbyesp.metadator.presentation.common.LocalPlayerAwareWindowInsets
@@ -85,42 +64,37 @@ import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.MetadataEdi
 import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.MetadataEditorVM
 import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.spotify.MetadataBsVM
 import com.bobbyesp.ui.components.bottomsheet.draggable.rememberDraggableBottomSheetState
-import com.bobbyesp.ui.components.tags.RoundedTag
 import com.bobbyesp.ui.motion.animatedComposable
 import com.bobbyesp.ui.motion.slideInVerticallyComposable
 import com.bobbyesp.utilities.navigation.parcelableType
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import kotlin.reflect.typeOf
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UnusedBoxWithConstraintsScope")
 @Composable
 fun Navigator() {
     val navController = LocalNavController.current
     val drawerState = LocalDrawerState.current
 
+    val scope = rememberCoroutineScope()
+
     val navBackStackEntry by navController.currentBackStackEntryAsState()
 
-    val currentNavigator = rememberSaveable(navBackStackEntry, key = "currentRootRoute") {
-        mutableStateOf(
+    val currentNavigator by remember {
+        derivedStateOf {
             navBackStackEntry?.destination?.parent?.route
-        )
+        }
     }
-    val currentRoute = rememberSaveable(navBackStackEntry, key = "currentRoute") {
-        mutableStateOf(
+
+    val currentRoute by remember {
+        derivedStateOf {
             navBackStackEntry?.destination?.route
-        )
+        }
     }
 
     val snackbarHostState = LocalSnackbarHostState.current
-
-    val scope = rememberCoroutineScope()
-
-    //able to open drawer when the user is in one of the main routes (root routes)
-    val canOpenDrawer by remember(currentRoute) {
-        mutableStateOf(mainNavigators.fastAny { navigator -> navigator.qualifiedName() == currentNavigator.value })
-    }
 
     val mediaStoreViewModel = koinViewModel<MediaStorePageViewModel>()
     val mediaplayerViewModel = koinViewModel<MediaplayerViewModel>()
@@ -141,156 +115,44 @@ fun Navigator() {
             animationSpec = PlayerAnimationSpec,
         )
 
-        val targetBottom = if (!mediaPlayerSheetState.isDismissed) {
-            CollapsedPlayerHeight + bottomInset
-        } else {
-            bottomInset
+        val targetBottom by remember {
+            derivedStateOf {
+                if (!mediaPlayerSheetState.isDismissed) {
+                    CollapsedPlayerHeight + bottomInset
+                } else {
+                    bottomInset
+                }
+            }
         }
 
         val animatedBottom by animateDpAsState(
-            targetValue = targetBottom, label = "Animated bottom insets for player sheet"
+            targetValue = targetBottom,
+            label = "Animated bottom insets for player sheet"
         )
 
-        val playerAwareWindowInsets = remember(
-            bottomInset, mediaPlayerSheetState.isDismissed, animatedBottom
-        ) {
-            val insetsBottom = animatedBottom
-            windowsInsets.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top)
-                .add(WindowInsets(bottom = insetsBottom))
+        val canDrawerBeOpened by remember {
+            derivedStateOf {
+                mainNavigators.fastAny { it.qualifiedName() == currentNavigator }
+            }
+        }
+
+        val playerAwareWindowInsets by remember {
+            derivedStateOf {
+                windowsInsets.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top)
+                    .add(WindowInsets(bottom = animatedBottom))
+            }
         }
 
         CompositionLocalProvider(
             LocalPlayerAwareWindowInsets provides playerAwareWindowInsets
         ) {
-            ModalNavigationDrawer(
+            ModalNavigationDrawerWrapper(
                 modifier = Modifier,
                 drawerState = drawerState,
-                gesturesEnabled = canOpenDrawer,
-                drawerContent = {
-                    ModalDrawerSheet(
-                        drawerState = drawerState,
-                        modifier = Modifier,
-                    ) {
-                        Text(
-                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                            text = stringResource(id = R.string.app_name).uppercase(),
-                            style = MaterialTheme.typography.headlineMedium.copy(
-                                letterSpacing = 4.sp,
-                            ),
-                            fontWeight = FontWeight.Bold,
-                            fontFamily = FontFamily.Monospace
-                        )
-                        Column(
-                            modifier = Modifier
-                                .fillMaxHeight()
-                                .weight(1f)
-                                .verticalScroll(
-                                    rememberScrollState()
-                                )
-                        ) {
-                            mainNavigators.forEach { route ->
-                                val actualNavigator = route.qualifiedName()
-//                                val isSelected by remember(currentNavigator, actualNavigator) {
-//                                    mutableStateOf(currentNavigator.value == actualNavigator)
-//                                }
-                                val isSelected = currentNavigator.value == actualNavigator
-                                val destinationInfo = DestinationInfo.fromRoute(route)
-
-                                NavigationDrawerItem(
-                                    label = {
-                                        Text(
-                                            text = stringResource(
-                                                id = destinationInfo?.title ?: R.string.unknown
-                                            )
-                                        )
-                                    },
-                                    selected = isSelected,
-                                    onClick = {
-                                        if (isSelected) {
-                                            scope.launch {
-                                                drawerState.close()
-                                            }
-                                        } else {
-                                            navController.navigate(route) {
-                                                popUpTo(navController.graph.findStartDestination().id) {
-                                                    saveState = true
-                                                }
-                                                launchSingleTop = true
-                                                restoreState = true
-                                            }
-                                            scope.launch {
-                                                drawerState.close()
-                                            }
-                                        }
-                                    },
-                                    icon = {
-                                        Icon(
-                                            imageVector = destinationInfo?.icon
-                                                ?: Icons.Rounded.Square,
-                                            contentDescription = destinationInfo?.title?.let {
-                                                stringResource(id = it)
-                                            })
-                                    },
-                                    modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
-                                )
-                            }
-                        }
-
-                        OutlinedCard(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 12.dp),
-                        ) {
-                            Row(
-                                modifier = Modifier, verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Text(
-                                    modifier = Modifier.padding(16.dp),
-                                    text = stringResource(id = R.string.app_name).uppercase() + " " + App.appVersion,
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    fontWeight = FontWeight.Bold,
-                                    fontFamily = FontFamily.Monospace,
-                                    overflow = TextOverflow.Ellipsis
-                                )
-                                RoundedTag(
-                                    text = if (App.isPlayStoreBuild) "PLAY STORE" else "FOSS",
-                                    shape = MaterialTheme.shapes.small
-                                )
-                            }
-//                            Surface(
-//                                modifier = Modifier
-//                                    .semantics { role = Role.Tab }
-//                                    .height(56.dp)
-//                                    .fillMaxWidth(),
-//                                onClick = {
-//                                    navController.navigate(Route.SettingsNavigator.Settings)
-//                                    scope.launch {
-//                                        drawerState.close()
-//                                    }
-//                                },
-//                                color = Color.Transparent
-//                            ) {
-//                                Row(
-//                                    Modifier.padding(start = 16.dp, end = 24.dp),
-//                                    verticalAlignment = Alignment.CenterVertically
-//                                ) {
-//                                    Icon(
-//                                        imageVector = Icons.Rounded.Settings,
-//                                        contentDescription = stringResource(id = R.string.settings)
-//                                    )
-//                                    Spacer(Modifier.width(12.dp))
-//                                    Text(
-//                                        text = stringResource(id = R.string.settings),
-//                                        style = MaterialTheme.typography.bodyMedium,
-//                                        fontWeight = FontWeight.Bold,
-//                                        fontFamily = FontFamily.Monospace,
-//                                        overflow = TextOverflow.Ellipsis
-//                                    )
-//                                }
-//                            }
-                        }
-                    }
-                },
+                gesturesEnabled = canDrawerBeOpened,
+                currentNavigator = currentNavigator,
+                navController = navController,
+                scope = scope,
             ) {
                 Scaffold(
                     modifier = Modifier.windowInsetsPadding(
