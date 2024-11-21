@@ -247,7 +247,10 @@ fun MetadataEditorPage(
                 .navigationBarsPadding()
         ) { state ->
             when (state) {
-                is ScreenState.Error -> ErrorPage(error = state.exception.stackTrace.toString()) {
+                is ScreenState.Error -> ErrorPage(
+                    modifier = Modifier.fillMaxSize(),
+                    throwable = state.exception
+                ) {
                     onEvent(MetadataEditorVM.Event.LoadMetadata(receivedAudio.localPath))
                 }
 

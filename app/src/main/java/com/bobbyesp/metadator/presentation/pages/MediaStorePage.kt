@@ -53,7 +53,8 @@ fun MediaStorePage(
                 is ResourceState.Loading -> LoadingPage(text = stringResource(R.string.loading_mediastore))
 
                 is ResourceState.Error -> ErrorPage(
-                    error = songsList.message ?: "Unknown"
+                    modifier = Modifier.fillMaxSize(),
+                    throwable = Exception(songsList.message ?: "Unknown")
                 ) { onReloadMediaStore() }
 
                 is ResourceState.Success -> {
