@@ -12,8 +12,9 @@ import com.bobbyesp.metadator.features.spotify.domain.services.search.SpotifySea
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class SpotifySearchServiceImpl : SpotifySearchService, KoinComponent {
-    private val spotifyService by inject<SpotifyService>()
+class SpotifySearchServiceImpl(
+    private val spotifyService: SpotifyService
+) : SpotifySearchService, KoinComponent {
 
     override suspend fun search(
         query: String,

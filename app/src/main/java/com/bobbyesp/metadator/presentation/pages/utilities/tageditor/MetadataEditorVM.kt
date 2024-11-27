@@ -24,7 +24,9 @@ import com.kyant.taglib.Metadata
 import com.kyant.taglib.Picture
 import com.kyant.taglib.PropertyMap
 import com.kyant.taglib.TagLib
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -34,6 +36,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlin.coroutines.CoroutineContext
 
 class MetadataEditorVM(
     private val context: Context,
@@ -73,61 +76,76 @@ class MetadataEditorVM(
         }
     }
 
-    private suspend fun loadTrackMetadata(path: String) {
+    private suspend fun loadTrackMetadata(path: String, scope: CoroutineScope) {
         updateState(ScreenState.Loading)
         mutableState.value.mutablePropertiesMap.clear()
-        runCatching {
+
+        try {
             stateHandle["path"] = path
             MediaStoreReceiver.getFileDescriptorFromPath(context, path, mode = "r")?.use { songFd ->
+                val metadataDeferred = scope.async {
+                    loadAudioMetadata(
+                        songFd = songFd,
+                        coroutineContext = scope.coroutineContext
+                    )
+                }
 
-                val metadata = loadAudioMetadata(songFd)
+                val audioPropertiesDeferred = scope.async {
+                    loadAudioProperties(
+                        songFd = songFd,
+                        readStyle = AudioPropertiesReadStyle.Average,
+                        coroutineContext = scope.coroutineContext
+                    )
+                }
 
-                val audioProperties = loadAudioProperties(songFd)
+                val metadata = metadataDeferred.await()
+                val audioProperties = audioPropertiesDeferred.await()
 
                 updateAudioInformation(metadata, audioProperties)
             }
-        }.onFailure { error ->
+            updateState(ScreenState.Success(null))
+            mutableState.value.metadata.data?.propertyMap?.toModifiableMap()?.forEach {
+                mutableState.value.mutablePropertiesMap[it.key] = it.value ?: ""
+            }
+        } catch (error: Exception) {
             Log.e(
                 "MetadataEditorVM", "Error while trying to load the audio file: ${error.message}"
             )
             when (error) {
                 is NullAudioFileDescriptorException -> {
-                    if (error.isAudioProperties) mutableState.update {
-                        it.copy(
-                            audioProperties = ResourceState.Error(
-                                message = error.message ?: error.stackTrace.toString()
+                    if (error.isAudioProperties) {
+                        mutableState.update {
+                            it.copy(
+                                audioProperties = ResourceState.Error(
+                                    message = error.message ?: error.stackTraceToString()
+                                )
                             )
-                        )
+                        }
                     } else {
                         mutableState.update {
                             it.copy(
                                 metadata = ResourceState.Error(
-                                    message = error.message ?: error.stackTrace.toString()
+                                    message = error.message ?: error.stackTraceToString()
                                 )
                             )
                         }
                     }
                 }
 
-                else -> {
-                    updateState(ScreenState.Error(error))
-                }
-            }
-            updateState(ScreenState.Error(error))
-        }.onSuccess {
-            updateState(ScreenState.Success(null))
-            mutableState.value.metadata.data?.propertyMap?.toModifiableMap()?.forEach {
-                mutableState.value.mutablePropertiesMap[it.key] = it.value ?: ""
+                else -> updateState(ScreenState.Error(error))
             }
         }
     }
 
-    private suspend fun loadAudioMetadata(songFd: ParcelFileDescriptor): Metadata? {
+    private suspend fun loadAudioMetadata(
+        songFd: ParcelFileDescriptor,
+        coroutineContext: CoroutineContext = Dispatchers.IO
+    ): Metadata? {
         val fd = songFd.dup()?.detachFd() ?: throw NullAudioFileDescriptorException(
             isAudioProperties = false
         )
 
-        return withContext(Dispatchers.IO) {
+        return withContext(coroutineContext) {
             TagLib.getMetadata(fd = fd)
         }
     }
@@ -135,13 +153,14 @@ class MetadataEditorVM(
 
     private suspend fun loadAudioProperties(
         songFd: ParcelFileDescriptor,
-        readStyle: AudioPropertiesReadStyle = AudioPropertiesReadStyle.Average
+        readStyle: AudioPropertiesReadStyle = AudioPropertiesReadStyle.Average,
+        coroutineContext: CoroutineContext = Dispatchers.IO
     ): AudioProperties? {
         val fd = songFd.dup()?.detachFd() ?: throw NullAudioFileDescriptorException(
             isAudioProperties = true
         )
 
-        return withContext(Dispatchers.IO) {
+        return withContext(coroutineContext) {
             TagLib.getAudioProperties(
                 fd = fd, readStyle = readStyle
             )
@@ -309,7 +328,7 @@ class MetadataEditorVM(
             is Event.LoadMetadata -> {
                 viewModelScope.launch {
                     if (latestLoadedSongPath != event.path) {
-                        loadTrackMetadata(event.path)
+                        loadTrackMetadata(event.path, this)
                         latestLoadedSongPath = event.path
                     }
                 }

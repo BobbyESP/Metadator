@@ -61,7 +61,7 @@ fun SpMetadataBsSearch(
         modifier = Modifier.fillMaxSize()
     ) {
         if (name.isNotEmpty() && artist.isNotEmpty()) {
-            stickyHeader {
+            item {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()

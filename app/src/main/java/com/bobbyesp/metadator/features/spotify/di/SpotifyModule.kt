@@ -15,5 +15,5 @@ val spotifyMainModule = module {
 }
 
 val spotifyServicesModule = module {
-    single<SpotifySearchService> { SpotifySearchServiceImpl() }
+    single<SpotifySearchService> { SpotifySearchServiceImpl(get()) }
 }

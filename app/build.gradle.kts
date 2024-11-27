@@ -144,6 +144,7 @@ dependencies {
     implementation(project(":app:ui"))
 //---------------Core----------------//
     implementation(libs.bundles.core) //⚠️ This contains core kotlinx libraries, lifecycle runtime and Activity Compose support
+    implementation(libs.bundles.coroutines)
 
 //---------------User Interface---------------//
 //Core UI libraries
