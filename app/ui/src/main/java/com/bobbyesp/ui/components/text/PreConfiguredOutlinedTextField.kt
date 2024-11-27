@@ -19,7 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import com.bobbyesp.ui.R
-import com.bobbyesp.ui.util.rememberSaveableWithVolatileInitialValue
+import com.bobbyesp.ui.util.rememberVolatileSaveable
 
 @Composable
 fun PreConfiguredOutlinedTextField(
@@ -35,7 +35,7 @@ fun PreConfiguredOutlinedTextField(
     minLines: Int = 1,
     returnModifiedValue: (String) -> Unit = {}
 ) {
-    val (text, setText) = rememberSaveableWithVolatileInitialValue(value ?: "")
+    val (text, setText) = rememberVolatileSaveable(value ?: "")
     val originalValue = remember { value ?: "" }
 
     OutlinedTextField(

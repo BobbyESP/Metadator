@@ -47,7 +47,7 @@ import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.spotify.Met
 import com.bobbyesp.ui.components.button.BackButton
 import com.bobbyesp.ui.components.others.SelectableSurface
 import com.bobbyesp.ui.components.text.MarqueeText
-import com.bobbyesp.ui.util.rememberSaveableWithVolatileInitialValue
+import com.bobbyesp.ui.util.rememberVolatileSaveable
 
 @Composable
 fun SpMetadataBsDetails(
@@ -225,7 +225,7 @@ private fun SelectableMetadataField(
     onSelectMetadata: (title: String, value: String) -> Unit,
     onDeleteMetadata: (title: String) -> Unit
 ) {
-    var isSelected by rememberSaveableWithVolatileInitialValue(initialValue = false)
+    var isSelected by rememberVolatileSaveable(initialValue = false)
     SelectableSurface(
         modifier = modifier,
         isSelected = isSelected,
