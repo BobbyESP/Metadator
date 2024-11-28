@@ -68,12 +68,16 @@ android {
     productFlavors {
         create("playstore") {
             dimension = "version"
-            apply(plugin = libs.plugins.google.gms.get().pluginId)
-            apply(plugin = libs.plugins.firebase.crashlytics.get().pluginId)
-            configure<CrashlyticsExtension> {
-                mappingFileUploadEnabled = true
-                nativeSymbolUploadEnabled = true
+
+            if(isGoogleMobileServicesBuild) {
+                apply(plugin = libs.plugins.google.gms.get().pluginId)
+                apply(plugin = libs.plugins.firebase.crashlytics.get().pluginId)
+                configure<CrashlyticsExtension> {
+                    mappingFileUploadEnabled = true
+                    nativeSymbolUploadEnabled = true
+                }
             }
+
         }
 
         create("foss") {
