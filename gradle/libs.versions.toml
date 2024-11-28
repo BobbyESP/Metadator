@@ -65,7 +65,7 @@ firebaseBom = "33.1.2"
 spotify-apiHandler = "4.1.3"
 
 #Others
-taglib = "1.0.0-alpha18"
+taglib = "1.0.0-alpha25"
 qrcodeKotlinAndroid = "4.1.0"
 
 #Tests
