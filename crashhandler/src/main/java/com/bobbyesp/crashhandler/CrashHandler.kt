@@ -28,7 +28,7 @@ object CrashHandler {
         reportInfo: ReportInfo = ReportInfo(),
         logfilePath: String
     ) {
-        startActivity(context, Intent(context, CrashHandlerActivity::class.java).apply {
+        context.startActivity(Intent(context, CrashHandlerActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK
             putExtra("version_report", getVersionReport(packageInfo, reportInfo))
             putExtra("logfile_path", logfilePath)

@@ -12,17 +12,6 @@ plugins {
     alias(libs.plugins.compose.compiler)
 }
 
-val commitSignature = providers.exec {
-    commandLine("git", "rev-parse", "--short", "HEAD")
-}.standardOutput.asText.get().substringBefore("\n")
-
-val currentVersion: Version = Version.Beta(
-    versionMajor = 1,
-    versionMinor = 0,
-    versionPatch = 0,
-    versionBuild = 7
-)
-
 val localProperties = Properties().apply {
     load(project.rootDir.resolve("local.properties").inputStream())
 }
@@ -36,8 +25,8 @@ android {
         minSdk = 24
         targetSdk = 35
 
-        versionCode = currentVersion.toVersionCode()
-        versionName = currentVersion.toVersionName()
+        versionCode = rootProject.extra["versionCode"] as Int
+        versionName = rootProject.extra["versionName"] as String
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -98,7 +87,7 @@ android {
     }
     kotlinOptions {
         jvmTarget = "21"
-        freeCompilerArgs = listOf("-Xcontext-receivers", "-XXLanguage:+ExplicitBackingFields")
+        //freeCompilerArgs = listOf("-Xcontext-receivers", "-XXLanguage:+ExplicitBackingFields")
     }
     buildFeatures {
         compose = true
@@ -219,50 +208,5 @@ class RoomSchemaArgProvider(
             schemaDir.mkdirs()
         }
         return listOf("room.schemaLocation=${schemaDir.path}")
-    }
-}
-
-sealed class Version(
-    open val versionMajor: Int,
-    val versionMinor: Int,
-    val versionPatch: Int,
-    val versionBuild: Int = 0,
-    val commitId: String = ""
-) {
-    abstract fun toVersionName(): String
-
-    fun toVersionCode(): Int {
-        val minorExtraDigit = if (versionMinor > 9) {
-            (versionMinor / 10).toString()
-        } else {
-            ""
-        }
-
-        return "$versionMajor$minorExtraDigit$versionPatch$versionBuild".toInt()
-    }
-
-    class Stable(versionMajor: Int, versionMinor: Int, versionPatch: Int) :
-        Version(versionMajor, versionMinor, versionPatch) {
-        override fun toVersionName(): String = "${versionMajor}.${versionMinor}.${versionPatch}"
-    }
-
-    class ReleaseCandidate(
-        versionMajor: Int, versionMinor: Int, versionPatch: Int, versionBuild: Int
-    ) : Version(versionMajor, versionMinor, versionPatch, versionBuild) {
-        override fun toVersionName(): String =
-            "${versionMajor}.${versionMinor}.${versionPatch}-rc.$versionBuild"
-    }
-
-    class Beta(versionMajor: Int, versionMinor: Int, versionPatch: Int, versionBuild: Int) :
-        Version(versionMajor, versionMinor, versionPatch, versionBuild) {
-        override fun toVersionName(): String =
-            "${versionMajor}.${versionMinor}.${versionPatch}-beta.$versionBuild"
-    }
-
-    class Alpha(
-        versionMajor: Int, versionMinor: Int, versionPatch: Int, commitId: String
-    ) : Version(versionMajor, versionMinor, versionPatch, commitId = commitId) {
-        override fun toVersionName(): String =
-            "${versionMajor}.${versionMinor}.${versionPatch}-alpha.$commitId"
     }
 }
