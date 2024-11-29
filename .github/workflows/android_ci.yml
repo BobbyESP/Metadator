@@ -4,7 +4,8 @@ name: Android CI
 on:
   pull_request:
     branches: [ "master" ]
-
+  workflow_dispatch:
+  
 jobs:
   build-debug:
     name: Build FOSS APKs
