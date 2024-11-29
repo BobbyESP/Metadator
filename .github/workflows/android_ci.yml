@@ -39,8 +39,8 @@ jobs:
             ENCODED_STRING: ${{ secrets.SIGNING_KEY_STORE_BASE64 }}
             SIGNING_KEY_STORE_PATH: ${{ secrets.SIGNING_KEY_STORE_PATH }}
         run: |
-          echo $ENCODED_STRING > keystore-b64.txt
-          base64 -d keystore-b64.txt > "$SIGNING_KEY_STORE_PATH"
+          base64 -d <<< $ENCODED_STRING > "$SIGNING_KEY_STORE_PATH"
+          echo "RELEASE_STORE_FILE=$(realpath $SIGNING_KEY_STORE_PATH)" >> $GITHUB_ENV
 
       - name: Build with Gradle
         env:
