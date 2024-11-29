@@ -10,6 +10,6 @@ fun String.isNumberInRange(start: Int, end: Int): Boolean {
     return this.isNotEmpty() && this.isDigitsOnly() && this.length < 10 && this.toInt() >= start && this.toInt() <= end
 }
 
-fun String?.isNotNullOrBlank(): Boolean {
+fun String?.isNeitherNullNorBlank(): Boolean {
     return this != null && this.isNotBlank()
 }

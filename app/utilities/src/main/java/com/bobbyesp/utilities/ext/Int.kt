@@ -10,5 +10,7 @@ fun Int.bigQuantityFormatter(): String {
 }
 
 fun Int.toMinutes(): String {
-    return java.text.SimpleDateFormat("mm:ss").format(java.util.Date(this.toLong()))
+    val minutes = this / 60
+    val seconds = this % 60
+    return "%02d:%02d".format(minutes, seconds)
 }

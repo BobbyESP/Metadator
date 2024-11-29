@@ -69,7 +69,7 @@ import com.bobbyesp.utilities.preferences.PreferencesKeys.DESIRED_OVERLAY
 import com.bobbyesp.utilities.states.ResourceState
 import com.bobbyesp.utilities.ui.permission.PermissionNotGrantedDialog
 import com.bobbyesp.utilities.ui.permission.PermissionRequestHandler
-import com.bobbyesp.utilities.ui.permission.toPermissionType
+import com.bobbyesp.utilities.ui.permission.PermissionType.Companion.toPermissionType
 import com.bobbyesp.utilities.ui.rememberForeverLazyGridState
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted

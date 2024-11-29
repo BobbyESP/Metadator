@@ -1,6 +1,5 @@
 package com.bobbyesp.utilities.ui.permission
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -104,22 +103,15 @@ fun TextWithDot(text: String) {
     }
 }
 
-enum class PermissionType {
-    READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE, READ_MEDIA_AUDIO, INTERNET, ACCESS_NETWORK_STATE, ACCESS_WIFI_STATE, CHANGE_WIFI_STATE, MANAGE_EXTERNAL_STORAGE;
-
-    @SuppressLint("InlinedApi")
-    fun getPermissionString(): String {
-        return when (this) {
-            READ_EXTERNAL_STORAGE -> android.Manifest.permission.READ_EXTERNAL_STORAGE
-            WRITE_EXTERNAL_STORAGE -> android.Manifest.permission.WRITE_EXTERNAL_STORAGE
-            INTERNET -> android.Manifest.permission.INTERNET
-            ACCESS_NETWORK_STATE -> android.Manifest.permission.ACCESS_NETWORK_STATE
-            ACCESS_WIFI_STATE -> android.Manifest.permission.ACCESS_WIFI_STATE
-            CHANGE_WIFI_STATE -> android.Manifest.permission.CHANGE_WIFI_STATE
-            READ_MEDIA_AUDIO -> android.Manifest.permission.READ_MEDIA_AUDIO
-            MANAGE_EXTERNAL_STORAGE -> android.Manifest.permission.MANAGE_EXTERNAL_STORAGE
-        }
-    }
+enum class PermissionType(val permission: String) {
+    READ_EXTERNAL_STORAGE(android.Manifest.permission.READ_EXTERNAL_STORAGE),
+    WRITE_EXTERNAL_STORAGE(android.Manifest.permission.WRITE_EXTERNAL_STORAGE),
+    READ_MEDIA_AUDIO(android.Manifest.permission.READ_MEDIA_AUDIO),
+    INTERNET(android.Manifest.permission.INTERNET),
+    ACCESS_NETWORK_STATE(android.Manifest.permission.ACCESS_NETWORK_STATE),
+    ACCESS_WIFI_STATE(android.Manifest.permission.ACCESS_WIFI_STATE),
+    CHANGE_WIFI_STATE(android.Manifest.permission.CHANGE_WIFI_STATE),
+    MANAGE_EXTERNAL_STORAGE(android.Manifest.permission.MANAGE_EXTERNAL_STORAGE);
 
     @Composable
     fun toPermissionString(): String {
@@ -134,19 +126,21 @@ enum class PermissionType {
             MANAGE_EXTERNAL_STORAGE -> stringResource(R.string.manage_external_storage)
         }
     }
-}
 
-fun String.toPermissionType(): PermissionType {
-    return when (this) {
-        android.Manifest.permission.READ_EXTERNAL_STORAGE -> PermissionType.READ_EXTERNAL_STORAGE
-        android.Manifest.permission.WRITE_EXTERNAL_STORAGE -> PermissionType.WRITE_EXTERNAL_STORAGE
-        android.Manifest.permission.INTERNET -> PermissionType.INTERNET
-        android.Manifest.permission.ACCESS_NETWORK_STATE -> PermissionType.ACCESS_NETWORK_STATE
-        android.Manifest.permission.ACCESS_WIFI_STATE -> PermissionType.ACCESS_WIFI_STATE
-        android.Manifest.permission.CHANGE_WIFI_STATE -> PermissionType.CHANGE_WIFI_STATE
-        android.Manifest.permission.READ_MEDIA_AUDIO -> PermissionType.READ_MEDIA_AUDIO
-        android.Manifest.permission.MANAGE_EXTERNAL_STORAGE -> PermissionType.MANAGE_EXTERNAL_STORAGE
-        else -> throw IllegalArgumentException("Unknown permission string")
+    companion object {
+        fun String.toPermissionType(): PermissionType {
+            return when (this) {
+                android.Manifest.permission.READ_EXTERNAL_STORAGE -> READ_EXTERNAL_STORAGE
+                android.Manifest.permission.WRITE_EXTERNAL_STORAGE -> WRITE_EXTERNAL_STORAGE
+                android.Manifest.permission.INTERNET -> INTERNET
+                android.Manifest.permission.ACCESS_NETWORK_STATE -> ACCESS_NETWORK_STATE
+                android.Manifest.permission.ACCESS_WIFI_STATE -> ACCESS_WIFI_STATE
+                android.Manifest.permission.CHANGE_WIFI_STATE -> CHANGE_WIFI_STATE
+                android.Manifest.permission.READ_MEDIA_AUDIO -> READ_MEDIA_AUDIO
+                android.Manifest.permission.MANAGE_EXTERNAL_STORAGE -> MANAGE_EXTERNAL_STORAGE
+                else -> throw IllegalArgumentException("Unknown permission string")
+            }
+        }
     }
 }
 

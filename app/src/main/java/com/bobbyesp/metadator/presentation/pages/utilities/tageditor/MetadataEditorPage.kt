@@ -77,7 +77,7 @@ import com.bobbyesp.ui.components.others.MetadataTag
 import com.bobbyesp.ui.components.text.LargeCategoryTitle
 import com.bobbyesp.ui.components.text.MarqueeText
 import com.bobbyesp.ui.components.text.PreConfiguredOutlinedTextField
-import com.bobbyesp.utilities.ext.isNotNullOrBlank
+import com.bobbyesp.utilities.ext.isNeitherNullNorBlank
 import com.bobbyesp.utilities.ext.toMinutes
 import com.bobbyesp.utilities.states.ResourceState
 import com.bobbyesp.utilities.states.ScreenState
@@ -129,7 +129,7 @@ fun MetadataEditorPage(
         when (result.resultCode) {
             Activity.RESULT_OK -> {
                 val receivedLyrics = result.data?.getStringExtra("lyrics")
-                if (receivedLyrics.isNotNullOrBlank()) {
+                if (receivedLyrics.isNeitherNullNorBlank()) {
                     pageState.mutablePropertiesMap["LYRICS"] = receivedLyrics!!
                 } else {
                     scope.launch { snackbarHost.showSnackbar(context.getString(R.string.empty_lyrics_received)) }
