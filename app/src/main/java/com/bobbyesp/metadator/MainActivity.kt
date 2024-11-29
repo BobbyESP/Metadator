@@ -21,6 +21,7 @@ import org.koin.android.ext.android.inject
 import org.koin.compose.KoinContext
 import setCrashlyticsCollection
 
+@androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
 class MainActivity : ComponentActivity() {
     private var isMusicPlayerServiceStarted = false
 
@@ -31,7 +32,6 @@ class MainActivity : ComponentActivity() {
         installSplashScreen()
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
-        activity = this
         setCrashlyticsCollection()
         setContent {
             KoinContext {
@@ -56,7 +56,6 @@ class MainActivity : ComponentActivity() {
         isMusicPlayerServiceStarted = false
     }
 
-    @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
     private fun startMediaPlayerService() {
         val intent = Intent(this, MediaplayerService::class.java)
         if (!isMusicPlayerServiceStarted) {
@@ -66,27 +65,5 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private var serviceConnection = object : ServiceConnection {
-        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
-            Log.i(
-                "MainActivity",
-                "The Music Service is connected. Updating the connection handler."
-            )
-            val binder = service as MediaplayerService.MusicBinder
-            connectionHandler.connect(binder.service.mediaServiceHandler)
-        }
-
-        override fun onServiceDisconnected(name: ComponentName?) {
-            Log.i(
-                "MainActivity",
-                "The Music Service has been disconnected. Detaching the connection handler."
-            )
-            connectionHandler.disconnect()
-        }
-    }
-
-    companion object {
-        private lateinit var activity: MainActivity
-        fun getActivity(): MainActivity = activity
-    }
+    private var serviceConnection = MediaplayerServiceConnection(connectionHandler)
 }
