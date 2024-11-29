@@ -24,4 +24,5 @@
     <string name="song_sync_needed_desc">SongSync es un simple pero poderoso descargador de letras que permite a los usuarios obtener las letras desde múltiples fuentes. \nMetadator usa su puente integrado para recibir las letras.</string>
     <string name="song_sync_not_installed">Parece que la aplicación no está instalada en tu dispositivo. Por favor, descárgala para acceder a esta funcionalidad.</string>
     <string name="download">Descargar</string>
+    <string name="album">Álbum</string>
 </resources>

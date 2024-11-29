@@ -201,6 +201,8 @@ dependencies {
     implementation(libs.compose.tooling.preview)
     debugImplementation(libs.compose.tooling)
     debugImplementation(libs.compose.test.manifest)
+
+    debugImplementation(libs.leakcanary)
 }
 
 class RoomSchemaArgProvider(

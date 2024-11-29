@@ -48,13 +48,11 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.mmkv)
     implementation(libs.bundles.compose)
-    implementation(libs.compose.ui.utilities)
     implementation(libs.paging.compose)
     implementation(libs.paging.runtime)
     implementation(libs.coil)
     implementation(libs.kotlinx.collections.immutable)
     implementation(libs.bundles.coroutines)
-    //Accompanist libraries
     implementation(libs.bundles.accompanist)
 
     androidTestImplementation(platform(libs.compose.bom))

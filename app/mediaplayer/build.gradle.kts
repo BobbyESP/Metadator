@@ -51,7 +51,7 @@ dependencies {
     implementation(libs.core.appcompat)
     implementation(libs.androidx.legacy.support.v4) // Needed MediaSessionCompat.Token
 
-    //DI (Dependency Injection - Hilt)
+    //DI (Dependency Injection - Koin)
     implementation(libs.bundles.koin)
 
     //Media3

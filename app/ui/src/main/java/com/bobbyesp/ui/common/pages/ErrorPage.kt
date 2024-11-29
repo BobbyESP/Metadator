@@ -30,12 +30,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.WarningAmber
 import androidx.compose.material.icons.twotone.BugReport
 import androidx.compose.material3.Button
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.darkColorScheme
@@ -130,64 +128,57 @@ private fun SharedTransitionScope.MinimizedErrorPage(
     onCardClicked: () -> Unit,
     onRetry: () -> Unit,
 ) {
-    OutlinedCard(
-        modifier = Modifier,
-        colors = CardDefaults.outlinedCardColors(
-            containerColor = MaterialTheme.colorScheme.errorContainer,
-        ),
-        shape = MaterialTheme.shapes.small
+    Column(
+        modifier = modifier
+            .padding(8.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Column(
-            modifier = modifier
-                .padding(8.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Icon(
-                modifier = Modifier.size(48.dp),
-                imageVector = Icons.Rounded.WarningAmber,
-                contentDescription = stringResource(id = R.string.error),
-            )
-            Text(
-                text = stringResource(id = R.string.unknown_error_title),
-                style = MaterialTheme.typography.titleLarge.copy(
-                    color = MaterialTheme.colorScheme.onBackground
-                ),
-                fontWeight = FontWeight.SemiBold,
-            )
-            PrimaryStacktraceCard(
-                modifier = Modifier
-                    .sharedBounds(
-                        boundsTransform = DefaultBoundsTransform,
-                        enter = fadeIn(
-                            tween(
-                                durationMillis = DURATION_ENTER,
-                                delayMillis = DURATION_EXIT_SHORT,
-                                easing = EmphasizedDecelerateEasing
-                            )
-                        ),
-                        exit = fadeOut(
-                            tween(
-                                durationMillis = DURATION_EXIT_SHORT,
-                                easing = EmphasizedAccelerateEasing
-                            )
-                        ),
-                        sharedContentState = rememberSharedContentState(key = "stacktraceCardBounds"),
-                        animatedVisibilityScope = animatedVisibilityScope,
-                        placeHolderSize = SharedTransitionScope.PlaceHolderSize.animatedSize,
-                    )
-                    .padding(horizontal = 12.dp, vertical = 8.dp)
-                    .fillMaxWidth(),
-                errorType = throwable::class.simpleName
-                    ?: stringResource(id = R.string.unknown_error_title),
-                methodFailed = throwable.localizedMessage
-                    ?: stringResource(id = R.string.unknown_error_title),
-                line = throwable.stackTrace.firstOrNull()?.lineNumber ?: 0,
-                onClick = onCardClicked
-            )
-            Button(onClick = onRetry) {
-                Text(text = stringResource(id = R.string.retry))
-            }
+        Icon(
+            modifier = Modifier.size(48.dp),
+            imageVector = Icons.Rounded.WarningAmber,
+            contentDescription = stringResource(id = R.string.error),
+            tint = MaterialTheme.colorScheme.error
+        )
+        Text(
+            text = stringResource(id = R.string.unknown_error_title),
+            style = MaterialTheme.typography.titleLarge.copy(
+                color = MaterialTheme.colorScheme.onBackground
+            ),
+            fontWeight = FontWeight.SemiBold,
+        )
+        PrimaryStacktraceCard(
+            modifier = Modifier
+                .sharedBounds(
+                    boundsTransform = DefaultBoundsTransform,
+                    enter = fadeIn(
+                        tween(
+                            durationMillis = DURATION_ENTER,
+                            delayMillis = DURATION_EXIT_SHORT,
+                            easing = EmphasizedDecelerateEasing
+                        )
+                    ),
+                    exit = fadeOut(
+                        tween(
+                            durationMillis = DURATION_EXIT_SHORT,
+                            easing = EmphasizedAccelerateEasing
+                        )
+                    ),
+                    sharedContentState = rememberSharedContentState(key = "stacktraceCardBounds"),
+                    animatedVisibilityScope = animatedVisibilityScope,
+                    placeHolderSize = SharedTransitionScope.PlaceHolderSize.animatedSize,
+                )
+                .padding(horizontal = 12.dp, vertical = 8.dp)
+                .fillMaxWidth(),
+            errorType = throwable::class.simpleName
+                ?: stringResource(id = R.string.unknown_error_title),
+            methodFailed = throwable.localizedMessage
+                ?: stringResource(id = R.string.unknown_error_title),
+            line = throwable.stackTrace.firstOrNull()?.lineNumber ?: 0,
+            onClick = onCardClicked
+        )
+        Button(onClick = onRetry) {
+            Text(text = stringResource(id = R.string.retry))
         }
     }
 }
