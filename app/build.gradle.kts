@@ -2,6 +2,7 @@ import com.google.firebase.crashlytics.buildtools.gradle.CrashlyticsExtension
 import java.util.Properties
 
 val isGoogleMobileServicesBuild: Boolean by rootProject.extra
+val githubBuild = System.getenv("SIGNING_KEY_STORE_PATH") != null
 
 plugins {
     alias(libs.plugins.android.application)
@@ -37,6 +38,21 @@ android {
         manifestPlaceholders["redirectSchemeName"] = "metadator"
     }
 
+    androidResources {
+        generateLocaleConfig = true
+    }
+
+    signingConfigs {
+        create("release") {
+            if (githubBuild) {
+                storeFile = file(System.getenv("SIGNING_KEY_STORE_PATH"))
+                storePassword = System.getenv("SIGNING_STORE_PASSWORD")
+                keyAlias = System.getenv("SIGNING_KEY_ALIAS")
+                keyPassword = System.getenv("SIGNING_KEY_ALIAS")
+            }
+        }
+    }
+
     buildTypes {
         release {
             buildConfigField(
@@ -49,7 +65,9 @@ android {
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             )
-            signingConfig = signingConfigs.getByName("debug")
+            if (System.getenv("RELEASE_STORE_FILE") != null) {
+                signingConfig = signingConfigs["release"]
+            }
         }
         debug {
             buildConfigField(
@@ -60,6 +78,7 @@ android {
             )
             isMinifyEnabled = false
 //            applicationIdSuffix = ".debug"
+            signingConfig = signingConfigs["debug"]
         }
     }
 
@@ -69,7 +88,7 @@ android {
         create("playstore") {
             dimension = "version"
 
-            if(isGoogleMobileServicesBuild) {
+            if (isGoogleMobileServicesBuild) {
                 apply(plugin = libs.plugins.google.gms.get().pluginId)
                 apply(plugin = libs.plugins.firebase.crashlytics.get().pluginId)
                 configure<CrashlyticsExtension> {
@@ -120,8 +139,13 @@ android {
             }
         }
         outputs.all {
-            (this as com.android.build.gradle.internal.api.BaseVariantOutputImpl).outputFileName =
-                "Metadator-${defaultConfig.versionName}-${name}.apk"
+            if (githubBuild) {
+                (this as com.android.build.gradle.internal.api.BaseVariantOutputImpl).outputFileName =
+                    "Metadator-${defaultConfig.versionName}-${name}_(GitHub).apk"
+            } else {
+                (this as com.android.build.gradle.internal.api.BaseVariantOutputImpl).outputFileName =
+                    "Metadator-${defaultConfig.versionName}-${name}.apk"
+            }
         }
     }
 

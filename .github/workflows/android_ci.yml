@@ -6,8 +6,8 @@ on:
     branches: [ "master" ]
 
 jobs:
-  build:
-
+  build-debug:
+    name: Build FOSS APKs
     runs-on: ubuntu-latest
 
     steps:
@@ -28,19 +28,31 @@ jobs:
           echo "CLIENT_ID=${{ secrets.CLIENT_ID }}" >> local.properties
           echo "CLIENT_SECRET=${{ secrets.CLIENT_SECRET }}" >> local.properties
 
-      - name: Create Google Service file
-        run: echo ${{ secrets.GOOGLE_SERVICES_JSON }} | base64 -di >> /home/runner/work/Metadator/Metadator/app/google-services.json
-
       - uses: gradle/actions/setup-gradle@v3
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
+      #1
+      - name: Decode Keystore
+        env:
+            ENCODED_STRING: ${{ secrets.SIGNING_KEY_STORE_BASE64 }}
+            SIGNING_KEY_STORE_PATH: ${{ secrets.SIGNING_KEY_STORE_PATH }}
+        run: |
+          echo $ENCODED_STRING > keystore-b64.txt
+          base64 -d keystore-b64.txt > $SIGNING_KEY_STORE_PATH
+
       - name: Build with Gradle
+        env:
+          SIGNING_KEY_STORE_PATH: ${{ secrets.SIGNING_KEY_STORE_PATH }}
+          SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
+          SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
+          SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
         run: ./gradlew assembleFoss
 
       - name: Upload APK
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: Metadator-${{ github.sha }}.apk
-          path: app/build/outputs/apk/foss/*.apk
+            name: release-artifacts
+            paths: |
+              app/build/outputs/apk/release/
