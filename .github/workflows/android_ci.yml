@@ -40,7 +40,7 @@ jobs:
             SIGNING_KEY_STORE_PATH: ${{ secrets.SIGNING_KEY_STORE_PATH }}
         run: |
           echo $ENCODED_STRING > keystore-b64.txt
-          base64 -d keystore-b64.txt > $SIGNING_KEY_STORE_PATH
+          base64 -d keystore-b64.txt > "$SIGNING_KEY_STORE_PATH"
 
       - name: Build with Gradle
         env:
