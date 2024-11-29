@@ -1,11 +1,10 @@
-# From https://github.com/JunkFood02/Seal
 name: Android CI
 
 on:
   pull_request:
     branches: [ "master" ]
   workflow_dispatch:
-  
+
 jobs:
   build-debug:
     name: Build FOSS APKs
@@ -34,18 +33,16 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      #1
       - name: Decode Keystore
         env:
-            ENCODED_STRING: ${{ secrets.SIGNING_KEY_STORE_BASE64 }}
-            SIGNING_KEY_STORE_PATH: ${{ secrets.SIGNING_KEY_STORE_PATH }}
+            ENCODED_KEYSTORE_STRING: ${{ secrets.SIGNING_KEY_STORE_BASE64 }}
         run: |
-          base64 -d <<< $ENCODED_STRING > ./keystore.jks
+          base64 -d <<< $ENCODED_KEYSTORE_STRING > ./keystore.jks
           echo "RELEASE_STORE_FILE=$(realpath ./keystore.jks)" >> $GITHUB_ENV
 
       - name: Build with Gradle
         env:
-          SIGNING_KEY_STORE_PATH: ${{ secrets.SIGNING_KEY_STORE_PATH }}
+          SIGNING_KEY_STORE_PATH: ${{ env.RELEASE_STORE_FILE }}
           SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
           SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
           SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
