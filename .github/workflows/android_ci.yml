@@ -54,3 +54,4 @@ jobs:
             name: release-artifacts
             paths: |
               app/build/outputs/apk/release/
+              app/build/outputs/apk/debug/
