@@ -77,6 +77,7 @@ import com.bobbyesp.ui.components.others.MetadataTag
 import com.bobbyesp.ui.components.text.LargeCategoryTitle
 import com.bobbyesp.ui.components.text.MarqueeText
 import com.bobbyesp.ui.components.text.PreConfiguredOutlinedTextField
+import com.bobbyesp.utilities.ext.fromMillisToMinutes
 import com.bobbyesp.utilities.ext.isNeitherNullNorBlank
 import com.bobbyesp.utilities.ext.toMinutes
 import com.bobbyesp.utilities.states.ResourceState
@@ -438,7 +439,7 @@ private fun AudioProperties(modifier: Modifier = Modifier, audioProperties: Audi
             MetadataTag(
                 modifier = Modifier.weight(0.5f),
                 typeOfMetadata = stringResource(id = R.string.duration),
-                metadata = audioProperties.length.toMinutes()
+                metadata = audioProperties.length.fromMillisToMinutes()
             )
         }
     }
