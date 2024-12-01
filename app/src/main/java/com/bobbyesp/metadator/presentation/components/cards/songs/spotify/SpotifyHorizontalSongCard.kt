@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import com.adamratzman.spotify.models.Track
 import com.bobbyesp.metadator.ext.formatArtists
 import com.bobbyesp.metadator.presentation.components.image.AsyncImage
+import com.bobbyesp.metadator.presentation.components.text.ConditionedMarqueeText
 import com.bobbyesp.ui.components.text.MarqueeText
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -80,12 +81,12 @@ fun SpotifyHorizontalSongCard(
                         .padding(8.dp)
                         .weight(1f)
                 ) {
-                    MarqueeText(
+                    ConditionedMarqueeText(
                         text = track.name,
                         style = MaterialTheme.typography.bodyLarge,
                         fontWeight = FontWeight.Bold,
                     )
-                    MarqueeText(
+                    ConditionedMarqueeText(
                         text = track.artists.formatArtists(),
                         style = MaterialTheme.typography.bodyMedium.copy(
                             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)

@@ -5,6 +5,7 @@ import com.bobbyesp.utilities.preferences.PreferencesKeys.DYNAMIC_COLOR
 import com.bobbyesp.utilities.preferences.PreferencesKeys.HIGH_CONTRAST
 import com.bobbyesp.utilities.preferences.PreferencesKeys.MARQUEE_TEXT
 import com.bobbyesp.utilities.preferences.PreferencesKeys.MMKV_PREFERENCES_NAME
+import com.bobbyesp.utilities.preferences.PreferencesKeys.SONG_CARD_SIZE
 import com.bobbyesp.utilities.preferences.PreferencesKeys.THEME_COLOR
 import com.bobbyesp.utilities.preferences.settings.AppMainSettings
 import com.bobbyesp.utilities.theme.DarkThemePreference
@@ -23,7 +24,8 @@ private val BooleanPreferenceDefaults: Map<String, Boolean> =
 
 private val IntPreferenceDefaults: Map<String, Int> =
     mapOf(
-        DARK_THEME_VALUE to DarkThemePreference.FOLLOW_SYSTEM
+        DARK_THEME_VALUE to DarkThemePreference.FOLLOW_SYSTEM,
+        SONG_CARD_SIZE to 2 //CompactCardSize.LARGE (com.bobbyesp.metadator.presentation.components.cards.songs.compact.CompactCardSize)
     )
 
 object Preferences {

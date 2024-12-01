@@ -19,6 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bobbyesp.metadator.presentation.components.image.AsyncImage
+import com.bobbyesp.metadator.presentation.components.text.ConditionedMarqueeText
 import com.bobbyesp.metadator.presentation.theme.MetadatorTheme
 import com.bobbyesp.ui.components.text.MarqueeText
 import com.bobbyesp.utilities.Time
@@ -50,13 +51,13 @@ fun HorizontalSongCard(
                     .padding(vertical = 8.dp, horizontal = 6.dp)
                     .weight(1f)
             ) {
-                MarqueeText(
+                ConditionedMarqueeText(
                     text = song.title,
                     style = MaterialTheme.typography.bodyLarge,
                     fontWeight = FontWeight.Bold,
                     fontSize = 15.sp
                 )
-                MarqueeText(
+                ConditionedMarqueeText(
                     text = song.artist,
                     style = MaterialTheme.typography.bodyMedium.copy(
                         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)

@@ -2,8 +2,8 @@ package com.bobbyesp.utilities.preferences
 
 object PreferencesKeys {
     //------------GENERAL--------------
-    const val DESIRED_OVERLAY = "desired_overlay"
-
+    const val DESIRED_LAYOUT = "desired_overlay"
+    const val SONG_CARD_SIZE = "song_card_size"
     const val MARQUEE_TEXT = "marquee_text"
 
     //------------THEME----------------

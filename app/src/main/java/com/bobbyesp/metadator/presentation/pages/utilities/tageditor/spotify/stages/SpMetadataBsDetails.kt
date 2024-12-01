@@ -43,6 +43,7 @@ import com.bobbyesp.metadator.ext.TagLib.toLocalizedName
 import com.bobbyesp.metadator.ext.format
 import com.bobbyesp.metadator.ext.formatArtists
 import com.bobbyesp.metadator.presentation.components.image.AsyncImage
+import com.bobbyesp.metadator.presentation.components.text.ConditionedMarqueeText
 import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.spotify.MetadataBsVM
 import com.bobbyesp.ui.components.button.BackButton
 import com.bobbyesp.ui.components.others.SelectableSurface
@@ -198,7 +199,7 @@ private fun TrackInfo(
                     .padding(8.dp)
                     .weight(1f)
             ) {
-                MarqueeText(
+                ConditionedMarqueeText(
                     text = track.name,
                     style = MaterialTheme.typography.bodyLarge,
                     fontWeight = FontWeight.Bold,

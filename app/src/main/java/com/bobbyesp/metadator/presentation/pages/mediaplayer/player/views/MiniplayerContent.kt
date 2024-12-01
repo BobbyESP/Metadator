@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.sp
 import androidx.media3.common.MediaMetadata
 import com.bobbyesp.metadator.R
 import com.bobbyesp.metadator.presentation.components.image.AsyncImage
+import com.bobbyesp.metadator.presentation.components.text.ConditionedMarqueeText
 import com.bobbyesp.metadator.presentation.pages.mediaplayer.player.AnimatedTextContentTransformation
 import com.bobbyesp.ui.components.button.DynamicButton
 import com.bobbyesp.ui.components.text.MarqueeText
@@ -84,14 +85,14 @@ fun MiniplayerContent(
             ) {
                 transition.AnimatedContent(transitionSpec = { AnimatedTextContentTransformation }) {
                     Column {
-                        MarqueeText(
+                        ConditionedMarqueeText(
                             text = it.title.toString(),
                             style = MaterialTheme.typography.bodyLarge,
                             fontWeight = FontWeight.Bold,
                             fontSize = 16.sp
                         )
 
-                        MarqueeText(
+                        ConditionedMarqueeText(
                             text = it.artist.toString(),
                             style = MaterialTheme.typography.bodyMedium.copy(
                                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)

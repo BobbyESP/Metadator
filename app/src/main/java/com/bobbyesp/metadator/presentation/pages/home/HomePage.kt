@@ -17,12 +17,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.List
-import androidx.compose.material.icons.rounded.GridView
+import androidx.compose.material.icons.rounded.CropSquare
 import androidx.compose.material.icons.rounded.KeyboardDoubleArrowUp
 import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material.icons.rounded.MoreVert
-import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -33,19 +32,18 @@ import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
@@ -57,15 +55,16 @@ import com.bobbyesp.metadator.ext.toParcelableSong
 import com.bobbyesp.metadator.presentation.common.LocalDrawerState
 import com.bobbyesp.metadator.presentation.common.LocalNavController
 import com.bobbyesp.metadator.presentation.common.Route
+import com.bobbyesp.metadator.presentation.components.cards.songs.compact.CompactCardSize
 import com.bobbyesp.metadator.presentation.pages.MediaStorePage
 import com.bobbyesp.metadator.presentation.pages.MediaStorePageViewModel
-import com.bobbyesp.metadator.presentation.pages.home.LayoutType.entries
 import com.bobbyesp.ui.components.dropdown.AnimatedDropdownMenu
 import com.bobbyesp.ui.components.dropdown.DropdownItemContainer
 import com.bobbyesp.ui.components.text.AutoResizableText
 import com.bobbyesp.utilities.model.Song
 import com.bobbyesp.utilities.preferences.Preferences
-import com.bobbyesp.utilities.preferences.PreferencesKeys.DESIRED_OVERLAY
+import com.bobbyesp.utilities.preferences.PreferencesKeys.DESIRED_LAYOUT
+import com.bobbyesp.utilities.preferences.PreferencesKeys.SONG_CARD_SIZE
 import com.bobbyesp.utilities.states.ResourceState
 import com.bobbyesp.utilities.ui.permission.PermissionNotGrantedDialog
 import com.bobbyesp.utilities.ui.permission.PermissionRequestHandler
@@ -114,70 +113,99 @@ fun HomePage(
     var desiredLayout by remember {
         mutableStateOf(
             Preferences.Enumerations.getValue(
-                DESIRED_OVERLAY, LayoutType.Grid
+                DESIRED_LAYOUT, LayoutType.Grid
             )
         )
     }
 
-    val gridIsFirstItemVisible by remember { derivedStateOf { mediaStoreLazyGridState.firstVisibleItemIndex == 0 } }
-    val listIsFirstItemVisible by remember { derivedStateOf { mediaStoreLazyColumnState.firstVisibleItemIndex == 0 } }
+    var desiredCardSize by remember {
+        mutableStateOf(
+            Preferences.Enumerations.getValue(
+                SONG_CARD_SIZE, CompactCardSize.LARGE
+            )
+        )
+    }
+
+    val gridIsFirstItemVisible by remember {
+        derivedStateOf {
+            mediaStoreLazyGridState.firstVisibleItemIndex == 0
+        }
+    }
+    val listIsFirstItemVisible by remember {
+        derivedStateOf {
+            mediaStoreLazyColumnState.firstVisibleItemIndex == 0
+        }
+    }
 
     Scaffold(modifier = modifier.fillMaxSize(), topBar = {
-        CenterAlignedTopAppBar(
-            navigationIcon = {
-                IconButton(onClick = {
-                    scope.launch {
-                        drawerState.open()
-                    }
+        TopAppBar(navigationIcon = {
+            IconButton(onClick = {
+                scope.launch {
+                    drawerState.open()
+                }
+            }) {
+                Icon(
+                    imageVector = Icons.Rounded.Menu,
+                    contentDescription = stringResource(id = R.string.open_navigation)
+                )
+            }
+        }, title = {
+            Column(
+                horizontalAlignment = Alignment.Start,
+            ) {
+                Text(
+                    text = stringResource(id = R.string.app_name).uppercase(),
+                    fontWeight = FontWeight.SemiBold,
+                    fontFamily = FontFamily.Monospace,
+                    style = MaterialTheme.typography.titleLarge.copy(
+                        letterSpacing = 4.sp,
+                    ),
+                )
+                AutoResizableText(
+                    text = stringResource(id = R.string.app_desc).uppercase(),
+                    fontWeight = FontWeight.Normal,
+                    fontFamily = FontFamily.Monospace,
+                    style = MaterialTheme.typography.bodySmall.copy(
+                        letterSpacing = 2.sp,
+                    ),
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                )
+            }
+        }, actions = {
+            IconButton(
+                onClick = { navController.navigate(Route.SettingsNavigator.Settings) }) {
+                Icon(
+                    imageVector = Icons.Rounded.Settings, contentDescription = stringResource(
+                        id = R.string.settings
+                    )
+                )
+            }
+            IconButton(
+                onClick = {
+                    moreOptionsVisible = !moreOptionsVisible
                 }) {
-                    Icon(
-                        imageVector = Icons.Rounded.Menu,
-                        contentDescription = stringResource(id = R.string.open_navigation)
+                Icon(
+                    imageVector = Icons.Rounded.MoreVert, contentDescription = stringResource(
+                        id = R.string.open_more_options
                     )
-                }
-            }, title = {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.app_name).uppercase(),
-                        fontWeight = FontWeight.SemiBold,
-                        fontFamily = FontFamily.Monospace,
-                        style = MaterialTheme.typography.titleLarge.copy(
-                            letterSpacing = 4.sp,
-                        ),
-                    )
-                    AutoResizableText(
-                        text = stringResource(id = R.string.app_desc).uppercase(),
-                        fontWeight = FontWeight.Normal,
-                        fontFamily = FontFamily.Monospace,
-                        style = MaterialTheme.typography.bodySmall.copy(
-                            letterSpacing = 2.sp,
-                        ),
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
-                    )
-                }
-            }, actions = {
-                IconButton(
-                    onClick = {
-                        moreOptionsVisible = !moreOptionsVisible
-                    }) {
-                    Icon(
-                        imageVector = Icons.Rounded.MoreVert, contentDescription = stringResource(
-                            id = R.string.open_more_options
-                        )
-                    )
-                }
-                AnimatedDropdownMenu(
-                    expanded = moreOptionsVisible, onDismissRequest = {
-                        moreOptionsVisible = false
-                    }) {
-                    DropdownMenuContent(onLayoutChanged = {
+                )
+            }
+            AnimatedDropdownMenu(
+                expanded = moreOptionsVisible, onDismissRequest = {
+                    moreOptionsVisible = false
+                }) {
+                DropdownMenuContent(
+                    desiredLayout = desiredLayout,
+                    desiredCardSize = desiredCardSize,
+                    onLayoutChanged = {
                         desiredLayout = it
+                    },
+                    onCardSizeChanged = {
+                        desiredCardSize = it
                     })
-                }
+            }
 
-            })
+        })
     }, floatingActionButton = {
         when (desiredLayout) {
             LayoutType.Grid -> {
@@ -244,6 +272,7 @@ fun HomePage(
                     lazyGridState = mediaStoreLazyGridState,
                     lazyListState = mediaStoreLazyColumnState,
                     desiredLayout = desiredLayout,
+                    compactCardSize = desiredCardSize,
                     onReloadMediaStore = {
                         onEvent(MediaStorePageViewModel.Companion.Events.ReloadMediaStore)
                     },
@@ -258,17 +287,13 @@ fun HomePage(
 
 @Composable
 private fun DropdownMenuContent(
-    onLayoutChanged: (LayoutType) -> Unit = {}
+    desiredLayout: LayoutType,
+    desiredCardSize: CompactCardSize,
+    onLayoutChanged: (LayoutType) -> Unit = {},
+    onCardSizeChanged: (CompactCardSize) -> Unit = {}
 ) {
     val availableLayoutType = LayoutType.entries.toImmutableList()
 
-    var desiredOverlay by remember {
-        mutableIntStateOf(
-            Preferences.Enumerations.getValue(
-                DESIRED_OVERLAY, LayoutType.Grid
-            ).ordinal
-        )
-    }
     Column(
         modifier = Modifier.padding(horizontal = 8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -280,37 +305,61 @@ private fun DropdownMenuContent(
             color = MaterialTheme.colorScheme.primary,
             style = MaterialTheme.typography.labelMedium
         )
-        DropdownItemContainer(content = {
-            SingleChoiceSegmentedButtonRow {
-                availableLayoutType.forEachIndexed { index, listType ->
-                    SegmentedButton(
-                        selected = desiredOverlay == listType.ordinal,
-                        onClick = {
-                            desiredOverlay = listType.ordinal
-                            Preferences.Enumerations.encodeValue(
-                                DESIRED_OVERLAY, listType
+        DropdownItemContainer(
+            content = {
+                SingleChoiceSegmentedButtonRow {
+                    availableLayoutType.forEachIndexed { index, listType ->
+                        SegmentedButton(
+                            selected = desiredLayout.ordinal == listType.ordinal,
+                            onClick = {
+                                Preferences.Enumerations.encodeValue(
+                                    DESIRED_LAYOUT, listType
+                                )
+                                onLayoutChanged(listType)
+                            },
+                            shape = SegmentedButtonDefaults.itemShape(
+                                index = index, count = availableLayoutType.size
+                            ),
+                        ) {
+                            Icon(
+                                imageVector = listType.icon,
+                                contentDescription = stringResource(id = R.string.list_type)
                             )
-                            onLayoutChanged(listType)
-                        },
-                        shape = SegmentedButtonDefaults.itemShape(
-                            index = index, count = availableLayoutType.size
-                        ),
-                    ) {
-                        Icon(
-                            imageVector = listType.icon,
-                            contentDescription = stringResource(id = R.string.list_type)
-                        )
+                        }
                     }
                 }
-            }
-        })
+            })
+        Text(
+            text = stringResource(id = R.string.card_size),
+            modifier = Modifier.fillMaxWidth(),
+            color = MaterialTheme.colorScheme.primary,
+            style = MaterialTheme.typography.labelMedium
+        )
+
+        DropdownItemContainer(
+            content = {
+                SingleChoiceSegmentedButtonRow {
+                    CompactCardSize.entries.forEachIndexed { index, cardSize ->
+                        SegmentedButton(
+                            selected = desiredCardSize.ordinal == cardSize.ordinal,
+                            onClick = {
+                                Preferences.Enumerations.encodeValue(
+                                    SONG_CARD_SIZE, cardSize
+                                )
+                                onCardSizeChanged(cardSize)
+                            },
+                            shape = SegmentedButtonDefaults.itemShape(
+                                index = index, count = CompactCardSize.entries.size
+                            ),
+                        ) {
+                            Icon(
+                                imageVector = Icons.Rounded.CropSquare,
+                                contentDescription = stringResource(id = R.string.card_size)
+                            )
+                        }
+                    }
+                }
+            })
     }
 }
 
-enum class LayoutType(val icon: ImageVector) {
-    Grid(icon = Icons.Rounded.GridView), List(icon = Icons.AutoMirrored.Rounded.List);
-
-    companion object {
-        fun Int.toListType(): LayoutType = entries.first { it.ordinal == this }
-    }
-}

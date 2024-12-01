@@ -28,7 +28,7 @@ fun GeneralSettingsPage() {
 
     val navController = LocalNavController.current
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
-        rememberTopAppBarState(),
+        state = rememberTopAppBarState(),
         canScroll = { true }
     )
 

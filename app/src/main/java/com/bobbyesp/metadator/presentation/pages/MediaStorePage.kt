@@ -1,6 +1,7 @@
 package com.bobbyesp.metadator.presentation.pages
 
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -15,17 +16,24 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.bobbyesp.metadator.R
 import com.bobbyesp.metadator.presentation.components.cards.songs.HorizontalSongCard
-import com.bobbyesp.metadator.presentation.components.cards.songs.VerticalSongCard
+import com.bobbyesp.metadator.presentation.components.cards.songs.compact.CompactCardSize
+import com.bobbyesp.metadator.presentation.components.cards.songs.compact.CompactCardSize.Companion.toCompactCardSize
+import com.bobbyesp.metadator.presentation.components.cards.songs.compact.CompactSongCard
 import com.bobbyesp.metadator.presentation.components.others.status.EmptyMediaStore
 import com.bobbyesp.metadator.presentation.pages.home.LayoutType
 import com.bobbyesp.ui.common.pages.ErrorPage
 import com.bobbyesp.ui.common.pages.LoadingPage
 import com.bobbyesp.utilities.model.Song
+import com.bobbyesp.utilities.preferences.PreferencesKeys.SONG_CARD_SIZE
+import com.bobbyesp.utilities.preferences.intState
 import com.bobbyesp.utilities.states.ResourceState
 import my.nanihadesuka.compose.LazyColumnScrollbar
 import my.nanihadesuka.compose.LazyVerticalGridScrollbar
@@ -39,10 +47,12 @@ fun MediaStorePage(
     lazyGridState: LazyGridState,
     lazyListState: LazyListState,
     desiredLayout: LayoutType,
+    compactCardSize: CompactCardSize,
     onReloadMediaStore: () -> Unit,
     onItemClicked: (Song) -> Unit
 ) {
     val songsList = songs.value
+
     Box(
         modifier = modifier.fillMaxSize()
     ) {
@@ -58,7 +68,7 @@ fun MediaStorePage(
                 ) { onReloadMediaStore() }
 
                 is ResourceState.Success -> {
-                    val dataSongsList = songsList.data!!
+                    val dataSongsList = songsList.data ?: throw IllegalStateException("Data is null")
                     if (dataSongsList.isEmpty()) {
                         EmptyMediaStore(
                             modifier = Modifier.fillMaxSize()
@@ -88,11 +98,16 @@ fun MediaStorePage(
                                             key = { index -> dataSongsList[index].id },
                                             contentType = { _ -> "songItem" }) { index ->
                                             val song = dataSongsList[index]
-                                            VerticalSongCard(
-                                                song = song,
-                                                modifier = Modifier.animateItem(
-                                                    fadeInSpec = null, fadeOutSpec = null
-                                                ),
+
+                                            CompactSongCard(
+                                                modifier = Modifier
+                                                    .animateItem(
+                                                        fadeInSpec = null, fadeOutSpec = null
+                                                    ),
+                                                size = compactCardSize,
+                                                name = song.title,
+                                                artists = song.artist,
+                                                artworkUri = song.artworkPath,
                                                 onClick = {
                                                     onItemClicked(song)
                                                 })

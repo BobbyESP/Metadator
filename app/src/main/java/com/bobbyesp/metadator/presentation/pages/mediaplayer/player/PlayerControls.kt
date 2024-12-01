@@ -44,6 +44,7 @@ import com.bobbyesp.metadator.R
 import com.bobbyesp.metadator.presentation.components.buttons.PlayPauseAnimatedButton
 import com.bobbyesp.metadator.presentation.components.others.RepeatStateIcon
 import com.bobbyesp.metadator.presentation.components.others.ShuffleStateIcon
+import com.bobbyesp.metadator.presentation.components.text.ConditionedMarqueeText
 import com.bobbyesp.metadator.presentation.pages.mediaplayer.MediaplayerViewModel
 import com.bobbyesp.ui.components.text.MarqueeText
 import com.bobbyesp.ui.components.text.MarqueeTextGradientOptions
@@ -110,7 +111,7 @@ fun PlayerControls(
                     text = it?.title.toString(),
                     style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Medium)
                 )
-                MarqueeText(
+                ConditionedMarqueeText(
                     text = it?.artist.toString(),
                     style = MaterialTheme.typography.bodyLarge,
                     customEasing = EaseInOutSine,

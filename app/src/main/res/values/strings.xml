@@ -81,4 +81,5 @@
     <string name="lyrics_retrieve_cancelled">The lyrics retrievement process has been cancelled</string>
     <string name="empty_lyrics_received">The lyrics sent from the provider app were null or empty</string>
     <string name="something_unexpected_occurred">Something unexpected occurred!</string>
+    <string name="card_size">Card size</string>
 </resources>

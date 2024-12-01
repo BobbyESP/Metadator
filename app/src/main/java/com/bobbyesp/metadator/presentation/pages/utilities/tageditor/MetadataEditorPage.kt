@@ -175,7 +175,7 @@ fun MetadataEditorPage(
             TopAppBar(
                 title = {
                     Column(modifier = Modifier.fillMaxWidth()) {
-                        MarqueeText(
+                        Text(
                             text = stringResource(id = R.string.viewing_metadata),
                             style = MaterialTheme.typography.bodyLarge,
                             fontSize = 20.sp,
