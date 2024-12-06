@@ -26,8 +26,7 @@ fun FilledButtonWithIcon(
         onClick = onClick,
         enabled = enabled,
         contentPadding = ButtonDefaults.ButtonWithIconContentPadding
-    )
-    {
+    ) {
         Icon(
             modifier = Modifier.size(18.dp),
             imageVector = icon,
@@ -52,8 +51,7 @@ fun FilledTonalButtonWithIcon(
         modifier = modifier,
         onClick = onClick,
         contentPadding = ButtonDefaults.ButtonWithIconContentPadding
-    )
-    {
+    ) {
         Icon(
             modifier = Modifier.size(18.dp),
             imageVector = icon,

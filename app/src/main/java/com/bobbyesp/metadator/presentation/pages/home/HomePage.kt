@@ -295,7 +295,7 @@ private fun DropdownMenuContent(
     val availableLayoutType = LayoutType.entries.toImmutableList()
 
     Column(
-        modifier = Modifier.padding(horizontal = 8.dp),
+        modifier = Modifier,
         verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

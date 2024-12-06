@@ -1,6 +1,6 @@
 [versions]
 #General, lifecycle and core
-agp = "8.7.2"
+agp = "8.7.3"
 firebaseCrashlyticsGradle = "3.0.2"
 kotlin = "2.0.21"
 appcompat = "1.7.0"

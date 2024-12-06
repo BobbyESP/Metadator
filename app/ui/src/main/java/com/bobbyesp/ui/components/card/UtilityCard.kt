@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.bobbyesp.ui.components.text.MarqueeText
 
@@ -30,13 +31,13 @@ import com.bobbyesp.ui.components.text.MarqueeText
 @Composable
 fun AppUtilityCard(
     modifier: Modifier = Modifier,
-    cardSize: Int = 200,
+    cardSize: Dp = 200.dp,
     utilityName: String,
     icon: ImageVector,
     onClick: () -> Unit
 ) {
-    val xOffset = cardSize.dp / 2.3f
-    val yOffset = cardSize.dp / 5
+    val xOffset = cardSize / 2.3f
+    val yOffset = cardSize / 5
 
     OutlinedCard(
         modifier = modifier

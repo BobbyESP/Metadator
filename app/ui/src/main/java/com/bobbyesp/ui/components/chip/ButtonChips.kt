@@ -168,32 +168,3 @@ fun OutlinedButtonChipWithIndex(
         }, label = { Text(text = label) }
     )
 }
-
-@Composable
-fun SingleChoiceChip(
-    modifier: Modifier = Modifier,
-    selected: Boolean,
-    onClick: () -> Unit,
-    label: String,
-    leadingIcon: ImageVector = Icons.Outlined.Check
-) {
-    FilterChip(
-        modifier = modifier.padding(horizontal = 4.dp),
-        selected = selected,
-        onClick = onClick,
-        label = {
-            Text(text = label)
-        },
-        leadingIcon = {
-            Row {
-                AnimatedVisibility(visible = selected, modifier = Modifier) {
-                    Icon(
-                        imageVector = leadingIcon,
-                        contentDescription = null,
-                        modifier = Modifier.size(FilterChipDefaults.IconSize)
-                    )
-                }
-            }
-        },
-    )
-}

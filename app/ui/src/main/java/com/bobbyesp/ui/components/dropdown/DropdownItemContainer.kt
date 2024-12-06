@@ -25,7 +25,8 @@ fun DropdownItemContainer(
                 maxWidth = DropdownMenuItemDefaultMaxWidth,
                 minHeight = ListItemContainerHeight
             )
-            .padding(contentPadding),
+            .padding(contentPadding)
+            .padding(horizontal = DropdownMenuItemHorizontalPadding),
         verticalAlignment = Alignment.CenterVertically
     ) {
         content()
