@@ -17,6 +17,7 @@ import com.bobbyesp.metadator.App.Companion.preferences
 import com.bobbyesp.metadator.R
 import com.bobbyesp.metadator.presentation.common.LocalNavController
 import com.bobbyesp.metadator.util.preferences.PreferencesKeys.MARQUEE_TEXT
+import com.bobbyesp.metadator.util.preferences.PreferencesKeys.REDUCE_SHADOWS
 import com.bobbyesp.metadator.util.preferences.booleanState
 import com.bobbyesp.ui.components.button.BackButton
 import com.bobbyesp.ui.components.preferences.PreferenceSwitch
@@ -25,6 +26,7 @@ import com.bobbyesp.ui.components.preferences.PreferenceSwitch
 @Composable
 fun GeneralSettingsPage() {
     val useMarqueeText = MARQUEE_TEXT.booleanState
+    val reduceShadows = REDUCE_SHADOWS.booleanState
 
     val navController = LocalNavController.current
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
@@ -67,6 +69,17 @@ fun GeneralSettingsPage() {
                     onClick = {
                         useMarqueeText.value = !useMarqueeText.value
                         preferences.updateValue(MARQUEE_TEXT, useMarqueeText.value)
+                    }
+                )
+            }
+            item {
+                PreferenceSwitch(
+                    title = stringResource(R.string.reduce_shadows),
+                    description = stringResource(R.string.reduce_shadows_description),
+                    isChecked = reduceShadows.value,
+                    onClick = {
+                        reduceShadows.value = !reduceShadows.value
+                        preferences.updateValue(REDUCE_SHADOWS, reduceShadows.value)
                     }
                 )
             }

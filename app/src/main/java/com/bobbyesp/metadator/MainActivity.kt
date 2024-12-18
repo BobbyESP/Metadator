@@ -13,17 +13,11 @@ import com.bobbyesp.mediaplayer.service.MediaplayerService
 import com.bobbyesp.metadator.presentation.Navigator
 import com.bobbyesp.metadator.presentation.common.AppLocalSettingsProvider
 import com.bobbyesp.metadator.presentation.theme.MetadatorTheme
-import com.bobbyesp.metadator.util.preferences.BooleanPreferenceDefaults
 import com.bobbyesp.metadator.util.preferences.CoreSettings
-import com.bobbyesp.metadator.util.preferences.IntPreferenceDefaults
-import com.bobbyesp.metadator.util.preferences.PreferencesKeys
-import com.bobbyesp.metadator.util.preferences.StringPreferenceDefaults
-import com.bobbyesp.utilities.Preferences
 import org.koin.android.ext.android.inject
 import org.koin.compose.KoinContext
 import org.koin.core.component.KoinComponent
 import setCrashlyticsCollection
-import kotlin.getValue
 
 @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
 class MainActivity : ComponentActivity(), KoinComponent {
@@ -43,7 +37,7 @@ class MainActivity : ComponentActivity(), KoinComponent {
                 AppLocalSettingsProvider(
                     windowWidthSize = windowSizeClass.widthSizeClass,
                     playerConnectionHandler = connectionHandler,
-                    coreSettings = CoreSettings(App.preferences.kv)
+                    coreSettings = CoreSettings.initialize(App.preferences.kv)
                 ) {
                     MetadatorTheme {
                         Navigator()

@@ -72,14 +72,16 @@
     <string name="general">General</string>
     <string name="general_description">Some main settings of the app</string>
     <string name="marquee_text">Marquee text</string>
-    <string name="marquee_text_description">The text that overflows the limits of the screen has a lateral animation to show its entire content (this may worsen the app performance).</string>
+    <string name="marquee_text_description">Add a lateral animation to show an entire text when overflowing the screen. This may worsen the app performance.</string>
     <string name="lyrics">Lyrics</string>
     <string name="retrieving_spotify_token">Retrieving Spotify API token…</string>
     <string name="by">by</string>
     <string name="edit_query">Edit query</string>
     <string name="retrieve_lyrics">Retrieve lyrics</string>
-    <string name="lyrics_retrieve_cancelled">The lyrics retrievement process has been cancelled</string>
+    <string name="lyrics_retrieve_cancelled">The lyrics retrieve process has been cancelled</string>
     <string name="empty_lyrics_received">The lyrics sent from the provider app were null or empty</string>
     <string name="something_unexpected_occurred">Something unexpected occurred!</string>
     <string name="card_size">Card size</string>
+    <string name="reduce_shadows">Reduce shadows</string>
+    <string name="reduce_shadows_description">Reduce the shadows drawn by the app to improve performance.</string>
 </resources>

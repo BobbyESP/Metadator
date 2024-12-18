@@ -13,17 +13,16 @@ import com.bobbyesp.metadator.di.mediaplayerViewModels
 import com.bobbyesp.metadator.di.utilitiesViewModels
 import com.bobbyesp.metadator.features.spotify.di.spotifyMainModule
 import com.bobbyesp.metadator.features.spotify.di.spotifyServicesModule
-import com.bobbyesp.metadator.util.preferences.BooleanPreferenceDefaults
-import com.bobbyesp.metadator.util.preferences.IntPreferenceDefaults
 import com.bobbyesp.metadator.util.preferences.PreferencesKeys
-import com.bobbyesp.metadator.util.preferences.StringPreferenceDefaults
+import com.bobbyesp.metadator.util.preferences.PreferencesKeys.BooleanPreferenceDefaults
+import com.bobbyesp.metadator.util.preferences.PreferencesKeys.IntPreferenceDefaults
+import com.bobbyesp.metadator.util.preferences.PreferencesKeys.StringPreferenceDefaults
 import com.bobbyesp.utilities.Preferences
 import com.tencent.mmkv.MMKV
 import mediaplayerInternalsModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.GlobalContext.startKoin
-import org.koin.dsl.module
 import kotlin.properties.Delegates
 
 class App : Application() {

@@ -68,16 +68,16 @@ fun SettingsPage(
                     }
                 )
             }
-            item {
-                SettingItem(
-                    title = stringResource(id = R.string.appearance),
-                    description = stringResource(id = R.string.appearance_description),
-                    icon = Icons.Rounded.Palette,
-                    onClick = {
-                        navController.navigate(Route.SettingsNavigator.Settings.Appearance)
-                    }
-                )
-            }
+//            item { TODO: Implement this
+//                SettingItem(
+//                    title = stringResource(id = R.string.appearance),
+//                    description = stringResource(id = R.string.appearance_description),
+//                    icon = Icons.Rounded.Palette,
+//                    onClick = {
+//                        navController.navigate(Route.SettingsNavigator.Settings.Appearance)
+//                    }
+//                )
+//            }
             item {
                 HorizontalDivider(modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp))
                 Text(

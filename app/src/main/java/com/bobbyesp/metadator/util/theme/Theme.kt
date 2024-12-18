@@ -1,6 +1,7 @@
 package com.bobbyesp.metadator.util.theme
 
-import com.bobbyesp.metadator.util.preferences.CoreSettings
+import com.bobbyesp.metadator.util.preferences.CoreSettings.Companion.appMainSettingsStateFlow
+import com.bobbyesp.metadator.util.preferences.CoreSettings.Companion.mutableAppMainSettingsStateFlow
 import com.bobbyesp.metadator.util.preferences.PreferencesKeys.DARK_THEME_VALUE
 import com.bobbyesp.metadator.util.preferences.PreferencesKeys.DYNAMIC_COLOR
 import com.bobbyesp.metadator.util.preferences.PreferencesKeys.HIGH_CONTRAST
@@ -13,10 +14,9 @@ import kotlinx.coroutines.launch
 
 class AppTheme(
     private val kv: MMKV,
-    private val coreSettings: CoreSettings,
     private val scope: CoroutineScope
 ) {
-    private val appSettingsFlow = coreSettings.appMainSettingsStateFlow.value
+    private val appSettingsFlow = appMainSettingsStateFlow.value
 
     private val theme = appSettingsFlow.darkTheme
 
@@ -25,7 +25,7 @@ class AppTheme(
         highContrast: Boolean = theme.isHighContrastModeEnabled
     ) {
         scope.launch(Dispatchers.IO) {
-            coreSettings.mutableAppMainSettingsStateFlow.update {
+            mutableAppMainSettingsStateFlow.update {
                 it.copy(
                     darkTheme = it.darkTheme.copy(
                         darkThemeValue = darkTheme,
@@ -41,7 +41,7 @@ class AppTheme(
 
     fun modifySeedColor(argbColor: Int) {
         scope.launch(Dispatchers.IO) {
-            coreSettings.mutableAppMainSettingsStateFlow.update {
+            mutableAppMainSettingsStateFlow.update {
                 it.copy(seedColor = argbColor)
             }
 
@@ -51,7 +51,7 @@ class AppTheme(
 
     fun switchDynamicColoring(enabled: Boolean = !appSettingsFlow.useDynamicColoring) {
         scope.launch(Dispatchers.IO) {
-            coreSettings.mutableAppMainSettingsStateFlow.update {
+            mutableAppMainSettingsStateFlow.update {
                 it.copy(useDynamicColoring = enabled)
             }
         }

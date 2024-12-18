@@ -73,7 +73,16 @@
     <string name="general">General</string>
     <string name="general_description">Algunos ajustes principales de la aplicación</string>
     <string name="marquee_text">Texto en movimiento</string>
-    <string name="marquee_text_description">El texto que sobrepase los límites de la pantalla tienen una animación en lateral para que se vea todo su contenido (esto puede empeorar el rendimiento de la aplicación).</string>
+    <string name="marquee_text_description">Añadir una animación lateral al texto que se desborda para mostrar su contenido completo. Esto podría afectar el rendimiento de la aplicación.</string>
     <string name="lyrics">Letras</string>
     <string name="retrieving_spotify_token">Obteniendo credenciales de la API de Spotify…</string>
+    <string name="by">por</string>
+    <string name="edit_query">Editar búsqueda</string>
+    <string name="retrieve_lyrics">Obtener letras</string>
+    <string name="lyrics_retrieve_cancelled">El proceso de búsqueda de letras ha sido cancelado</string>
+    <string name="empty_lyrics_received">Las letras enviadas por la aplicación proveedora eran nulas o estaban vacías</string>
+    <string name="something_unexpected_occurred">Ha ocurrido algo inesperado!</string>
+    <string name="card_size">Tamaño de tarjeta</string>
+    <string name="reduce_shadows">Reducir sombras</string>
+    <string name="reduce_shadows_description">Reduce las sombras dibujadas por la app para mejorar el rendimiento.</string>
 </resources>

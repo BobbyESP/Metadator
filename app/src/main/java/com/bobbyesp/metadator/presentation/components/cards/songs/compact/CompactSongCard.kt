@@ -1,8 +1,6 @@
 package com.bobbyesp.metadator.presentation.components.cards.songs.compact
 
 import android.net.Uri
-import android.util.Log
-import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -14,7 +12,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,6 +29,8 @@ import androidx.compose.ui.unit.dp
 import com.bobbyesp.metadator.presentation.components.cards.songs.compact.CompactCardSize.Companion.toShape
 import com.bobbyesp.metadator.presentation.components.image.AsyncImage
 import com.bobbyesp.metadator.presentation.components.text.ConditionedMarqueeText
+import com.bobbyesp.metadator.util.preferences.PreferencesKeys.REDUCE_SHADOWS
+import com.bobbyesp.metadator.util.preferences.booleanState
 
 @Composable
 fun CompactSongCard(
@@ -45,6 +44,8 @@ fun CompactSongCard(
     shape: Shape? = MaterialTheme.shapes.large,
     onClick: () -> Unit
 ) {
+    val reduceShadows = REDUCE_SHADOWS.booleanState
+
     val cardSize by remember(size) {
         mutableStateOf(size.value)
     }
@@ -53,9 +54,10 @@ fun CompactSongCard(
 
     Box(
         modifier = modifier
-            .shadow(
-                elevation = shadow ?: 0.dp,
-                shape = formalizedShape
+            .then(
+                if (reduceShadows.value) Modifier else Modifier.shadow(
+                    elevation = shadow ?: 0.dp, shape = formalizedShape
+                )
             )
             .clip(formalizedShape)
             .size(cardSize)
@@ -80,16 +82,14 @@ fun CompactSongCard(
         }
         Column(
             modifier = Modifier
-                .background(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(
-                            Color.Transparent,
-                            MaterialTheme.colorScheme.scrim
-                        ),
-                        startY = 0f,
-                        endY = 500f
-                    ),
-                    alpha = 0.6f
+                .then(
+                    if (reduceShadows.value) Modifier else Modifier.background(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(
+                                Color.Transparent, MaterialTheme.colorScheme.scrim
+                            ), startY = 0f, endY = 500f
+                        ), alpha = 0.6f
+                    )
                 )
                 .fillMaxSize()
                 .padding(horizontal = 8.dp, vertical = 6.dp),
@@ -104,7 +104,7 @@ fun CompactSongCard(
                 maxLines = 1
             )
 
-            if(artists.isNotEmpty()) {
+            if (artists.isNotEmpty()) {
                 ConditionedMarqueeText(
                     text = artists,
                     style = MaterialTheme.typography.bodySmall,
