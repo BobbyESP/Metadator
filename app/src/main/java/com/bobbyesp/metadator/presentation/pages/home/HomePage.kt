@@ -20,8 +20,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.CropSquare
 import androidx.compose.material.icons.rounded.KeyboardDoubleArrowUp
 import androidx.compose.material.icons.rounded.Menu
+import androidx.compose.material.icons.rounded.MoreHoriz
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material.icons.rounded.Settings
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -62,9 +64,9 @@ import com.bobbyesp.ui.components.dropdown.AnimatedDropdownMenu
 import com.bobbyesp.ui.components.dropdown.DropdownItemContainer
 import com.bobbyesp.ui.components.text.AutoResizableText
 import com.bobbyesp.utilities.model.Song
-import com.bobbyesp.utilities.preferences.Preferences
-import com.bobbyesp.utilities.preferences.PreferencesKeys.DESIRED_LAYOUT
-import com.bobbyesp.utilities.preferences.PreferencesKeys.SONG_CARD_SIZE
+import com.bobbyesp.utilities.Preferences
+import com.bobbyesp.metadator.util.preferences.PreferencesKeys.DESIRED_LAYOUT
+import com.bobbyesp.metadator.util.preferences.PreferencesKeys.SONG_CARD_SIZE
 import com.bobbyesp.utilities.states.ResourceState
 import com.bobbyesp.utilities.ui.permission.PermissionNotGrantedDialog
 import com.bobbyesp.utilities.ui.permission.PermissionRequestHandler
@@ -196,13 +198,12 @@ fun HomePage(
                 }) {
                 DropdownMenuContent(
                     desiredLayout = desiredLayout,
-                    desiredCardSize = desiredCardSize,
                     onLayoutChanged = {
                         desiredLayout = it
-                    },
-                    onCardSizeChanged = {
-                        desiredCardSize = it
-                    })
+                    }, navigateToDialog = {
+                        navController.navigate(Route.MetadatorNavigator.Home.VisualSettings)
+                    }
+                )
             }
 
         })
@@ -288,9 +289,8 @@ fun HomePage(
 @Composable
 private fun DropdownMenuContent(
     desiredLayout: LayoutType,
-    desiredCardSize: CompactCardSize,
     onLayoutChanged: (LayoutType) -> Unit = {},
-    onCardSizeChanged: (CompactCardSize) -> Unit = {}
+    navigateToDialog: () -> Unit = {}
 ) {
     val availableLayoutType = LayoutType.entries.toImmutableList()
 
@@ -306,6 +306,7 @@ private fun DropdownMenuContent(
             style = MaterialTheme.typography.labelMedium
         )
         DropdownItemContainer(
+            modifier = Modifier,
             content = {
                 SingleChoiceSegmentedButtonRow {
                     availableLayoutType.forEachIndexed { index, listType ->
@@ -329,37 +330,11 @@ private fun DropdownMenuContent(
                     }
                 }
             })
-        Text(
-            text = stringResource(id = R.string.card_size),
-            modifier = Modifier.fillMaxWidth(),
-            color = MaterialTheme.colorScheme.primary,
-            style = MaterialTheme.typography.labelMedium
+        DropdownMenuItem(
+            leadingIcon = { Icon(imageVector = Icons.Rounded.MoreHoriz, contentDescription = null) },
+            text = { Text(stringResource(id = R.string.open_more_options)) },
+            onClick = { navigateToDialog() }
         )
-
-        DropdownItemContainer(
-            content = {
-                SingleChoiceSegmentedButtonRow {
-                    CompactCardSize.entries.forEachIndexed { index, cardSize ->
-                        SegmentedButton(
-                            selected = desiredCardSize.ordinal == cardSize.ordinal,
-                            onClick = {
-                                Preferences.Enumerations.encodeValue(
-                                    SONG_CARD_SIZE, cardSize
-                                )
-                                onCardSizeChanged(cardSize)
-                            },
-                            shape = SegmentedButtonDefaults.itemShape(
-                                index = index, count = CompactCardSize.entries.size
-                            ),
-                        ) {
-                            Icon(
-                                imageVector = Icons.Rounded.CropSquare,
-                                contentDescription = stringResource(id = R.string.card_size)
-                            )
-                        }
-                    }
-                }
-            })
     }
 }
 

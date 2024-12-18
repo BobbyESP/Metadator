@@ -1,11 +1,7 @@
 package com.bobbyesp.metadator
 
-import android.content.ComponentName
 import android.content.Intent
-import android.content.ServiceConnection
 import android.os.Bundle
-import android.os.IBinder
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -17,12 +13,20 @@ import com.bobbyesp.mediaplayer.service.MediaplayerService
 import com.bobbyesp.metadator.presentation.Navigator
 import com.bobbyesp.metadator.presentation.common.AppLocalSettingsProvider
 import com.bobbyesp.metadator.presentation.theme.MetadatorTheme
+import com.bobbyesp.metadator.util.preferences.BooleanPreferenceDefaults
+import com.bobbyesp.metadator.util.preferences.CoreSettings
+import com.bobbyesp.metadator.util.preferences.IntPreferenceDefaults
+import com.bobbyesp.metadator.util.preferences.PreferencesKeys
+import com.bobbyesp.metadator.util.preferences.StringPreferenceDefaults
+import com.bobbyesp.utilities.Preferences
 import org.koin.android.ext.android.inject
 import org.koin.compose.KoinContext
+import org.koin.core.component.KoinComponent
 import setCrashlyticsCollection
+import kotlin.getValue
 
 @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
-class MainActivity : ComponentActivity() {
+class MainActivity : ComponentActivity(), KoinComponent {
     private var isMusicPlayerServiceStarted = false
 
     private val connectionHandler: ConnectionHandler by inject()
@@ -36,7 +40,11 @@ class MainActivity : ComponentActivity() {
         setContent {
             KoinContext {
                 val windowSizeClass = calculateWindowSizeClass(this)
-                AppLocalSettingsProvider(windowSizeClass.widthSizeClass, connectionHandler) {
+                AppLocalSettingsProvider(
+                    windowWidthSize = windowSizeClass.widthSizeClass,
+                    playerConnectionHandler = connectionHandler,
+                    coreSettings = CoreSettings(App.preferences.kv)
+                ) {
                     MetadatorTheme {
                         Navigator()
                     }

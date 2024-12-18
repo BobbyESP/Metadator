@@ -13,13 +13,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
+import com.bobbyesp.metadator.App.Companion.preferences
 import com.bobbyesp.metadator.R
 import com.bobbyesp.metadator.presentation.common.LocalNavController
+import com.bobbyesp.metadator.util.preferences.PreferencesKeys.MARQUEE_TEXT
+import com.bobbyesp.metadator.util.preferences.booleanState
 import com.bobbyesp.ui.components.button.BackButton
 import com.bobbyesp.ui.components.preferences.PreferenceSwitch
-import com.bobbyesp.utilities.preferences.Preferences
-import com.bobbyesp.utilities.preferences.PreferencesKeys.MARQUEE_TEXT
-import com.bobbyesp.utilities.preferences.booleanState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -66,7 +66,7 @@ fun GeneralSettingsPage() {
                     isChecked = useMarqueeText.value,
                     onClick = {
                         useMarqueeText.value = !useMarqueeText.value
-                        Preferences.updateValue(MARQUEE_TEXT, useMarqueeText.value)
+                        preferences.updateValue(MARQUEE_TEXT, useMarqueeText.value)
                     }
                 )
             }

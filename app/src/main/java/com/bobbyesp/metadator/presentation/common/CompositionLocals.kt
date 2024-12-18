@@ -22,8 +22,8 @@ import coil.ImageLoader
 import coil.disk.DiskCache
 import coil.memory.MemoryCache
 import com.bobbyesp.mediaplayer.service.ConnectionHandler
-import com.bobbyesp.utilities.preferences.Preferences.AppMainSettingsStateFlow
-import com.bobbyesp.utilities.theme.DarkThemePreference
+import com.bobbyesp.metadator.util.preferences.CoreSettings
+import com.bobbyesp.metadator.util.theme.DarkThemePreference
 import com.bobbyesp.utilities.ui.DEFAULT_SEED_COLOR
 import com.materialkolor.DynamicMaterialThemeState
 import com.materialkolor.rememberDynamicMaterialThemeState
@@ -53,11 +53,12 @@ val LocalPlayerAwareWindowInsets =
 fun AppLocalSettingsProvider(
     windowWidthSize: WindowWidthSizeClass,
     playerConnectionHandler: ConnectionHandler,
+    coreSettings: CoreSettings,
     content: @Composable () -> Unit
 ) {
     val context = LocalContext.current
 
-    val appSettingsState = AppMainSettingsStateFlow.collectAsStateWithLifecycle().value
+    val appSettingsState = coreSettings.appMainSettingsStateFlow.collectAsStateWithLifecycle().value
     val navController = rememberNavController()
 
     val imageLoader = ImageLoader.Builder(context)

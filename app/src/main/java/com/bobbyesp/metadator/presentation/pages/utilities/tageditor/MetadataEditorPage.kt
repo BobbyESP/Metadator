@@ -63,7 +63,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bobbyesp.metadator.R
-import com.bobbyesp.metadator.model.ParcelableSong
+import com.bobbyesp.metadator.domain.model.ParcelableSong
 import com.bobbyesp.metadator.presentation.common.LocalNavController
 import com.bobbyesp.metadator.presentation.common.LocalOrientation
 import com.bobbyesp.metadator.presentation.common.LocalSnackbarHostState
@@ -75,11 +75,9 @@ import com.bobbyesp.ui.common.pages.LoadingPage
 import com.bobbyesp.ui.components.button.CloseButton
 import com.bobbyesp.ui.components.others.MetadataTag
 import com.bobbyesp.ui.components.text.LargeCategoryTitle
-import com.bobbyesp.ui.components.text.MarqueeText
 import com.bobbyesp.ui.components.text.PreConfiguredOutlinedTextField
 import com.bobbyesp.utilities.ext.fromMillisToMinutes
 import com.bobbyesp.utilities.ext.isNeitherNullNorBlank
-import com.bobbyesp.utilities.ext.toMinutes
 import com.bobbyesp.utilities.states.ResourceState
 import com.bobbyesp.utilities.states.ScreenState
 import com.kyant.taglib.AudioProperties

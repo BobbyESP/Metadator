@@ -1,4 +1,4 @@
-package com.bobbyesp.metadator.model
+package com.bobbyesp.metadator.domain.model
 
 import android.net.Uri
 import android.os.Parcelable

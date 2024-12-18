@@ -1,6 +1,6 @@
 package com.bobbyesp.metadator.presentation.common
 
-import com.bobbyesp.metadator.model.ParcelableSong
+import com.bobbyesp.metadator.domain.model.ParcelableSong
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -11,7 +11,11 @@ sealed interface Route {
     @Serializable
     data object MetadatorNavigator : Route {
         @Serializable
-        data object Home : Route
+        data object Home : Route {
+
+            @Serializable
+            data object VisualSettings : Route
+        }
     }
 
     @Serializable

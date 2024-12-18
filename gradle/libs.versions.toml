@@ -2,13 +2,13 @@
 #General, lifecycle and core
 agp = "8.7.3"
 firebaseCrashlyticsGradle = "3.0.2"
-kotlin = "2.0.21"
+kotlin = "2.1.0"
 appcompat = "1.7.0"
 core-ktx = "1.15.0"
 legacySupportV4 = "1.0.0"
 lifecycle-runtime-ktx = "2.8.7"
 activity-compose = "1.9.3"
-ksp = "2.0.21-1.0.28"
+ksp = "2.1.0-1.0.29"
 splashscreen = "1.0.1"
 media3 = "1.5.0"
 leakcanary = "2.13"
@@ -41,7 +41,7 @@ coil = "2.7.0"
 landscapistCoil = "2.2.13"
 
 #Network
-ktor = "3.0.0" #For me the best client
+ktor = "3.0.2"
 
 #Dependency injection
 koin = "4.0.0"
@@ -55,7 +55,7 @@ mmkv = "2.0.0"
 #Firebase, GMS...
 gmsPlayServicesAuth = "21.2.0"
 googleServices = "4.4.2"
-firebaseBom = "33.6.0"
+firebaseBom = "33.7.0"
 
 #Spotify API
 spotify-apiHandler = "4.1.3"

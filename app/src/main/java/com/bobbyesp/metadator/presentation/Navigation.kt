@@ -28,10 +28,8 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
@@ -42,9 +40,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.dialog
 import androidx.navigation.compose.navigation
 import androidx.navigation.toRoute
-import com.bobbyesp.metadator.model.ParcelableSong
+import com.bobbyesp.metadator.domain.model.ParcelableSong
 import com.bobbyesp.metadator.presentation.common.LocalDrawerState
 import com.bobbyesp.metadator.presentation.common.LocalNavController
 import com.bobbyesp.metadator.presentation.common.LocalPlayerAwareWindowInsets
@@ -191,6 +190,10 @@ fun Navigator() {
                                 val songsState =
                                     mediaStoreViewModel.songs.collectAsStateWithLifecycle()
                                 HomePage(songs = songsState, onEvent = mediaStoreViewModel::onEvent)
+                            }
+
+                            dialog<Route.MetadatorNavigator.Home.VisualSettings> {
+                                Text("Dialog")
                             }
                         }
 

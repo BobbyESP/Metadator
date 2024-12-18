@@ -13,8 +13,8 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun DropdownItemContainer(
     modifier: Modifier = Modifier,
-    content: @Composable RowScope.() -> Unit,
-    contentPadding: androidx.compose.ui.unit.Dp = 0.dp
+    contentPadding: androidx.compose.ui.unit.Dp = 0.dp,
+    content: @Composable RowScope.() -> Unit
 ) {
     Row(
         modifier = modifier

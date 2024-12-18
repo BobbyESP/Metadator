@@ -17,8 +17,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import com.bobbyesp.ui.components.text.MarqueeText
 import com.bobbyesp.ui.components.text.MarqueeTextGradientOptions
-import com.bobbyesp.utilities.preferences.PreferencesKeys.MARQUEE_TEXT
-import com.bobbyesp.utilities.preferences.booleanState
+import com.bobbyesp.metadator.util.preferences.PreferencesKeys.MARQUEE_TEXT
+import com.bobbyesp.metadator.util.preferences.booleanState
 
 @Composable
 fun ConditionedMarqueeText(

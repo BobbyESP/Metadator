@@ -1,11 +1,10 @@
-package com.bobbyesp.utilities.theme
+package com.bobbyesp.metadator.util.theme
 
-import com.bobbyesp.utilities.preferences.Preferences.AppMainSettingsStateFlow
-import com.bobbyesp.utilities.preferences.Preferences.mutableAppMainSettingsStateFlow
-import com.bobbyesp.utilities.preferences.PreferencesKeys.DARK_THEME_VALUE
-import com.bobbyesp.utilities.preferences.PreferencesKeys.DYNAMIC_COLOR
-import com.bobbyesp.utilities.preferences.PreferencesKeys.HIGH_CONTRAST
-import com.bobbyesp.utilities.preferences.PreferencesKeys.THEME_COLOR
+import com.bobbyesp.metadator.util.preferences.CoreSettings
+import com.bobbyesp.metadator.util.preferences.PreferencesKeys.DARK_THEME_VALUE
+import com.bobbyesp.metadator.util.preferences.PreferencesKeys.DYNAMIC_COLOR
+import com.bobbyesp.metadator.util.preferences.PreferencesKeys.HIGH_CONTRAST
+import com.bobbyesp.metadator.util.preferences.PreferencesKeys.THEME_COLOR
 import com.tencent.mmkv.MMKV
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -14,9 +13,10 @@ import kotlinx.coroutines.launch
 
 class AppTheme(
     private val kv: MMKV,
+    private val coreSettings: CoreSettings,
     private val scope: CoroutineScope
 ) {
-    private val appSettingsFlow = AppMainSettingsStateFlow.value
+    private val appSettingsFlow = coreSettings.appMainSettingsStateFlow.value
 
     private val theme = appSettingsFlow.darkTheme
 
@@ -25,7 +25,7 @@ class AppTheme(
         highContrast: Boolean = theme.isHighContrastModeEnabled
     ) {
         scope.launch(Dispatchers.IO) {
-            mutableAppMainSettingsStateFlow.update {
+            coreSettings.mutableAppMainSettingsStateFlow.update {
                 it.copy(
                     darkTheme = it.darkTheme.copy(
                         darkThemeValue = darkTheme,
@@ -41,7 +41,7 @@ class AppTheme(
 
     fun modifySeedColor(argbColor: Int) {
         scope.launch(Dispatchers.IO) {
-            mutableAppMainSettingsStateFlow.update {
+            coreSettings.mutableAppMainSettingsStateFlow.update {
                 it.copy(seedColor = argbColor)
             }
 
@@ -51,7 +51,7 @@ class AppTheme(
 
     fun switchDynamicColoring(enabled: Boolean = !appSettingsFlow.useDynamicColoring) {
         scope.launch(Dispatchers.IO) {
-            mutableAppMainSettingsStateFlow.update {
+            coreSettings.mutableAppMainSettingsStateFlow.update {
                 it.copy(useDynamicColoring = enabled)
             }
         }
