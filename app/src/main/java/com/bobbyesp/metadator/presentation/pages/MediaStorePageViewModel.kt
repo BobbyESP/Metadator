@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bobbyesp.utilities.mediastore.MediaStoreReceiver.Advanced.observeSongs
-import com.bobbyesp.utilities.model.Song
+import com.bobbyesp.utilities.mediastore.model.Song
 import com.bobbyesp.utilities.states.ResourceState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow

@@ -56,7 +56,7 @@ class MetadataBsVM(
             mutableViewStateFlow.update {
                 it.copy(
                     searchedTracks = ResourceState.Error(
-                        message = th.message ?: th.stackTrace.toString()
+                        errorMessage = th.message ?: th.stackTrace.toString()
                     )
                 )
             }

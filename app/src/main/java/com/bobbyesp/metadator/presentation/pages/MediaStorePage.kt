@@ -25,7 +25,7 @@ import com.bobbyesp.metadator.presentation.components.others.status.EmptyMediaSt
 import com.bobbyesp.metadator.presentation.pages.home.LayoutType
 import com.bobbyesp.ui.common.pages.ErrorPage
 import com.bobbyesp.ui.common.pages.LoadingPage
-import com.bobbyesp.utilities.model.Song
+import com.bobbyesp.utilities.mediastore.model.Song
 import com.bobbyesp.utilities.states.ResourceState
 import my.nanihadesuka.compose.LazyColumnScrollbar
 import my.nanihadesuka.compose.LazyVerticalGridScrollbar

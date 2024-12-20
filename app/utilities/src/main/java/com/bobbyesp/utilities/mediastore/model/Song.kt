@@ -1,4 +1,4 @@
-package com.bobbyesp.utilities.model
+package com.bobbyesp.utilities.mediastore.model
 
 import android.net.Uri
 import android.os.Parcelable

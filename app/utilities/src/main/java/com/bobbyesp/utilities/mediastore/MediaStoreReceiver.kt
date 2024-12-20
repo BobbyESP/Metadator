@@ -11,7 +11,7 @@ import android.util.Log
 import com.bobbyesp.utilities.R
 import com.bobbyesp.utilities.mediastore.advanced.advancedQuery
 import com.bobbyesp.utilities.mediastore.advanced.observe
-import com.bobbyesp.utilities.model.Song
+import com.bobbyesp.utilities.mediastore.model.Song
 import kotlinx.coroutines.flow.map
 import java.io.FileNotFoundException
 

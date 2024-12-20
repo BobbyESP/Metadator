@@ -117,7 +117,7 @@ class MetadataEditorVM(
                         mutableState.update {
                             it.copy(
                                 audioProperties = ResourceState.Error(
-                                    message = error.message ?: error.stackTraceToString()
+                                    errorMessage = error.message ?: error.stackTraceToString()
                                 )
                             )
                         }
@@ -125,7 +125,7 @@ class MetadataEditorVM(
                         mutableState.update {
                             it.copy(
                                 metadata = ResourceState.Error(
-                                    message = error.message ?: error.stackTraceToString()
+                                    errorMessage = error.message ?: error.stackTraceToString()
                                 )
                             )
                         }

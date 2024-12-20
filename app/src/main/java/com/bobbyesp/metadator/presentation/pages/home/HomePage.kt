@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.CropSquare
 import androidx.compose.material.icons.rounded.KeyboardDoubleArrowUp
 import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material.icons.rounded.MoreHoriz
@@ -63,7 +62,7 @@ import com.bobbyesp.metadator.presentation.pages.MediaStorePageViewModel
 import com.bobbyesp.ui.components.dropdown.AnimatedDropdownMenu
 import com.bobbyesp.ui.components.dropdown.DropdownItemContainer
 import com.bobbyesp.ui.components.text.AutoResizableText
-import com.bobbyesp.utilities.model.Song
+import com.bobbyesp.utilities.mediastore.model.Song
 import com.bobbyesp.utilities.Preferences
 import com.bobbyesp.metadator.util.preferences.PreferencesKeys.DESIRED_LAYOUT
 import com.bobbyesp.metadator.util.preferences.PreferencesKeys.SONG_CARD_SIZE

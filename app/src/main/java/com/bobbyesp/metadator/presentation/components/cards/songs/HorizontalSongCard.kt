@@ -21,9 +21,8 @@ import androidx.compose.ui.unit.sp
 import com.bobbyesp.metadator.presentation.components.image.AsyncImage
 import com.bobbyesp.metadator.presentation.components.text.ConditionedMarqueeText
 import com.bobbyesp.metadator.presentation.theme.MetadatorTheme
-import com.bobbyesp.ui.components.text.MarqueeText
 import com.bobbyesp.utilities.Time
-import com.bobbyesp.utilities.model.Song
+import com.bobbyesp.utilities.mediastore.model.Song
 
 @Composable
 fun HorizontalSongCard(

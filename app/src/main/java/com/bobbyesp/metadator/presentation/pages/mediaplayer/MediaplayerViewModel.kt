@@ -19,7 +19,7 @@ import com.bobbyesp.mediaplayer.service.queue.SongsQueue
 import com.bobbyesp.utilities.Time.formatDuration
 import com.bobbyesp.utilities.mediastore.MediaStoreReceiver.Advanced.getSongs
 import com.bobbyesp.utilities.mediastore.MediaStoreReceiver.Advanced.observeSongs
-import com.bobbyesp.utilities.model.Song
+import com.bobbyesp.utilities.mediastore.model.Song
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
