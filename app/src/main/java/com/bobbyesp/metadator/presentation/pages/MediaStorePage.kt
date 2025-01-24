@@ -22,7 +22,7 @@ import com.bobbyesp.metadator.presentation.components.cards.songs.HorizontalSong
 import com.bobbyesp.metadator.presentation.components.cards.songs.compact.CompactCardSize
 import com.bobbyesp.metadator.presentation.components.cards.songs.compact.CompactSongCard
 import com.bobbyesp.metadator.presentation.components.others.status.EmptyMediaStore
-import com.bobbyesp.metadator.presentation.pages.home.LayoutType
+import com.bobbyesp.metadator.domain.enums.LayoutType
 import com.bobbyesp.ui.common.pages.ErrorPage
 import com.bobbyesp.ui.common.pages.LoadingPage
 import com.bobbyesp.utilities.mediastore.model.Song

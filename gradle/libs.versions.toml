@@ -7,26 +7,26 @@ appcompat = "1.7.0"
 core-ktx = "1.15.0"
 legacySupportV4 = "1.0.0"
 lifecycle-runtime-ktx = "2.8.7"
-activity-compose = "1.9.3"
+activity-compose = "1.10.0"
 ksp = "2.1.0-1.0.29"
 splashscreen = "1.0.1"
-media3 = "1.5.0"
+media3 = "1.5.1"
 leakcanary = "2.13"
 
 #Compose
-compose-bom = "2024.11.00"
+compose-bom = "2025.01.00"
 constraintLayout = "1.1.0"
 androidx-compose-material3 = "1.3.1"
-compose-util = "1.7.5"
+compose-util = "1.7.6"
 accompanist = "0.34.0"
 
 #More UI
-androidx-paging = "3.3.4"
+androidx-paging = "3.3.5"
 materialKolor = "1.7.0"
 palette = "1.0.0"
 
 #Navigation
-androidx-navigation = "2.8.4"
+androidx-navigation = "2.8.5"
 
 #Coroutines
 kotlinx-coroutines = "1.9.0"
@@ -38,7 +38,7 @@ kotlinx-collectionsImmutable = "0.3.7"
 
 #Image loading
 coil = "2.7.0"
-landscapistCoil = "2.2.13"
+landscapistCoil = "2.4.4"
 
 #Network
 ktor = "3.0.2"
@@ -50,19 +50,20 @@ koin = "4.0.0"
 room = "2.6.1"
 
 #High performance Key-value storage
-mmkv = "2.0.0"
+mmkv = "2.0.2"
+datastore = "1.1.1"
 
 #Firebase, GMS...
-gmsPlayServicesAuth = "21.2.0"
+gmsPlayServicesAuth = "21.3.0"
 googleServices = "4.4.2"
-firebaseBom = "33.7.0"
+firebaseBom = "33.8.0"
 
 #Spotify API
 spotify-apiHandler = "4.1.3"
 
 #Others
 taglib = "1.0.0-alpha25"
-qrcodeKotlinAndroid = "4.1.0"
+qrcodeKotlinAndroid = "4.2.0"
 
 #Tests
 junit = "4.13.2"
@@ -156,6 +157,7 @@ kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime",
 
 #Key-value storage
 mmkv = { group = "com.tencent", name = "mmkv", version.ref = "mmkv" }
+datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
 
 #Firebase and GMS
 google-services = { group = "com.google.gms", name = "google-services", version.ref = "googleServices" }

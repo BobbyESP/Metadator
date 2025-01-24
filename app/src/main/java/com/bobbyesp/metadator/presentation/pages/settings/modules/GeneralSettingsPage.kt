@@ -13,20 +13,25 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
-import com.bobbyesp.metadator.App.Companion.preferences
 import com.bobbyesp.metadator.R
+import com.bobbyesp.metadator.presentation.common.LocalAppPreferencesController
 import com.bobbyesp.metadator.presentation.common.LocalNavController
-import com.bobbyesp.metadator.util.preferences.PreferencesKeys.MARQUEE_TEXT
-import com.bobbyesp.metadator.util.preferences.PreferencesKeys.REDUCE_SHADOWS
-import com.bobbyesp.metadator.util.preferences.booleanState
+import com.bobbyesp.metadator.util.preferences.AppPreferences.Companion.MARQUEE_TEXT_ENABLED
+import com.bobbyesp.metadator.util.preferences.AppPreferences.Companion.REDUCE_SHADOWS
+import com.bobbyesp.metadator.util.preferences.datastore.rememberPreference
 import com.bobbyesp.ui.components.button.BackButton
 import com.bobbyesp.ui.components.preferences.PreferenceSwitch
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GeneralSettingsPage() {
-    val useMarqueeText = MARQUEE_TEXT.booleanState
-    val reduceShadows = REDUCE_SHADOWS.booleanState
+    val preferences = LocalAppPreferencesController.current
+
+    var useMarqueeText = preferences.marqueeTextEnabled
+    var reduceShadows = preferences.reduceShadows
 
     val navController = LocalNavController.current
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
@@ -65,10 +70,9 @@ fun GeneralSettingsPage() {
                 PreferenceSwitch(
                     title = stringResource(R.string.marquee_text),
                     description = stringResource(R.string.marquee_text_description),
-                    isChecked = useMarqueeText.value,
+                    isChecked = useMarqueeText,
                     onClick = {
-                        useMarqueeText.value = !useMarqueeText.value
-                        preferences.updateValue(MARQUEE_TEXT, useMarqueeText.value)
+                        useMarqueeText = !useMarqueeText
                     }
                 )
             }
@@ -76,10 +80,9 @@ fun GeneralSettingsPage() {
                 PreferenceSwitch(
                     title = stringResource(R.string.reduce_shadows),
                     description = stringResource(R.string.reduce_shadows_description),
-                    isChecked = reduceShadows.value,
+                    isChecked = reduceShadows,
                     onClick = {
-                        reduceShadows.value = !reduceShadows.value
-                        preferences.updateValue(REDUCE_SHADOWS, reduceShadows.value)
+                        reduceShadows = !reduceShadows
                     }
                 )
             }

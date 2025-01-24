@@ -193,7 +193,7 @@ dependencies {
     annotationProcessor(libs.room.compiler)
 
 //-------------------Key-value Storage-------------------//
-    implementation(libs.mmkv)
+    implementation(libs.datastore.preferences)
 
 //-------------------Image Loading-------------------//
     implementation(libs.landscapist.coil)

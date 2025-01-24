@@ -15,10 +15,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
+import com.bobbyesp.metadator.presentation.common.LocalAppPreferencesController
 import com.bobbyesp.ui.components.text.MarqueeText
 import com.bobbyesp.ui.components.text.MarqueeTextGradientOptions
-import com.bobbyesp.metadator.util.preferences.PreferencesKeys.MARQUEE_TEXT
-import com.bobbyesp.metadator.util.preferences.booleanState
 
 @Composable
 fun ConditionedMarqueeText(
@@ -44,9 +43,10 @@ fun ConditionedMarqueeText(
     animationDuration: Float = 4000f,
     delayBetweenAnimations: Long = 500L
 ) {
-    val useMarqueeText = MARQUEE_TEXT.booleanState
+    val preferences = LocalAppPreferencesController.current
+    val useMarqueeText = preferences.marqueeTextEnabled
 
-    if(useMarqueeText.value) {
+    if(useMarqueeText) {
         MarqueeText(
             text,
             modifier,

@@ -1,4 +1,4 @@
-package com.bobbyesp.metadator.presentation.pages.home
+package com.bobbyesp.metadator.domain.enums
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.List

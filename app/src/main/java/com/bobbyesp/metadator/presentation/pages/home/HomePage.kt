@@ -5,6 +5,7 @@ package com.bobbyesp.metadator.presentation.pages.home
 import android.Manifest
 import android.app.Activity
 import android.os.Build
+import androidx.activity.compose.LocalActivity
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -52,7 +53,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bobbyesp.metadator.R
+import com.bobbyesp.metadator.domain.enums.LayoutType
 import com.bobbyesp.metadator.ext.toParcelableSong
+import com.bobbyesp.metadator.presentation.common.LocalAppPreferencesController
 import com.bobbyesp.metadator.presentation.common.LocalDrawerState
 import com.bobbyesp.metadator.presentation.common.LocalNavController
 import com.bobbyesp.metadator.presentation.common.Route
@@ -63,9 +66,6 @@ import com.bobbyesp.ui.components.dropdown.AnimatedDropdownMenu
 import com.bobbyesp.ui.components.dropdown.DropdownItemContainer
 import com.bobbyesp.ui.components.text.AutoResizableText
 import com.bobbyesp.utilities.mediastore.model.Song
-import com.bobbyesp.utilities.Preferences
-import com.bobbyesp.metadator.util.preferences.PreferencesKeys.DESIRED_LAYOUT
-import com.bobbyesp.metadator.util.preferences.PreferencesKeys.SONG_CARD_SIZE
 import com.bobbyesp.utilities.states.ResourceState
 import com.bobbyesp.utilities.ui.permission.PermissionNotGrantedDialog
 import com.bobbyesp.utilities.ui.permission.PermissionRequestHandler
@@ -85,7 +85,7 @@ fun HomePage(
     songs: State<ResourceState<List<Song>>>,
     onEvent: (MediaStorePageViewModel.Companion.Events) -> Unit = {}
 ) {
-    val context = LocalContext.current as Activity
+    val context = LocalActivity.current
     val readAudioFiles = when {
         Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU -> Manifest.permission.READ_EXTERNAL_STORAGE
 
@@ -104,6 +104,8 @@ fun HomePage(
     val drawerState = LocalDrawerState.current
     val scope = rememberCoroutineScope()
 
+    val preferences = LocalAppPreferencesController.current
+
     var moreOptionsVisible by remember {
         mutableStateOf(false)
     }
@@ -111,21 +113,9 @@ fun HomePage(
     val mediaStoreLazyGridState = rememberForeverLazyGridState(key = "lazyGrid")
     val mediaStoreLazyColumnState = rememberLazyListState()
 
-    var desiredLayout by remember {
-        mutableStateOf(
-            Preferences.Enumerations.getValue(
-                DESIRED_LAYOUT, LayoutType.Grid
-            )
-        )
-    }
+    var desiredLayout = preferences.desiredLayout
 
-    var desiredCardSize by remember {
-        mutableStateOf(
-            Preferences.Enumerations.getValue(
-                SONG_CARD_SIZE, CompactCardSize.LARGE
-            )
-        )
-    }
+    var desiredCardSize = preferences.songCardSize
 
     val gridIsFirstItemVisible by remember {
         derivedStateOf {
@@ -260,7 +250,7 @@ fun HomePage(
                         storagePermissionState.launchPermissionRequest()
                     },
                     onDismissRequest = {
-                        context.finish()
+                        context?.finish()
                     },
                     shouldShowRationale = shouldShowRationale
                 )
@@ -288,7 +278,7 @@ fun HomePage(
 @Composable
 private fun DropdownMenuContent(
     desiredLayout: LayoutType,
-    onLayoutChanged: (LayoutType) -> Unit = {},
+    onLayoutChanged: (LayoutType) -> Unit,
     navigateToDialog: () -> Unit = {}
 ) {
     val availableLayoutType = LayoutType.entries.toImmutableList()
@@ -312,9 +302,6 @@ private fun DropdownMenuContent(
                         SegmentedButton(
                             selected = desiredLayout.ordinal == listType.ordinal,
                             onClick = {
-                                Preferences.Enumerations.encodeValue(
-                                    DESIRED_LAYOUT, listType
-                                )
                                 onLayoutChanged(listType)
                             },
                             shape = SegmentedButtonDefaults.itemShape(

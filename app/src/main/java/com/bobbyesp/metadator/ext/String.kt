@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import com.bobbyesp.metadator.R
+import com.bobbyesp.metadator.util.executeIfDebugging
 
 object TagLib {
     @Composable
@@ -56,4 +57,19 @@ object TagLib {
             else -> Icons.Rounded.RunningWithErrors
         }
     }
+}
+
+object StringPreferencesExtensions {
+
+    inline fun <reified T : Enum<T>> String?.toEnum(defaultValue: T): T =
+        if (this == null) defaultValue
+        else try {
+            enumValueOf(this)
+        } catch (e: IllegalArgumentException) {
+            executeIfDebugging {
+                e.printStackTrace()
+            }
+            defaultValue
+        }
+
 }

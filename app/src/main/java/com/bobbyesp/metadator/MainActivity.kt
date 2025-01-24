@@ -13,7 +13,7 @@ import com.bobbyesp.mediaplayer.service.MediaplayerService
 import com.bobbyesp.metadator.presentation.Navigator
 import com.bobbyesp.metadator.presentation.common.AppLocalSettingsProvider
 import com.bobbyesp.metadator.presentation.theme.MetadatorTheme
-import com.bobbyesp.metadator.util.preferences.CoreSettings
+import com.bobbyesp.metadator.util.preferences.AppPreferences
 import org.koin.android.ext.android.inject
 import org.koin.compose.KoinContext
 import org.koin.core.component.KoinComponent
@@ -24,6 +24,7 @@ class MainActivity : ComponentActivity(), KoinComponent {
     private var isMusicPlayerServiceStarted = false
 
     private val connectionHandler: ConnectionHandler by inject()
+    private val appPreferences: AppPreferences by inject()
 
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,7 +38,7 @@ class MainActivity : ComponentActivity(), KoinComponent {
                 AppLocalSettingsProvider(
                     windowWidthSize = windowSizeClass.widthSizeClass,
                     playerConnectionHandler = connectionHandler,
-                    coreSettings = CoreSettings.initialize(App.preferences.kv)
+                    appPreferences = appPreferences
                 ) {
                     MetadatorTheme {
                         Navigator()
