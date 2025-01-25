@@ -30,8 +30,8 @@ import kotlinx.coroutines.launch
 fun GeneralSettingsPage() {
     val preferences = LocalAppPreferencesController.current
 
-    var useMarqueeText = preferences.marqueeTextEnabled
-    var reduceShadows = preferences.reduceShadows
+    var useMarqueeText = rememberPreference(MARQUEE_TEXT_ENABLED, true)
+    var reduceShadows = rememberPreference(REDUCE_SHADOWS, false)
 
     val navController = LocalNavController.current
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
@@ -70,9 +70,9 @@ fun GeneralSettingsPage() {
                 PreferenceSwitch(
                     title = stringResource(R.string.marquee_text),
                     description = stringResource(R.string.marquee_text_description),
-                    isChecked = useMarqueeText,
+                    isChecked = useMarqueeText.value,
                     onClick = {
-                        useMarqueeText = !useMarqueeText
+                        useMarqueeText.value = !useMarqueeText.value
                     }
                 )
             }
@@ -80,9 +80,9 @@ fun GeneralSettingsPage() {
                 PreferenceSwitch(
                     title = stringResource(R.string.reduce_shadows),
                     description = stringResource(R.string.reduce_shadows_description),
-                    isChecked = reduceShadows,
+                    isChecked = reduceShadows.value,
                     onClick = {
-                        reduceShadows = !reduceShadows
+                        reduceShadows.value = !reduceShadows.value
                     }
                 )
             }

@@ -76,7 +76,7 @@ fun <T> rememberPreference(
             override var value: T
                 get() = state.value
                 set(value) {
-                    coroutineScope.launch {
+                    coroutineScope.launch(Dispatchers.IO) {
                         context.dataStore.edit {
                             it[key] = value
                         }

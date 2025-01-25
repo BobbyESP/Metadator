@@ -16,6 +16,8 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import com.bobbyesp.metadator.presentation.common.LocalAppPreferencesController
+import com.bobbyesp.metadator.util.preferences.AppPreferences.Companion.MARQUEE_TEXT_ENABLED
+import com.bobbyesp.metadator.util.preferences.datastore.rememberPreference
 import com.bobbyesp.ui.components.text.MarqueeText
 import com.bobbyesp.ui.components.text.MarqueeTextGradientOptions
 
@@ -43,10 +45,9 @@ fun ConditionedMarqueeText(
     animationDuration: Float = 4000f,
     delayBetweenAnimations: Long = 500L
 ) {
-    val preferences = LocalAppPreferencesController.current
-    val useMarqueeText = preferences.marqueeTextEnabled
+    val useMarqueeText = rememberPreference(MARQUEE_TEXT_ENABLED, true)
 
-    if(useMarqueeText) {
+    if(useMarqueeText.value) {
         MarqueeText(
             text,
             modifier,

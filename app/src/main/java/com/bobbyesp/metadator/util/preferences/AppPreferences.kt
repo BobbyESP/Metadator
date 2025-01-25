@@ -24,11 +24,7 @@ class AppPreferences(
     var desiredLayout by PreferenceDelegate<String, LayoutType>(
         dataStore = dataStore,
         key = DESIRED_LAYOUT,
-        defaultValue = LayoutType.Grid,
-        transform = {
-            Log.d("AppPreferences", "Transforming desired layout: $it")
-            LayoutType.valueOf(it as String)
-        }
+        defaultValue = LayoutType.Grid
     )
 
     var reduceShadows by PreferenceDelegate(
@@ -47,10 +43,6 @@ class AppPreferences(
         dataStore = dataStore,
         key = SONG_CARD_SIZE,
         defaultValue = CompactCardSize.LARGE,
-        transform = {
-            Log.d("AppPreferences", "Transforming song card size: $it")
-            CompactCardSize.valueOf(it as String)
-        }
     )
 
     var darkMode by PreferenceDelegate(
@@ -80,15 +72,10 @@ class AppPreferences(
     var paletteStyle by PreferenceDelegate<String, PaletteStyle>(
         dataStore = dataStore,
         key = PALETTE_STYLE,
-        defaultValue = PaletteStyle.Vibrant,
-        transform = {
-            Log.d("AppPreferences", "Transforming palette style: $it")
-            PaletteStyle.valueOf(it as String)
-        }
+        defaultValue = PaletteStyle.Vibrant
     )
 
     suspend fun <T> saveSetting(key: Preferences.Key<T>, value: T) {
-        Log.d("AppPreferences", "Saving setting: $key = $value")
         dataStore.edit { preferences ->
             preferences[key] = value
         }
