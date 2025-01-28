@@ -55,6 +55,7 @@ class App : Application() {
         val appVersion: String get() = packageInfo.versionName.toString()
 
         const val APP_PACKAGE_NAME = "com.bobbyesp.metadator"
+        const val PREFERENCES_NAME = "${APP_PACKAGE_NAME}_preferences"
         const val APP_FILE_PROVIDER = "$APP_PACKAGE_NAME.fileprovider"
     }
 }

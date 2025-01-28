@@ -12,7 +12,7 @@ import com.bobbyesp.utilities.Logging
 @OptIn(UnstableApi::class)
 class MediaplayerServiceConnection(
     private val connectionHandler: ConnectionHandler
-): ServiceConnection {
+) : ServiceConnection {
     override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
         Logging.i(
             "The Music Service is connected. Updating the connection handler."

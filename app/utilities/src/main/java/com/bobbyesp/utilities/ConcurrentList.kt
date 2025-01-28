@@ -86,7 +86,8 @@ class ConcurrentList<T> : MutableList<T> {
      * @param toIndex high endpoint (exclusive) of the subList
      * @return a view of the specified range within this list
      */
-    override fun subList(fromIndex: Int, toIndex: Int) = lock.read { list.subList(fromIndex, toIndex) }
+    override fun subList(fromIndex: Int, toIndex: Int) =
+        lock.read { list.subList(fromIndex, toIndex) }
 
     /**
      * Appends the specified element to the end of this list.
@@ -121,7 +122,8 @@ class ConcurrentList<T> : MutableList<T> {
      * @param elements collection containing elements to be added to this list
      * @return `true` if this list changed as a result of the call
      */
-    override fun addAll(index: Int, elements: Collection<T>) = lock.write { list.addAll(index, elements) }
+    override fun addAll(index: Int, elements: Collection<T>) =
+        lock.write { list.addAll(index, elements) }
 
     /**
      * Removes all of the elements from this list.

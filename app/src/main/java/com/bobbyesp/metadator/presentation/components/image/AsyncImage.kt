@@ -36,7 +36,7 @@ fun AsyncImage(
     imageModel: Any? = null,
     imageModifier: Modifier = Modifier,
     shape: Shape = MaterialTheme.shapes.small,
-    placeholder: ImageVector?,
+    placeholder: ImageVector? = null,
     context: Context = LocalContext.current,
     imageLoader: ImageLoader? = LocalCoilImageLoader.current,
     onSuccessData: (CoilImageState.Success) -> Unit = { _ -> }
@@ -60,7 +60,7 @@ fun AsyncImage(
             }
         },
         loading = {
-            if(placeholder != null) {
+            if (placeholder != null) {
                 Placeholder(
                     modifier = imageModifier
                         .fillMaxSize(),

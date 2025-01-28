@@ -8,10 +8,16 @@ import com.bobbyesp.utilities.R
 
 @Stable
 data class DarkThemePreference(
-    val darkThemeValue: Int = FOLLOW_SYSTEM,
+    val darkThemeValue: DarkThemeValue = DarkThemeValue.FOLLOW_SYSTEM,
     val isHighContrastModeEnabled: Boolean = false
 ) {
     companion object {
+        enum class DarkThemeValue {
+            FOLLOW_SYSTEM,
+            ON,
+            OFF
+        }
+
         const val FOLLOW_SYSTEM = 1
         const val ON = 2
         const val OFF = 3 // Non used
@@ -19,16 +25,16 @@ data class DarkThemePreference(
 
     @Composable
     fun isDarkTheme(): Boolean {
-        return if (darkThemeValue == FOLLOW_SYSTEM)
+        return if (darkThemeValue == DarkThemeValue.FOLLOW_SYSTEM)
             isSystemInDarkTheme()
-        else darkThemeValue == ON
+        else darkThemeValue == DarkThemeValue.ON
     }
 
     @Composable
     fun getDarkThemeDescription(): String {
         return when (darkThemeValue) {
-            FOLLOW_SYSTEM -> stringResource(R.string.follow_system)
-            ON -> stringResource(R.string.on)
+            DarkThemeValue.FOLLOW_SYSTEM -> stringResource(R.string.follow_system)
+            DarkThemeValue.ON -> stringResource(R.string.on)
             else -> stringResource(R.string.off)
         }
     }

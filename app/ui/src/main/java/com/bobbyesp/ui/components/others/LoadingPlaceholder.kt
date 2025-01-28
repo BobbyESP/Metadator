@@ -16,8 +16,10 @@ fun LoadingPlaceholder(
     colorful: Boolean,
 ) {
 
-    val color = if (colorful) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface
-    val onColor = if (colorful) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
+    val color =
+        if (colorful) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface
+    val onColor =
+        if (colorful) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
     val elevation = if (colorful) 0.dp else 8.dp
 
     Surface(

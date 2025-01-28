@@ -27,7 +27,8 @@ import com.materialkolor.rememberDynamicMaterialThemeState
 import com.skydoves.landscapist.coil.LocalCoilImageLoader
 import kotlinx.coroutines.Dispatchers
 
-val LocalDarkTheme = compositionLocalOf<DarkThemePreference> { error("No Dark Theme preferences provided") }
+val LocalDarkTheme =
+    compositionLocalOf<DarkThemePreference> { error("No Dark Theme preferences provided") }
 val LocalSeedColor = compositionLocalOf { DEFAULT_SEED_COLOR }
 val LocalDynamicColoringSwitch = compositionLocalOf { false }
 val LocalDynamicThemeState =
@@ -59,7 +60,8 @@ fun AppLocalSettingsProvider(
     content: @Composable () -> Unit
 ) {
     val context = LocalContext.current
-    val settingsFlow = appPreferences.userPreferencesFlow.collectAsStateWithLifecycle(initialValue = emptyUserPreferences())
+    val settingsFlow =
+        appPreferences.userPreferencesFlow.collectAsStateWithLifecycle(initialValue = emptyUserPreferences())
 
     val useDynamicColoring = settingsFlow.value.useDynamicColoring
     val seedColor = settingsFlow.value.themeColor
@@ -68,11 +70,11 @@ fun AppLocalSettingsProvider(
     val navController = rememberNavController()
 
     val imageLoader = ImageLoader.Builder(context).memoryCache {
-            MemoryCache.Builder(context).maxSizePercent(0.35).build()
-        }.diskCache {
-            DiskCache.Builder().directory(context.cacheDir.resolve("image_cache"))
-                .maxSizeBytes(7 * 1024 * 1024).build()
-        }.respectCacheHeaders(false).allowHardware(true).crossfade(true)
+        MemoryCache.Builder(context).maxSizePercent(0.35).build()
+    }.diskCache {
+        DiskCache.Builder().directory(context.cacheDir.resolve("image_cache"))
+            .maxSizeBytes(7 * 1024 * 1024).build()
+    }.respectCacheHeaders(false).allowHardware(true).crossfade(true)
         .bitmapFactoryMaxParallelism(12).dispatcher(Dispatchers.IO).build()
 
     val config = LocalConfiguration.current

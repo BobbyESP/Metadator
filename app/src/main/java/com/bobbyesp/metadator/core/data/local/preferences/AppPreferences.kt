@@ -3,15 +3,22 @@ package com.bobbyesp.metadator.core.data.local.preferences
 import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
-import androidx.datastore.preferences.core.intPreferencesKey
-import androidx.datastore.preferences.core.stringPreferencesKey
 import com.bobbyesp.metadator.core.data.local.DarkThemePreference
+import com.bobbyesp.metadator.core.data.local.DarkThemePreference.Companion.DarkThemeValue
+import com.bobbyesp.metadator.core.data.local.preferences.PreferencesKey.DARK_THEME_VALUE
+import com.bobbyesp.metadator.core.data.local.preferences.PreferencesKey.HIGH_CONTRAST
+import com.bobbyesp.metadator.core.data.local.preferences.PreferencesKey.MARQUEE_TEXT_ENABLED
+import com.bobbyesp.metadator.core.data.local.preferences.PreferencesKey.PALETTE_STYLE
+import com.bobbyesp.metadator.core.data.local.preferences.PreferencesKey.REDUCE_SHADOWS
+import com.bobbyesp.metadator.core.data.local.preferences.PreferencesKey.SONGS_LAYOUT
+import com.bobbyesp.metadator.core.data.local.preferences.PreferencesKey.SONG_CARD_SIZE
+import com.bobbyesp.metadator.core.data.local.preferences.PreferencesKey.THEME_COLOR
+import com.bobbyesp.metadator.core.data.local.preferences.PreferencesKey.USE_DYNAMIC_COLORING
 import com.bobbyesp.metadator.domain.enums.LayoutType
 import com.bobbyesp.metadator.presentation.components.cards.songs.compact.CompactCardSize
-import com.bobbyesp.utilities.ui.DEFAULT_SEED_COLOR
+import com.bobbyesp.metadator.presentation.theme.isDynamicColoringSupported
 import com.materialkolor.PaletteStyle
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -23,7 +30,7 @@ import kotlinx.io.IOException
 class AppPreferences(
     private val dataStore: DataStore<Preferences>,
     scope: CoroutineScope //May be used in the future
-): AppPreferencesController {
+) : AppPreferencesController {
 
     override val userPreferencesFlow: Flow<UserPreferences>
         get() = dataStore.data
@@ -39,16 +46,75 @@ class AppPreferences(
                 mapUserPreferences(preferences)
             }
 
+    override suspend fun getUserPreferences(): UserPreferences {
+        val preferences = dataStore.data.firstOrNull()
+        return mapUserPreferences(preferences ?: emptyPreferences())
+    }
+
+    // --> UI
+    suspend fun updateSongsLayout(layoutType: LayoutType) {
+        saveSetting(SONGS_LAYOUT, layoutType.name)
+    }
+
+    suspend fun updateReduceShadows(reduceShadows: Boolean) {
+        saveSetting(REDUCE_SHADOWS, reduceShadows)
+    }
+
+    suspend fun updateMarqueeTextEnabled(marqueeTextEnabled: Boolean) {
+        saveSetting(MARQUEE_TEXT_ENABLED, marqueeTextEnabled)
+    }
+
+    suspend fun updateSongCardSize(songCardSize: CompactCardSize) {
+        saveSetting(SONG_CARD_SIZE, songCardSize.name)
+    }
+
+    // --> Theming
+    suspend fun updateDarkThemeValue(darkThemeValue: DarkThemeValue) {
+        saveSetting(DARK_THEME_VALUE, darkThemeValue.name)
+    }
+
+    suspend fun updateHighContrast(highContrast: Boolean) {
+        saveSetting(HIGH_CONTRAST, highContrast)
+    }
+
+    suspend fun updateDarkThemePreferences(darkThemePreference: DarkThemePreference) {
+        saveSetting(DARK_THEME_VALUE, darkThemePreference.darkThemeValue.name)
+        saveSetting(HIGH_CONTRAST, darkThemePreference.isHighContrastModeEnabled)
+    }
+
+    suspend fun updateDynamicColoring(dynamicColoring: Boolean, onCantEnable: () -> Unit) {
+        if (dynamicColoring && !isDynamicColoringSupported()) {
+            onCantEnable()
+            saveSetting(USE_DYNAMIC_COLORING, false)
+            return
+        } else {
+            saveSetting(USE_DYNAMIC_COLORING, dynamicColoring)
+        }
+    }
+
+    suspend fun updateThemeColor(themeColor: Int) {
+        saveSetting(THEME_COLOR, themeColor)
+    }
+
+    suspend fun updatePaletteStyle(paletteStyle: PaletteStyle) {
+        saveSetting(PALETTE_STYLE, paletteStyle.name)
+    }
+
     private fun mapUserPreferences(
         preferences: Preferences
     ): UserPreferences {
-        val desiredLayout: LayoutType = LayoutType.valueOf(preferences[DESIRED_LAYOUT] ?: getDefaultForKey(DESIRED_LAYOUT))
-        val reduceShadows: Boolean = preferences[REDUCE_SHADOWS] ?: getDefaultForKey(REDUCE_SHADOWS)
-        val marqueeTextEnabled: Boolean = preferences[MARQUEE_TEXT_ENABLED] ?: getDefaultForKey(MARQUEE_TEXT_ENABLED)
-        val songCardSize: CompactCardSize = CompactCardSize.valueOf(preferences[SONG_CARD_SIZE] ?: getDefaultForKey(SONG_CARD_SIZE))
-        val useDynamicColoring: Boolean = preferences[USE_DYNAMIC_COLORING] ?: getDefaultForKey(USE_DYNAMIC_COLORING)
-        val themeColor: Int = preferences[THEME_COLOR] ?: getDefaultForKey(THEME_COLOR)
-        val paletteStyle: PaletteStyle = PaletteStyle.valueOf(preferences[PALETTE_STYLE] ?: getDefaultForKey(PALETTE_STYLE))
+        val desiredLayout: LayoutType =
+            LayoutType.valueOf(preferences[SONGS_LAYOUT.key] ?: SONGS_LAYOUT.defaultValue)
+        val reduceShadows: Boolean = preferences[REDUCE_SHADOWS.key] ?: REDUCE_SHADOWS.defaultValue
+        val marqueeTextEnabled: Boolean =
+            preferences[MARQUEE_TEXT_ENABLED.key] ?: MARQUEE_TEXT_ENABLED.defaultValue
+        val songCardSize: CompactCardSize =
+            CompactCardSize.valueOf(preferences[SONG_CARD_SIZE.key] ?: SONG_CARD_SIZE.defaultValue)
+        val useDynamicColoring: Boolean =
+            preferences[USE_DYNAMIC_COLORING.key] ?: USE_DYNAMIC_COLORING.defaultValue
+        val themeColor: Int = preferences[THEME_COLOR.key] ?: THEME_COLOR.defaultValue
+        val paletteStyle: PaletteStyle =
+            PaletteStyle.valueOf(preferences[PALETTE_STYLE.key] ?: PALETTE_STYLE.defaultValue)
 
         val darkThemePreference = mapDarkThemePreferences(preferences)
 
@@ -65,58 +131,35 @@ class AppPreferences(
     }
 
     private fun mapDarkThemePreferences(preferences: Preferences): DarkThemePreference {
-        val darkThemeValue: Int = preferences[DARK_THEME_VALUE] ?: getDefaultForKey(DARK_THEME_VALUE)
-        val highContrast: Boolean = preferences[HIGH_CONTRAST] ?: getDefaultForKey(HIGH_CONTRAST)
-        return DarkThemePreference(darkThemeValue, highContrast)
+        val currentDarkThemeValue: DarkThemeValue = DarkThemeValue.valueOf(
+            preferences[DARK_THEME_VALUE.key] ?: DARK_THEME_VALUE.defaultValue
+        )
+        val highContrast: Boolean = preferences[HIGH_CONTRAST.key] ?: HIGH_CONTRAST.defaultValue
+        return DarkThemePreference(currentDarkThemeValue, highContrast)
     }
 
-    override suspend fun <T> saveSetting(key: Preferences.Key<T>, value: T) {
+    override suspend fun <T> saveSetting(key: PreferencesKey<T>, value: T) {
         dataStore.edit { preferences ->
-            preferences[key] = value
+            when (value) {
+                is String -> preferences[key.key] = value
+                is Boolean -> preferences[key.key] = value
+                is Int -> preferences[key.key] = value
+                else -> throw IllegalArgumentException("Unsupported type: ${value!!::class.simpleName}")
+            }
         }
     }
 
-    override fun <T> getSettingFlow(key: Preferences.Key<T>, defaultValue: T?): Flow<T> {
+
+    override fun <T> getSettingFlow(key: PreferencesKey<T>, defaultValue: T?): Flow<T> {
         return dataStore.data
             .map { preferences ->
-                preferences[key] ?: defaultValue ?: getDefaultForKey(key)
+                preferences[key.key] ?: defaultValue ?: key.defaultValue
             }
     }
 
-    override suspend fun <T> getSetting(key: Preferences.Key<T>, defaultValue: T?): T {
+    override suspend fun <T> getSetting(key: PreferencesKey<T>, defaultValue: T?): T {
         val preferences = dataStore.data.firstOrNull()
-        return preferences?.get(key) ?: defaultValue ?: getDefaultForKey(key)
+        return preferences?.get(key.key) ?: defaultValue ?: key.defaultValue
     }
 
-    fun <T> getDefaultForKey(key: Preferences.Key<T>): T {
-        return when (key) {
-            DESIRED_LAYOUT -> LayoutType.Grid.name
-            REDUCE_SHADOWS -> false
-            MARQUEE_TEXT_ENABLED -> true
-            SONG_CARD_SIZE -> CompactCardSize.LARGE.name
-
-            DARK_THEME_VALUE -> DarkThemePreference.FOLLOW_SYSTEM
-            HIGH_CONTRAST -> false
-            USE_DYNAMIC_COLORING -> true
-            THEME_COLOR -> DEFAULT_SEED_COLOR
-            PALETTE_STYLE -> PaletteStyle.Vibrant.name
-
-            else -> error("No default value found for $key")
-        } as T
-    }
-
-    companion object {
-        // --> UI
-        val DESIRED_LAYOUT = stringPreferencesKey("desired_layout")
-        val REDUCE_SHADOWS = booleanPreferencesKey("reduce_shadows")
-        val MARQUEE_TEXT_ENABLED = booleanPreferencesKey("marquee_text_enabled")
-        val SONG_CARD_SIZE = stringPreferencesKey("song_card_size")
-
-        // --> Theming
-        val DARK_THEME_VALUE = intPreferencesKey("dark_theme_value")
-        val HIGH_CONTRAST = booleanPreferencesKey("high_contrast")
-        val USE_DYNAMIC_COLORING = booleanPreferencesKey("dynamic_coloring")
-        val THEME_COLOR = intPreferencesKey("theme_color")
-        val PALETTE_STYLE = stringPreferencesKey("palette_style")
-    }
 }

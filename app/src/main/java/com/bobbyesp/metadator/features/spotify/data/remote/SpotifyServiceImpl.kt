@@ -26,8 +26,10 @@ class SpotifyServiceImpl : SpotifyService, KoinComponent {
             buildApi()
         }
         return api
-            ?: throw IllegalStateException("The connection to the Spotify API was not established." +
-                    " This may be due to a network error or a servers outage.")
+            ?: throw IllegalStateException(
+                "The connection to the Spotify API was not established." +
+                        " This may be due to a network error or a servers outage."
+            )
     }
 
     override suspend fun getSpotifyToken(): Token {

@@ -107,20 +107,20 @@ fun MiniplayerContent(
                 modifier = Modifier
                     .size(42.dp)
                     .padding(4.dp), icon = {
-                Icon(
-                    imageVector = Icons.Rounded.Pause,
-                    contentDescription = stringResource(
-                        id = R.string.pause
-                    ),
-                )
-            }, icon2 = {
-                Icon(
-                    imageVector = Icons.Rounded.PlayArrow,
-                    contentDescription = stringResource(
-                        id = R.string.play
-                    ),
-                )
-            }, isIcon1 = isPlaying
+                    Icon(
+                        imageVector = Icons.Rounded.Pause,
+                        contentDescription = stringResource(
+                            id = R.string.pause
+                        ),
+                    )
+                }, icon2 = {
+                    Icon(
+                        imageVector = Icons.Rounded.PlayArrow,
+                        contentDescription = stringResource(
+                            id = R.string.play
+                        ),
+                    )
+                }, isIcon1 = isPlaying
             ) {
                 onPlayPause()
             }

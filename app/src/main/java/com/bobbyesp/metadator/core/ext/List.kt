@@ -14,7 +14,8 @@ fun <T> List<T>.formatArtists(useAmpersands: Boolean = false): String {
             0 -> ""
             1 -> artistNames.first()
             2 -> artistNames.joinToString(" & ")
-            else -> artistNames.subList(0, artistNames.size - 1).joinToString(", ") + " & " + artistNames.last()
+            else -> artistNames.subList(0, artistNames.size - 1)
+                .joinToString(", ") + " & " + artistNames.last()
         }
     } else {
         artistNames.joinToString(", ")

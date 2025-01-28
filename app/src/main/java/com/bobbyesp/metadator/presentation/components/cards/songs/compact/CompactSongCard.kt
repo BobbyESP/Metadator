@@ -26,9 +26,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.bobbyesp.metadator.core.data.local.preferences.AppPreferences.Companion.REDUCE_SHADOWS
-import com.bobbyesp.metadator.core.data.local.preferences.datastore.rememberPreference
-import com.bobbyesp.metadator.presentation.common.LocalAppPreferencesController
+import com.bobbyesp.metadator.core.data.local.preferences.PreferencesKey.REDUCE_SHADOWS
+import com.bobbyesp.metadator.core.data.local.preferences.datastore.rememberPreferenceState
 import com.bobbyesp.metadator.presentation.components.cards.songs.compact.CompactCardSize.Companion.toShape
 import com.bobbyesp.metadator.presentation.components.image.AsyncImage
 import com.bobbyesp.metadator.presentation.components.text.ConditionedMarqueeText
@@ -45,8 +44,7 @@ fun CompactSongCard(
     shape: Shape? = MaterialTheme.shapes.large,
     onClick: () -> Unit
 ) {
-    val preferences = LocalAppPreferencesController.current
-    val reduceShadows = rememberPreference(REDUCE_SHADOWS)
+    val (reduceShadows) = rememberPreferenceState(REDUCE_SHADOWS)
 
     val cardSize by remember(size) {
         mutableStateOf(size.value)

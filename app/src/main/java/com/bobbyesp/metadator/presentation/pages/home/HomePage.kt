@@ -51,8 +51,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bobbyesp.metadator.R
-import com.bobbyesp.metadator.core.data.local.preferences.AppPreferences.Companion.DESIRED_LAYOUT
-import com.bobbyesp.metadator.core.data.local.preferences.AppPreferences.Companion.SONG_CARD_SIZE
+import com.bobbyesp.metadator.core.data.local.preferences.PreferencesKey.SONGS_LAYOUT
+import com.bobbyesp.metadator.core.data.local.preferences.PreferencesKey.SONG_CARD_SIZE
 import com.bobbyesp.metadator.core.data.local.preferences.datastore.rememberPreference
 import com.bobbyesp.metadator.core.ext.toParcelableSong
 import com.bobbyesp.metadator.domain.enums.LayoutType
@@ -109,15 +109,9 @@ fun HomePage(
     val mediaStoreLazyGridState = rememberForeverLazyGridState(key = "lazyGrid")
     val mediaStoreLazyColumnState = rememberLazyListState()
 
-    var configDesiredLayout = rememberPreference(DESIRED_LAYOUT)
+    var configDesiredLayout = rememberPreference(SONGS_LAYOUT)
 
     var configDesiredCardSize = rememberPreference(SONG_CARD_SIZE)
-
-    val desiredLayout by remember {
-        derivedStateOf {
-            LayoutType.valueOf(configDesiredLayout.value)
-        }
-    }
 
     val gridIsFirstItemVisible by remember {
         derivedStateOf {

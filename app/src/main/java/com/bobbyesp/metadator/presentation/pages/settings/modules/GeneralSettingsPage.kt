@@ -14,9 +14,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import com.bobbyesp.metadator.R
-import com.bobbyesp.metadator.core.data.local.preferences.AppPreferences.Companion.MARQUEE_TEXT_ENABLED
-import com.bobbyesp.metadator.core.data.local.preferences.AppPreferences.Companion.REDUCE_SHADOWS
-import com.bobbyesp.metadator.core.data.local.preferences.datastore.rememberPreference
+import com.bobbyesp.metadator.core.data.local.preferences.PreferencesKey.MARQUEE_TEXT_ENABLED
+import com.bobbyesp.metadator.core.data.local.preferences.PreferencesKey.REDUCE_SHADOWS
+import com.bobbyesp.metadator.core.data.local.preferences.datastore.rememberPreferenceState
 import com.bobbyesp.metadator.presentation.common.LocalNavController
 import com.bobbyesp.ui.components.button.BackButton
 import com.bobbyesp.ui.components.preferences.PreferenceSwitch
@@ -24,8 +24,8 @@ import com.bobbyesp.ui.components.preferences.PreferenceSwitch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GeneralSettingsPage() {
-    var useMarqueeText = rememberPreference(MARQUEE_TEXT_ENABLED)
-    var reduceShadows = rememberPreference(REDUCE_SHADOWS)
+    val (useMarqueeText, updateMarqueeText) = rememberPreferenceState(MARQUEE_TEXT_ENABLED)
+    val (reduceShadows, updateReduceShadows) = rememberPreferenceState(REDUCE_SHADOWS)
 
     val navController = LocalNavController.current
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
@@ -66,7 +66,7 @@ fun GeneralSettingsPage() {
                     description = stringResource(R.string.marquee_text_description),
                     isChecked = useMarqueeText.value,
                     onClick = {
-                        useMarqueeText.value = !useMarqueeText.value
+                        updateMarqueeText(!useMarqueeText.value)
                     }
                 )
             }
@@ -76,7 +76,7 @@ fun GeneralSettingsPage() {
                     description = stringResource(R.string.reduce_shadows_description),
                     isChecked = reduceShadows.value,
                     onClick = {
-                        reduceShadows.value = !reduceShadows.value
+                        updateReduceShadows(!reduceShadows.value)
                     }
                 )
             }

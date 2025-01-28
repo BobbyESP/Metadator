@@ -57,7 +57,7 @@ inline fun <reified T : Any> NavGraphBuilder.slideInVerticallyComposable(
     if (usePredictiveBack) {
         slideInVerticallyComposablePredictiveBack<T>(deepLinks, typeMap, content)
     } else {
-        slideInVerticallyComposableLegacy<T>(deepLinks, typeMap ,content)
+        slideInVerticallyComposableLegacy<T>(deepLinks, typeMap, content)
     }
 }
 

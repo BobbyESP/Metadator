@@ -15,6 +15,10 @@ import com.bobbyesp.metadator.presentation.common.LocalDynamicColoringSwitch
 import com.bobbyesp.metadator.presentation.common.LocalDynamicThemeState
 import com.materialkolor.DynamicMaterialTheme
 
+fun isDynamicColoringSupported(): Boolean {
+    return Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+}
+
 @Composable
 fun MetadatorTheme(
     content: @Composable () -> Unit
@@ -22,7 +26,7 @@ fun MetadatorTheme(
     val themeState = LocalDynamicThemeState.current
     val dynamicColoring = LocalDynamicColoringSwitch.current
     val context = LocalContext.current
-    val canUseDynamicColor = dynamicColoring && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+    val canUseDynamicColor = dynamicColoring && isDynamicColoringSupported()
 
     val dynamicColorScheme = if (canUseDynamicColor) {
         if (themeState.isDark) {
