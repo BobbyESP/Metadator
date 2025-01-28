@@ -1,4 +1,4 @@
-package com.bobbyesp.metadator.presentation.pages.mediaplayer.player
+package com.bobbyesp.metadator.mediaplayer.presentation.pages.mediaplayer.player
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.EaseInOutSine
@@ -45,7 +45,7 @@ import com.bobbyesp.metadator.presentation.components.buttons.PlayPauseAnimatedB
 import com.bobbyesp.metadator.presentation.components.others.RepeatStateIcon
 import com.bobbyesp.metadator.presentation.components.others.ShuffleStateIcon
 import com.bobbyesp.metadator.presentation.components.text.ConditionedMarqueeText
-import com.bobbyesp.metadator.presentation.pages.mediaplayer.MediaplayerViewModel
+import com.bobbyesp.metadator.mediaplayer.presentation.pages.mediaplayer.MediaplayerViewModel
 import com.bobbyesp.ui.components.text.MarqueeTextGradientOptions
 import com.bobbyesp.utilities.Time
 import kotlinx.coroutines.delay

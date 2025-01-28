@@ -4,12 +4,15 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.res.stringResource
+import com.bobbyesp.metadator.core.data.local.preferences.PreferencesKey
+import com.bobbyesp.metadator.core.data.local.preferences.PreferencesKey.DARK_THEME_VALUE
+import com.bobbyesp.metadator.core.data.local.preferences.PreferencesKey.HIGH_CONTRAST
 import com.bobbyesp.utilities.R
 
 @Stable
 data class DarkThemePreference(
-    val darkThemeValue: DarkThemeValue = DarkThemeValue.FOLLOW_SYSTEM,
-    val isHighContrastModeEnabled: Boolean = false
+    val darkThemeValue: DarkThemeValue = DarkThemeValue.valueOf(DARK_THEME_VALUE.defaultValue),
+    val isHighContrastModeEnabled: Boolean = HIGH_CONTRAST.defaultValue
 ) {
     companion object {
         enum class DarkThemeValue {

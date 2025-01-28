@@ -463,6 +463,9 @@ fun PreferenceSwitch(
                 interactionSource = interactionSource,
                 modifier = Modifier.padding(start = 20.dp, end = 6.dp),
                 enabled = enabled,
+                colors = SwitchDefaults.colors(
+                    uncheckedBorderColor = Color.Transparent,
+                ),
                 thumbContent = thumbContent
             )
         }
@@ -532,6 +535,9 @@ fun PreferenceSwitchWithDivider(
                         contentDescription = title
                     },
                 enabled = isSwitchEnabled,
+                colors = SwitchDefaults.colors(
+                    uncheckedBorderColor = Color.Transparent,
+                ),
                 thumbContent = thumbContent
             )
         }
@@ -708,6 +714,9 @@ fun PreferenceSwitchWithContainer(
             interactionSource = interactionSource,
             onCheckedChange = null,
             modifier = Modifier.padding(start = 12.dp, end = 6.dp),
+            colors = SwitchDefaults.colors(
+                uncheckedBorderColor = Color.Transparent,
+            ),
             thumbContent = thumbContent,
         )
     }

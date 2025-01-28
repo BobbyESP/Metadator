@@ -1,7 +1,7 @@
 package com.bobbyesp.metadator.di
 
 import com.bobbyesp.metadator.presentation.pages.MediaStorePageViewModel
-import com.bobbyesp.metadator.presentation.pages.mediaplayer.MediaplayerViewModel
+import com.bobbyesp.metadator.mediaplayer.presentation.pages.mediaplayer.MediaplayerViewModel
 import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.MetadataEditorVM
 import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.spotify.MetadataBsVM
 import org.koin.core.module.dsl.viewModel

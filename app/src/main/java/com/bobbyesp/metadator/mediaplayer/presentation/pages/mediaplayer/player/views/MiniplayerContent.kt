@@ -1,4 +1,4 @@
-package com.bobbyesp.metadator.presentation.pages.mediaplayer.player.views
+package com.bobbyesp.metadator.mediaplayer.presentation.pages.mediaplayer.player.views
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.MutableTransitionState
@@ -32,7 +32,7 @@ import androidx.media3.common.MediaMetadata
 import com.bobbyesp.metadator.R
 import com.bobbyesp.metadator.presentation.components.image.AsyncImage
 import com.bobbyesp.metadator.presentation.components.text.ConditionedMarqueeText
-import com.bobbyesp.metadator.presentation.pages.mediaplayer.player.AnimatedTextContentTransformation
+import com.bobbyesp.metadator.mediaplayer.presentation.pages.mediaplayer.player.AnimatedTextContentTransformation
 import com.bobbyesp.ui.components.button.DynamicButton
 
 @Composable

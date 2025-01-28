@@ -1,4 +1,4 @@
-package com.bobbyesp.metadator.presentation.pages.mediaplayer.player
+package com.bobbyesp.metadator.mediaplayer.presentation.pages.mediaplayer.player
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

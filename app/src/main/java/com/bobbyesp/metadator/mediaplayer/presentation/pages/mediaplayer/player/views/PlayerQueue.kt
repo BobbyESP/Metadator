@@ -1,4 +1,4 @@
-package com.bobbyesp.metadator.presentation.pages.mediaplayer.player.views
+package com.bobbyesp.metadator.mediaplayer.presentation.pages.mediaplayer.player.views
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box

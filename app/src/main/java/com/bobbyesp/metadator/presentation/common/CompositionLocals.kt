@@ -46,8 +46,7 @@ val LocalNavController =
 val LocalWindowWidthState =
     staticCompositionLocalOf { WindowWidthSizeClass.Compact } //This value probably will never change, that's why it is static
 
-val LocalSonner =
-    compositionLocalOf<ToasterState> { error("No sonner toaster state provided") }
+val LocalSonner = compositionLocalOf<ToasterState> { error("No sonner toaster state provided") }
 val LocalMediaplayerConnection =
     compositionLocalOf<ConnectionHandler> { error("No Media Player Service Connection handler has been provided") }
 
@@ -70,12 +69,12 @@ fun AppLocalSettingsProvider(
     val navController = rememberNavController()
 
     val imageLoader = ImageLoader.Builder(context).memoryCache {
-        MemoryCache.Builder(context).maxSizePercent(0.35).build()
+        MemoryCache.Builder(context).maxSizePercent(0.4).build()
     }.diskCache {
         DiskCache.Builder().directory(context.cacheDir.resolve("image_cache"))
-            .maxSizeBytes(7 * 1024 * 1024).build()
-    }.respectCacheHeaders(false).allowHardware(true).crossfade(true)
-        .bitmapFactoryMaxParallelism(12).dispatcher(Dispatchers.IO).build()
+            .maxSizeBytes(7 * 1024 * 1024 * 1024).build()
+    }.respectCacheHeaders(false).allowHardware(true).crossfade(true).bitmapFactoryMaxParallelism(12)
+        .dispatcher(Dispatchers.IO).build()
 
     val config = LocalConfiguration.current
 
@@ -87,6 +86,7 @@ fun AppLocalSettingsProvider(
 
     CompositionLocalProvider(
         LocalDarkTheme provides darkTheme, //Tells the app what dark theme to use
+        //TODO: Modify to handle multiple colors (like based on images)
         LocalSeedColor provides seedColor, //Tells the app what color to use as seed for the palette
         LocalDynamicColoringSwitch provides useDynamicColoring, //Tells the app if it should use dynamic colors or not (Android 12+ feature)
         LocalDynamicThemeState provides themeState, //Provides the theme state to the app

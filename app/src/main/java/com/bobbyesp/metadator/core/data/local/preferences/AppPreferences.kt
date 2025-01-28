@@ -23,6 +23,7 @@ import com.materialkolor.PaletteStyle
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.io.IOException
@@ -138,6 +139,9 @@ class AppPreferences(
         return DarkThemePreference(currentDarkThemeValue, highContrast)
     }
 
+    suspend fun fetchInitialPreferences() =
+        mapUserPreferences(dataStore.data.first().toPreferences())
+
     override suspend fun <T> saveSetting(key: PreferencesKey<T>, value: T) {
         dataStore.edit { preferences ->
             when (value) {
@@ -148,7 +152,6 @@ class AppPreferences(
             }
         }
     }
-
 
     override fun <T> getSettingFlow(key: PreferencesKey<T>, defaultValue: T?): Flow<T> {
         return dataStore.data

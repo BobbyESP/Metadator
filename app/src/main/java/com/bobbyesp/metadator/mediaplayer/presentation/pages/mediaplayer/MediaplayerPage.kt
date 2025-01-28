@@ -1,4 +1,4 @@
-package com.bobbyesp.metadator.presentation.pages.mediaplayer
+package com.bobbyesp.metadator.mediaplayer.presentation.pages.mediaplayer
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -27,6 +27,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
@@ -37,7 +38,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bobbyesp.metadator.R
 import com.bobbyesp.metadator.presentation.common.LocalPlayerAwareWindowInsets
 import com.bobbyesp.metadator.presentation.components.cards.songs.HorizontalSongCard
-import com.bobbyesp.metadator.presentation.pages.mediaplayer.player.MediaplayerSheet
+import com.bobbyesp.metadator.mediaplayer.presentation.pages.mediaplayer.player.MediaplayerSheet
 import com.bobbyesp.ui.components.bottomsheet.draggable.DraggableBottomSheetState
 import kotlinx.coroutines.launch
 import my.nanihadesuka.compose.LazyColumnScrollbar
@@ -68,7 +69,7 @@ fun MediaplayerPage(
                 CenterAlignedTopAppBar(
                     title = {
                         Column(
-                            horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally,
+                            horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
                             Text(
                                 text = stringResource(id = R.string.mediaplayer).uppercase(),

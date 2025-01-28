@@ -1,4 +1,4 @@
-package com.bobbyesp.metadator.presentation.pages.mediaplayer.player.views
+package com.bobbyesp.metadator.mediaplayer.presentation.pages.mediaplayer.player.views
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Box
@@ -18,8 +18,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
-import com.bobbyesp.metadator.presentation.pages.mediaplayer.MediaplayerViewModel
-import com.bobbyesp.metadator.presentation.pages.mediaplayer.player.CollapsedPlayerHeight
+import com.bobbyesp.metadator.mediaplayer.presentation.pages.mediaplayer.MediaplayerViewModel
+import com.bobbyesp.metadator.mediaplayer.presentation.pages.mediaplayer.player.CollapsedPlayerHeight
 import com.bobbyesp.metadator.presentation.theme.MetadatorTheme
 
 @Composable

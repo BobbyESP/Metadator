@@ -57,6 +57,7 @@ dependencies {
     implementation(libs.bundles.compose)
     implementation(libs.compose.tooling.preview)
     implementation(libs.materialKolor)
+    implementation(libs.scrollbar)
 
     //Compose testing and tooling libraries
     androidTestImplementation(platform(libs.compose.bom))

@@ -1,4 +1,4 @@
-package com.bobbyesp.metadator.presentation.pages.settings.modules
+package com.bobbyesp.metadator.core.presentation.pages.settings.modules
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
@@ -65,6 +65,7 @@ fun GeneralSettingsPage() {
                     title = stringResource(R.string.marquee_text),
                     description = stringResource(R.string.marquee_text_description),
                     isChecked = useMarqueeText.value,
+                    thumbContent = null,
                     onClick = {
                         updateMarqueeText(!useMarqueeText.value)
                     }
@@ -75,6 +76,7 @@ fun GeneralSettingsPage() {
                     title = stringResource(R.string.reduce_shadows),
                     description = stringResource(R.string.reduce_shadows_description),
                     isChecked = reduceShadows.value,
+                    thumbContent = null,
                     onClick = {
                         updateReduceShadows(!reduceShadows.value)
                     }

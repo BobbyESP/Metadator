@@ -1,4 +1,4 @@
-package com.bobbyesp.metadator.presentation.pages.mediaplayer
+package com.bobbyesp.metadator.mediaplayer.presentation.pages.mediaplayer
 
 import android.content.Context
 import android.net.Uri
