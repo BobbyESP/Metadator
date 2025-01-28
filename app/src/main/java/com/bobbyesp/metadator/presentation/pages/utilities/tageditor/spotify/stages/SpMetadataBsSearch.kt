@@ -38,7 +38,7 @@ import androidx.paging.compose.itemKey
 import com.adamratzman.spotify.models.Track
 import com.bobbyesp.metadator.R
 import com.bobbyesp.metadator.presentation.components.cards.songs.spotify.SpotifyHorizontalSongCard
-import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.spotify.MetadataBsVM
+import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.spotify.MetadataBottomSheetViewModel
 import com.bobbyesp.ui.components.button.VerticalButtonWithIconAndText
 import com.bobbyesp.ui.components.state.LoadingState
 import com.bobbyesp.utilities.states.ResourceState
@@ -50,7 +50,7 @@ fun SpMetadataBsSearch(
     name: String,
     artist: String,
     listState: LazyListState = rememberLazyListState(),
-    pageViewState: State<MetadataBsVM.ViewState>,
+    pageViewState: State<MetadataBottomSheetViewModel.ViewState>,
     onChooseTrack: (Track) -> Unit
 ) {
     val paginatedTracksState = pageViewState.value.searchedTracks

@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 
-class MetadataBsVM(
+class MetadataBottomSheetViewModel(
     private val searchService: SpotifySearchService
 ) : KoinComponent, ViewModel() {
     private val mutableViewStateFlow = MutableStateFlow(ViewState())

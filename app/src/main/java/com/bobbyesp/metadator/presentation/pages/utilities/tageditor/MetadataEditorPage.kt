@@ -64,11 +64,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bobbyesp.metadator.R
 import com.bobbyesp.metadator.domain.model.ParcelableSong
-import com.bobbyesp.metadator.presentation.common.LocalNavController
-import com.bobbyesp.metadator.presentation.common.LocalOrientation
-import com.bobbyesp.metadator.presentation.common.LocalSonner
+import com.bobbyesp.metadator.core.presentation.common.LocalNavController
+import com.bobbyesp.metadator.core.presentation.common.LocalOrientation
+import com.bobbyesp.metadator.core.presentation.common.LocalSonner
 import com.bobbyesp.metadator.presentation.components.image.AsyncImage
-import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.spotify.MetadataBsVM
+import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.spotify.MetadataBottomSheetViewModel
 import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.spotify.SpMetadataBottomSheetContent
 import com.bobbyesp.ui.common.pages.ErrorPage
 import com.bobbyesp.ui.common.pages.LoadingPage
@@ -88,11 +88,11 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MetadataEditorPage(
-    state: State<MetadataEditorVM.PageViewState>,
-    bsViewState: State<MetadataBsVM.ViewState>,
+    state: State<MetadataEditorViewModel.PageViewState>,
+    bsViewState: State<MetadataBottomSheetViewModel.ViewState>,
     receivedAudio: ParcelableSong,
-    onBsEvent: (MetadataBsVM.Event) -> Unit,
-    onEvent: (MetadataEditorVM.Event) -> Unit
+    onBsEvent: (MetadataBottomSheetViewModel.Event) -> Unit,
+    onEvent: (MetadataEditorViewModel.Event) -> Unit
 ) {
     val navController = LocalNavController.current
     val sonner = LocalSonner.current
@@ -101,7 +101,7 @@ fun MetadataEditorPage(
     val pageState = state.value
 
     LaunchedEffect(receivedAudio) {
-        onEvent(MetadataEditorVM.Event.LoadMetadata(receivedAudio.localPath))
+        onEvent(MetadataEditorViewModel.Event.LoadMetadata(receivedAudio.localPath))
     }
 
     var newArtworkAddress by rememberSaveable { mutableStateOf<Uri?>(null) }
@@ -208,7 +208,7 @@ fun MetadataEditorPage(
                     IconButton(
                         onClick = {
                             if (scaffoldState.bottomSheetState.isVisible) {
-                                onBsEvent(MetadataBsVM.Event.Search(receivedAudio.name + " " + receivedAudio.mainArtist))
+                                onBsEvent(MetadataBottomSheetViewModel.Event.Search(receivedAudio.name + " " + receivedAudio.mainArtist))
                             } else {
                                 scope.launch { scaffoldState.bottomSheetState.partialExpand() }
                             }
@@ -222,7 +222,7 @@ fun MetadataEditorPage(
                     TextButton(
                         onClick = {
                             onEvent(
-                                MetadataEditorVM.Event.SaveAll(
+                                MetadataEditorViewModel.Event.SaveAll(
                                     receivedAudio.localPath,
                                     listOf(
                                         newArtworkAddress ?: receivedAudio.artworkPath ?: Uri.EMPTY
@@ -271,7 +271,7 @@ fun MetadataEditorPage(
                     modifier = Modifier.fillMaxSize(),
                     throwable = state.exception
                 ) {
-                    onEvent(MetadataEditorVM.Event.LoadMetadata(receivedAudio.localPath))
+                    onEvent(MetadataEditorViewModel.Event.LoadMetadata(receivedAudio.localPath))
                 }
 
                 ScreenState.Loading -> LoadingPage(

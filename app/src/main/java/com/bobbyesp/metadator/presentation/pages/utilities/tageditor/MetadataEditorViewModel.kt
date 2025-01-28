@@ -38,7 +38,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 
-class MetadataEditorVM(
+class MetadataEditorViewModel(
     private val context: Context,
     private val stateHandle: SavedStateHandle
 ) : ViewModel() {

@@ -34,10 +34,10 @@ import androidx.navigation.compose.dialog
 import androidx.navigation.compose.navigation
 import androidx.navigation.toRoute
 import com.bobbyesp.metadator.domain.model.ParcelableSong
-import com.bobbyesp.metadator.presentation.common.LocalNavController
-import com.bobbyesp.metadator.presentation.common.LocalPlayerAwareWindowInsets
-import com.bobbyesp.metadator.presentation.common.Route
-import com.bobbyesp.metadator.presentation.common.navigateBack
+import com.bobbyesp.metadator.core.presentation.common.LocalNavController
+import com.bobbyesp.metadator.core.presentation.common.LocalPlayerAwareWindowInsets
+import com.bobbyesp.metadator.core.presentation.common.Route
+import com.bobbyesp.metadator.core.presentation.common.navigateBack
 import com.bobbyesp.metadator.presentation.pages.MediaStorePageViewModel
 import com.bobbyesp.metadator.presentation.pages.home.HomePage
 import com.bobbyesp.metadator.mediaplayer.presentation.pages.mediaplayer.MediaplayerPage
@@ -47,8 +47,8 @@ import com.bobbyesp.metadator.mediaplayer.presentation.pages.mediaplayer.player.
 import com.bobbyesp.metadator.core.presentation.pages.settings.SettingsPage
 import com.bobbyesp.metadator.core.presentation.pages.settings.modules.GeneralSettingsPage
 import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.MetadataEditorPage
-import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.MetadataEditorVM
-import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.spotify.MetadataBsVM
+import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.MetadataEditorViewModel
+import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.spotify.MetadataBottomSheetViewModel
 import com.bobbyesp.ui.components.bottomsheet.draggable.rememberDraggableBottomSheetState
 import com.bobbyesp.ui.motion.animatedComposable
 import com.bobbyesp.ui.motion.slideInVerticallyComposable
@@ -154,8 +154,8 @@ fun NavGraphBuilder.utilitiesNavigation(
         ) {
             val song = it.toRoute<Route.UtilitiesNavigator.TagEditor>()
 
-            val viewModel = koinViewModel<MetadataEditorVM>()
-            val bsViewModel = koinViewModel<MetadataBsVM>()
+            val viewModel = koinViewModel<MetadataEditorViewModel>()
+            val bsViewModel = koinViewModel<MetadataBottomSheetViewModel>()
 
             val state = viewModel.state.collectAsStateWithLifecycle()
             val bsState = bsViewModel.viewStateFlow.collectAsStateWithLifecycle()
@@ -174,14 +174,14 @@ fun NavGraphBuilder.utilitiesNavigation(
             LaunchedEffect(true) {
                 viewModel.eventFlow.collectLatest { event ->
                     when (event) {
-                        is MetadataEditorVM.UiEvent.RequestPermission -> {
+                        is MetadataEditorViewModel.UiEvent.RequestPermission -> {
                             val intent =
                                 IntentSenderRequest.Builder(event.intent)
                                     .build()
                             securityErrorHandler.launch(intent)
                         }
 
-                        is MetadataEditorVM.UiEvent.SaveSuccess -> {
+                        is MetadataEditorViewModel.UiEvent.SaveSuccess -> {
                             onNavigateBack()
                         }
                     }
@@ -191,10 +191,10 @@ fun NavGraphBuilder.utilitiesNavigation(
             LaunchedEffect(true) {
                 bsViewModel.outerEventsFlow.collectLatest { event ->
                     when (event) {
-                        is MetadataBsVM.OuterEvent.SaveMetadata -> {
+                        is MetadataBottomSheetViewModel.OuterEvent.SaveMetadata -> {
                             event.modifiedFields.forEach { field ->
                                 viewModel.onEvent(
-                                    MetadataEditorVM.Event.UpdateProperty(
+                                    MetadataEditorViewModel.Event.UpdateProperty(
                                         field.key,
                                         field.value
                                     )

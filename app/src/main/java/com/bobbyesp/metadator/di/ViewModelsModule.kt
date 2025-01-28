@@ -2,8 +2,8 @@ package com.bobbyesp.metadator.di
 
 import com.bobbyesp.metadator.presentation.pages.MediaStorePageViewModel
 import com.bobbyesp.metadator.mediaplayer.presentation.pages.mediaplayer.MediaplayerViewModel
-import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.MetadataEditorVM
-import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.spotify.MetadataBsVM
+import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.MetadataEditorViewModel
+import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.spotify.MetadataBottomSheetViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
@@ -12,8 +12,8 @@ val appMainViewModels = module {
 }
 
 val utilitiesViewModels = module {
-    viewModel { MetadataEditorVM(get(), get()) }
-    viewModel { MetadataBsVM(get()) }
+    viewModel { MetadataEditorViewModel(get(), get()) }
+    viewModel { MetadataBottomSheetViewModel(get()) }
 }
 
 val mediaplayerViewModels = module {

@@ -1,4 +1,4 @@
-package com.bobbyesp.metadator
+package com.bobbyesp.metadator.mediaplayer.data.local
 
 import android.content.ComponentName
 import android.content.ServiceConnection

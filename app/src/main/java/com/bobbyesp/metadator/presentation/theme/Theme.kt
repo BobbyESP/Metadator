@@ -11,8 +11,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.LineBreak
 import androidx.compose.ui.text.style.TextDirection
-import com.bobbyesp.metadator.presentation.common.LocalDynamicColoringSwitch
-import com.bobbyesp.metadator.presentation.common.LocalDynamicThemeState
+import com.bobbyesp.metadator.core.presentation.common.LocalDynamicColoringSwitch
+import com.bobbyesp.metadator.core.presentation.common.LocalDynamicThemeState
 import com.materialkolor.DynamicMaterialTheme
 
 fun isDynamicColoringSupported(): Boolean {

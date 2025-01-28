@@ -17,7 +17,7 @@ import com.bobbyesp.metadator.R
 import com.bobbyesp.metadator.core.data.local.preferences.PreferencesKey.MARQUEE_TEXT_ENABLED
 import com.bobbyesp.metadator.core.data.local.preferences.PreferencesKey.REDUCE_SHADOWS
 import com.bobbyesp.metadator.core.data.local.preferences.datastore.rememberPreferenceState
-import com.bobbyesp.metadator.presentation.common.LocalNavController
+import com.bobbyesp.metadator.core.presentation.common.LocalNavController
 import com.bobbyesp.ui.components.button.BackButton
 import com.bobbyesp.ui.components.preferences.PreferenceSwitch
 

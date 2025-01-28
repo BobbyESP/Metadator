@@ -44,7 +44,7 @@ import com.bobbyesp.metadator.core.ext.format
 import com.bobbyesp.metadator.core.ext.formatArtists
 import com.bobbyesp.metadator.presentation.components.image.AsyncImage
 import com.bobbyesp.metadator.presentation.components.text.ConditionedMarqueeText
-import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.spotify.MetadataBsVM
+import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.spotify.MetadataBottomSheetViewModel
 import com.bobbyesp.ui.components.button.BackButton
 import com.bobbyesp.ui.components.others.SelectableSurface
 import com.bobbyesp.ui.util.rememberVolatileSaveable
@@ -52,12 +52,12 @@ import com.bobbyesp.ui.util.rememberVolatileSaveable
 @Composable
 fun SpMetadataBsDetails(
     modifier: Modifier = Modifier,
-    pageViewState: State<MetadataBsVM.ViewState>,
-    onEvent: (MetadataBsVM.Event) -> Unit,
+    pageViewState: State<MetadataBottomSheetViewModel.ViewState>,
+    onEvent: (MetadataBottomSheetViewModel.Event) -> Unit,
     onCloseSheet: () -> Unit,
 ) {
     BackHandler {
-        onEvent(MetadataBsVM.Event.SelectTrack(null))
+        onEvent(MetadataBottomSheetViewModel.Event.SelectTrack(null))
     }
 
     val chosenMetadata = rememberSaveable(key = "chosenMetadata") {
@@ -79,7 +79,7 @@ fun SpMetadataBsDetails(
         ) {
             BackButton(
                 onClick = {
-                    onEvent(MetadataBsVM.Event.SelectTrack(null))
+                    onEvent(MetadataBottomSheetViewModel.Event.SelectTrack(null))
                 }
             )
             Text(
@@ -94,7 +94,7 @@ fun SpMetadataBsDetails(
             Spacer(modifier = Modifier.weight(1f))
             TextButton(
                 onClick = {
-                    onEvent(MetadataBsVM.Event.UpdateMetadataFields(chosenMetadata.toMap()))
+                    onEvent(MetadataBottomSheetViewModel.Event.UpdateMetadataFields(chosenMetadata.toMap()))
                     onCloseSheet()
                 }
             ) {

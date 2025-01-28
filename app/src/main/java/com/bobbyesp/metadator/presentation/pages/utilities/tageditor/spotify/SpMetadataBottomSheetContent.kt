@@ -12,7 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
-import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.spotify.MetadataBsVM.Companion.BottomSheetStage
+import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.spotify.MetadataBottomSheetViewModel.Companion.BottomSheetStage
 import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.spotify.stages.NoSongInformationProvided
 import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.spotify.stages.SpMetadataBsDetails
 import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.spotify.stages.SpMetadataBsSearch
@@ -26,15 +26,15 @@ fun SpMetadataBottomSheetContent(
     name: String,
     artist: String,
     sheetState: SheetState,
-    bsViewState: State<MetadataBsVM.ViewState>,
-    onEvent: (MetadataBsVM.Event) -> Unit,
+    bsViewState: State<MetadataBottomSheetViewModel.ViewState>,
+    onEvent: (MetadataBottomSheetViewModel.Event) -> Unit,
     onCloseSheet: () -> Unit
 ) {
     val lazyListState = rememberLazyListState()
 
     fun search(query: String) {
-        onEvent(MetadataBsVM.Event.ChangeState(BottomSheetStage.SEARCH))
-        onEvent(MetadataBsVM.Event.Search(query))
+        onEvent(MetadataBottomSheetViewModel.Event.ChangeState(BottomSheetStage.SEARCH))
+        onEvent(MetadataBottomSheetViewModel.Event.Search(query))
     }
 
     if (name.isEmpty() && artist.isEmpty()) {
@@ -69,7 +69,7 @@ fun SpMetadataBottomSheetContent(
                     listState = lazyListState,
                     pageViewState = bsViewState,
                     onChooseTrack = { track ->
-                        onEvent(MetadataBsVM.Event.SelectTrack(track))
+                        onEvent(MetadataBottomSheetViewModel.Event.SelectTrack(track))
                     }
                 )
             }

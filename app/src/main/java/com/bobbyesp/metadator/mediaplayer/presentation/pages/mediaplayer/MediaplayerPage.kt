@@ -36,7 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bobbyesp.metadator.R
-import com.bobbyesp.metadator.presentation.common.LocalPlayerAwareWindowInsets
+import com.bobbyesp.metadator.core.presentation.common.LocalPlayerAwareWindowInsets
 import com.bobbyesp.metadator.presentation.components.cards.songs.HorizontalSongCard
 import com.bobbyesp.metadator.mediaplayer.presentation.pages.mediaplayer.player.MediaplayerSheet
 import com.bobbyesp.ui.components.bottomsheet.draggable.DraggableBottomSheetState

@@ -56,8 +56,8 @@ import com.bobbyesp.metadator.core.data.local.preferences.PreferencesKey.SONG_CA
 import com.bobbyesp.metadator.core.data.local.preferences.datastore.rememberPreference
 import com.bobbyesp.metadator.core.ext.toParcelableSong
 import com.bobbyesp.metadator.domain.enums.LayoutType
-import com.bobbyesp.metadator.presentation.common.LocalNavController
-import com.bobbyesp.metadator.presentation.common.Route
+import com.bobbyesp.metadator.core.presentation.common.LocalNavController
+import com.bobbyesp.metadator.core.presentation.common.Route
 import com.bobbyesp.metadator.presentation.components.cards.songs.compact.CompactCardSize
 import com.bobbyesp.metadator.presentation.pages.MediaStorePage
 import com.bobbyesp.metadator.presentation.pages.MediaStorePageViewModel

@@ -29,8 +29,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
 import com.bobbyesp.metadator.R
-import com.bobbyesp.metadator.presentation.common.LocalNavController
-import com.bobbyesp.metadator.presentation.common.Route
+import com.bobbyesp.metadator.core.presentation.common.LocalNavController
+import com.bobbyesp.metadator.core.presentation.common.Route
 import com.bobbyesp.ui.components.preferences.SettingsGroup
 import com.bobbyesp.ui.components.preferences.SettingsItem
 import com.bobbyesp.ui.components.topbar.ColumnWithCollapsibleTopBar

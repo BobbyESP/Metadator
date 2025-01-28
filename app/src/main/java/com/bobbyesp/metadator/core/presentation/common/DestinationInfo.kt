@@ -1,4 +1,4 @@
-package com.bobbyesp.metadator.presentation.common
+package com.bobbyesp.metadator.core.presentation.common
 
 import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons

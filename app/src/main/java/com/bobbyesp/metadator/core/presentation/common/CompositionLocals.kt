@@ -1,4 +1,4 @@
-package com.bobbyesp.metadator.presentation.common
+package com.bobbyesp.metadator.core.presentation.common
 
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
@@ -62,9 +62,9 @@ fun AppLocalSettingsProvider(
     val settingsFlow =
         appPreferences.userPreferencesFlow.collectAsStateWithLifecycle(initialValue = emptyUserPreferences())
 
-    val useDynamicColoring = settingsFlow.value.useDynamicColoring
     val seedColor = settingsFlow.value.themeColor
     val darkTheme = settingsFlow.value.darkThemePreference
+    val themeStyle = settingsFlow.value.paletteStyle
 
     val navController = rememberNavController()
 
@@ -81,6 +81,7 @@ fun AppLocalSettingsProvider(
     val themeState = rememberDynamicMaterialThemeState(
         seedColor = Color(seedColor),
         isDark = darkTheme.isDarkTheme(),
+        style = themeStyle,
         isAmoled = darkTheme.isHighContrastModeEnabled
     )
 
@@ -88,7 +89,7 @@ fun AppLocalSettingsProvider(
         LocalDarkTheme provides darkTheme, //Tells the app what dark theme to use
         //TODO: Modify to handle multiple colors (like based on images)
         LocalSeedColor provides seedColor, //Tells the app what color to use as seed for the palette
-        LocalDynamicColoringSwitch provides useDynamicColoring, //Tells the app if it should use dynamic colors or not (Android 12+ feature)
+        LocalDynamicColoringSwitch provides settingsFlow.value.useDynamicColoring, //Tells the app if it should use dynamic colors or not (Android 12+ feature)
         LocalDynamicThemeState provides themeState, //Provides the theme state to the app
         LocalNavController provides navController,
         LocalAppPreferencesController provides appPreferences,

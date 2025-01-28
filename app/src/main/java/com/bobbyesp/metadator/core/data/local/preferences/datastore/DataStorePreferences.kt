@@ -13,7 +13,7 @@ import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bobbyesp.metadator.App.Companion.PREFERENCES_NAME
 import com.bobbyesp.metadator.core.data.local.preferences.PreferencesKey
-import com.bobbyesp.metadator.presentation.common.LocalAppPreferencesController
+import com.bobbyesp.metadator.core.presentation.common.LocalAppPreferencesController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
