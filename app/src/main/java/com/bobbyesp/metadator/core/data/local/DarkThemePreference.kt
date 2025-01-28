@@ -1,10 +1,12 @@
-package com.bobbyesp.metadator.util.theme
+package com.bobbyesp.metadator.core.data.local
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.res.stringResource
 import com.bobbyesp.utilities.R
 
+@Stable
 data class DarkThemePreference(
     val darkThemeValue: Int = FOLLOW_SYSTEM,
     val isHighContrastModeEnabled: Boolean = false
@@ -23,7 +25,7 @@ data class DarkThemePreference(
     }
 
     @Composable
-    fun getDarkThemeDesc(): String {
+    fun getDarkThemeDescription(): String {
         return when (darkThemeValue) {
             FOLLOW_SYSTEM -> stringResource(R.string.follow_system)
             ON -> stringResource(R.string.on)

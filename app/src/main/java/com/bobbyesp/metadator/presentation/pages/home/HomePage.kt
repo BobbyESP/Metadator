@@ -3,7 +3,6 @@
 package com.bobbyesp.metadator.presentation.pages.home
 
 import android.Manifest
-import android.app.Activity
 import android.os.Build
 import androidx.activity.compose.LocalActivity
 import androidx.compose.animation.AnimatedVisibility
@@ -19,9 +18,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.KeyboardDoubleArrowUp
-import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material.icons.rounded.MoreHoriz
 import androidx.compose.material.icons.rounded.MoreVert
+import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -46,17 +45,17 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bobbyesp.metadator.R
+import com.bobbyesp.metadator.core.data.local.preferences.AppPreferences.Companion.DESIRED_LAYOUT
+import com.bobbyesp.metadator.core.data.local.preferences.AppPreferences.Companion.SONG_CARD_SIZE
+import com.bobbyesp.metadator.core.data.local.preferences.datastore.rememberPreference
+import com.bobbyesp.metadator.core.ext.toParcelableSong
 import com.bobbyesp.metadator.domain.enums.LayoutType
-import com.bobbyesp.metadator.ext.toParcelableSong
-import com.bobbyesp.metadator.presentation.common.LocalAppPreferencesController
-import com.bobbyesp.metadator.presentation.common.LocalDrawerState
 import com.bobbyesp.metadator.presentation.common.LocalNavController
 import com.bobbyesp.metadator.presentation.common.Route
 import com.bobbyesp.metadator.presentation.components.cards.songs.compact.CompactCardSize
@@ -101,10 +100,7 @@ fun HomePage(
     }
 
     val navController = LocalNavController.current
-    val drawerState = LocalDrawerState.current
     val scope = rememberCoroutineScope()
-
-    val preferences = LocalAppPreferencesController.current
 
     var moreOptionsVisible by remember {
         mutableStateOf(false)
@@ -113,9 +109,15 @@ fun HomePage(
     val mediaStoreLazyGridState = rememberForeverLazyGridState(key = "lazyGrid")
     val mediaStoreLazyColumnState = rememberLazyListState()
 
-    var desiredLayout = preferences.desiredLayout
+    var configDesiredLayout = rememberPreference(DESIRED_LAYOUT)
 
-    var desiredCardSize = preferences.songCardSize
+    var configDesiredCardSize = rememberPreference(SONG_CARD_SIZE)
+
+    val desiredLayout by remember {
+        derivedStateOf {
+            LayoutType.valueOf(configDesiredLayout.value)
+        }
+    }
 
     val gridIsFirstItemVisible by remember {
         derivedStateOf {
@@ -128,119 +130,120 @@ fun HomePage(
         }
     }
 
-    Scaffold(modifier = modifier.fillMaxSize(), topBar = {
-        TopAppBar(navigationIcon = {
-            IconButton(onClick = {
-                scope.launch {
-                    drawerState.open()
-                }
-            }) {
-                Icon(
-                    imageVector = Icons.Rounded.Menu,
-                    contentDescription = stringResource(id = R.string.open_navigation)
-                )
-            }
-        }, title = {
-            Column(
-                horizontalAlignment = Alignment.Start,
-            ) {
-                Text(
-                    text = stringResource(id = R.string.app_name).uppercase(),
-                    fontWeight = FontWeight.SemiBold,
-                    fontFamily = FontFamily.Monospace,
-                    style = MaterialTheme.typography.titleLarge.copy(
-                        letterSpacing = 4.sp,
-                    ),
-                )
-                AutoResizableText(
-                    text = stringResource(id = R.string.app_desc).uppercase(),
-                    fontWeight = FontWeight.Normal,
-                    fontFamily = FontFamily.Monospace,
-                    style = MaterialTheme.typography.bodySmall.copy(
-                        letterSpacing = 2.sp,
-                    ),
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
-                )
-            }
-        }, actions = {
-            IconButton(
-                onClick = { navController.navigate(Route.SettingsNavigator.Settings) }) {
-                Icon(
-                    imageVector = Icons.Rounded.Settings, contentDescription = stringResource(
-                        id = R.string.settings
-                    )
-                )
-            }
-            IconButton(
-                onClick = {
-                    moreOptionsVisible = !moreOptionsVisible
-                }) {
-                Icon(
-                    imageVector = Icons.Rounded.MoreVert, contentDescription = stringResource(
-                        id = R.string.open_more_options
-                    )
-                )
-            }
-            AnimatedDropdownMenu(
-                expanded = moreOptionsVisible, onDismissRequest = {
-                    moreOptionsVisible = false
-                }) {
-                DropdownMenuContent(
-                    desiredLayout = desiredLayout,
-                    onLayoutChanged = {
-                        desiredLayout = it
-                    }, navigateToDialog = {
-                        navController.navigate(Route.MetadatorNavigator.Home.VisualSettings)
+    Scaffold(
+        modifier = modifier.fillMaxSize(),
+        topBar = {
+            TopAppBar(
+                title = {
+                    Column(
+                        horizontalAlignment = Alignment.Start,
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.app_name).uppercase(),
+                            fontWeight = FontWeight.SemiBold,
+                            fontFamily = FontFamily.Monospace,
+                            style = MaterialTheme.typography.titleLarge.copy(
+                                letterSpacing = 4.sp,
+                            ),
+                        )
+                        AutoResizableText(
+                            text = stringResource(id = R.string.app_desc).uppercase(),
+                            fontWeight = FontWeight.Normal,
+                            fontFamily = FontFamily.Monospace,
+                            style = MaterialTheme.typography.bodySmall.copy(
+                                letterSpacing = 2.sp,
+                            ),
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                        )
                     }
-                )
-            }
-
-        })
-    }, floatingActionButton = {
-        when (desiredLayout) {
-            LayoutType.Grid -> {
-                AnimatedVisibility(
-                    visible = !gridIsFirstItemVisible,
-                    enter = fadeIn() + scaleIn(),
-                    exit = fadeOut() + scaleOut()
-                ) {
-                    FloatingActionButton(onClick = {
-                        scope.launch {
-                            mediaStoreLazyGridState.animateScrollToItem(0)
-                        }
-                    }) {
+                }, actions = {
+                    IconButton(
+                        onClick = { navController.navigate(Route.SettingsNavigator.Settings) }) {
                         Icon(
-                            imageVector = Icons.Rounded.KeyboardDoubleArrowUp,
+                            imageVector = Icons.Rounded.Settings,
                             contentDescription = stringResource(
-                                id = R.string.scroll_to_top
+                                id = R.string.settings
                             )
                         )
                     }
-                }
-            }
-
-            LayoutType.List -> {
-                AnimatedVisibility(
-                    visible = !listIsFirstItemVisible,
-                    enter = fadeIn() + scaleIn(),
-                    exit = fadeOut() + scaleOut()
-                ) {
-                    FloatingActionButton(onClick = {
-                        scope.launch {
-                            mediaStoreLazyColumnState.animateScrollToItem(0)
-                        }
-                    }) {
+                    IconButton(
+                        onClick = {
+                            moreOptionsVisible = !moreOptionsVisible
+                        }) {
                         Icon(
-                            imageVector = Icons.Rounded.KeyboardDoubleArrowUp,
+                            imageVector = Icons.Rounded.MoreVert,
                             contentDescription = stringResource(
-                                id = R.string.scroll_to_top
+                                id = R.string.open_more_options
                             )
                         )
                     }
+                    AnimatedDropdownMenu(
+                        expanded = moreOptionsVisible, onDismissRequest = {
+                            moreOptionsVisible = false
+                        }) {
+                        DropdownMenuContent(
+                            desiredLayout = LayoutType.valueOf(configDesiredLayout.value),
+                            onLayoutChanged = {
+                                configDesiredLayout.value = it.name
+                            }, navigateToDialog = {
+                                navController.navigate(Route.MetadatorNavigator.Home.VisualSettings)
+                            },
+                            navigateToMediaplayer = {
+                                scope.launch {
+                                    moreOptionsVisible = false
+                                }
+                                navController.navigate(Route.MediaplayerNavigator)
+                            }
+                        )
+                    }
+
+                })
+        }, floatingActionButton = {
+            when (LayoutType.valueOf(configDesiredLayout.value)) {
+                LayoutType.Grid -> {
+                    AnimatedVisibility(
+                        visible = !gridIsFirstItemVisible,
+                        enter = fadeIn() + scaleIn(),
+                        exit = fadeOut() + scaleOut()
+                    ) {
+                        FloatingActionButton(
+                            onClick = {
+                                scope.launch {
+                                    mediaStoreLazyGridState.animateScrollToItem(0)
+                                }
+                            }) {
+                            Icon(
+                                imageVector = Icons.Rounded.KeyboardDoubleArrowUp,
+                                contentDescription = stringResource(
+                                    id = R.string.scroll_to_top
+                                )
+                            )
+                        }
+                    }
+                }
+
+                LayoutType.List -> {
+                    AnimatedVisibility(
+                        visible = !listIsFirstItemVisible,
+                        enter = fadeIn() + scaleIn(),
+                        exit = fadeOut() + scaleOut()
+                    ) {
+                        FloatingActionButton(onClick = {
+                            scope.launch {
+                                mediaStoreLazyColumnState.animateScrollToItem(0)
+                            }
+                        }) {
+                            Icon(
+                                imageVector = Icons.Rounded.KeyboardDoubleArrowUp,
+                                contentDescription = stringResource(
+                                    id = R.string.scroll_to_top
+                                )
+                            )
+                        }
+                    }
                 }
             }
-        }
-    }) { paddingValues ->
+        }) { paddingValues ->
         PermissionRequestHandler(
             permissionState = storagePermissionState,
             deniedContent = { shouldShowRationale ->
@@ -261,8 +264,8 @@ fun HomePage(
                     songs = songs,
                     lazyGridState = mediaStoreLazyGridState,
                     lazyListState = mediaStoreLazyColumnState,
-                    desiredLayout = desiredLayout,
-                    compactCardSize = desiredCardSize,
+                    desiredLayout = LayoutType.valueOf(configDesiredLayout.value),
+                    compactCardSize = CompactCardSize.valueOf(configDesiredCardSize.value),
                     onReloadMediaStore = {
                         onEvent(MediaStorePageViewModel.Companion.Events.ReloadMediaStore)
                     },
@@ -279,7 +282,8 @@ fun HomePage(
 private fun DropdownMenuContent(
     desiredLayout: LayoutType,
     onLayoutChanged: (LayoutType) -> Unit,
-    navigateToDialog: () -> Unit = {}
+    navigateToDialog: () -> Unit = {},
+    navigateToMediaplayer: () -> Unit = {}
 ) {
     val availableLayoutType = LayoutType.entries.toImmutableList()
 
@@ -315,11 +319,28 @@ private fun DropdownMenuContent(
                         }
                     }
                 }
-            })
+            }
+        )
         DropdownMenuItem(
-            leadingIcon = { Icon(imageVector = Icons.Rounded.MoreHoriz, contentDescription = null) },
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Rounded.MoreHoriz,
+                    contentDescription = null
+                )
+            },
             text = { Text(stringResource(id = R.string.open_more_options)) },
             onClick = { navigateToDialog() }
+        )
+
+        DropdownMenuItem(
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Rounded.PlayArrow,
+                    contentDescription = null
+                )
+            },
+            text = { Text(stringResource(id = R.string.mediaplayer)) },
+            onClick = { navigateToMediaplayer() }
         )
     }
 }

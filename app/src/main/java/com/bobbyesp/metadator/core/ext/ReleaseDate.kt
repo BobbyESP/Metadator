@@ -1,4 +1,4 @@
-package com.bobbyesp.metadator.ext
+package com.bobbyesp.metadator.core.ext
 
 import com.adamratzman.spotify.models.ReleaseDate
 

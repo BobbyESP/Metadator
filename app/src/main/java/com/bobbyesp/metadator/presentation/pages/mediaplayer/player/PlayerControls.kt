@@ -46,7 +46,6 @@ import com.bobbyesp.metadator.presentation.components.others.RepeatStateIcon
 import com.bobbyesp.metadator.presentation.components.others.ShuffleStateIcon
 import com.bobbyesp.metadator.presentation.components.text.ConditionedMarqueeText
 import com.bobbyesp.metadator.presentation.pages.mediaplayer.MediaplayerViewModel
-import com.bobbyesp.ui.components.text.MarqueeText
 import com.bobbyesp.ui.components.text.MarqueeTextGradientOptions
 import com.bobbyesp.utilities.Time
 import kotlinx.coroutines.delay

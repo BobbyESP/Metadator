@@ -1,4 +1,4 @@
-package com.bobbyesp.metadator.ext
+package com.bobbyesp.metadator.core.ext
 
 import com.bobbyesp.metadator.domain.model.ParcelableSong
 import com.bobbyesp.utilities.mediastore.model.Song

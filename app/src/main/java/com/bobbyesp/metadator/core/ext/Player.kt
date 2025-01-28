@@ -1,4 +1,4 @@
-package com.bobbyesp.metadator.ext
+package com.bobbyesp.metadator.core.ext
 
 import androidx.media3.common.C
 import androidx.media3.common.Player

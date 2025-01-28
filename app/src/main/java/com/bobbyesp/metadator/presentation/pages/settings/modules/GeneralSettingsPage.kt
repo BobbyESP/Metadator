@@ -14,24 +14,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import com.bobbyesp.metadator.R
-import com.bobbyesp.metadator.presentation.common.LocalAppPreferencesController
+import com.bobbyesp.metadator.core.data.local.preferences.AppPreferences.Companion.MARQUEE_TEXT_ENABLED
+import com.bobbyesp.metadator.core.data.local.preferences.AppPreferences.Companion.REDUCE_SHADOWS
+import com.bobbyesp.metadator.core.data.local.preferences.datastore.rememberPreference
 import com.bobbyesp.metadator.presentation.common.LocalNavController
-import com.bobbyesp.metadator.util.preferences.AppPreferences.Companion.MARQUEE_TEXT_ENABLED
-import com.bobbyesp.metadator.util.preferences.AppPreferences.Companion.REDUCE_SHADOWS
-import com.bobbyesp.metadator.util.preferences.datastore.rememberPreference
 import com.bobbyesp.ui.components.button.BackButton
 import com.bobbyesp.ui.components.preferences.PreferenceSwitch
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GeneralSettingsPage() {
-    val preferences = LocalAppPreferencesController.current
-
-    var useMarqueeText = rememberPreference(MARQUEE_TEXT_ENABLED, true)
-    var reduceShadows = rememberPreference(REDUCE_SHADOWS, false)
+    var useMarqueeText = rememberPreference(MARQUEE_TEXT_ENABLED)
+    var reduceShadows = rememberPreference(REDUCE_SHADOWS)
 
     val navController = LocalNavController.current
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(

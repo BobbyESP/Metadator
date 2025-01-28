@@ -15,12 +15,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.KeyboardDoubleArrowUp
-import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -37,7 +35,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bobbyesp.metadator.R
-import com.bobbyesp.metadator.presentation.common.LocalDrawerState
 import com.bobbyesp.metadator.presentation.common.LocalPlayerAwareWindowInsets
 import com.bobbyesp.metadator.presentation.components.cards.songs.HorizontalSongCard
 import com.bobbyesp.metadator.presentation.pages.mediaplayer.player.MediaplayerSheet
@@ -59,7 +56,6 @@ fun MediaplayerPage(
     val songs = viewModel.songsFlow.collectAsStateWithLifecycle(initialValue = emptyList()).value
 
     val insets = LocalPlayerAwareWindowInsets.current
-    val drawerState = LocalDrawerState.current
 
     val scope = rememberCoroutineScope()
 
@@ -70,18 +66,6 @@ fun MediaplayerPage(
             modifier = Modifier.fillMaxSize(),
             topBar = {
                 CenterAlignedTopAppBar(
-                    navigationIcon = {
-                        IconButton(onClick = {
-                            scope.launch {
-                                drawerState.open()
-                            }
-                        }) {
-                            Icon(
-                                imageVector = Icons.Rounded.Menu,
-                                contentDescription = stringResource(id = R.string.open_navigation)
-                            )
-                        }
-                    },
                     title = {
                         Column(
                             horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally,

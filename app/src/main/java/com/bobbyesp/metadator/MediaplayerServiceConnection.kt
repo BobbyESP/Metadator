@@ -3,7 +3,6 @@ package com.bobbyesp.metadator
 import android.content.ComponentName
 import android.content.ServiceConnection
 import android.os.IBinder
-import android.util.Log
 import androidx.annotation.OptIn
 import androidx.media3.common.util.UnstableApi
 import com.bobbyesp.mediaplayer.service.ConnectionHandler

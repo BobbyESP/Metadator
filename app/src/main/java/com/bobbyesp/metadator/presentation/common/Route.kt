@@ -6,9 +6,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 sealed interface Route {
     @Serializable
-    data object MainHost : Route
-
-    @Serializable
     data object MetadatorNavigator : Route {
         @Serializable
         data object Home : Route {

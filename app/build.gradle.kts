@@ -210,6 +210,7 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.taglib)
     implementation(libs.scrollbar)
+    implementation(libs.sonner)
     implementation(libs.spotify.api.android)
     implementation(project(":crashhandler"))
 

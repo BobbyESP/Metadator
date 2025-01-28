@@ -18,11 +18,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.bobbyesp.metadator.R
+import com.bobbyesp.metadator.domain.enums.LayoutType
 import com.bobbyesp.metadator.presentation.components.cards.songs.HorizontalSongCard
 import com.bobbyesp.metadator.presentation.components.cards.songs.compact.CompactCardSize
 import com.bobbyesp.metadator.presentation.components.cards.songs.compact.CompactSongCard
 import com.bobbyesp.metadator.presentation.components.others.status.EmptyMediaStore
-import com.bobbyesp.metadator.domain.enums.LayoutType
 import com.bobbyesp.ui.common.pages.ErrorPage
 import com.bobbyesp.ui.common.pages.LoadingPage
 import com.bobbyesp.utilities.mediastore.model.Song

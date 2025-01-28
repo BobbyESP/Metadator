@@ -10,7 +10,6 @@ import com.bobbyesp.metadator.features.spotify.domain.pagination.TracksPagingSou
 import com.bobbyesp.metadator.features.spotify.domain.services.SpotifyService
 import com.bobbyesp.metadator.features.spotify.domain.services.search.SpotifySearchService
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 
 class SpotifySearchServiceImpl(
     private val spotifyService: SpotifyService

@@ -8,12 +8,16 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bobbyesp.mediaplayer.service.ConnectionHandler
 import com.bobbyesp.mediaplayer.service.MediaplayerService
+import com.bobbyesp.metadator.core.data.local.preferences.AppPreferences
+import com.bobbyesp.metadator.core.data.local.preferences.UserPreferences.Companion.emptyUserPreferences
 import com.bobbyesp.metadator.presentation.Navigator
 import com.bobbyesp.metadator.presentation.common.AppLocalSettingsProvider
 import com.bobbyesp.metadator.presentation.theme.MetadatorTheme
-import com.bobbyesp.metadator.util.preferences.AppPreferences
+import com.dokar.sonner.Toaster
+import com.dokar.sonner.rememberToasterState
 import org.koin.android.ext.android.inject
 import org.koin.compose.KoinContext
 import org.koin.core.component.KoinComponent
@@ -34,14 +38,23 @@ class MainActivity : ComponentActivity(), KoinComponent {
         setCrashlyticsCollection()
         setContent {
             KoinContext {
+                val sonner = rememberToasterState()
                 val windowSizeClass = calculateWindowSizeClass(this)
                 AppLocalSettingsProvider(
                     windowWidthSize = windowSizeClass.widthSizeClass,
                     playerConnectionHandler = connectionHandler,
+                    sonner = sonner,
                     appPreferences = appPreferences
                 ) {
                     MetadatorTheme {
                         Navigator()
+                        Toaster(
+                            state = sonner,
+                            richColors = true,
+                            darkTheme = appPreferences.userPreferencesFlow.collectAsStateWithLifecycle(
+                                emptyUserPreferences()
+                            ).value.darkThemePreference.isDarkTheme()
+                        )
                     }
                 }
             }

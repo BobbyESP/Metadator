@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.pm.PackageInfo
 import android.os.Build
 import android.util.Log
-import com.tencent.mmkv.BuildConfig
 import java.io.File
 
 object Logging {

@@ -6,10 +6,10 @@ import android.content.pm.PackageManager
 import android.os.Build
 import com.bobbyesp.crashhandler.CrashHandler.setupCrashHandler
 import com.bobbyesp.crashhandler.ReportInfo
-import com.bobbyesp.metadator.di.appCoroutinesScope
+import com.bobbyesp.metadator.core.di.appCoroutinesScope
+import com.bobbyesp.metadator.core.di.appSystemManagers
+import com.bobbyesp.metadator.core.di.coreFunctionalitiesModule
 import com.bobbyesp.metadator.di.appMainViewModels
-import com.bobbyesp.metadator.di.appSystemManagers
-import com.bobbyesp.metadator.di.coreFunctionalitiesModule
 import com.bobbyesp.metadator.di.mediaplayerViewModels
 import com.bobbyesp.metadator.di.utilitiesViewModels
 import com.bobbyesp.metadator.features.spotify.di.spotifyMainModule

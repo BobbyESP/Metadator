@@ -25,8 +25,6 @@ import com.bobbyesp.ui.motion.MotionConstants.DURATION_ENTER
 import com.bobbyesp.ui.motion.MotionConstants.DURATION_EXIT
 import com.bobbyesp.ui.motion.MotionConstants.InitialOffset
 import kotlin.reflect.KType
-import kotlin.text.toInt
-import kotlin.times
 
 fun <T> enterTween() = tween<T>(durationMillis = DURATION_ENTER, easing = EmphasizedEasing)
 

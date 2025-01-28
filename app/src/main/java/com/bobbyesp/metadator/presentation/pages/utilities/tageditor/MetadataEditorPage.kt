@@ -66,7 +66,7 @@ import com.bobbyesp.metadator.R
 import com.bobbyesp.metadator.domain.model.ParcelableSong
 import com.bobbyesp.metadator.presentation.common.LocalNavController
 import com.bobbyesp.metadator.presentation.common.LocalOrientation
-import com.bobbyesp.metadator.presentation.common.LocalSnackbarHostState
+import com.bobbyesp.metadator.presentation.common.LocalSonner
 import com.bobbyesp.metadator.presentation.components.image.AsyncImage
 import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.spotify.MetadataBsVM
 import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.spotify.SpMetadataBottomSheetContent
@@ -80,6 +80,7 @@ import com.bobbyesp.utilities.ext.fromMillisToMinutes
 import com.bobbyesp.utilities.ext.isNeitherNullNorBlank
 import com.bobbyesp.utilities.states.ResourceState
 import com.bobbyesp.utilities.states.ScreenState
+import com.dokar.sonner.ToastType
 import com.kyant.taglib.AudioProperties
 import com.materialkolor.ktx.harmonize
 import kotlinx.coroutines.launch
@@ -94,7 +95,7 @@ fun MetadataEditorPage(
     onEvent: (MetadataEditorVM.Event) -> Unit
 ) {
     val navController = LocalNavController.current
-    val snackbarHost = LocalSnackbarHostState.current
+    val sonner = LocalSonner.current
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val pageState = state.value
@@ -131,16 +132,31 @@ fun MetadataEditorPage(
                 if (receivedLyrics.isNeitherNullNorBlank()) {
                     pageState.mutablePropertiesMap["LYRICS"] = receivedLyrics!!
                 } else {
-                    scope.launch { snackbarHost.showSnackbar(context.getString(R.string.empty_lyrics_received)) }
+                    scope.launch {
+                        sonner.show(
+                            message = context.getString(R.string.empty_lyrics_received),
+                            type = ToastType.Error
+                        )
+                    }
                 }
             }
 
             Activity.RESULT_CANCELED -> {
-                scope.launch { snackbarHost.showSnackbar(context.getString(R.string.lyrics_retrieve_cancelled)) }
+                scope.launch {
+                    sonner.show(
+                        message = context.getString(R.string.lyrics_retrieve_cancelled),
+                        type = ToastType.Info
+                    )
+                }
             }
 
             else -> {
-                scope.launch { snackbarHost.showSnackbar(context.getString(R.string.something_unexpected_occurred)) }
+                scope.launch {
+                    sonner.show(
+                        message = context.getString(R.string.something_unexpected_occurred),
+                        type = ToastType.Error
+                    )
+                }
             }
         }
     }
@@ -158,7 +174,12 @@ fun MetadataEditorPage(
         } catch (e: Exception) {
             when (e) {
                 is ActivityNotFoundException -> showInstallSongSyncDialog = true
-                else -> scope.launch { snackbarHost.showSnackbar(context.getString(R.string.something_unexpected_occurred)) }
+                else -> scope.launch {
+                    sonner.show(
+                        message = context.getString(R.string.something_unexpected_occurred),
+                        type = ToastType.Error
+                    )
+                }
             }
         }
     }

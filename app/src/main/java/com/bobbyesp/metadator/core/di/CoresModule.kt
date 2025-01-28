@@ -1,9 +1,9 @@
-package com.bobbyesp.metadator.di
+package com.bobbyesp.metadator.core.di
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
-import com.bobbyesp.metadator.util.preferences.AppPreferences
-import com.bobbyesp.metadator.util.preferences.datastore.dataStore
+import com.bobbyesp.metadator.core.data.local.preferences.AppPreferences
+import com.bobbyesp.metadator.core.data.local.preferences.datastore.dataStore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import org.koin.android.ext.koin.androidContext

@@ -34,7 +34,6 @@ import com.bobbyesp.metadator.presentation.components.image.AsyncImage
 import com.bobbyesp.metadator.presentation.components.text.ConditionedMarqueeText
 import com.bobbyesp.metadator.presentation.pages.mediaplayer.player.AnimatedTextContentTransformation
 import com.bobbyesp.ui.components.button.DynamicButton
-import com.bobbyesp.ui.components.text.MarqueeText
 
 @Composable
 fun MiniplayerContent(

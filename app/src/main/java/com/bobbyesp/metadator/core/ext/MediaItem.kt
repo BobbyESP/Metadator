@@ -1,4 +1,4 @@
-package com.bobbyesp.metadator.ext
+package com.bobbyesp.metadator.core.ext
 
 import androidx.media3.common.MediaItem
 import com.bobbyesp.utilities.mediastore.model.Song

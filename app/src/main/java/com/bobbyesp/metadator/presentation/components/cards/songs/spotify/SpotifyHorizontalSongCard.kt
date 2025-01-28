@@ -20,10 +20,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.adamratzman.spotify.models.Track
-import com.bobbyesp.metadator.ext.formatArtists
+import com.bobbyesp.metadator.core.ext.formatArtists
 import com.bobbyesp.metadator.presentation.components.image.AsyncImage
 import com.bobbyesp.metadator.presentation.components.text.ConditionedMarqueeText
-import com.bobbyesp.ui.components.text.MarqueeText
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

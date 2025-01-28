@@ -46,7 +46,6 @@ dependencies {
     implementation(libs.core.ktx)
     implementation(libs.kotlinx.datetime)
     implementation(libs.kotlinx.serialization.json)
-    implementation(libs.mmkv)
     implementation(libs.bundles.compose)
     implementation(libs.paging.compose)
     implementation(libs.paging.runtime)
