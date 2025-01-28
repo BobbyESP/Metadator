@@ -23,7 +23,8 @@ import androidx.compose.ui.platform.LocalContext
 import coil.ImageLoader
 import coil.request.ImageRequest
 import coil.request.SuccessResult
-import com.bobbyesp.ui.components.others.PlaceholderCreator
+import com.bobbyesp.ui.components.others.LoadingPlaceholder
+import com.bobbyesp.ui.components.others.Placeholder
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.coil.CoilImage
 import com.skydoves.landscapist.coil.CoilImageState
@@ -35,7 +36,7 @@ fun AsyncImage(
     imageModel: Any? = null,
     imageModifier: Modifier = Modifier,
     shape: Shape = MaterialTheme.shapes.small,
-    placeholder: ImageVector = Icons.Rounded.MusicNote,
+    placeholder: ImageVector?,
     context: Context = LocalContext.current,
     imageLoader: ImageLoader? = LocalCoilImageLoader.current,
     onSuccessData: (CoilImageState.Success) -> Unit = { _ -> }
@@ -59,24 +60,31 @@ fun AsyncImage(
             }
         },
         loading = {
-            PlaceholderCreator(
-                modifier = imageModifier
-                    .fillMaxSize(),
-                icon = placeholder,
-                colorful = false,
-                contentDescription = "Song cover placeholder"
-            )
+            if(placeholder != null) {
+                Placeholder(
+                    modifier = imageModifier
+                        .fillMaxSize(),
+                    icon = placeholder,
+                    colorful = false,
+                    contentDescription = "Song cover placeholder"
+                )
+            } else {
+                LoadingPlaceholder(
+                    modifier = imageModifier
+                        .fillMaxSize(),
+                    colorful = false
+                )
+            }
         },
         failure = { error ->
             //if the error exception if FileNotFoundException, then the icon is a music note, else error outline
-
             val icon = if (error.reason != null && error.reason is java.io.FileNotFoundException) {
                 Icons.Rounded.MusicNote
             } else {
                 Icons.Rounded.ErrorOutline
             }
 
-            PlaceholderCreator(
+            Placeholder(
                 modifier = imageModifier
                     .fillMaxSize(),
                 icon = icon,

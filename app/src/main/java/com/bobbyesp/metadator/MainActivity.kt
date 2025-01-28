@@ -38,8 +38,10 @@ class MainActivity : ComponentActivity(), KoinComponent {
         setCrashlyticsCollection()
         setContent {
             KoinContext {
+
                 val sonner = rememberToasterState()
                 val windowSizeClass = calculateWindowSizeClass(this)
+
                 AppLocalSettingsProvider(
                     windowWidthSize = windowSizeClass.widthSizeClass,
                     playerConnectionHandler = connectionHandler,

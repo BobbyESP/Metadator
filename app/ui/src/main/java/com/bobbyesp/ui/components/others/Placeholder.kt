@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 
 @Stable
 @Composable
-fun PlaceholderCreator(
+fun Placeholder(
     modifier: Modifier = Modifier,
     icon: ImageVector?,
     colorful: Boolean,
@@ -51,27 +51,31 @@ fun PlaceholderCreator(
 @Preview
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-private fun PlaceholderCreatorPreview() {
-    PlaceholderCreator(
-        modifier = Modifier
-            .width(200.dp)
-            .aspectRatio(1f),
-        icon = Icons.Rounded.Lyrics,
-        colorful = true,
-        contentDescription = "Song cover"
-    )
+private fun PlaceholderPreview() {
+    MaterialTheme {
+        Placeholder(
+            modifier = Modifier
+                .width(200.dp)
+                .aspectRatio(1f),
+            icon = Icons.Rounded.Lyrics,
+            colorful = true,
+            contentDescription = "Song cover"
+        )
+    }
 }
 
 @Preview
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-private fun PlaceholderCreatorPreviewNonColourful() {
-    PlaceholderCreator(
-        modifier = Modifier
-            .width(200.dp)
-            .aspectRatio(1f),
-        icon = Icons.Default.Lyrics,
-        colorful = false,
-        contentDescription = "Song cover"
-    )
+private fun PlaceholderPreviewNonColourful() {
+    MaterialTheme {
+        Placeholder(
+            modifier = Modifier
+                .width(200.dp)
+                .aspectRatio(1f),
+            icon = Icons.Default.Lyrics,
+            colorful = false,
+            contentDescription = "Song cover"
+        )
+    }
 }
