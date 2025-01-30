@@ -53,11 +53,11 @@ import androidx.compose.ui.unit.sp
 import com.bobbyesp.metadator.R
 import com.bobbyesp.metadator.core.data.local.preferences.PreferencesKey.SONGS_LAYOUT
 import com.bobbyesp.metadator.core.data.local.preferences.PreferencesKey.SONG_CARD_SIZE
-import com.bobbyesp.metadator.core.data.local.preferences.datastore.rememberPreference
+import com.bobbyesp.metadator.core.data.local.preferences.datastore.rememberPreferenceState
 import com.bobbyesp.metadator.core.ext.toParcelableSong
-import com.bobbyesp.metadator.domain.enums.LayoutType
 import com.bobbyesp.metadator.core.presentation.common.LocalNavController
 import com.bobbyesp.metadator.core.presentation.common.Route
+import com.bobbyesp.metadator.domain.enums.LayoutType
 import com.bobbyesp.metadator.presentation.components.cards.songs.compact.CompactCardSize
 import com.bobbyesp.metadator.presentation.pages.MediaStorePage
 import com.bobbyesp.metadator.presentation.pages.MediaStorePageViewModel
@@ -109,9 +109,9 @@ fun HomePage(
     val mediaStoreLazyGridState = rememberForeverLazyGridState(key = "lazyGrid")
     val mediaStoreLazyColumnState = rememberLazyListState()
 
-    var configDesiredLayout = rememberPreference(SONGS_LAYOUT)
+    val (configuredLayout, setConfiguredLayout) = rememberPreferenceState(SONGS_LAYOUT)
 
-    var configDesiredCardSize = rememberPreference(SONG_CARD_SIZE)
+    val (songCardSize, _) = rememberPreferenceState(SONG_CARD_SIZE)
 
     val gridIsFirstItemVisible by remember {
         derivedStateOf {
@@ -176,9 +176,9 @@ fun HomePage(
                             moreOptionsVisible = false
                         }) {
                         DropdownMenuContent(
-                            desiredLayout = LayoutType.valueOf(configDesiredLayout.value),
+                            desiredLayout = LayoutType.valueOf(configuredLayout.value),
                             onLayoutChanged = {
-                                configDesiredLayout.value = it.name
+                                setConfiguredLayout(it.name)
                             }, navigateToDialog = {
                                 navController.navigate(Route.MetadatorNavigator.Home.VisualSettings)
                             },
@@ -193,7 +193,7 @@ fun HomePage(
 
                 })
         }, floatingActionButton = {
-            when (LayoutType.valueOf(configDesiredLayout.value)) {
+            when (LayoutType.valueOf(configuredLayout.value)) {
                 LayoutType.Grid -> {
                     AnimatedVisibility(
                         visible = !gridIsFirstItemVisible,
@@ -258,8 +258,8 @@ fun HomePage(
                     songs = songs,
                     lazyGridState = mediaStoreLazyGridState,
                     lazyListState = mediaStoreLazyColumnState,
-                    desiredLayout = LayoutType.valueOf(configDesiredLayout.value),
-                    compactCardSize = CompactCardSize.valueOf(configDesiredCardSize.value),
+                    desiredLayout = LayoutType.valueOf(configuredLayout.value),
+                    compactCardSize = CompactCardSize.valueOf(songCardSize.value),
                     onReloadMediaStore = {
                         onEvent(MediaStorePageViewModel.Companion.Events.ReloadMediaStore)
                     },

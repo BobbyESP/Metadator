@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBackIosNew
+import androidx.compose.material.icons.rounded.Brush
+import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -44,7 +46,7 @@ fun SettingsPage(
     val navController = LocalNavController.current
     var collapseFraction by remember { mutableFloatStateOf(0f) }
 
-    val settingsGroup: List<SettingsItem> = listOf(
+    val mainSettingsGroup: List<SettingsItem> = listOf(
         SettingsItem(
             title = stringResource(id = R.string.general),
             supportingText = stringResource(id = R.string.general_description),
@@ -53,26 +55,23 @@ fun SettingsPage(
                 navController.navigate(Route.SettingsNavigator.Settings.General)
             }),
         SettingsItem(
-            title = stringResource(id = R.string.general),
-            supportingText = stringResource(id = R.string.general_description),
-            icon = Icons.Rounded.Settings,
+            title = stringResource(id = R.string.appearance),
+            supportingText = stringResource(id = R.string.appearance_description),
+            icon = Icons.Rounded.Brush,
             onClick = {
-                navController.navigate(Route.SettingsNavigator.Settings.General)
+                navController.navigate(Route.SettingsNavigator.Settings.Appearance)
             }),
+    )
+
+    val infoSettingsGroup: List<SettingsItem> = listOf(
         SettingsItem(
-            title = stringResource(id = R.string.general),
-            supportingText = stringResource(id = R.string.general_description),
-            icon = Icons.Rounded.Settings,
+            title = stringResource(id = R.string.about),
+            supportingText = stringResource(id = R.string.about_description),
+            icon = Icons.Rounded.Info,
             onClick = {
-                navController.navigate(Route.SettingsNavigator.Settings.General)
-            }),
-        SettingsItem(
-            title = stringResource(id = R.string.general),
-            supportingText = stringResource(id = R.string.general_description),
-            icon = Icons.Rounded.Settings,
-            onClick = {
-                navController.navigate(Route.SettingsNavigator.Settings.General)
-            }),
+                navController.navigate(Route.SettingsNavigator.Settings.About)
+            }
+        )
     )
     ColumnWithCollapsibleTopBar(
         topBarContent = {
@@ -113,7 +112,11 @@ fun SettingsPage(
             .safeDrawingPadding()
     ) {
         SettingsGroup(
-            modifier = Modifier.padding(horizontal = 16.dp), items = settingsGroup
+            modifier = Modifier.padding(horizontal = 16.dp), items = mainSettingsGroup
+        )
+
+        SettingsGroup(
+            modifier = Modifier.padding(horizontal = 16.dp), items = infoSettingsGroup
         )
 
         Text(

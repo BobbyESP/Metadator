@@ -56,11 +56,11 @@ fun MediaStorePage(
 
             is ResourceState.Error -> ErrorPage(
                 modifier = Modifier.fillMaxSize(),
-                throwable = Exception(songsList.message ?: "Unknown")
+                throwable = Exception(songsList.message ?: stringResource(R.string.unknown))
             ) { onReloadMediaStore() }
 
             is ResourceState.Success -> {
-                val dataSongsList = songsList.data ?: throw IllegalStateException("Data is null")
+                val dataSongsList = songsList.data ?: throw IllegalStateException(stringResource(R.string.data_null))
                 if (dataSongsList.isEmpty()) {
                     EmptyMediaStore(
                         modifier = Modifier.fillMaxSize()

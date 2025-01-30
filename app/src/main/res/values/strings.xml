@@ -84,4 +84,8 @@
     <string name="card_size">Card size</string>
     <string name="reduce_shadows">Reduce shadows</string>
     <string name="reduce_shadows_description">Reduce the shadows drawn by the app to improve performance.</string>
+    <string name="about">About</string>
+    <string name="about_description">PLACEHOLDER</string>
+    <string name="data_null">The requested data is null</string>
+    <string name="lyrics_received">The lyrics has been correctly received</string>
 </resources>

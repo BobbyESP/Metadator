@@ -21,7 +21,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
@@ -39,30 +38,20 @@ fun CompactSongCard(
     artists: String,
     artworkUri: Uri? = null,
     listIndex: Int? = null,
-    shadow: Dp? = 4.dp,
+    shadow: Dp = 4.dp,
     size: CompactCardSize = CompactCardSize.LARGE,
-    shape: Shape? = MaterialTheme.shapes.large,
     onClick: () -> Unit
 ) {
-    val (reduceShadows) = rememberPreferenceState(REDUCE_SHADOWS)
-
-    val cardSize by remember(size) {
-        mutableStateOf(size.value)
-    }
-
-    val formalizedShape = shape ?: size.toShape()
+    val (reduceShadows, _) = rememberPreferenceState(REDUCE_SHADOWS)
+    val cardSize by remember { mutableStateOf(size.value) }
+    val formalizedShape = size.toShape()
 
     Box(
         modifier = modifier
-            .then(
-                if (reduceShadows.value) Modifier else Modifier.shadow(
-                    elevation = shadow ?: 0.dp, shape = formalizedShape
-                )
-            )
+            .shadow(if (reduceShadows.value) 0.dp else shadow, formalizedShape)
             .clip(formalizedShape)
             .size(cardSize)
             .clickable(onClick = onClick)
-
     ) {
         AsyncImage(
             modifier = Modifier.fillMaxSize(),
@@ -82,14 +71,12 @@ fun CompactSongCard(
         }
         Column(
             modifier = Modifier
-                .then(
-                    if (reduceShadows.value) Modifier else Modifier.background(
-                        brush = Brush.verticalGradient(
-                            colors = listOf(
-                                Color.Transparent, MaterialTheme.colorScheme.scrim
-                            ), startY = 0f, endY = 500f
-                        ), alpha = 0.6f
-                    )
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(Color.Transparent, MaterialTheme.colorScheme.scrim),
+                        startY = 0f, endY = 500f
+                    ),
+                    alpha = if (reduceShadows.value) 0f else 0.6f
                 )
                 .fillMaxSize()
                 .padding(horizontal = 8.dp, vertical = 6.dp),

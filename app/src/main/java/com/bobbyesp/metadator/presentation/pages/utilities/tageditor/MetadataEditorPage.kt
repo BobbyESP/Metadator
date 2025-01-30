@@ -5,7 +5,6 @@ import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.res.Configuration
 import android.net.Uri
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -63,10 +62,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bobbyesp.metadator.R
-import com.bobbyesp.metadator.domain.model.ParcelableSong
 import com.bobbyesp.metadator.core.presentation.common.LocalNavController
 import com.bobbyesp.metadator.core.presentation.common.LocalOrientation
 import com.bobbyesp.metadator.core.presentation.common.LocalSonner
+import com.bobbyesp.metadator.domain.model.ParcelableSong
 import com.bobbyesp.metadator.presentation.components.image.AsyncImage
 import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.spotify.MetadataBottomSheetViewModel
 import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.spotify.SpMetadataBottomSheetContent
@@ -125,12 +124,17 @@ fun MetadataEditorPage(
     val lyricsActivityLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
     ) { result ->
-        Log.i("MetadataEditorPage", "Received result: $result")
         when (result.resultCode) {
             Activity.RESULT_OK -> {
                 val receivedLyrics = result.data?.getStringExtra("lyrics")
                 if (receivedLyrics.isNeitherNullNorBlank()) {
                     pageState.mutablePropertiesMap["LYRICS"] = receivedLyrics!!
+                    scope.launch {
+                        sonner.show(
+                            message = context.getString(R.string.lyrics_received),
+                            type = ToastType.Success
+                        )
+                    }
                 } else {
                     scope.launch {
                         sonner.show(

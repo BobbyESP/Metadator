@@ -77,6 +77,12 @@
 # Keep classes and members in the specified package
 -keepnames class com.bobbyesp.metadator.presentation.common.** { *; }
 
+# Keep all classes of datastore
+-keep class androidx.datastore.*.** {*;}
+-keepclassmembers class * extends androidx.datastore.preferences.protobuf.GeneratedMessageLite {
+    <fields> ;
+}
+
 # Only used in `kotlinx.coroutines.internal.ExceptionsConstructor`.
 # The case when it is not available is hidden in a `try`-`catch`, as well as a check for Android.
 -dontwarn java.lang.ClassValue

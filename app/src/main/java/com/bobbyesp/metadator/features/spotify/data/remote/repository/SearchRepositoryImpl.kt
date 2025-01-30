@@ -1,4 +1,4 @@
-package com.bobbyesp.metadator.features.spotify.data.repository
+package com.bobbyesp.metadator.features.spotify.data.remote.repository
 
 import androidx.paging.Pager
 import com.adamratzman.spotify.endpoints.pub.SearchApi

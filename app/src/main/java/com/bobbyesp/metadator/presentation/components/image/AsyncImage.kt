@@ -23,7 +23,6 @@ import androidx.compose.ui.platform.LocalContext
 import coil.ImageLoader
 import coil.request.ImageRequest
 import coil.request.SuccessResult
-import com.bobbyesp.ui.components.others.LoadingPlaceholder
 import com.bobbyesp.ui.components.others.Placeholder
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.coil.CoilImage
@@ -39,54 +38,40 @@ fun AsyncImage(
     placeholder: ImageVector? = null,
     context: Context = LocalContext.current,
     imageLoader: ImageLoader? = LocalCoilImageLoader.current,
+    imageOptions: ImageOptions = ImageOptions(
+        contentDescription = null, contentScale = ContentScale.Crop
+    ),
+    requestListener: (() -> ImageRequest.Listener)? = null,
     onSuccessData: (CoilImageState.Success) -> Unit = { _ -> }
 ) {
-    val imageUrl: Any? by remember(imageModel) {
-        mutableStateOf(imageModel)
-    }
+    val imageUrl by remember { mutableStateOf(imageModel) }
 
     CoilImage(
-        modifier = modifier
-            .clip(shape)
-            .fillMaxSize(),
+        modifier = modifier.clip(shape),
         imageModel = { imageUrl },
-        imageOptions = ImageOptions(
-            contentDescription = null,
-            contentScale = ContentScale.Crop
-        ),
+        imageOptions = imageOptions,
         onImageStateChanged = { state ->
             if (state is CoilImageState.Success) {
                 onSuccessData(state)
             }
         },
+        requestListener = requestListener,
         loading = {
-            if (placeholder != null) {
-                Placeholder(
-                    modifier = imageModifier
-                        .fillMaxSize(),
-                    icon = placeholder,
-                    colorful = false,
-                    contentDescription = "Song cover placeholder"
-                )
-            } else {
-                LoadingPlaceholder(
-                    modifier = imageModifier
-                        .fillMaxSize(),
-                    colorful = false
-                )
-            }
+            Placeholder(
+                modifier = imageModifier.fillMaxSize(),
+                icon = placeholder ?: Icons.Rounded.MusicNote,
+                colorful = false,
+                contentDescription = "Song cover placeholder"
+            )
         },
         failure = { error ->
-            //if the error exception if FileNotFoundException, then the icon is a music note, else error outline
-            val icon = if (error.reason != null && error.reason is java.io.FileNotFoundException) {
+            val icon = if (error.reason is java.io.FileNotFoundException) {
                 Icons.Rounded.MusicNote
             } else {
                 Icons.Rounded.ErrorOutline
             }
-
             Placeholder(
-                modifier = imageModifier
-                    .fillMaxSize(),
+                modifier = imageModifier.fillMaxSize(),
                 icon = icon,
                 colorful = false,
                 contentDescription = "Song cover failed to load"
