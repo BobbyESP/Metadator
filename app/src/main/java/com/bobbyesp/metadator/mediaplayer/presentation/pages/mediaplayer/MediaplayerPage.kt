@@ -36,10 +36,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bobbyesp.metadator.R
+import com.bobbyesp.metadator.core.presentation.common.LocalNavController
 import com.bobbyesp.metadator.core.presentation.common.LocalPlayerAwareWindowInsets
+import com.bobbyesp.metadator.core.presentation.common.navigateBack
 import com.bobbyesp.metadator.presentation.components.cards.songs.HorizontalSongCard
 import com.bobbyesp.metadator.mediaplayer.presentation.pages.mediaplayer.player.MediaplayerSheet
 import com.bobbyesp.ui.components.bottomsheet.draggable.DraggableBottomSheetState
+import com.bobbyesp.ui.components.button.BackButton
 import kotlinx.coroutines.launch
 import my.nanihadesuka.compose.LazyColumnScrollbar
 import my.nanihadesuka.compose.ScrollbarSelectionActionable
@@ -54,6 +57,8 @@ fun MediaplayerPage(
     val mediaStoreLazyColumnState = rememberLazyListState()
     val isFirstItemVisible by remember { derivedStateOf { mediaStoreLazyColumnState.firstVisibleItemIndex == 0 } }
 
+    val navController = LocalNavController.current
+
     val songs = viewModel.songsFlow.collectAsStateWithLifecycle(initialValue = emptyList()).value
 
     val insets = LocalPlayerAwareWindowInsets.current
@@ -67,6 +72,11 @@ fun MediaplayerPage(
             modifier = Modifier.fillMaxSize(),
             topBar = {
                 CenterAlignedTopAppBar(
+                    navigationIcon = {
+                        BackButton {
+                            navController.navigateBack()
+                        }
+                    },
                     title = {
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,

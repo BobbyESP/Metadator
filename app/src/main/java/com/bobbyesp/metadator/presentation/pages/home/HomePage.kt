@@ -18,11 +18,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.KeyboardDoubleArrowUp
-import androidx.compose.material.icons.rounded.MoreHoriz
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material.icons.rounded.Settings
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -50,18 +48,14 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bobbyesp.metadator.R
 import com.bobbyesp.metadator.core.data.local.preferences.PreferencesKey.SONGS_LAYOUT
-import com.bobbyesp.metadator.core.data.local.preferences.PreferencesKey.SONG_CARD_SIZE
 import com.bobbyesp.metadator.core.data.local.preferences.UserPreferences
 import com.bobbyesp.metadator.core.data.local.preferences.datastore.rememberPreferenceState
 import com.bobbyesp.metadator.core.ext.toParcelableSong
-import com.bobbyesp.metadator.core.presentation.common.LocalAppPreferencesController
 import com.bobbyesp.metadator.core.presentation.common.LocalNavController
 import com.bobbyesp.metadator.core.presentation.common.Route
 import com.bobbyesp.metadator.domain.enums.LayoutType
-import com.bobbyesp.metadator.presentation.components.cards.songs.compact.CompactCardSize
 import com.bobbyesp.metadator.presentation.pages.MediaStorePage
 import com.bobbyesp.metadator.presentation.pages.MediaStorePageViewModel
 import com.bobbyesp.ui.components.dropdown.AnimatedDropdownMenu
@@ -157,6 +151,21 @@ fun HomePage(
                     }
                 }, actions = {
                     IconButton(
+                        onClick = {
+                            scope.launch {
+                                moreOptionsVisible = false
+                            }
+                            navController.navigate(Route.MediaplayerNavigator)
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.PlayArrow,
+                            contentDescription = stringResource(
+                                id = R.string.mediaplayer
+                            )
+                        )
+                    }
+                    IconButton(
                         onClick = { navController.navigate(Route.SettingsNavigator.Settings) }) {
                         Icon(
                             imageVector = Icons.Rounded.Settings,
@@ -184,14 +193,6 @@ fun HomePage(
                             desiredLayout = configuredLayout,
                             onLayoutChanged = {
                                 setConfiguredLayout(it.name)
-                            }, navigateToDialog = {
-                                navController.navigate(Route.MetadatorNavigator.Home.VisualSettings)
-                            },
-                            navigateToMediaplayer = {
-                                scope.launch {
-                                    moreOptionsVisible = false
-                                }
-                                navController.navigate(Route.MediaplayerNavigator)
                             }
                         )
                     }
@@ -281,8 +282,6 @@ fun HomePage(
 private fun DropdownMenuContent(
     desiredLayout: LayoutType,
     onLayoutChanged: (LayoutType) -> Unit,
-    navigateToDialog: () -> Unit = {},
-    navigateToMediaplayer: () -> Unit = {}
 ) {
     val availableLayoutType = LayoutType.entries.toImmutableList()
 
@@ -319,27 +318,6 @@ private fun DropdownMenuContent(
                     }
                 }
             }
-        )
-        DropdownMenuItem(
-            leadingIcon = {
-                Icon(
-                    imageVector = Icons.Rounded.MoreHoriz,
-                    contentDescription = null
-                )
-            },
-            text = { Text(stringResource(id = R.string.open_more_options)) },
-            onClick = { navigateToDialog() }
-        )
-
-        DropdownMenuItem(
-            leadingIcon = {
-                Icon(
-                    imageVector = Icons.Rounded.PlayArrow,
-                    contentDescription = null
-                )
-            },
-            text = { Text(stringResource(id = R.string.mediaplayer)) },
-            onClick = { navigateToMediaplayer() }
         )
     }
 }
