@@ -87,6 +87,7 @@ fun MiniplayerContent(
                         ConditionedMarqueeText(
                             text = it.title.toString(),
                             style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onSurface,
                             fontWeight = FontWeight.Bold,
                             fontSize = 16.sp
                         )
