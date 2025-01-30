@@ -84,7 +84,7 @@ fun SettingsGroup(
                     .fillMaxWidth()
                     .clip(
                         when {
-                            items.lastIndex == 0 -> {
+                            items.size == 1 -> {
                                 MaterialTheme.shapes.extraLarge
                             }
 
@@ -131,24 +131,6 @@ fun SettingsItemPreview() {
 fun SettingsGroupPreview() {
     SettingsGroup(
         items = listOf(
-            SettingsItem(
-                title = "Title",
-                supportingText = "Supporting Text",
-                icon = Icons.Rounded.Settings,
-                onClick = {}
-            ),
-            SettingsItem(
-                title = "Title",
-                supportingText = "Supporting Text",
-                icon = Icons.Rounded.Settings,
-                onClick = {}
-            ),
-            SettingsItem(
-                title = "Title",
-                supportingText = "Supporting Text",
-                icon = Icons.Rounded.Settings,
-                onClick = {}
-            ),
             SettingsItem(
                 title = "Title",
                 supportingText = "Supporting Text",

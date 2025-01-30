@@ -1,0 +1,13 @@
+package com.bobbyesp.metadator.onboarding.data.local
+
+import androidx.compose.runtime.Stable
+import androidx.compose.ui.graphics.vector.ImageVector
+import com.bobbyesp.utilities.ui.permission.PermissionType
+
+@Stable
+data class PermissionItem(
+    val permission: PermissionType,
+    val icon: ImageVector,
+    val isGranted: Boolean,
+    val onClick: () -> Unit
+)

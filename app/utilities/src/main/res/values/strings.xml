@@ -30,4 +30,8 @@
     <string name="song_sync_not_installed">It seems the app isn\'t installed on your device. Please download it to access this feature</string>
     <string name="download">Download</string>
     <string name="album">Album</string>
+    <string name="read_external_storage_description">Allows the app to read the contents of your storage</string>
+    <string name="write_external_storage_description">Allows the app to write to your storage</string>
+    <string name="read_media_audio_description">Allows the app to read audio files</string>
+    <string name="unknown_permission_description">This permission does not contain a description</string>
 </resources>

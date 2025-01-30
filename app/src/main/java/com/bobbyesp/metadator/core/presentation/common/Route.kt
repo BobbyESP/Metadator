@@ -5,6 +5,16 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 sealed interface Route {
+
+    @Serializable
+    data object OnboardingNavigator : Route {
+        @Serializable
+        data object Welcome : Route
+
+        @Serializable
+        data object Permissions : Route
+    }
+
     @Serializable
     data object MetadatorNavigator : Route {
         @Serializable

@@ -19,6 +19,9 @@ fun isDynamicColoringSupported(): Boolean {
     return Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
 }
 
+val MetadatorLogoForeground = Color(0xFFFFFFF0)
+val MetadatorLogoBackground = Color(0xFF313638)
+
 @Composable
 fun MetadatorTheme(
     content: @Composable () -> Unit

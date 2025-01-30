@@ -120,7 +120,7 @@ fun SettingsPage(
         )
 
         Text(
-            text = stringResource(id = R.string.made_by),
+            text = stringResource(id = R.string.made_with_love_by),
             modifier = Modifier
                 .padding(horizontal = 12.dp)
                 .fillMaxWidth(),

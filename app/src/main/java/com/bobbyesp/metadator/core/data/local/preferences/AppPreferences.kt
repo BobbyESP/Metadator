@@ -52,6 +52,11 @@ class AppPreferences(
         return mapUserPreferences(preferences ?: emptyPreferences())
     }
 
+    // --> Core
+    suspend fun updateFinishedOnboarding(finishedOnboarding: Boolean) {
+        saveSetting(PreferencesKey.COMPLETED_ONBOARDING, finishedOnboarding)
+    }
+
     // --> UI
     suspend fun updateSongsLayout(layoutType: LayoutType) {
         saveSetting(SONGS_LAYOUT, layoutType.name)
@@ -121,9 +126,9 @@ class AppPreferences(
 
         return UserPreferences(
             desiredLayout,
+            songCardSize,
             reduceShadows,
             marqueeTextEnabled,
-            songCardSize,
             darkThemePreference,
             useDynamicColoring,
             themeColor,

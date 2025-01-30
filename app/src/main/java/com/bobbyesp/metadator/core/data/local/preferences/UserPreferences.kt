@@ -16,9 +16,9 @@ import com.materialkolor.PaletteStyle
 @Stable
 data class UserPreferences(
     val songsLayout: LayoutType,
+    val songCardSize: CompactCardSize,
     val reduceShadows: Boolean,
     val marqueeTextEnabled: Boolean,
-    val songCardSize: CompactCardSize,
     val darkThemePreference: DarkThemePreference,
     val useDynamicColoring: Boolean,
     val themeColor: Int,

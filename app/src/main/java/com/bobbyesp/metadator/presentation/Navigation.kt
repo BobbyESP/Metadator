@@ -33,19 +33,23 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.dialog
 import androidx.navigation.compose.navigation
 import androidx.navigation.toRoute
-import com.bobbyesp.metadator.domain.model.ParcelableSong
+import com.bobbyesp.metadator.core.data.local.preferences.PreferencesKey.COMPLETED_ONBOARDING
+import com.bobbyesp.metadator.core.data.local.preferences.datastore.rememberPreferenceState
 import com.bobbyesp.metadator.core.presentation.common.LocalNavController
 import com.bobbyesp.metadator.core.presentation.common.LocalPlayerAwareWindowInsets
 import com.bobbyesp.metadator.core.presentation.common.Route
+import com.bobbyesp.metadator.core.presentation.common.cleanNavigate
 import com.bobbyesp.metadator.core.presentation.common.navigateBack
-import com.bobbyesp.metadator.presentation.pages.MediaStorePageViewModel
-import com.bobbyesp.metadator.presentation.pages.home.HomePage
+import com.bobbyesp.metadator.core.presentation.pages.settings.SettingsPage
+import com.bobbyesp.metadator.core.presentation.pages.settings.modules.GeneralSettingsPage
+import com.bobbyesp.metadator.domain.model.ParcelableSong
 import com.bobbyesp.metadator.mediaplayer.presentation.pages.mediaplayer.MediaplayerPage
 import com.bobbyesp.metadator.mediaplayer.presentation.pages.mediaplayer.MediaplayerViewModel
 import com.bobbyesp.metadator.mediaplayer.presentation.pages.mediaplayer.player.CollapsedPlayerHeight
 import com.bobbyesp.metadator.mediaplayer.presentation.pages.mediaplayer.player.PlayerAnimationSpec
-import com.bobbyesp.metadator.core.presentation.pages.settings.SettingsPage
-import com.bobbyesp.metadator.core.presentation.pages.settings.modules.GeneralSettingsPage
+import com.bobbyesp.metadator.onboarding.onboardingNavigation
+import com.bobbyesp.metadator.presentation.pages.MediaStorePageViewModel
+import com.bobbyesp.metadator.presentation.pages.home.HomePage
 import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.MetadataEditorPage
 import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.MetadataEditorViewModel
 import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.spotify.MetadataBottomSheetViewModel
@@ -60,7 +64,9 @@ import kotlin.reflect.typeOf
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 
 @Composable
-fun Navigator() {
+fun Navigator(
+    startDestination: Route,
+) {
     val navController = LocalNavController.current
 
     val mediaStoreViewModel = koinViewModel<MediaStorePageViewModel>()
@@ -68,6 +74,8 @@ fun Navigator() {
 
     val density = LocalDensity.current
     val windowsInsets = WindowInsets.systemBars
+
+    val (onboardingCompleted, setOnboardingCompleted) = rememberPreferenceState(COMPLETED_ONBOARDING)
 
     BoxWithConstraints(
         modifier = Modifier
@@ -112,8 +120,16 @@ fun Navigator() {
                     .fillMaxWidth()
                     .align(Alignment.Center),
                 navController = navController,
-                startDestination = Route.MetadatorNavigator,
+                startDestination = startDestination,
             ) {
+                onboardingNavigation(
+                    onNavigate = { navController.navigate(it) },
+                    onCompletedOnboarding = {
+                        setOnboardingCompleted(true)
+                        navController.cleanNavigate(Route.MetadatorNavigator)
+                    }
+                )
+
                 navigation<Route.MetadatorNavigator>(
                     startDestination = Route.MetadatorNavigator.Home,
                 ) {

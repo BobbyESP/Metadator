@@ -10,4 +10,7 @@
     <string name="copied_to_clipboard">Copiado al portapapeles</string>
     <string name="error">Error</string>
     <string name="unknown_error_title">Ha ocurrido un error desconocido!</string>
+    <string name="open_settings">Abrir ajustes</string>
+    <string name="line">Línea %1$s</string>
+    <string name="additional_information">Información adicional</string>
 </resources>

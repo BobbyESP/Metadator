@@ -11,6 +11,10 @@ import com.bobbyesp.utilities.ui.DEFAULT_SEED_COLOR
 import com.materialkolor.PaletteStyle
 
 sealed class PreferencesKey<T>(val key: Preferences.Key<T>, val defaultValue: T) {
+    // --> Core
+    data object COMPLETED_ONBOARDING :
+        PreferencesKey<Boolean>(booleanPreferencesKey("completed_onboarding"), false)
+
     // --> UI
     data object SONGS_LAYOUT :
         PreferencesKey<String>(stringPreferencesKey("songs_layout"), LayoutType.Grid.name)
