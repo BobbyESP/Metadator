@@ -50,11 +50,14 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bobbyesp.metadator.R
 import com.bobbyesp.metadator.core.data.local.preferences.PreferencesKey.SONGS_LAYOUT
 import com.bobbyesp.metadator.core.data.local.preferences.PreferencesKey.SONG_CARD_SIZE
+import com.bobbyesp.metadator.core.data.local.preferences.UserPreferences
 import com.bobbyesp.metadator.core.data.local.preferences.datastore.rememberPreferenceState
 import com.bobbyesp.metadator.core.ext.toParcelableSong
+import com.bobbyesp.metadator.core.presentation.common.LocalAppPreferencesController
 import com.bobbyesp.metadator.core.presentation.common.LocalNavController
 import com.bobbyesp.metadator.core.presentation.common.Route
 import com.bobbyesp.metadator.domain.enums.LayoutType
@@ -82,6 +85,7 @@ import kotlinx.coroutines.launch
 fun HomePage(
     modifier: Modifier = Modifier,
     songs: State<ResourceState<List<Song>>>,
+    preferences: State<UserPreferences>,
     onEvent: (MediaStorePageViewModel.Companion.Events) -> Unit = {}
 ) {
     val context = LocalActivity.current
@@ -109,9 +113,10 @@ fun HomePage(
     val mediaStoreLazyGridState = rememberForeverLazyGridState(key = "lazyGrid")
     val mediaStoreLazyColumnState = rememberLazyListState()
 
-    val (configuredLayout, setConfiguredLayout) = rememberPreferenceState(SONGS_LAYOUT)
+    val configuredLayout = preferences.value.songsLayout
+    val (_, setConfiguredLayout) = rememberPreferenceState(SONGS_LAYOUT)
 
-    val (songCardSize, _) = rememberPreferenceState(SONG_CARD_SIZE)
+    val songCardSize = preferences.value.songCardSize
 
     val gridIsFirstItemVisible by remember {
         derivedStateOf {
@@ -176,7 +181,7 @@ fun HomePage(
                             moreOptionsVisible = false
                         }) {
                         DropdownMenuContent(
-                            desiredLayout = LayoutType.valueOf(configuredLayout.value),
+                            desiredLayout = configuredLayout,
                             onLayoutChanged = {
                                 setConfiguredLayout(it.name)
                             }, navigateToDialog = {
@@ -193,7 +198,7 @@ fun HomePage(
 
                 })
         }, floatingActionButton = {
-            when (LayoutType.valueOf(configuredLayout.value)) {
+            when (configuredLayout) {
                 LayoutType.Grid -> {
                     AnimatedVisibility(
                         visible = !gridIsFirstItemVisible,
@@ -258,8 +263,8 @@ fun HomePage(
                     songs = songs,
                     lazyGridState = mediaStoreLazyGridState,
                     lazyListState = mediaStoreLazyColumnState,
-                    desiredLayout = LayoutType.valueOf(configuredLayout.value),
-                    compactCardSize = CompactCardSize.valueOf(songCardSize.value),
+                    desiredLayout = configuredLayout,
+                    compactCardSize = songCardSize,
                     onReloadMediaStore = {
                         onEvent(MediaStorePageViewModel.Companion.Events.ReloadMediaStore)
                     },

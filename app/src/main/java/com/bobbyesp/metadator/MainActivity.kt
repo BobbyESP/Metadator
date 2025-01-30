@@ -76,6 +76,9 @@ class MainActivity : ComponentActivity(), KoinComponent {
                         Navigator(
                             startDestination = startDestination.value
                                 ?: throw IllegalStateException("Start destination couldnt be determinated"),
+                            preferences = appPreferences.userPreferencesFlow.collectAsStateWithLifecycle(
+                                emptyUserPreferences()
+                            )
                         )
                         Toaster(
                             state = sonner,

@@ -20,6 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -34,6 +35,7 @@ import androidx.navigation.compose.dialog
 import androidx.navigation.compose.navigation
 import androidx.navigation.toRoute
 import com.bobbyesp.metadator.core.data.local.preferences.PreferencesKey.COMPLETED_ONBOARDING
+import com.bobbyesp.metadator.core.data.local.preferences.UserPreferences
 import com.bobbyesp.metadator.core.data.local.preferences.datastore.rememberPreferenceState
 import com.bobbyesp.metadator.core.presentation.common.LocalNavController
 import com.bobbyesp.metadator.core.presentation.common.LocalPlayerAwareWindowInsets
@@ -66,6 +68,7 @@ import kotlin.reflect.typeOf
 @Composable
 fun Navigator(
     startDestination: Route,
+    preferences: State<UserPreferences>,
 ) {
     val navController = LocalNavController.current
 
@@ -75,7 +78,7 @@ fun Navigator(
     val density = LocalDensity.current
     val windowsInsets = WindowInsets.systemBars
 
-    val (onboardingCompleted, setOnboardingCompleted) = rememberPreferenceState(COMPLETED_ONBOARDING)
+    val (_, setOnboardingCompleted) = rememberPreferenceState(COMPLETED_ONBOARDING)
 
     BoxWithConstraints(
         modifier = Modifier
@@ -136,7 +139,11 @@ fun Navigator(
                     animatedComposable<Route.MetadatorNavigator.Home> {
                         val songsState =
                             mediaStoreViewModel.songs.collectAsStateWithLifecycle()
-                        HomePage(songs = songsState, onEvent = mediaStoreViewModel::onEvent)
+                        HomePage(
+                            songs = songsState,
+                            preferences = preferences,
+                            onEvent = mediaStoreViewModel::onEvent
+                        )
                     }
 
                     dialog<Route.MetadatorNavigator.Home.VisualSettings> {
