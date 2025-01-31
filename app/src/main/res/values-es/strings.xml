@@ -85,4 +85,15 @@
     <string name="card_size">Tamaño de tarjeta</string>
     <string name="reduce_shadows">Reducir sombras</string>
     <string name="reduce_shadows_description">Reduce las sombras dibujadas por la app para mejorar el rendimiento.</string>
+    <string name="about">Acerca de</string>
+    <string name="about_description">Información acerca de la aplicación y más</string>
+    <string name="data_null">Los datos solicitados son nulos</string>
+    <string name="lyrics_received">Las letras han sido recibidas correctamente</string>
+    <string name="get_started">Empezar</string>
+    <string name="next">Siguiente</string>
+    <string name="made_by">Hecho por</string>
+    <string name="permissions">Permisos</string>
+    <string name="permissions_description">Para asegurarse de que la aplicación funciona correctamente y de obtener la mejor experiencia, necesitamos los siguientes permisos</string>
+    <string name="permissions_additional_information">Estos permisos son necesarios para funcionalidades como el reproductor de música y la edición de los metadatos. Por favor revise y acepte los permisos requeridos para que la aplicación funcione correctamente.</string>
+    <string name="finish">Finalizar</string>
 </resources>

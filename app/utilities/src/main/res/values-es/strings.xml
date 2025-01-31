@@ -25,4 +25,8 @@
     <string name="song_sync_not_installed">Parece que la aplicación no está instalada en tu dispositivo. Por favor, descárgala para acceder a esta funcionalidad.</string>
     <string name="download">Descargar</string>
     <string name="album">Álbum</string>
+    <string name="read_external_storage_description">Permite a la aplicación leer contenido de tu almacenamiento</string>
+    <string name="write_external_storage_description">Permite a la aplicación escribir en tu almacenamiento</string>
+    <string name="read_media_audio_description">Permite a la aplicación leer los archivos de sonido</string>
+    <string name="unknown_permission_description">Este permiso no contiene una descripción</string>
 </resources>
