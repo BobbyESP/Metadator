@@ -62,9 +62,12 @@ class MainActivity : ComponentActivity(), KoinComponent {
         setCrashlyticsCollection()
         setContent {
             KoinContext {
-
                 val sonner = rememberToasterState()
                 val windowSizeClass = calculateWindowSizeClass(this)
+                val userPreferences =
+                    appPreferences.userPreferencesFlow.collectAsStateWithLifecycle(
+                        emptyUserPreferences()
+                    )
 
                 AppLocalSettingsProvider(
                     windowWidthSize = windowSizeClass.widthSizeClass,
@@ -76,16 +79,12 @@ class MainActivity : ComponentActivity(), KoinComponent {
                         Navigator(
                             startDestination = startDestination.value
                                 ?: throw IllegalStateException("Start destination couldnt be determinated"),
-                            preferences = appPreferences.userPreferencesFlow.collectAsStateWithLifecycle(
-                                emptyUserPreferences()
-                            )
+                            preferences = userPreferences
                         )
                         Toaster(
                             state = sonner,
                             richColors = true,
-                            darkTheme = appPreferences.userPreferencesFlow.collectAsStateWithLifecycle(
-                                emptyUserPreferences()
-                            ).value.darkThemePreference.isDarkTheme()
+                            darkTheme = userPreferences.value.darkThemePreference.isDarkTheme()
                         )
                     }
                 }

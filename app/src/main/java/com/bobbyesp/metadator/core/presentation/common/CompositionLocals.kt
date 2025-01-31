@@ -68,13 +68,25 @@ fun AppLocalSettingsProvider(
 
     val navController = rememberNavController()
 
-    val imageLoader = ImageLoader.Builder(context).memoryCache {
-        MemoryCache.Builder(context).maxSizePercent(0.4).build()
-    }.diskCache {
-        DiskCache.Builder().directory(context.cacheDir.resolve("image_cache"))
-            .maxSizeBytes(7 * 1024 * 1024).build()
-    }.respectCacheHeaders(false).allowHardware(true).crossfade(true).bitmapFactoryMaxParallelism(12)
-        .dispatcher(Dispatchers.IO).build()
+    val imageLoader = ImageLoader.Builder(context)
+        .memoryCache {
+            MemoryCache.Builder(context)
+                .maxSizePercent(0.4)
+                .build()
+        }
+        .diskCache {
+            DiskCache.Builder()
+                .directory(context.cacheDir.resolve("image_cache"))
+                .maxSizeBytes(7 * 1024 * 1024)
+                .build()
+        }
+        .respectCacheHeaders(false)
+        .allowHardware(true)
+        .crossfade(true)
+        .crossfade(300)
+        .bitmapFactoryMaxParallelism(12)
+        .dispatcher(Dispatchers.IO)
+        .build()
 
     val config = LocalConfiguration.current
 
