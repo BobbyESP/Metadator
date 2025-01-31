@@ -1,4 +1,4 @@
-package com.bobbyesp.metadator.core.presentation
+package com.bobbyesp.metadator.core.presentation.components
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.Image
@@ -12,7 +12,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext

@@ -40,8 +40,8 @@ import com.bobbyesp.metadator.core.data.local.preferences.datastore.rememberPref
 import com.bobbyesp.metadator.core.presentation.common.LocalNavController
 import com.bobbyesp.metadator.core.presentation.common.LocalPlayerAwareWindowInsets
 import com.bobbyesp.metadator.core.presentation.common.Route
-import com.bobbyesp.metadator.core.presentation.common.cleanNavigate
-import com.bobbyesp.metadator.core.presentation.common.navigateBack
+import com.bobbyesp.metadator.core.util.cleanNavigate
+import com.bobbyesp.metadator.core.util.navigateBack
 import com.bobbyesp.metadator.core.presentation.pages.settings.SettingsPage
 import com.bobbyesp.metadator.core.presentation.pages.settings.modules.GeneralSettingsPage
 import com.bobbyesp.metadator.domain.model.ParcelableSong
@@ -52,9 +52,9 @@ import com.bobbyesp.metadator.mediaplayer.presentation.pages.mediaplayer.player.
 import com.bobbyesp.metadator.onboarding.onboardingNavigation
 import com.bobbyesp.metadator.presentation.pages.MediaStorePageViewModel
 import com.bobbyesp.metadator.presentation.pages.home.HomePage
-import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.MetadataEditorPage
-import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.MetadataEditorViewModel
-import com.bobbyesp.metadator.presentation.pages.utilities.tageditor.spotify.MetadataBottomSheetViewModel
+import com.bobbyesp.metadator.editor.presentation.pages.tageditor.MetadataEditorPage
+import com.bobbyesp.metadator.editor.presentation.pages.tageditor.MetadataEditorViewModel
+import com.bobbyesp.metadator.editor.presentation.pages.tageditor.spotify.MetadataBottomSheetViewModel
 import com.bobbyesp.ui.components.bottomsheet.draggable.rememberDraggableBottomSheetState
 import com.bobbyesp.ui.motion.animatedComposable
 import com.bobbyesp.ui.motion.slideInVerticallyComposable

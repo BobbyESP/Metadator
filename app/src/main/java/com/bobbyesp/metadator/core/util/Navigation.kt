@@ -1,4 +1,4 @@
-package com.bobbyesp.metadator.core.presentation.common
+package com.bobbyesp.metadator.core.util
 
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavHostController

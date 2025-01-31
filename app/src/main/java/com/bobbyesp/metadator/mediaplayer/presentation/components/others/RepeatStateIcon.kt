@@ -1,4 +1,4 @@
-package com.bobbyesp.metadator.presentation.components.others
+package com.bobbyesp.metadator.mediaplayer.presentation.components.others
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Repeat
@@ -11,6 +11,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.media3.common.Player.REPEAT_MODE_ALL
 import androidx.media3.common.Player.REPEAT_MODE_OFF
 import androidx.media3.common.Player.REPEAT_MODE_ONE
+import com.bobbyesp.mediaplayer.R
 
 @Composable
 fun RepeatStateIcon(
@@ -21,7 +22,7 @@ fun RepeatStateIcon(
         REPEAT_MODE_OFF -> {
             Icon(
                 imageVector = Icons.Rounded.Repeat,
-                contentDescription = stringResource(id = com.bobbyesp.mediaplayer.R.string.repeat_mode_off),
+                contentDescription = stringResource(id = R.string.repeat_mode_off),
                 modifier = modifier.alpha(0.5f)
             )
         }
@@ -29,7 +30,7 @@ fun RepeatStateIcon(
         REPEAT_MODE_ONE -> {
             Icon(
                 imageVector = Icons.Rounded.RepeatOne,
-                contentDescription = stringResource(id = com.bobbyesp.mediaplayer.R.string.repeat_mode_one),
+                contentDescription = stringResource(id = R.string.repeat_mode_one),
                 modifier = modifier
             )
         }
@@ -37,7 +38,7 @@ fun RepeatStateIcon(
         REPEAT_MODE_ALL -> {
             Icon(
                 imageVector = Icons.Rounded.Repeat,
-                contentDescription = stringResource(id = com.bobbyesp.mediaplayer.R.string.repeat_mode_all),
+                contentDescription = stringResource(id = R.string.repeat_mode_all),
                 modifier = modifier
             )
         }

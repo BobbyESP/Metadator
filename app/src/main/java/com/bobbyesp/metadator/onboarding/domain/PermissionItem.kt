@@ -1,4 +1,4 @@
-package com.bobbyesp.metadator.onboarding.data.local
+package com.bobbyesp.metadator.onboarding.domain
 
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.vector.ImageVector

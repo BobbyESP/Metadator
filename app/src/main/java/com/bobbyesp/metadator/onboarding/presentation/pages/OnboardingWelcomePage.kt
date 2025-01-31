@@ -21,7 +21,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.bobbyesp.metadator.R
-import com.bobbyesp.metadator.core.presentation.AppDetails
+import com.bobbyesp.metadator.core.presentation.components.AppDetails
 
 @Composable
 fun OnboardingWelcomePage(

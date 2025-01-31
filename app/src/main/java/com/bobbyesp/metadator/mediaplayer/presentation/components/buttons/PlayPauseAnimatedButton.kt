@@ -1,4 +1,4 @@
-package com.bobbyesp.metadator.presentation.components.buttons
+package com.bobbyesp.metadator.mediaplayer.presentation.components.buttons
 
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background

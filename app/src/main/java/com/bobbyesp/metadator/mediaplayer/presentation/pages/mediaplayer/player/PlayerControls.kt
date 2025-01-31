@@ -41,9 +41,9 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bobbyesp.metadator.R
-import com.bobbyesp.metadator.presentation.components.buttons.PlayPauseAnimatedButton
-import com.bobbyesp.metadator.presentation.components.others.RepeatStateIcon
-import com.bobbyesp.metadator.presentation.components.others.ShuffleStateIcon
+import com.bobbyesp.metadator.mediaplayer.presentation.components.buttons.PlayPauseAnimatedButton
+import com.bobbyesp.metadator.mediaplayer.presentation.components.others.RepeatStateIcon
+import com.bobbyesp.metadator.mediaplayer.presentation.components.others.ShuffleStateIcon
 import com.bobbyesp.metadator.presentation.components.text.ConditionedMarqueeText
 import com.bobbyesp.metadator.mediaplayer.presentation.pages.mediaplayer.MediaplayerViewModel
 import com.bobbyesp.ui.components.text.MarqueeTextGradientOptions
