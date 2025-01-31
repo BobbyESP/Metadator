@@ -20,7 +20,7 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import com.bobbyesp.metadator.mediaplayer.presentation.pages.mediaplayer.MediaplayerViewModel
 import com.bobbyesp.metadator.mediaplayer.presentation.pages.mediaplayer.player.CollapsedPlayerHeight
-import com.bobbyesp.metadator.presentation.theme.MetadatorTheme
+import com.bobbyesp.metadator.core.presentation.theme.MetadatorTheme
 
 @Composable
 fun MediaplayerCollapsedContent(

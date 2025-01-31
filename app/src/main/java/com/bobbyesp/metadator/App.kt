@@ -9,9 +9,9 @@ import com.bobbyesp.crashhandler.ReportInfo
 import com.bobbyesp.metadator.core.di.appCoroutinesScope
 import com.bobbyesp.metadator.core.di.appSystemManagers
 import com.bobbyesp.metadator.core.di.coreFunctionalitiesModule
-import com.bobbyesp.metadator.di.appMainViewModels
-import com.bobbyesp.metadator.di.mediaplayerViewModels
-import com.bobbyesp.metadator.di.utilitiesViewModels
+import com.bobbyesp.metadator.mediastore.di.mediaStoreViewModelsModule
+import com.bobbyesp.metadator.mediaplayer.di.mediaplayerViewModels
+import com.bobbyesp.metadator.editor.di.tagEditorViewModelsModule
 import com.bobbyesp.metadator.features.spotify.di.spotifyMainModule
 import com.bobbyesp.metadator.features.spotify.di.spotifyServicesModule
 import mediaplayerInternalsModule
@@ -27,7 +27,7 @@ class App : Application() {
             androidContext(this@App)
             modules(appSystemManagers, appCoroutinesScope, coreFunctionalitiesModule)
             modules(mediaplayerInternalsModule)
-            modules(appMainViewModels, utilitiesViewModels, mediaplayerViewModels)
+            modules(mediaStoreViewModelsModule, tagEditorViewModelsModule, mediaplayerViewModels)
             modules(spotifyMainModule, spotifyServicesModule)
         }
         packageInfo = packageManager.run {

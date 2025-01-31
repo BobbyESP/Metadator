@@ -22,8 +22,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.bobbyesp.metadator.R
 import com.bobbyesp.metadator.core.util.getAppVersionName
-import com.bobbyesp.metadator.presentation.theme.MetadatorLogoBackground
-import com.bobbyesp.metadator.presentation.theme.MetadatorLogoForeground
+import com.bobbyesp.metadator.core.presentation.theme.MetadatorLogoBackground
+import com.bobbyesp.metadator.core.presentation.theme.MetadatorLogoForeground
 
 @Composable
 fun AppDetails(

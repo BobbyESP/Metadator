@@ -46,7 +46,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bobbyesp.metadator.R
-import com.bobbyesp.metadator.presentation.components.image.AsyncImage
+import com.bobbyesp.metadator.core.presentation.components.image.AsyncImage
 import com.bobbyesp.metadator.mediaplayer.presentation.pages.mediaplayer.MediaplayerViewModel
 import com.bobbyesp.metadator.mediaplayer.presentation.pages.mediaplayer.player.MediaplayerSheetView
 import com.bobbyesp.metadator.mediaplayer.presentation.pages.mediaplayer.player.PlayerControls

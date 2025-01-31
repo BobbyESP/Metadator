@@ -20,8 +20,7 @@ import com.bobbyesp.metadator.core.data.local.preferences.UserPreferences.Compan
 import com.bobbyesp.metadator.core.presentation.common.AppLocalSettingsProvider
 import com.bobbyesp.metadator.core.presentation.common.Route
 import com.bobbyesp.metadator.mediaplayer.data.local.MediaplayerServiceConnection
-import com.bobbyesp.metadator.presentation.Navigator
-import com.bobbyesp.metadator.presentation.theme.MetadatorTheme
+import com.bobbyesp.metadator.core.presentation.theme.MetadatorTheme
 import com.dokar.sonner.Toaster
 import com.dokar.sonner.rememberToasterState
 import kotlinx.coroutines.Dispatchers

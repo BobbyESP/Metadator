@@ -1,6 +1,6 @@
 package com.bobbyesp.metadator.core.presentation.common
 
-import com.bobbyesp.metadator.domain.model.ParcelableSong
+import com.bobbyesp.metadator.core.domain.model.ParcelableSong
 import kotlinx.serialization.Serializable
 
 @Serializable

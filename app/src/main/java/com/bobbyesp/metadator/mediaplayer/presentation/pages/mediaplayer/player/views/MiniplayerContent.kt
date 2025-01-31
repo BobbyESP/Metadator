@@ -30,8 +30,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.media3.common.MediaMetadata
 import com.bobbyesp.metadator.R
-import com.bobbyesp.metadator.presentation.components.image.AsyncImage
-import com.bobbyesp.metadator.presentation.components.text.ConditionedMarqueeText
+import com.bobbyesp.metadator.core.presentation.components.image.AsyncImage
+import com.bobbyesp.metadator.core.presentation.components.text.ConditionedMarqueeText
 import com.bobbyesp.metadator.mediaplayer.presentation.pages.mediaplayer.player.AnimatedTextContentTransformation
 import com.bobbyesp.ui.components.button.DynamicButton
 

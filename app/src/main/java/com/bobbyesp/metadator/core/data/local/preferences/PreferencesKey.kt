@@ -5,8 +5,8 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.bobbyesp.metadator.core.data.local.DarkThemePreference.Companion.DarkThemeValue
-import com.bobbyesp.metadator.domain.enums.LayoutType
-import com.bobbyesp.metadator.presentation.components.cards.songs.compact.CompactCardSize
+import com.bobbyesp.metadator.mediastore.domain.enums.LayoutType
+import com.bobbyesp.metadator.mediastore.domain.enums.CompactCardSize
 import com.bobbyesp.utilities.ui.DEFAULT_SEED_COLOR
 import com.materialkolor.PaletteStyle
 

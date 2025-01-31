@@ -37,7 +37,7 @@ import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import com.adamratzman.spotify.models.Track
 import com.bobbyesp.metadator.R
-import com.bobbyesp.metadator.presentation.components.cards.songs.spotify.SpotifyHorizontalSongCard
+import com.bobbyesp.metadator.mediastore.presentation.components.card.songs.spotify.SpotifyHorizontalSongCard
 import com.bobbyesp.metadator.editor.presentation.pages.tageditor.spotify.MetadataBottomSheetViewModel
 import com.bobbyesp.ui.components.button.VerticalButtonWithIconAndText
 import com.bobbyesp.ui.components.state.LoadingState

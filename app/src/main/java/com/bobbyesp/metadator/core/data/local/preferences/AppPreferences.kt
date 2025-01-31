@@ -16,9 +16,9 @@ import com.bobbyesp.metadator.core.data.local.preferences.PreferencesKey.SONGS_L
 import com.bobbyesp.metadator.core.data.local.preferences.PreferencesKey.SONG_CARD_SIZE
 import com.bobbyesp.metadator.core.data.local.preferences.PreferencesKey.THEME_COLOR
 import com.bobbyesp.metadator.core.data.local.preferences.PreferencesKey.USE_DYNAMIC_COLORING
-import com.bobbyesp.metadator.domain.enums.LayoutType
-import com.bobbyesp.metadator.presentation.components.cards.songs.compact.CompactCardSize
-import com.bobbyesp.metadator.presentation.theme.isDynamicColoringSupported
+import com.bobbyesp.metadator.mediastore.domain.enums.LayoutType
+import com.bobbyesp.metadator.mediastore.domain.enums.CompactCardSize
+import com.bobbyesp.metadator.core.presentation.theme.isDynamicColoringSupported
 import com.materialkolor.PaletteStyle
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow

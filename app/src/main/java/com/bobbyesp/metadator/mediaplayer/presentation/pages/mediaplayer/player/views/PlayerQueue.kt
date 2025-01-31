@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.MediaMetadata
-import com.bobbyesp.metadator.presentation.components.image.AsyncImage
+import com.bobbyesp.metadator.core.presentation.components.image.AsyncImage
 
 @Composable
 fun PlayerQueue(

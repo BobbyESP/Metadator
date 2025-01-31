@@ -65,8 +65,8 @@ import com.bobbyesp.metadator.R
 import com.bobbyesp.metadator.core.presentation.common.LocalNavController
 import com.bobbyesp.metadator.core.presentation.common.LocalOrientation
 import com.bobbyesp.metadator.core.presentation.common.LocalSonner
-import com.bobbyesp.metadator.domain.model.ParcelableSong
-import com.bobbyesp.metadator.presentation.components.image.AsyncImage
+import com.bobbyesp.metadator.core.domain.model.ParcelableSong
+import com.bobbyesp.metadator.core.presentation.components.image.AsyncImage
 import com.bobbyesp.metadator.editor.presentation.pages.tageditor.spotify.MetadataBottomSheetViewModel
 import com.bobbyesp.metadator.editor.presentation.pages.tageditor.spotify.SpMetadataBottomSheetContent
 import com.bobbyesp.ui.common.pages.ErrorPage

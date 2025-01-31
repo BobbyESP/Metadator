@@ -1,6 +1,6 @@
 package com.bobbyesp.metadator.core.ext
 
-import com.bobbyesp.metadator.domain.model.ParcelableSong
+import com.bobbyesp.metadator.core.domain.model.ParcelableSong
 import com.bobbyesp.utilities.mediastore.model.Song
 
 fun Song.toParcelableSong(): ParcelableSong {
