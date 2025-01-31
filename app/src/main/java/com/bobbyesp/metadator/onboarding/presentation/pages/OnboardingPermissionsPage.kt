@@ -5,6 +5,7 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.rememberTransition
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
@@ -36,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEach
 import androidx.compose.ui.util.fastForEachIndexed
@@ -141,54 +143,19 @@ fun OnboardingPermissionsPage(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 OnboardingScreenHeader(
-                    modifier = Modifier.padding(16.dp),
+                    modifier = Modifier.padding(16.dp).weight(0.4f),
                     title = stringResource(R.string.permissions),
+                    description = stringResource(R.string.permissions_description),
                     icon = Icons.Rounded.Security
                 )
 
-                Column(
-                    modifier = Modifier
-                        .weight(0.5f)
-                        .padding(horizontal = 16.dp)
-                        .verticalScroll(scrollState)
-                ) {
-                    Column(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
-                        Text(
-                            text = stringResource(R.string.permissions_description),
-                            style = MaterialTheme.typography.bodyMedium,
-                            fontFamily = FontFamily.Monospace,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                        PermissionItemsGroup(
-                            permissionItems = permissions,
-                            modifier = Modifier.padding(16.dp)
-                        )
-                    }
+                PermissionsScreenContent(
+                    modifier = Modifier.weight(0.6f),
+                    permissions = permissions,
+                    shouldShowRationale = shouldShowRationale,
+                    scrollState = scrollState
+                )
 
-                    AnimatedContent(
-                        targetState = shouldShowRationale,
-                        modifier = Modifier
-                    ) { visible ->
-                        if (visible) {
-                            Column(
-                                modifier = Modifier.fillMaxWidth(),
-                                verticalArrangement = Arrangement.spacedBy(16.dp)
-                            ) {
-                                HorizontalDivider()
-
-                                AdditionalInformation(
-                                    modifier = Modifier,
-                                    text = stringResource(R.string.permissions_additional_information),
-                                    fontFamily = FontFamily.Monospace
-                                )
-                            }
-
-                        }
-                    }
-                }
             }
         } else {
             Column(
@@ -202,46 +169,76 @@ fun OnboardingPermissionsPage(
                 OnboardingScreenHeader(
                     modifier = Modifier.padding(16.dp),
                     title = stringResource(R.string.permissions),
+                    description = stringResource(R.string.permissions_description),
                     icon = Icons.Rounded.Security
                 )
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    Text(
-                        text = stringResource(R.string.permissions_description),
-                        style = MaterialTheme.typography.bodyMedium,
-                        fontFamily = FontFamily.Monospace,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    PermissionItemsGroup(
-                        permissionItems = permissions,
-                        modifier = Modifier.padding(16.dp)
-                    )
-                }
-
-                AnimatedContent(
-                    targetState = shouldShowRationale,
-                    modifier = Modifier
-                ) { visible ->
-                    if (visible) {
-                        Column(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-                            HorizontalDivider()
-
-                            AdditionalInformation(
-                                modifier = Modifier,
-                                text = stringResource(R.string.permissions_additional_information),
-                                fontFamily = FontFamily.Monospace
-                            )
-                        }
-
-                    }
-                }
+                PermissionsScreenContent(
+                    modifier = Modifier,
+                    permissions = permissions,
+                    shouldShowRationale = shouldShowRationale,
+                    scrollState = rememberScrollState()
+                )
             }
         }
+    }
+}
+
+@Composable
+fun PermissionsScreenContent(
+    modifier: Modifier = Modifier,
+    permissions: List<PermissionItem>,
+    shouldShowRationale: Boolean,
+    scrollState: ScrollState
+) {
+    Column(
+        modifier = modifier
+            .padding(horizontal = 16.dp)
+            .verticalScroll(scrollState)
+    ) {
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            PermissionItemsGroup(
+                permissionItems = permissions,
+                modifier = Modifier.padding(16.dp)
+            )
+        }
+
+        AnimatedContent(
+            targetState = shouldShowRationale,
+            modifier = Modifier
+        ) { visible ->
+            if (visible) {
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    HorizontalDivider()
+
+                    AdditionalInformation(
+                        modifier = Modifier,
+                        text = stringResource(R.string.permissions_additional_information),
+                        fontFamily = FontFamily.Monospace
+                    )
+                }
+
+            }
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun OnboardingPermissionsPagePreview() {
+    val neededPermissions = listOf(
+        PermissionType.READ_EXTERNAL_STORAGE,
+        PermissionType.READ_MEDIA_AUDIO
+    )
+    MaterialTheme {
+        OnboardingPermissionsPage(
+            neededPermissions = neededPermissions
+        )
     }
 }
 

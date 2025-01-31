@@ -2,6 +2,7 @@ package com.bobbyesp.ui.components.others
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material3.Icon
@@ -49,6 +50,7 @@ fun AdditionalInformation(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Icon(
+            modifier = Modifier.size(32.dp),
             imageVector = Icons.Rounded.Info,
             tint = MaterialTheme.colorScheme.onSurfaceVariant,
             contentDescription = stringResource(id = R.string.additional_information),
@@ -68,7 +70,8 @@ fun AdditionalInformation(
 private fun Preview() {
     MaterialTheme {
         AdditionalInformation(
-            text = "This is a preview text"
+            text = "This is a preview text preview text preview text preview text preview text preview text " +
+                    "preview text preview text"
         )
     }
 }
