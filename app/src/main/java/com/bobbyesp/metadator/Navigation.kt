@@ -34,6 +34,7 @@ import com.bobbyesp.metadator.core.presentation.common.Route
 import com.bobbyesp.metadator.core.util.cleanNavigate
 import com.bobbyesp.metadator.core.util.navigateBack
 import com.bobbyesp.metadator.core.presentation.settingsRouting
+import com.bobbyesp.metadator.mediaplayer.mediaplayerRouting
 import com.bobbyesp.metadator.mediaplayer.presentation.pages.mediaplayer.MediaplayerPage
 import com.bobbyesp.metadator.mediaplayer.presentation.pages.mediaplayer.MediaplayerViewModel
 import com.bobbyesp.metadator.mediaplayer.presentation.pages.mediaplayer.player.CollapsedPlayerHeight
@@ -130,13 +131,13 @@ fun Navigator(
                     }
                 }
 
-                navigation<Route.MediaplayerNavigator>(
-                    startDestination = Route.MediaplayerNavigator.Mediaplayer,
-                ) {
-                    animatedComposable<Route.MediaplayerNavigator.Mediaplayer> {
-                        MediaplayerPage(mediaplayerViewModel, mediaPlayerSheetState)
+                mediaplayerRouting(
+                    mediaplayerViewModel = mediaplayerViewModel,
+                    mediaPlayerSheetState = mediaPlayerSheetState,
+                    onNavigateBack = {
+                        navController.navigateBack()
                     }
-                }
+                )
 
                 tagEditorRouting { navController.navigateBack() }
                 settingsRouting { navController.navigateBack() }
