@@ -1,8 +1,5 @@
 package com.bobbyesp.metadator.core.presentation
 
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.navigation
 import com.bobbyesp.metadator.core.presentation.common.Route
@@ -27,19 +24,11 @@ fun NavGraphBuilder.settingsRouting(
         }
 
         animatedComposable<Route.SettingsNavigator.Settings.Appearance> {
-            Scaffold(
-                floatingActionButton = {
-                    FloatingActionButton(
-                        onClick = {}
-                    ) { }
-                }
-            ) { padding ->
 
-            }
         }
 
         animatedComposable<Route.SettingsNavigator.Settings.About> {
-            Text("About")
+
         }
     }
 }
