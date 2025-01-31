@@ -72,7 +72,7 @@ fun AppLocalSettingsProvider(
         MemoryCache.Builder(context).maxSizePercent(0.4).build()
     }.diskCache {
         DiskCache.Builder().directory(context.cacheDir.resolve("image_cache"))
-            .maxSizeBytes(7 * 1024 * 1024 * 1024).build()
+            .maxSizeBytes(7 * 1024 * 1024).build()
     }.respectCacheHeaders(false).allowHardware(true).crossfade(true).bitmapFactoryMaxParallelism(12)
         .dispatcher(Dispatchers.IO).build()
 

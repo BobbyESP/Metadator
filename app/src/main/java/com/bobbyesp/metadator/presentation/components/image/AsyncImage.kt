@@ -44,7 +44,7 @@ fun AsyncImage(
     requestListener: (() -> ImageRequest.Listener)? = null,
     onSuccessData: (CoilImageState.Success) -> Unit = { _ -> }
 ) {
-    val imageUrl by remember { mutableStateOf(imageModel) }
+    val imageUrl by remember(imageModel) { mutableStateOf(imageModel) }
 
     CoilImage(
         modifier = modifier.clip(shape),

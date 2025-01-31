@@ -102,7 +102,8 @@ fun MediaStorePage(
                                             artworkUri = song.artworkPath,
                                             onClick = {
                                                 onItemClicked(song)
-                                            })
+                                            }
+                                        )
                                     }
                                 }
                             }

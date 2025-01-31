@@ -18,12 +18,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.bobbyesp.metadator.core.data.local.preferences.PreferencesKey.REDUCE_SHADOWS
 import com.bobbyesp.metadator.core.data.local.preferences.datastore.rememberPreferenceState
@@ -38,7 +36,6 @@ fun CompactSongCard(
     artists: String,
     artworkUri: Uri? = null,
     listIndex: Int? = null,
-    shadow: Dp = 4.dp,
     size: CompactCardSize = CompactCardSize.LARGE,
     onClick: () -> Unit
 ) {
@@ -48,7 +45,6 @@ fun CompactSongCard(
 
     Box(
         modifier = modifier
-            .shadow(if (reduceShadows.value) 0.dp else shadow, formalizedShape)
             .clip(formalizedShape)
             .size(cardSize)
             .clickable(onClick = onClick)
