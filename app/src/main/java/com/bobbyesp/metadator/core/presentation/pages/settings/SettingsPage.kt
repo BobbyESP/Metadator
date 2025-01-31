@@ -24,12 +24,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.lerp
+import androidx.compose.ui.util.lerp
 import com.bobbyesp.metadator.R
 import com.bobbyesp.metadator.core.presentation.common.LocalNavController
 import com.bobbyesp.metadator.core.presentation.common.Route
@@ -42,7 +43,6 @@ import com.bobbyesp.ui.components.topbar.ColumnWithCollapsibleTopBar
 fun SettingsPage(
     onBackPressed: () -> Unit
 ) {
-
     val navController = LocalNavController.current
     var collapseFraction by remember { mutableFloatStateOf(0f) }
 
@@ -75,36 +75,37 @@ fun SettingsPage(
     )
     ColumnWithCollapsibleTopBar(
         topBarContent = {
-        IconButton(
-            onClick = onBackPressed,
-            modifier = Modifier
-                .align(Alignment.BottomStart)
-                .padding(horizontal = 12.dp, vertical = 4.dp)
-        ) {
-            Icon(
-                imageVector = Icons.Rounded.ArrowBackIosNew,
-                contentDescription = stringResource(id = com.bobbyesp.ui.R.string.back)
-            )
-        }
+            IconButton(
+                onClick = onBackPressed,
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+                    .padding(horizontal = 12.dp, vertical = 4.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Rounded.ArrowBackIosNew,
+                    contentDescription = stringResource(id = com.bobbyesp.ui.R.string.back)
+                )
+            }
 
-        Text(
-            text = stringResource(id = R.string.settings),
-            fontSize = lerp(
-                MaterialTheme.typography.titleLarge.fontSize,
-                MaterialTheme.typography.displaySmall.fontSize,
-                collapseFraction
-            ),
-            textAlign = TextAlign.Center,
-            fontWeight = FontWeight.SemiBold,
-            modifier = Modifier
-                .align(Alignment.Center)
-                .padding(horizontal = 16.dp)
-        )
-    },
+            Text(
+                text = stringResource(id = R.string.settings),
+                style = MaterialTheme.typography.displaySmall,
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Medium,
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .padding(horizontal = 16.dp)
+                    .graphicsLayer {
+                        val scale = lerp(0.7f, 1f, collapseFraction)
+                        scaleX = scale
+                        scaleY = scale
+                    }
+            )
+        },
         collapseFraction = {
             collapseFraction = it
         },
-        contentPadding = PaddingValues(horizontal = 16.dp),
+        contentPadding = PaddingValues(horizontal = 32.dp),
         contentHorizontalAlignment = Alignment.CenterHorizontally,
         contentVerticalArrangement = Arrangement.spacedBy(16.dp),
         modifier = Modifier
@@ -112,11 +113,11 @@ fun SettingsPage(
             .safeDrawingPadding()
     ) {
         SettingsGroup(
-            modifier = Modifier.padding(horizontal = 16.dp), items = mainSettingsGroup
+            modifier = Modifier, items = mainSettingsGroup
         )
 
         SettingsGroup(
-            modifier = Modifier.padding(horizontal = 16.dp), items = infoSettingsGroup
+            modifier = Modifier, items = infoSettingsGroup
         )
 
         Text(

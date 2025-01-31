@@ -1,5 +1,6 @@
 package com.bobbyesp.ui.components.topbar
 
+import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.ScrollState
@@ -25,8 +26,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -64,61 +68,62 @@ fun ColumnWithCollapsibleTopBar(
     val density = LocalDensity.current
     val coroutineScope = rememberCoroutineScope()
 
-    val isInLandscapeOrientation = isDeviceInLandscape()
-    val minTopBarHeight = remember { with(density) { minTopBarHeight.toPx() } }
-    val maxTopBarHeight = remember {
-        with(density) {
-            if (isInLandscapeOrientation) {
-                maxTopBarHeightLandscape.toPx()
-            } else maxTopBarHeight.toPx()
-        }
-    }
-    val topBarHeight = rememberAnimatable(
-        initialValue = if (collapsedByDefault || isInLandscapeOrientation) {
-            minTopBarHeight
-        } else maxTopBarHeight
-    )
+    val isInLandscapeOrientation by rememberUpdatedState(newValue = isDeviceInLandscape())
 
-    LaunchedEffect(isInLandscapeOrientation) {
-        if (isInLandscapeOrientation) {
-            topBarHeight.snapTo(minTopBarHeight)
-        }
+    val minHeightPx = with(density) { minTopBarHeight.toPx() }
+    val maxHeightPx = with(density) {
+        if (isInLandscapeOrientation) maxTopBarHeightLandscape.toPx() else maxTopBarHeight.toPx()
     }
 
-    LaunchedEffect(topBarHeight.value) {
-        collapseFraction(
-            (topBarHeight.value - minTopBarHeight) / (maxTopBarHeight - minTopBarHeight)
+    val topBarHeight = remember {
+        Animatable(
+            initialValue = if (collapsedByDefault || isInLandscapeOrientation) {
+                minHeightPx
+            } else maxHeightPx
         )
     }
 
+    LaunchedEffect(isInLandscapeOrientation) {
+        if (isInLandscapeOrientation) {
+            topBarHeight.snapTo(minHeightPx)
+        }
+    }
+
+    // Using derivedStateOf to avoid unnecessary recompositions
+    val collapseFractionState by remember {
+        derivedStateOf {
+            (topBarHeight.value - minHeightPx) / (maxHeightPx - minHeightPx)
+        }
+    }
+
+    LaunchedEffect(collapseFractionState) {
+        collapseFraction(collapseFractionState)
+    }
+
     val topBarScrollConnection = remember {
-        return@remember object : NestedScrollConnection {
-            override fun onPreScroll(
-                available: Offset,
-                source: NestedScrollSource
-            ): Offset {
+        object : NestedScrollConnection {
+            override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
                 val previousHeight = topBarHeight.value
-                val newHeight =
-                    (previousHeight + available.y - contentScrollState.value).coerceIn(
-                        minTopBarHeight,
-                        maxTopBarHeight
-                    )
+                val newHeight = (previousHeight + available.y)
+                    .coerceIn(minHeightPx, maxHeightPx)
+
                 coroutineScope.launch {
                     topBarHeight.snapTo(newHeight)
                 }
+
                 return Offset(0f, newHeight - previousHeight)
             }
 
             override suspend fun onPostFling(consumed: Velocity, available: Velocity): Velocity {
+                val threshold = (maxHeightPx - minHeightPx)
                 coroutineScope.launch {
-                    val threshold = (maxTopBarHeight - minTopBarHeight)
                     topBarHeight.animateTo(
-                        targetValue = if (topBarHeight.value < threshold) minTopBarHeight else maxTopBarHeight,
+                        targetValue = if (topBarHeight.value < threshold) minHeightPx else maxHeightPx,
                         animationSpec = spring(stiffness = Spring.StiffnessLow)
                     )
                 }
 
-                return super.onPostFling(consumed, available)
+                return Velocity.Zero
             }
         }
     }
@@ -142,7 +147,6 @@ fun ColumnWithCollapsibleTopBar(
                 verticalArrangement = contentVerticalArrangement
             ) {
                 content()
-
                 Spacer(modifier = Modifier.height(200.dp))
             }
         }
