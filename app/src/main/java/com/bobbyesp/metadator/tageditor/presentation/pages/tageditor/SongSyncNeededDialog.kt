@@ -1,4 +1,4 @@
-package com.bobbyesp.metadator.editor.presentation.pages.tageditor
+package com.bobbyesp.metadator.tageditor.presentation.pages.tageditor
 
 import android.content.res.Configuration
 import androidx.compose.material.icons.Icons

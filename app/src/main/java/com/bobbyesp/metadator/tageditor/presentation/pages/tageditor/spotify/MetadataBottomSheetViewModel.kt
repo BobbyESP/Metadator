@@ -1,4 +1,4 @@
-package com.bobbyesp.metadator.editor.presentation.pages.tageditor.spotify
+package com.bobbyesp.metadator.tageditor.presentation.pages.tageditor.spotify
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

@@ -11,7 +11,7 @@ import com.bobbyesp.metadator.core.di.appSystemManagers
 import com.bobbyesp.metadator.core.di.coreFunctionalitiesModule
 import com.bobbyesp.metadator.mediastore.di.mediaStoreViewModelsModule
 import com.bobbyesp.metadator.mediaplayer.di.mediaplayerViewModels
-import com.bobbyesp.metadator.editor.di.tagEditorViewModelsModule
+import com.bobbyesp.metadator.tageditor.di.tagEditorViewModelsModule
 import com.bobbyesp.metadator.features.spotify.di.spotifyMainModule
 import com.bobbyesp.metadator.features.spotify.di.spotifyServicesModule
 import mediaplayerInternalsModule
@@ -31,7 +31,7 @@ class App : Application() {
             modules(spotifyMainModule, spotifyServicesModule)
         }
         packageInfo = packageManager.run {
-            if (Build.VERSION.SDK_INT >= 33) getPackageInfo(
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) getPackageInfo(
                 packageName, PackageManager.PackageInfoFlags.of(0)
             ) else
                 getPackageInfo(packageName, 0)

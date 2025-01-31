@@ -1,7 +1,7 @@
-package com.bobbyesp.metadator.editor.di
+package com.bobbyesp.metadator.tageditor.di
 
-import com.bobbyesp.metadator.editor.presentation.pages.tageditor.MetadataEditorViewModel
-import com.bobbyesp.metadator.editor.presentation.pages.tageditor.spotify.MetadataBottomSheetViewModel
+import com.bobbyesp.metadator.tageditor.presentation.pages.tageditor.MetadataEditorViewModel
+import com.bobbyesp.metadator.tageditor.presentation.pages.tageditor.spotify.MetadataBottomSheetViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module

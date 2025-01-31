@@ -1,4 +1,4 @@
-package com.bobbyesp.metadator.editor.presentation.pages.tageditor
+package com.bobbyesp.metadator.tageditor.presentation.pages.tageditor
 
 import android.app.Activity
 import android.content.ActivityNotFoundException
@@ -67,8 +67,8 @@ import com.bobbyesp.metadator.core.presentation.common.LocalOrientation
 import com.bobbyesp.metadator.core.presentation.common.LocalSonner
 import com.bobbyesp.metadator.core.domain.model.ParcelableSong
 import com.bobbyesp.metadator.core.presentation.components.image.AsyncImage
-import com.bobbyesp.metadator.editor.presentation.pages.tageditor.spotify.MetadataBottomSheetViewModel
-import com.bobbyesp.metadator.editor.presentation.pages.tageditor.spotify.SpMetadataBottomSheetContent
+import com.bobbyesp.metadator.tageditor.presentation.pages.tageditor.spotify.MetadataBottomSheetViewModel
+import com.bobbyesp.metadator.tageditor.presentation.pages.tageditor.spotify.SpMetadataBottomSheetContent
 import com.bobbyesp.ui.common.pages.ErrorPage
 import com.bobbyesp.ui.common.pages.LoadingPage
 import com.bobbyesp.ui.components.button.CloseButton

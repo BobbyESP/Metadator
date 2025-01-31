@@ -12,7 +12,7 @@ import com.bobbyesp.metadator.onboarding.presentation.pages.OnboardingWelcomePag
 import com.bobbyesp.ui.motion.animatedComposable
 import com.bobbyesp.utilities.ui.permission.PermissionType.Companion.toPermissionType
 
-fun NavGraphBuilder.onboardingNavigation(
+fun NavGraphBuilder.onboardingRouting(
     onNavigate: (Route) -> Unit,
     onCompletedOnboarding: () -> Unit
 ) {

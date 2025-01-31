@@ -1,4 +1,4 @@
-package com.bobbyesp.metadator.editor.presentation.pages.tageditor
+package com.bobbyesp.metadator.tageditor.presentation.pages.tageditor
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.AlertDialog

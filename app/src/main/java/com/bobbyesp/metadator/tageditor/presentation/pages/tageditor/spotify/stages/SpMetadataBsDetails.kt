@@ -1,4 +1,4 @@
-package com.bobbyesp.metadator.editor.presentation.pages.tageditor.spotify.stages
+package com.bobbyesp.metadator.tageditor.presentation.pages.tageditor.spotify.stages
 
 import android.content.Context
 import androidx.activity.compose.BackHandler
@@ -42,7 +42,7 @@ import com.bobbyesp.metadator.core.ext.TagLib.toImageVector
 import com.bobbyesp.metadator.core.ext.TagLib.toLocalizedName
 import com.bobbyesp.metadator.core.ext.format
 import com.bobbyesp.metadator.core.ext.formatArtists
-import com.bobbyesp.metadator.editor.presentation.pages.tageditor.spotify.MetadataBottomSheetViewModel
+import com.bobbyesp.metadator.tageditor.presentation.pages.tageditor.spotify.MetadataBottomSheetViewModel
 import com.bobbyesp.metadator.core.presentation.components.image.AsyncImage
 import com.bobbyesp.metadator.core.presentation.components.text.ConditionedMarqueeText
 import com.bobbyesp.ui.components.button.BackButton

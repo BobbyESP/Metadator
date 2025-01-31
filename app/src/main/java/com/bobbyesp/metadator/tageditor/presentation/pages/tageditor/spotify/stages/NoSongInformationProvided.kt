@@ -1,4 +1,4 @@
-package com.bobbyesp.metadator.editor.presentation.pages.tageditor.spotify.stages
+package com.bobbyesp.metadator.tageditor.presentation.pages.tageditor.spotify.stages
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

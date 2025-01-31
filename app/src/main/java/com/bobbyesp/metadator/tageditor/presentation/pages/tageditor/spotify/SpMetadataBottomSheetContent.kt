@@ -1,4 +1,4 @@
-package com.bobbyesp.metadator.editor.presentation.pages.tageditor.spotify
+package com.bobbyesp.metadator.tageditor.presentation.pages.tageditor.spotify
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
@@ -12,10 +12,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
-import com.bobbyesp.metadator.editor.presentation.pages.tageditor.spotify.MetadataBottomSheetViewModel.Companion.BottomSheetStage
-import com.bobbyesp.metadator.editor.presentation.pages.tageditor.spotify.stages.NoSongInformationProvided
-import com.bobbyesp.metadator.editor.presentation.pages.tageditor.spotify.stages.SpMetadataBsDetails
-import com.bobbyesp.metadator.editor.presentation.pages.tageditor.spotify.stages.SpMetadataBsSearch
+import com.bobbyesp.metadator.tageditor.presentation.pages.tageditor.spotify.MetadataBottomSheetViewModel.Companion.BottomSheetStage
+import com.bobbyesp.metadator.tageditor.presentation.pages.tageditor.spotify.stages.NoSongInformationProvided
+import com.bobbyesp.metadator.tageditor.presentation.pages.tageditor.spotify.stages.SpMetadataBsDetails
+import com.bobbyesp.metadator.tageditor.presentation.pages.tageditor.spotify.stages.SpMetadataBsSearch
 import com.bobbyesp.ui.motion.MotionConstants.DURATION_EXIT_SHORT
 import com.bobbyesp.ui.motion.tweenEnter
 import com.bobbyesp.ui.motion.tweenExit
