@@ -200,8 +200,8 @@ fun PermissionsScreenContent(
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             PermissionItemsGroup(
-                permissionItems = permissions,
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(vertical = 16.dp),
+                permissionItems = permissions
             )
         }
 
