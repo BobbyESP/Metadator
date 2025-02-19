@@ -16,6 +16,7 @@ import com.bobbyesp.mediaplayer.domain.repository.MusicScanner
 import com.bobbyesp.utilities.mediastore.advanced.observe
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
@@ -36,14 +37,15 @@ class MusicScannerImpl(
             MediaStore.Audio.Media.DURATION,
             MediaStore.Audio.Media.TRACK,
             MediaStore.Audio.Media.YEAR,
-            MediaStore.Audio.Media.DATA, // File path
+            MediaStore.Audio.Media.DATA,
             MediaStore.Audio.Media.DATE_ADDED,
             MediaStore.Audio.Media.DATE_MODIFIED
-        ).let {
+        ).apply {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                it + MediaStore.Audio.Media.GENRE
-            } else it
+                plus(MediaStore.Audio.Media.GENRE)
+            }
         }
+
 
         val selection = buildSelection(searchQuery, filters)
         val selectionArgs = buildSelectionArgs(searchQuery, filters)
@@ -69,26 +71,22 @@ class MusicScannerImpl(
     ): Flow<List<MusicTrack>> {
         return context.contentResolver.observe(musicUri).map {
             getMusicLibrary(searchQuery, filters)
-        }
+        }.flowOn(Dispatchers.IO)
     }
 
-    private fun buildSelection(
-        searchTerm: String?,
-        filters: List<MediaStoreSearchFilter>?
-    ): String {
+    private fun buildSelection(searchTerm: String?, filters: List<MediaStoreSearchFilter>?): String {
         val selection = StringBuilder(MUSIC_SELECTION)
 
-        if (!searchTerm.isNullOrEmpty()) {
+        searchTerm?.let {
             selection.append(" AND (")
             if (!filters.isNullOrEmpty()) {
-                filters.forEachIndexed { index, filter ->
-                    if (index > 0) selection.append(" OR ")
-                    selection.append("${filter.column} LIKE ?")
-                }
+                filters.joinToString(" OR ") { "${it.column} LIKE ?" }.also { selection.append(it) }
             } else {
-                selection.append("${MediaStore.Audio.Media.TITLE} LIKE ? OR ")
-                    .append("${MediaStore.Audio.Media.ARTIST} LIKE ? OR ")
-                    .append("${MediaStore.Audio.Media.ALBUM} LIKE ?")
+                selection.append(
+                    "${MediaStore.Audio.Media.TITLE} LIKE ? OR " +
+                            "${MediaStore.Audio.Media.ARTIST} LIKE ? OR " +
+                            "${MediaStore.Audio.Media.ALBUM} LIKE ?"
+                )
             }
             selection.append(")")
         }
@@ -96,15 +94,9 @@ class MusicScannerImpl(
         return selection.toString()
     }
 
-    private fun buildSelectionArgs(
-        searchTerm: String?,
-        filters: List<MediaStoreSearchFilter>?
-    ): Array<String>? {
-        if (searchTerm.isNullOrEmpty()) return null
-
-        return when {
-            !filters.isNullOrEmpty() -> Array(filters.size) { "%$searchTerm%" }
-            else -> Array(3) { "%$searchTerm%" } // For title, artist, and album
+    private fun buildSelectionArgs(searchTerm: String?, filters: List<MediaStoreSearchFilter>?): Array<String>? {
+        return searchTerm?.let {
+            Array(if (!filters.isNullOrEmpty()) filters.size else 3) { "%$searchTerm%" }
         }
     }
 
@@ -192,7 +184,7 @@ class MusicScannerImpl(
         offset: Int = 0,
         limit: Int = Int.MAX_VALUE
     ): Cursor? {
-        return withContext(Dispatchers.Default) {
+        return withContext(Dispatchers.IO) {
             // use only above android 10
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 // compose the args
