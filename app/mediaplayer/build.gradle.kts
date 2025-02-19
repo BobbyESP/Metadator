@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.android.kotlin)
     alias(libs.plugins.kotlin.ksp)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.compose.compiler)
 }
 
@@ -51,11 +53,16 @@ dependencies {
     implementation(libs.core.appcompat)
     implementation(libs.androidx.legacy.support.v4) // Needed MediaSessionCompat.Token
 
+    implementation(project(":app:utilities")) // Todo create a top level utilities
+
     //DI (Dependency Injection - Koin)
     implementation(libs.bundles.koin)
 
     //Media3
     implementation(libs.bundles.media3)
+
+    //KotlinX Serialization
+    implementation(libs.kotlinx.serialization.json)
 
     //Coil
     implementation(libs.coil)

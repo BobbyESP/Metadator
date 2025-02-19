@@ -2,7 +2,6 @@ package com.bobbyesp.metadator
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
@@ -19,16 +18,12 @@ import com.bobbyesp.metadator.core.presentation.settingsRouting
 import com.bobbyesp.metadator.core.util.cleanNavigate
 import com.bobbyesp.metadator.core.util.navigateBack
 import com.bobbyesp.metadator.mediaplayer.mediaplayerRouting
-import com.bobbyesp.metadator.mediaplayer.presentation.pages.mediaplayer.MediaplayerViewModel
 import com.bobbyesp.metadator.mediastore.presentation.MediaStorePageViewModel
 import com.bobbyesp.metadator.mediastore.presentation.pages.home.HomePage
 import com.bobbyesp.metadator.onboarding.onboardingRouting
 import com.bobbyesp.metadator.tageditor.tagEditorRouting
 import com.bobbyesp.ui.motion.animatedComposable
-import com.bobbyesp.ui.util.recomposeHighlighter
 import org.koin.androidx.compose.koinViewModel
-
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 
 @Composable
 fun Navigator(
@@ -37,7 +32,6 @@ fun Navigator(
     preferences: State<UserPreferences>,
 ) {
     val mediaStoreViewModel = koinViewModel<MediaStorePageViewModel>()
-    val mediaplayerViewModel = koinViewModel<MediaplayerViewModel>()
 
     val (_, setOnboardingCompleted) = rememberPreferenceState(COMPLETED_ONBOARDING)
 
@@ -71,7 +65,7 @@ fun Navigator(
         }
 
         mediaplayerRouting(
-            mediaplayerViewModel = mediaplayerViewModel,
+            //mediaplayerViewModel = mediaplayerViewModel,
             onNavigateBack = {
                 navController.navigateBack()
             }

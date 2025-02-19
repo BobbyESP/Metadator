@@ -11,24 +11,14 @@ import com.bobbyesp.mediaplayer.R
 
 @Composable
 fun ShuffleStateIcon(
-    modifier: Modifier = Modifier,
-    isShuffleEnabled: Boolean
+    modifier: Modifier = Modifier, isShuffleEnabled: Boolean
 ) {
-    when (isShuffleEnabled) {
-        true -> {
-            Icon(
-                imageVector = Icons.Rounded.ShuffleOn,
-                contentDescription = stringResource(id = R.string.action_shuffle_on),
-                modifier = modifier
-            )
-        }
+    val icon = if (isShuffleEnabled) Icons.Rounded.ShuffleOn else Icons.Rounded.Shuffle
+    val description = stringResource(
+        id = if (isShuffleEnabled) R.string.action_shuffle_on else R.string.action_shuffle_off
+    )
 
-        false -> {
-            Icon(
-                imageVector = Icons.Rounded.Shuffle,
-                contentDescription = stringResource(id = R.string.action_shuffle_off),
-                modifier = modifier
-            )
-        }
-    }
+    Icon(
+        imageVector = icon, contentDescription = description, modifier = modifier
+    )
 }

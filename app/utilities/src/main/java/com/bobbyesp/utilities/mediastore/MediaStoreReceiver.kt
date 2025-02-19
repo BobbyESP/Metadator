@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.ParcelFileDescriptor
 import android.provider.MediaStore
 import android.util.Log
+import androidx.core.net.toUri
 import com.bobbyesp.utilities.R
 import com.bobbyesp.utilities.mediastore.advanced.advancedQuery
 import com.bobbyesp.utilities.mediastore.advanced.observe
@@ -72,7 +73,7 @@ object MediaStoreReceiver {
                 artist = cursor.getString(artistColumn),
                 album = cursor.getString(albumColumn),
                 artworkPath = ContentUris.withAppendedId(
-                    Uri.parse("content://media/external/audio/albumart"),
+                    "content://media/external/audio/albumart".toUri(),
                     cursor.getLong(albumIdColumn)
                 ),
                 duration = cursor.getDouble(durationColumn),

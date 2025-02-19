@@ -10,7 +10,6 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import coil.ImageLoader
-import com.bobbyesp.mediaplayer.service.ConnectionHandler
 import com.bobbyesp.metadator.core.data.local.DarkThemePreference
 import com.bobbyesp.metadator.core.data.local.preferences.AppPreferences
 import com.bobbyesp.metadator.core.data.local.preferences.UserPreferences.Companion.emptyUserPreferences
@@ -39,13 +38,10 @@ val LocalWindowWidthState =
     staticCompositionLocalOf { WindowWidthSizeClass.Compact } //This value probably will never change, that's why it is static
 
 val LocalSonner = compositionLocalOf<ToasterState> { error("No sonner toaster state provided") }
-val LocalMediaplayerConnection =
-    compositionLocalOf<ConnectionHandler> { error("No Media Player Service Connection handler has been provided") }
 
 @Composable
 fun AppLocalSettingsProvider(
     windowWidthSize: WindowWidthSizeClass,
-    playerConnectionHandler: ConnectionHandler,
     sonner: ToasterState = rememberToasterState(),
     appPreferences: AppPreferences,
     imageLoader: ImageLoader,
@@ -78,7 +74,6 @@ fun AppLocalSettingsProvider(
         LocalOrientation provides config.orientation,
         LocalSonner provides sonner,
         LocalCoilImageLoader provides imageLoader,
-        LocalMediaplayerConnection provides playerConnectionHandler,
     ) {
         content() //The content of the app
     }
