@@ -1,4 +1,4 @@
-package com.bobbyesp.utilities.mediastore.advanced
+package com.bobbyesp.coreutilities
 
 import android.content.ContentResolver
 import android.database.ContentObserver
@@ -15,6 +15,11 @@ import kotlinx.coroutines.flow.callbackFlow
  */
 fun ContentResolver.observe(uri: Uri) = callbackFlow {
     val observer = object : ContentObserver(null) {
+        /**
+         * Called when a change occurs to the content URI.
+         *
+         * @param selfChange A boolean indicating if the change was made by the observer itself.
+         */
         /**
          * Called when a change occurs to the content URI.
          *

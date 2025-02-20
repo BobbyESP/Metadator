@@ -44,6 +44,7 @@ android {
 
 dependencies {
     implementation(libs.core.ktx)
+    implementation(project(":core-utilities"))
     implementation(libs.kotlinx.datetime)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.bundles.compose)

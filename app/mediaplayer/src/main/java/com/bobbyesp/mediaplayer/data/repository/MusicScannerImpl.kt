@@ -10,10 +10,10 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import androidx.core.net.toUri
+import com.bobbyesp.coreutilities.observe
 import com.bobbyesp.mediaplayer.domain.enums.MediaStoreSearchFilter
 import com.bobbyesp.mediaplayer.domain.model.MusicTrack
 import com.bobbyesp.mediaplayer.domain.repository.MusicScanner
-import com.bobbyesp.utilities.mediastore.advanced.observe
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
@@ -45,7 +45,6 @@ class MusicScannerImpl(
                 plus(MediaStore.Audio.Media.GENRE)
             }
         }
-
 
         val selection = buildSelection(searchQuery, filters)
         val selectionArgs = buildSelectionArgs(searchQuery, filters)

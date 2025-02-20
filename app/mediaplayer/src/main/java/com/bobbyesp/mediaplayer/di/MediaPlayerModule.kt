@@ -4,7 +4,10 @@ import androidx.media3.common.C
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
+import androidx.media3.session.MediaLibraryService
 import androidx.media3.session.MediaLibraryService.MediaLibrarySession
+import com.bobbyesp.mediaplayer.data.repository.MusicScannerImpl
+import com.bobbyesp.mediaplayer.domain.repository.MusicScanner
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.Module
 import org.koin.dsl.module
@@ -16,7 +19,6 @@ val mediaplayerInternalsModule: Module = module {
         ExoPlayer.Builder(androidContext())
             .setSeekBackIncrementMs(5000)
             .setSeekForwardIncrementMs(5000)
-            .setAudioAttributes(get(), true)
             .setHandleAudioBecomingNoisy(true)
             .setTrackSelector(DefaultTrackSelector(androidContext()))
             .setAudioAttributes(
@@ -36,11 +38,17 @@ val mediaplayerInternalsModule: Module = module {
     single { (callback: MediaLibrarySession.Callback) ->
         MediaLibrarySession
             .Builder(
-                get(),
+                get<MediaLibraryService>(),
                 get<ExoPlayer>(),
                 callback
             )
             .build()
+    }
+
+    single<MusicScanner> {
+        MusicScannerImpl(
+            context = androidContext()
+        )
     }
 
 }

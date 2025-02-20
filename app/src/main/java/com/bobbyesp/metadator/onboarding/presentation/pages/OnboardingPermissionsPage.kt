@@ -42,7 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEach
 import androidx.compose.ui.util.fastForEachIndexed
 import com.bobbyesp.metadator.R
-import com.bobbyesp.metadator.mediaplayer.presentation.pages.mediaplayer.player.AnimatedTextContentTransformation
+import com.bobbyesp.ui.util.AnimatedTextContentTransformation
 import com.bobbyesp.metadator.onboarding.domain.PermissionItem
 import com.bobbyesp.metadator.onboarding.presentation.components.OnboardingScreenHeader
 import com.bobbyesp.ui.components.others.AdditionalInformation
