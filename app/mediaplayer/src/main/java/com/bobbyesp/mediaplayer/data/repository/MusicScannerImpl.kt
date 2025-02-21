@@ -9,6 +9,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import androidx.core.net.toUri
 import com.bobbyesp.coreutilities.observe
 import com.bobbyesp.mediaplayer.domain.enums.MediaStoreSearchFilter
@@ -20,6 +21,8 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
+private const val TAG = "MusicScannerImpl"
+
 class MusicScannerImpl(
     private val context: Context
 ) : MusicScanner {
@@ -27,31 +30,15 @@ class MusicScannerImpl(
     override suspend fun getMusicLibrary(
         searchQuery: String?,
         filters: List<MediaStoreSearchFilter>?,
-    ): List<MusicTrack> {
+    ): List<MusicTrack> = withContext(Dispatchers.IO) {
         val musicList = mutableListOf<MusicTrack>()
-        val projection = arrayOf(
-            MediaStore.Audio.Media._ID,
-            MediaStore.Audio.Media.TITLE,
-            MediaStore.Audio.Media.ARTIST,
-            MediaStore.Audio.Media.ALBUM,
-            MediaStore.Audio.Media.DURATION,
-            MediaStore.Audio.Media.TRACK,
-            MediaStore.Audio.Media.YEAR,
-            MediaStore.Audio.Media.DATA,
-            MediaStore.Audio.Media.DATE_ADDED,
-            MediaStore.Audio.Media.DATE_MODIFIED
-        ).apply {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                plus(MediaStore.Audio.Media.GENRE)
-            }
-        }
-
+        val projection = projectionBasedOnVersion()
         val selection = buildSelection(searchQuery, filters)
         val selectionArgs = buildSelectionArgs(searchQuery, filters)
         val sortOrder = MediaStore.Audio.Media.TITLE
 
         context.contentResolver.advancedQuery(
-            uri = this.musicUri,
+            uri = musicUri,
             projection = projection,
             selection = selection,
             args = selectionArgs,
@@ -60,80 +47,101 @@ class MusicScannerImpl(
         )?.use { cursor ->
             musicList.addAll(parseCursor(cursor))
         }
-
-        return musicList
+        musicList.toList() // Convert to immutable list
     }
 
     override fun observeMusicLibrary(
-        searchQuery: String?,
-        filters: List<MediaStoreSearchFilter>?
-    ): Flow<List<MusicTrack>> {
-        return context.contentResolver.observe(musicUri).map {
-            getMusicLibrary(searchQuery, filters)
-        }.flowOn(Dispatchers.IO)
-    }
+        searchQuery: String?, filters: List<MediaStoreSearchFilter>?
+    ): Flow<List<MusicTrack>> =
+        context.contentResolver.observe(musicUri).map { getMusicLibrary(searchQuery, filters) }
+            .flowOn(Dispatchers.IO)
 
-    private fun buildSelection(searchTerm: String?, filters: List<MediaStoreSearchFilter>?): String {
+    private fun projectionBasedOnVersion(): Array<String> =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            arrayOf(
+                MediaStore.Audio.Media._ID,
+                MediaStore.Audio.Media.TITLE,
+                MediaStore.Audio.Media.ARTIST,
+                MediaStore.Audio.Media.ALBUM,
+                MediaStore.Audio.Media.ALBUM_ID,
+                MediaStore.Audio.Media.DURATION,
+                MediaStore.Audio.Media.TRACK,
+                MediaStore.Audio.Media.YEAR,
+                MediaStore.Audio.Media.DATA,
+                MediaStore.Audio.Media.SIZE,
+                MediaStore.Audio.Media.DISC_NUMBER,
+                MediaStore.Audio.Media.DATE_ADDED,
+                MediaStore.Audio.Media.DATE_MODIFIED,
+                MediaStore.Audio.Media.GENRE
+            )
+        } else {
+            arrayOf(
+                MediaStore.Audio.Media._ID,
+                MediaStore.Audio.Media.TITLE,
+                MediaStore.Audio.Media.ARTIST,
+                MediaStore.Audio.Media.ALBUM,
+                MediaStore.Audio.Media.ALBUM_ID,
+                MediaStore.Audio.Media.DURATION,
+                MediaStore.Audio.Media.TRACK,
+                MediaStore.Audio.Media.YEAR,
+                MediaStore.Audio.Media.DATA,
+                MediaStore.Audio.Media.SIZE,
+                MediaStore.Audio.Media.DISC_NUMBER,
+                MediaStore.Audio.Media.DATE_ADDED,
+                MediaStore.Audio.Media.DATE_MODIFIED
+            )
+        }
+
+    private fun buildSelection(
+        searchTerm: String?, filters: List<MediaStoreSearchFilter>?
+    ): String {
         val selection = StringBuilder(MUSIC_SELECTION)
 
-        searchTerm?.let {
+        searchTerm?.let { term ->
             selection.append(" AND (")
             if (!filters.isNullOrEmpty()) {
-                filters.joinToString(" OR ") { "${it.column} LIKE ?" }.also { selection.append(it) }
+                val filterSelection = filters.joinToString(" OR ") { "${it.column} LIKE '%$term%'" }
+                selection.append(filterSelection)
             } else {
                 selection.append(
-                    "${MediaStore.Audio.Media.TITLE} LIKE ? OR " +
-                            "${MediaStore.Audio.Media.ARTIST} LIKE ? OR " +
-                            "${MediaStore.Audio.Media.ALBUM} LIKE ?"
+                    "${MediaStore.Audio.Media.TITLE} LIKE '%$term%' OR " + "${MediaStore.Audio.Media.ARTIST} LIKE '%$term%' OR " + "${MediaStore.Audio.Media.ALBUM} LIKE '%$term%'"
                 )
             }
             selection.append(")")
         }
-
         return selection.toString()
     }
 
-    private fun buildSelectionArgs(searchTerm: String?, filters: List<MediaStoreSearchFilter>?): Array<String>? {
-        return searchTerm?.let {
-            Array(if (!filters.isNullOrEmpty()) filters.size else 3) { "%$searchTerm%" }
-        }
+    private fun buildSelectionArgs(
+        searchTerm: String?, filters: List<MediaStoreSearchFilter>?
+    ): Array<String>? = searchTerm?.let { term ->
+        Array(if (filters.isNullOrEmpty()) 3 else filters.size) { "%$term%" }
     }
 
     private fun parseCursor(cursor: Cursor): List<MusicTrack> {
         val musicList = mutableListOf<MusicTrack>()
-        val idColumn = cursor.getColumnIndex(MediaStore.Audio.Media._ID)
-        val titleColumn = cursor.getColumnIndex(MediaStore.Audio.Media.TITLE)
-        val artistColumn = cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST)
-        val albumColumn = cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM)
-        val durationColumn = cursor.getColumnIndex(MediaStore.Audio.Media.DURATION)
-        val trackNumberColumn = cursor.getColumnIndex(MediaStore.Audio.Media.TRACK)
-        val discNumberColumn = cursor.getColumnIndex(MediaStore.Audio.Media.DISC_NUMBER)
-        val yearColumn = cursor.getColumnIndex(MediaStore.Audio.Media.YEAR)
-        val pathColumn = cursor.getColumnIndex(MediaStore.Audio.Media.DATA)
-        val addedTimestampColumn = cursor.getColumnIndex(MediaStore.Audio.Media.DATE_ADDED)
-        val modifiedTimestampColumn = cursor.getColumnIndex(MediaStore.Audio.Media.DATE_MODIFIED)
-        val genreColumn = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            cursor.getColumnIndex(MediaStore.Audio.Media.GENRE)
-        } else null
-        val sizeColumn = cursor.getColumnIndex(MediaStore.Audio.Media.SIZE)
+
+        val columnIndices = MusicColumnIndices(cursor)
 
         while (cursor.moveToNext()) {
-            val id = cursor.getLong(idColumn)
-            val title = cursor.getString(titleColumn)
-            val artist = cursor.getString(artistColumn)
-            val album = cursor.getString(albumColumn)
-            val duration = cursor.getLong(durationColumn)
-            val trackNumber = cursor.getInt(trackNumberColumn)
-            val discNumber = cursor.getInt(discNumberColumn)
-            val year = cursor.getInt(yearColumn)
-            val path = cursor.getString(pathColumn)
-            val addedTimestamp = cursor.getLong(addedTimestampColumn)
-            val modifiedTimestamp = cursor.getLong(modifiedTimestampColumn)
-            val genre = genreColumn?.let { cursor.getString(it) }
-            val size = sizeColumn.let { cursor.getLong(it) }
+            val id = getLong(cursor, columnIndices.id)
+                ?: throw IllegalStateException("ID cannot be null")
+            val albumId = getLong(cursor, columnIndices.albumId)
+            val path = getString(cursor, columnIndices.path)
+                ?: throw IllegalStateException("Path cannot be null")
+            val title = getString(cursor, columnIndices.title) ?: path.substringAfterLast("/")
+            val artist = getString(cursor, columnIndices.artist)
+            val album = getString(cursor, columnIndices.album)
+            val duration = getLong(cursor, columnIndices.duration)
+            val trackNumber = getInt(cursor, columnIndices.trackNumber)
+            val discNumber = getInt(cursor, columnIndices.discNumber)
+            val year = getInt(cursor, columnIndices.year)
+            val addedTimestamp = getLong(cursor, columnIndices.addedTimestamp)
+            val modifiedTimestamp = getLong(cursor, columnIndices.modifiedTimestamp)
+            val genre = columnIndices.genre?.let { getString(cursor, it) }
+            val size = getLong(cursor, columnIndices.size)
             val artworkUrl = ContentUris.withAppendedId(
-                "content://media/external/audio/albumart".toUri(),
-                cursor.getLong(idColumn)
+                "content://media/external/audio/albumart".toUri(), albumId ?: 0
             )
 
             musicList.add(
@@ -155,8 +163,54 @@ class MusicScannerImpl(
                 )
             )
         }
+        return musicList.toList() // Convert to immutable list
+    }
 
-        return musicList
+    private data class MusicColumnIndices(val cursor: Cursor) {
+        val id = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media._ID)
+        val title = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE)
+        val artist = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST)
+        val album = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM)
+        val albumId = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID)
+        val duration = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION)
+        val trackNumber = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.TRACK)
+        val discNumber = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DISC_NUMBER)
+        val year = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.YEAR)
+        val path = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA)
+        val addedTimestamp = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATE_ADDED)
+        val modifiedTimestamp = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATE_MODIFIED)
+        val genre = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            cursor.getColumnIndex(MediaStore.Audio.Media.GENRE) // Use getColumnIndex to avoid exception if not present
+        } else null
+        val size = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.SIZE)
+    }
+
+
+    private fun getString(cursor: Cursor, columnIndex: Int): String? {
+        return try {
+            cursor.getString(columnIndex)
+        } catch (e: Exception) {
+            Log.e(TAG, "Error getting String from cursor at index $columnIndex", e)
+            null
+        }
+    }
+
+    private fun getLong(cursor: Cursor, columnIndex: Int): Long? {
+        return try {
+            cursor.getLong(columnIndex)
+        } catch (e: Exception) {
+            Log.e(TAG, "Error getting Long from cursor at index $columnIndex", e)
+            null
+        }
+    }
+
+    private fun getInt(cursor: Cursor, columnIndex: Int): Int? {
+        return try {
+            cursor.getInt(columnIndex)
+        } catch (e: Exception) {
+            Log.e(TAG, "Error getting Int from cursor at index $columnIndex", e)
+            null
+        }
     }
 
     /**
@@ -182,43 +236,24 @@ class MusicScannerImpl(
         ascending: Boolean = true,
         offset: Int = 0,
         limit: Int = Int.MAX_VALUE
-    ): Cursor? {
-        return withContext(Dispatchers.IO) {
-            // use only above android 10
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                // compose the args
-                val args2 = Bundle().apply {
-                    // Limit & Offset
-                    putInt(ContentResolver.QUERY_ARG_LIMIT, limit)
-                    putInt(ContentResolver.QUERY_ARG_OFFSET, offset)
-
-                    // order
-                    putStringArray(ContentResolver.QUERY_ARG_SORT_COLUMNS, arrayOf(order))
-                    putInt(
-                        ContentResolver.QUERY_ARG_SORT_DIRECTION,
-                        if (ascending) ContentResolver.QUERY_SORT_DIRECTION_ASCENDING else ContentResolver.QUERY_SORT_DIRECTION_DESCENDING
-                    )
-                    // Selection and groupBy
-                    if (args != null) putStringArray(
-                        ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS,
-                        args
-                    )
-                    // add selection.
-                    // TODO: Consider adding group by.
-                    // currently I experienced errors in android 10 for groupBy and arg groupBy is supported
-                    // above android 10.
-                    putString(ContentResolver.QUERY_ARG_SQL_SELECTION, selection)
-                }
-                query(uri, projection, args2, null)
+    ): Cursor? = withContext(Dispatchers.IO) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val queryArgs = Bundle().apply {
+                putInt(ContentResolver.QUERY_ARG_LIMIT, limit)
+                putInt(ContentResolver.QUERY_ARG_OFFSET, offset)
+                putStringArray(ContentResolver.QUERY_ARG_SORT_COLUMNS, arrayOf(order))
+                putInt(
+                    ContentResolver.QUERY_ARG_SORT_DIRECTION,
+                    if (ascending) ContentResolver.QUERY_SORT_DIRECTION_ASCENDING else ContentResolver.QUERY_SORT_DIRECTION_DESCENDING
+                )
+                args?.let { putStringArray(ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS, it) }
+                putString(ContentResolver.QUERY_ARG_SQL_SELECTION, selection)
             }
-            // below android O
-            else {
-                //language=SQL
-                val order2 =
-                    order + (if (ascending) " ASC" else " DESC") + " LIMIT $limit OFFSET $offset"
-                // compose the selection.
-                query(uri, projection, selection, args, order2)
-            }
+            query(uri, projection, queryArgs, null)
+        } else {
+            val orderClause =
+                "$order ${if (ascending) "ASC" else "DESC"} LIMIT $limit OFFSET $offset"
+            query(uri, projection, selection, args, orderClause)
         }
     }
 

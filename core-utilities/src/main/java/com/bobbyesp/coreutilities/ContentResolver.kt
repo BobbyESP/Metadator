@@ -20,11 +20,6 @@ fun ContentResolver.observe(uri: Uri) = callbackFlow {
          *
          * @param selfChange A boolean indicating if the change was made by the observer itself.
          */
-        /**
-         * Called when a change occurs to the content URI.
-         *
-         * @param selfChange A boolean indicating if the change was made by the observer itself.
-         */
         override fun onChange(selfChange: Boolean) {
             trySend(selfChange)
         }

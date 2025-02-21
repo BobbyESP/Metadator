@@ -15,7 +15,7 @@ import androidx.lifecycle.viewModelScope
 import com.bobbyesp.utilities.ext.toModifiableMap
 import com.bobbyesp.utilities.mediastore.AudioFileMetadata.Companion.toAudioFileMetadata
 import com.bobbyesp.utilities.mediastore.AudioFileMetadata.Companion.toPropertyMap
-import com.bobbyesp.utilities.mediastore.MediaStoreReceiver
+import com.bobbyesp.utilities.mediastore.MediaStoreHelpers
 import com.bobbyesp.utilities.states.ResourceState
 import com.bobbyesp.utilities.states.ScreenState
 import com.kyant.taglib.AudioProperties
@@ -82,7 +82,7 @@ class MetadataEditorViewModel(
 
         try {
             stateHandle["path"] = path
-            MediaStoreReceiver.getFileDescriptorFromPath(context, path, mode = "r")?.use { songFd ->
+            MediaStoreHelpers.getFileDescriptorFromPath(context, path, mode = "r")?.use { songFd ->
                 val metadataDeferred = scope.async {
                     loadAudioMetadata(
                         songFd = songFd,
@@ -179,7 +179,7 @@ class MetadataEditorViewModel(
         intentPassthrough: (PendingIntent) -> Unit = {}
     ): Boolean {
         return try {
-            val fd = MediaStoreReceiver.getFileDescriptorFromPath(context, audioPath, mode = "w")
+            val fd = MediaStoreHelpers.getFileDescriptorFromPath(context, audioPath, mode = "w")
                 ?: throw NullAudioFileDescriptorException(isAudioProperties = false)
 
             fd.dup().detachFd().let {
@@ -209,7 +209,7 @@ class MetadataEditorViewModel(
         intentPassthrough: (PendingIntent) -> Unit
     ): Boolean {
         return try {
-            val fd = MediaStoreReceiver.getFileDescriptorFromPath(context, audioPath, mode = "w")
+            val fd = MediaStoreHelpers.getFileDescriptorFromPath(context, audioPath, mode = "w")
                 ?: throw NullAudioFileDescriptorException(isAudioProperties = false)
 
             val mutablePicturesList = mutableListOf<Picture>()
