@@ -1,4 +1,4 @@
-package com.bobbyesp.utilities
+package com.bobbyesp.coreutilities.lists
 
 import java.util.concurrent.locks.ReentrantReadWriteLock
 import kotlin.concurrent.read

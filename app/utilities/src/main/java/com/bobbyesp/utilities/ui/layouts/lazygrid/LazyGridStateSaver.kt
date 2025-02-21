@@ -1,4 +1,4 @@
-package com.bobbyesp.utilities.ui
+package com.bobbyesp.utilities.ui.layouts.lazygrid
 
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.runtime.Composable
@@ -8,13 +8,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 /**
  * Static field, contains all scroll values
  */
-val SaveMap = mutableMapOf<String, KeyParams>()
-
-data class KeyParams(
-    val params: String = "",
-    val index: Int,
-    val scrollOffset: Int
-)
+val SaveMap = mutableMapOf<String, LazyGridKeyParams>()
 
 /**
  * Save scroll state on all time.
@@ -44,7 +38,7 @@ fun rememberForeverLazyGridState(
         onDispose {
             val lastIndex = scrollState.firstVisibleItemIndex
             val lastOffset = scrollState.firstVisibleItemScrollOffset
-            SaveMap[key] = KeyParams(params, lastIndex, lastOffset)
+            SaveMap[key] = LazyGridKeyParams(params, lastIndex, lastOffset)
         }
     }
     return scrollState

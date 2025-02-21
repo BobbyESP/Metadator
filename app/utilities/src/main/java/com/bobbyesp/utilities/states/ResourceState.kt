@@ -46,9 +46,9 @@ sealed class ResourceState<T>(
      */
     override fun toString(): String {
         return when (this) {
-            is Loading -> "Loading(data=$data)"
-            is Success -> "Success(data=$data)"
-            is Error -> "Error(message=$message, data=$data)"
+            is Loading -> "Loading(data=$partialData)"
+            is Success -> "Success(data=$result)"
+            is Error -> "Error(message=$errorMessage, data=$errorData)"
         }
     }
 }

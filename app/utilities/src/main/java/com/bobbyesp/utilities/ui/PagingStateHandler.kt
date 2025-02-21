@@ -1,54 +1,80 @@
 package com.bobbyesp.utilities.ui
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
-import com.bobbyesp.utilities.BuildConfig
+import com.bobbyesp.utilities.R
 
-fun <T : Any> LazyListScope.pagingStateHandler(
+fun <T : Any> LazyListScope.handlePagingState(
     items: LazyPagingItems<T>?,
-    itemCount: Int = 7,
-    loadingContent: @Composable () -> Unit
+    initialLoadingItemCount: Int = 7,
+    loadingContent: @Composable LazyItemScope.() -> Unit,
+    errorContent: @Composable LazyItemScope.(errorMessage: String?) -> Unit = { errorMessage ->
+        // Default error content.
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = errorMessage ?: stringResource(R.string.unknown_error),
+            )
+        }
+    }
 ) {
-    items?.apply {
+    items?.let { pagingItems ->
         when {
-            loadState.refresh is LoadState.Loading -> {
-                items(itemCount) {
-                    // Render a loading indicator while refreshing
+            pagingItems.loadState.refresh is LoadState.Loading -> {
+                // Initial loading state.
+                items(initialLoadingItemCount) {
                     loadingContent()
                 }
             }
 
-            loadState.append is LoadState.Loading -> {
-                items(itemCount) {
-                    // Render a loading indicator at the end while loading more items
+            pagingItems.loadState.append is LoadState.Loading -> {
+                // Loading more items state.
+                item {
                     loadingContent()
                 }
             }
 
-            loadState.refresh is LoadState.Error -> {
-                val errorMessage =
-                    (loadState.refresh as LoadState.Error).error.message
+            pagingItems.loadState.refresh is LoadState.Error -> {
+                val error = pagingItems.loadState.refresh as LoadState.Error
                 item {
-                    // Render an error message if refreshing encounters an error
-                    if (errorMessage != null) {
-                        if (BuildConfig.DEBUG) Text(errorMessage)
-                    }
+                    errorContent(error.error.message)
                 }
             }
 
-            loadState.append is LoadState.Error -> {
-                val errorMessage =
-                    (loadState.append as LoadState.Error).error.message
+            pagingItems.loadState.append is LoadState.Error -> {
+                val error = pagingItems.loadState.append as LoadState.Error
                 item {
-                    // Render an error message if loading more items encounters an error
-                    if (errorMessage != null) {
-                        if (BuildConfig.DEBUG) Text(errorMessage)
-                    }
+                    errorContent(error.error.message)
                 }
             }
+
+            else -> {
+                // Add a else branch for the case where state is not loading or error.
+                // To avoid unexpected behavior in future changes.
+            }
+        }
+    } ?: run {
+        // Handle the case where items is null.
+        // For example, display an empty state or an error message.
+        item {
+            errorContent(stringResource(id = R.string.list_items_null))
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.bobbyesp.utilities.ui.permission
+package com.bobbyesp.utilities.ui.permissions
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -176,12 +176,14 @@ enum class PermissionType(val permission: String) {
 @Preview(uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
 @Preview
 @Composable
-fun PermissionNotGrantedPreview() {
-    PermissionNotGrantedDialog(
-        onGrantRequest = {},
-        onDismissRequest = {},
-        neededPermissions = persistentListOf(
-            PermissionType.READ_EXTERNAL_STORAGE, PermissionType.WRITE_EXTERNAL_STORAGE
+private fun PermissionNotGrantedPreview() {
+    MaterialTheme {
+        PermissionNotGrantedDialog(
+            onGrantRequest = {},
+            onDismissRequest = {},
+            neededPermissions = persistentListOf(
+                PermissionType.READ_EXTERNAL_STORAGE, PermissionType.WRITE_EXTERNAL_STORAGE
+            )
         )
-    )
+    }
 }

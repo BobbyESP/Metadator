@@ -10,7 +10,7 @@ import com.bobbyesp.metadator.core.util.getNeededStoragePermissions
 import com.bobbyesp.metadator.onboarding.presentation.pages.OnboardingPermissionsPage
 import com.bobbyesp.metadator.onboarding.presentation.pages.OnboardingWelcomePage
 import com.bobbyesp.ui.motion.animatedComposable
-import com.bobbyesp.utilities.ui.permission.PermissionType.Companion.toPermissionType
+import com.bobbyesp.utilities.ui.permissions.PermissionType.Companion.toPermissionType
 
 fun NavGraphBuilder.onboardingRouting(
     onNavigate: (Route) -> Unit,

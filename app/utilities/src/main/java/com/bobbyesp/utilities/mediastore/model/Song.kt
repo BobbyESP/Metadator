@@ -13,6 +13,7 @@ import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
+import androidx.core.net.toUri
 
 @Serializable
 @Parcelize
@@ -43,6 +44,6 @@ object UriSerializer : KSerializer<Uri> {
     }
 
     override fun deserialize(decoder: Decoder): Uri {
-        return Uri.parse(decoder.decodeString())
+        return decoder.decodeString().toUri()
     }
 }

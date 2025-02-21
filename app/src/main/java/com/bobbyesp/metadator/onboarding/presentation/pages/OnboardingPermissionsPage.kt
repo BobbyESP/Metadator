@@ -47,8 +47,8 @@ import com.bobbyesp.metadator.onboarding.domain.PermissionItem
 import com.bobbyesp.metadator.onboarding.presentation.components.OnboardingScreenHeader
 import com.bobbyesp.ui.components.others.AdditionalInformation
 import com.bobbyesp.ui.util.isDeviceInLandscape
-import com.bobbyesp.utilities.ui.permission.PermissionType
-import com.bobbyesp.utilities.ui.permission.PermissionType.Companion.toPermissionType
+import com.bobbyesp.utilities.ui.permissions.PermissionType
+import com.bobbyesp.utilities.ui.permissions.PermissionType.Companion.toPermissionType
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState

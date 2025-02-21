@@ -34,4 +34,6 @@
     <string name="write_external_storage_description">Allows the app to write to your storage</string>
     <string name="read_media_audio_description">Allows the app to read audio files</string>
     <string name="unknown_permission_description">This permission does not contain a description</string>
+    <string name="list_items_null">There is no more items to be shown</string>
+    <string name="unknown_error">Unknown error</string>
 </resources>

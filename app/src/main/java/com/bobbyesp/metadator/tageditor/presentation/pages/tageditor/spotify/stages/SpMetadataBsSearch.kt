@@ -1,7 +1,6 @@
 package com.bobbyesp.metadator.tageditor.presentation.pages.tageditor.spotify.stages
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -42,9 +41,8 @@ import com.bobbyesp.metadator.tageditor.presentation.pages.tageditor.spotify.Met
 import com.bobbyesp.ui.components.button.VerticalButtonWithIconAndText
 import com.bobbyesp.ui.components.state.LoadingState
 import com.bobbyesp.utilities.states.ResourceState
-import com.bobbyesp.utilities.ui.pagingStateHandler
+import com.bobbyesp.utilities.ui.handlePagingState
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SpMetadataBsSearch(
     name: String,
@@ -152,9 +150,16 @@ fun SpMetadataBsSearch(
                     )
                 }
 
-                pagingStateHandler(paginatedTracks, itemCount = 1) {
-                    LoadingState(stringResource(id = R.string.loading))
-                }
+                handlePagingState(
+                    items = paginatedTracks,
+                    initialLoadingItemCount = 1,
+                    loadingContent = {
+                        LoadingState(stringResource(id = R.string.loading))
+                    },
+                    errorContent = { errorMessage ->
+
+                    }
+                )
             }
 
             is ResourceState.Error -> {
