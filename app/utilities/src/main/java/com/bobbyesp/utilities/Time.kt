@@ -1,9 +1,9 @@
 package com.bobbyesp.utilities
 
+import java.util.Locale
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
-import java.util.Locale
 
 object Time {
     fun getZuluTimeSnapshot(): String {

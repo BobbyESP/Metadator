@@ -17,17 +17,10 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun DotWithText(text: String) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Box(
-            modifier = Modifier
-                .size(8.dp)
-                .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.primary)
-        )
-        Text(
-            text = text,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(start = 8.dp)
-        )
-    }
+  Row(verticalAlignment = Alignment.CenterVertically) {
+    Box(
+        modifier =
+            Modifier.size(8.dp).clip(CircleShape).background(MaterialTheme.colorScheme.primary))
+    Text(text = text, fontWeight = FontWeight.Bold, modifier = Modifier.padding(start = 8.dp))
+  }
 }

@@ -16,21 +16,20 @@ package com.bobbyesp.ui.motion
  * limitations under the License.
  */
 
-
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 object MotionConstants {
-    const val DefaultMotionDuration: Int = 300
-    const val DefaultFadeInDuration: Int = 150
-    const val DefaultFadeOutDuration: Int = 75
-    val DefaultSlideDistance: Dp = 30.dp
+  const val DefaultMotionDuration: Int = 300
+  const val DefaultFadeInDuration: Int = 150
+  const val DefaultFadeOutDuration: Int = 75
+  val DefaultSlideDistance: Dp = 30.dp
 
-    const val DURATION = 600
-    const val DURATION_ENTER = 400
-    const val DURATION_ENTER_SHORT = 300
-    const val DURATION_EXIT = 200
-    const val DURATION_EXIT_SHORT = 100
+  const val DURATION = 600
+  const val DURATION_ENTER = 400
+  const val DURATION_ENTER_SHORT = 300
+  const val DURATION_EXIT = 200
+  const val DURATION_EXIT_SHORT = 100
 
-    const val InitialOffset = 0.10f
+  const val InitialOffset = 0.10f
 }

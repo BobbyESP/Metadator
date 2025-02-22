@@ -28,54 +28,48 @@ fun Placeholder(
     colorful: Boolean,
     contentDescription: String? = null
 ) {
-    Surface(
-        tonalElevation = if (colorful) 0.dp else 8.dp,
-        color = if (colorful) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface,
-        modifier = modifier
-    ) {
+  Surface(
+      tonalElevation = if (colorful) 0.dp else 8.dp,
+      color =
+          if (colorful) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface,
+      modifier = modifier) {
         icon?.let {
-            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Icon(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(8.dp),
-                    imageVector = icon,
-                    contentDescription = contentDescription,
-                    tint = if (colorful) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface,
-                )
-            }
+          Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Icon(
+                modifier = Modifier.fillMaxSize().padding(8.dp),
+                imageVector = icon,
+                contentDescription = contentDescription,
+                tint =
+                    if (colorful) MaterialTheme.colorScheme.onPrimary
+                    else MaterialTheme.colorScheme.onSurface,
+            )
+          }
         }
-    }
+      }
 }
 
 @Preview
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun PlaceholderPreview() {
-    MaterialTheme {
-        Placeholder(
-            modifier = Modifier
-                .width(200.dp)
-                .aspectRatio(1f),
-            icon = Icons.Rounded.Lyrics,
-            colorful = true,
-            contentDescription = "Song cover"
-        )
-    }
+  MaterialTheme {
+    Placeholder(
+        modifier = Modifier.width(200.dp).aspectRatio(1f),
+        icon = Icons.Rounded.Lyrics,
+        colorful = true,
+        contentDescription = "Song cover")
+  }
 }
 
 @Preview
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun PlaceholderPreviewNonColourful() {
-    MaterialTheme {
-        Placeholder(
-            modifier = Modifier
-                .width(200.dp)
-                .aspectRatio(1f),
-            icon = Icons.Default.Lyrics,
-            colorful = false,
-            contentDescription = "Song cover"
-        )
-    }
+  MaterialTheme {
+    Placeholder(
+        modifier = Modifier.width(200.dp).aspectRatio(1f),
+        icon = Icons.Default.Lyrics,
+        colorful = false,
+        contentDescription = "Song cover")
+  }
 }

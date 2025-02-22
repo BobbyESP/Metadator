@@ -21,22 +21,17 @@ fun FilledButtonWithIcon(
     text: String,
     contentDescription: String? = null
 ) {
-    Button(
-        modifier = modifier,
-        onClick = onClick,
-        enabled = enabled,
-        contentPadding = ButtonDefaults.ButtonWithIconContentPadding
-    ) {
+  Button(
+      modifier = modifier,
+      onClick = onClick,
+      enabled = enabled,
+      contentPadding = ButtonDefaults.ButtonWithIconContentPadding) {
         Icon(
             modifier = Modifier.size(18.dp),
             imageVector = icon,
-            contentDescription = contentDescription
-        )
-        Text(
-            modifier = Modifier.padding(start = 6.dp),
-            text = text
-        )
-    }
+            contentDescription = contentDescription)
+        Text(modifier = Modifier.padding(start = 6.dp), text = text)
+      }
 }
 
 @Composable
@@ -47,19 +42,14 @@ fun FilledTonalButtonWithIcon(
     text: String,
     contentDescription: String? = null
 ) {
-    FilledTonalButton(
-        modifier = modifier,
-        onClick = onClick,
-        contentPadding = ButtonDefaults.ButtonWithIconContentPadding
-    ) {
+  FilledTonalButton(
+      modifier = modifier,
+      onClick = onClick,
+      contentPadding = ButtonDefaults.ButtonWithIconContentPadding) {
         Icon(
             modifier = Modifier.size(18.dp),
             imageVector = icon,
-            contentDescription = contentDescription
-        )
-        Text(
-            modifier = Modifier.padding(start = 8.dp),
-            text = text
-        )
-    }
+            contentDescription = contentDescription)
+        Text(modifier = Modifier.padding(start = 8.dp), text = text)
+      }
 }

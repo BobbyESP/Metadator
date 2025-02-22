@@ -16,27 +16,20 @@ fun NavGraphBuilder.onboardingRouting(
     onNavigate: (Route) -> Unit,
     onCompletedOnboarding: () -> Unit
 ) {
-    navigation<Route.OnboardingNavigator>(
-        startDestination = Route.OnboardingNavigator.Welcome::class,
-    ) {
-        animatedComposable<Route.OnboardingNavigator.Welcome> {
-            OnboardingWelcomePage(
-                onGetStarted = {
-                    onNavigate(Route.OnboardingNavigator.Permissions)
-                }
-            )
-        }
-
-        animatedComposable<Route.OnboardingNavigator.Permissions> {
-
-            val neededPermissions by remember { mutableStateOf(getNeededStoragePermissions().map { it.toPermissionType() }) }
-
-            OnboardingPermissionsPage(
-                neededPermissions = neededPermissions,
-                onNextClick = {
-                    onCompletedOnboarding()
-                }
-            )
-        }
+  navigation<Route.OnboardingNavigator>(
+      startDestination = Route.OnboardingNavigator.Welcome::class,
+  ) {
+    animatedComposable<Route.OnboardingNavigator.Welcome> {
+      OnboardingWelcomePage(onGetStarted = { onNavigate(Route.OnboardingNavigator.Permissions) })
     }
+
+    animatedComposable<Route.OnboardingNavigator.Permissions> {
+      val neededPermissions by remember {
+        mutableStateOf(getNeededStoragePermissions().map { it.toPermissionType() })
+      }
+
+      OnboardingPermissionsPage(
+          neededPermissions = neededPermissions, onNextClick = { onCompletedOnboarding() })
+    }
+  }
 }

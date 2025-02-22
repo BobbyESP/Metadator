@@ -19,28 +19,23 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun OnboardingCard(
-    icon: @Composable () -> Unit,
-    title: String,
-    text: String
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(MaterialTheme.shapes.medium)
-            .background(MaterialTheme.colorScheme.surfaceVariant)
-            .padding(16.dp)
-    ) {
+fun OnboardingCard(icon: @Composable () -> Unit, title: String, text: String) {
+  Column(
+      modifier =
+          Modifier.fillMaxWidth()
+              .clip(MaterialTheme.shapes.medium)
+              .background(MaterialTheme.colorScheme.surfaceVariant)
+              .padding(16.dp)) {
         Surface(
             tonalElevation = 16.dp,
             shape = MaterialTheme.shapes.medium,
-            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.35f)
-                .compositeOver(MaterialTheme.colorScheme.surfaceVariant),
+            color =
+                MaterialTheme.colorScheme.primary
+                    .copy(alpha = 0.35f)
+                    .compositeOver(MaterialTheme.colorScheme.surfaceVariant),
             contentColor = MaterialTheme.colorScheme.primary,
         ) {
-            Box(Modifier.padding(12.dp)) {
-                icon()
-            }
+          Box(Modifier.padding(12.dp)) { icon() }
         }
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -49,37 +44,32 @@ fun OnboardingCard(
             text = title,
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.SemiBold,
-            color = MaterialTheme.colorScheme.onSurface
-        )
+            color = MaterialTheme.colorScheme.onSurface)
 
         Spacer(modifier = Modifier.height(2.dp))
 
         Text(
             text = text,
             style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-    }
+            color = MaterialTheme.colorScheme.onSurfaceVariant)
+      }
 }
 
 @Preview
 @Composable
 private fun OnboardingCardPreview() {
-    OnboardingCard(
-        icon = {
-            Surface(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(48.dp),
-                shape = MaterialTheme.shapes.medium,
-                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.35f)
+  OnboardingCard(
+      icon = {
+        Surface(
+            modifier = Modifier.fillMaxWidth().height(48.dp),
+            shape = MaterialTheme.shapes.medium,
+            color =
+                MaterialTheme.colorScheme.primary
+                    .copy(alpha = 0.35f)
                     .compositeOver(MaterialTheme.colorScheme.surfaceVariant),
-                contentColor = MaterialTheme.colorScheme.primary,
-            ) {
-
-            }
-        },
-        title = "Title",
-        text = "Text"
-    )
+            contentColor = MaterialTheme.colorScheme.primary,
+        ) {}
+      },
+      title = "Title",
+      text = "Text")
 }

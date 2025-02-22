@@ -29,33 +29,33 @@ fun ProfilePicture(
     surfaceColor: Color = MaterialTheme.colorScheme.primary,
     onClick: () -> Unit = {}
 ) {
-    val firstLetter = name.first().toString()
-    Surface(
-        modifier = modifier.size(size.dp),
-        shape = shape,
-        onClick = onClick,
-        color = surfaceColor,
-    ) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text(
-                fontSize = (size / 1.5).sp,
-                text = firstLetter,
-                fontWeight = FontWeight.SemiBold,
-                textAlign = TextAlign.Center,
-            )
-        }
+  val firstLetter = name.first().toString()
+  Surface(
+      modifier = modifier.size(size.dp),
+      shape = shape,
+      onClick = onClick,
+      color = surfaceColor,
+  ) {
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+      Text(
+          fontSize = (size / 1.5).sp,
+          text = firstLetter,
+          fontWeight = FontWeight.SemiBold,
+          textAlign = TextAlign.Center,
+      )
     }
+  }
 }
 
 @Preview
 @Preview(uiMode = UI_MODE_NIGHT_YES)
 @Composable
 private fun ProfilePicturePreview() {
-    ProfilePicture(
-        name = "Bobby",
-        onClick = {},
-        shape = RoundedCornerShape(1f),
-        modifier = Modifier,
-        size = 40,
-    )
+  ProfilePicture(
+      name = "Bobby",
+      onClick = {},
+      shape = RoundedCornerShape(1f),
+      modifier = Modifier,
+      size = 40,
+  )
 }

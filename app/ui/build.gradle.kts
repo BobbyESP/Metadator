@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.android.kotlin)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.ktfmt.gradle)
 }
 
 android {

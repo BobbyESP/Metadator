@@ -5,13 +5,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.saveable.rememberSaveable
 
-/**
- * Static field, contains all scroll values
- */
+/** Static field, contains all scroll values */
 val SaveMap = mutableMapOf<String, LazyGridKeyParams>()
 
 /**
  * Save scroll state on all time.
+ *
  * @param key value for comparing screen
  * @param params arguments for find different between equals screen
  * @param initialFirstVisibleItemIndex see [LazyGridState.firstVisibleItemIndex]
@@ -22,18 +21,16 @@ fun rememberForeverLazyGridState(
     key: String,
     params: String = "",
     initialFirstVisibleItemIndex: Int = 0,
-    initialFirstVisibleItemScrollOffset: Int = 0
+    initialFirstVisibleItemScrollOffset: Int = 0,
 ): LazyGridState {
-    val scrollState = rememberSaveable(saver = LazyGridState.Saver) {
-        var savedValue = SaveMap[key]
-        if (savedValue?.params != params) savedValue = null
-        val savedIndex = savedValue?.index ?: initialFirstVisibleItemIndex
-        val savedOffset = savedValue?.scrollOffset ?: initialFirstVisibleItemScrollOffset
-        LazyGridState(
-            savedIndex,
-            savedOffset
-        )
-    }
+    val scrollState =
+        rememberSaveable(saver = LazyGridState.Saver) {
+            var savedValue = SaveMap[key]
+            if (savedValue?.params != params) savedValue = null
+            val savedIndex = savedValue?.index ?: initialFirstVisibleItemIndex
+            val savedOffset = savedValue?.scrollOffset ?: initialFirstVisibleItemScrollOffset
+            LazyGridState(savedIndex, savedOffset)
+        }
     DisposableEffect(Unit) {
         onDispose {
             val lastIndex = scrollState.firstVisibleItemIndex

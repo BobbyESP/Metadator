@@ -31,48 +31,37 @@ fun Navigator(
     startDestination: Route,
     preferences: State<UserPreferences>,
 ) {
-    val mediaStoreViewModel = koinViewModel<MediaStorePageViewModel>()
+  val mediaStoreViewModel = koinViewModel<MediaStorePageViewModel>()
 
-    val (_, setOnboardingCompleted) = rememberPreferenceState(COMPLETED_ONBOARDING)
+  val (_, setOnboardingCompleted) = rememberPreferenceState(COMPLETED_ONBOARDING)
 
-    NavHost(
-        modifier = Modifier
-            .background(MaterialTheme.colorScheme.background)
-            .fillMaxSize(),
-        navController = navController,
-        startDestination = startDestination,
+  NavHost(
+      modifier = Modifier.background(MaterialTheme.colorScheme.background).fillMaxSize(),
+      navController = navController,
+      startDestination = startDestination,
+  ) {
+    onboardingRouting(
+        onNavigate = { navController.navigate(it) },
+        onCompletedOnboarding = {
+          setOnboardingCompleted(true)
+          navController.cleanNavigate(Route.MetadatorNavigator)
+        })
+
+    navigation<Route.MetadatorNavigator>(
+        startDestination = Route.MetadatorNavigator.Home,
     ) {
-        onboardingRouting(
-            onNavigate = { navController.navigate(it) },
-            onCompletedOnboarding = {
-                setOnboardingCompleted(true)
-                navController.cleanNavigate(Route.MetadatorNavigator)
-            }
-        )
-
-        navigation<Route.MetadatorNavigator>(
-            startDestination = Route.MetadatorNavigator.Home,
-        ) {
-            animatedComposable<Route.MetadatorNavigator.Home> {
-                val songsState =
-                    mediaStoreViewModel.songs.collectAsStateWithLifecycle()
-                HomePage(
-                    songs = songsState,
-                    preferences = preferences,
-                    onEvent = mediaStoreViewModel::onEvent
-                )
-            }
-        }
-
-        mediaplayerRouting(
-            //mediaplayerViewModel = mediaplayerViewModel,
-            onNavigateBack = {
-                navController.navigateBack()
-            }
-        )
-
-        tagEditorRouting { navController.navigateBack() }
-        settingsRouting { navController.navigateBack() }
+      animatedComposable<Route.MetadatorNavigator.Home> {
+        val songsState = mediaStoreViewModel.songs.collectAsStateWithLifecycle()
+        HomePage(
+            songs = songsState, preferences = preferences, onEvent = mediaStoreViewModel::onEvent)
+      }
     }
-}
 
+    mediaplayerRouting(
+        // mediaplayerViewModel = mediaplayerViewModel,
+        onNavigateBack = { navController.navigateBack() })
+
+    tagEditorRouting { navController.navigateBack() }
+    settingsRouting { navController.navigateBack() }
+  }
+}

@@ -30,58 +30,53 @@ fun SpMetadataBottomSheetContent(
     onEvent: (MetadataBottomSheetViewModel.Event) -> Unit,
     onCloseSheet: () -> Unit
 ) {
-    val lazyListState = rememberLazyListState()
+  val lazyListState = rememberLazyListState()
 
-    fun search(query: String) {
-        onEvent(MetadataBottomSheetViewModel.Event.ChangeState(BottomSheetStage.SEARCH))
-        onEvent(MetadataBottomSheetViewModel.Event.Search(query))
+  fun search(query: String) {
+    onEvent(MetadataBottomSheetViewModel.Event.ChangeState(BottomSheetStage.SEARCH))
+    onEvent(MetadataBottomSheetViewModel.Event.Search(query))
+  }
+
+  if (name.isEmpty() && artist.isEmpty()) {
+    NoSongInformationProvided { providedName, providedArtist ->
+      val query = "$providedName $providedArtist"
+      search(query)
     }
+  }
 
-    if (name.isEmpty() && artist.isEmpty()) {
-        NoSongInformationProvided { providedName, providedArtist ->
-            val query = "$providedName $providedArtist"
-            search(query)
-        }
+  LaunchedEffect(sheetState.isVisible, name, artist) {
+    val query = "$name $artist"
+    if (sheetState.isVisible && bsViewState.value.lastQuery != query) {
+      search(query)
     }
+  }
 
-    LaunchedEffect(sheetState.isVisible, name, artist) {
-        val query = "$name $artist"
-        if (sheetState.isVisible && bsViewState.value.lastQuery != query) {
-            search(query)
-        }
-    }
-
-    AnimatedContent(
-        targetState = bsViewState.value.stage,
-        label = "Transition between bs states",
-        transitionSpec = {
-            fadeIn(
-                tweenEnter(delayMillis = DURATION_EXIT_SHORT)
-            ) togetherWith fadeOut(
-                tweenExit(durationMillis = DURATION_EXIT_SHORT)
-            )
-        }) { actualStage ->
+  AnimatedContent(
+      targetState = bsViewState.value.stage,
+      label = "Transition between bs states",
+      transitionSpec = {
+        fadeIn(tweenEnter(delayMillis = DURATION_EXIT_SHORT)) togetherWith
+            fadeOut(tweenExit(durationMillis = DURATION_EXIT_SHORT))
+      }) { actualStage ->
         when (actualStage) {
-            BottomSheetStage.SEARCH -> {
-                SpMetadataBsSearch(
-                    name = name,
-                    artist = artist,
-                    listState = lazyListState,
-                    pageViewState = bsViewState,
-                    onChooseTrack = { track ->
-                        onEvent(MetadataBottomSheetViewModel.Event.SelectTrack(track))
-                    }
-                )
-            }
+          BottomSheetStage.SEARCH -> {
+            SpMetadataBsSearch(
+                name = name,
+                artist = artist,
+                listState = lazyListState,
+                pageViewState = bsViewState,
+                onChooseTrack = { track ->
+                  onEvent(MetadataBottomSheetViewModel.Event.SelectTrack(track))
+                })
+          }
 
-            BottomSheetStage.TRACK_DETAILS -> {
-                SpMetadataBsDetails(
-                    modifier = Modifier.fillMaxSize(),
-                    onEvent = onEvent,
-                    pageViewState = bsViewState,
-                    onCloseSheet = onCloseSheet
-                )
-            }
+          BottomSheetStage.TRACK_DETAILS -> {
+            SpMetadataBsDetails(
+                modifier = Modifier.fillMaxSize(),
+                onEvent = onEvent,
+                pageViewState = bsViewState,
+                onCloseSheet = onCloseSheet)
+          }
         }
-    }
+      }
 }

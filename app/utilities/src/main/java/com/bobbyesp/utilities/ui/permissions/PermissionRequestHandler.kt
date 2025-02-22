@@ -10,7 +10,7 @@ import com.google.accompanist.permissions.PermissionStatus
 fun PermissionRequestHandler(
     permissionState: PermissionState,
     deniedContent: @Composable (Boolean) -> Unit,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     when (permissionState.status) {
         is PermissionStatus.Granted -> {
@@ -18,9 +18,7 @@ fun PermissionRequestHandler(
         }
 
         is PermissionStatus.Denied -> {
-            deniedContent(
-                (permissionState.status as PermissionStatus.Denied).shouldShowRationale
-            )
+            deniedContent((permissionState.status as PermissionStatus.Denied).shouldShowRationale)
         }
     }
 }

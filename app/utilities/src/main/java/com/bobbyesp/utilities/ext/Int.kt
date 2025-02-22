@@ -10,10 +10,11 @@ fun Int.bigQuantityFormatter(): String {
 }
 
 /**
- * Extension function to convert an integer representing seconds into a formatted string of minutes and seconds.
+ * Extension function to convert an integer representing seconds into a formatted string of minutes
+ * and seconds.
  *
- * @receiver Int The number of seconds to be converted.
  * @return String The formatted string in "MM:SS" format.
+ * @receiver Int The number of seconds to be converted.
  */
 fun Int.toMinutes(): String {
     val minutes = this / 60
@@ -22,10 +23,11 @@ fun Int.toMinutes(): String {
 }
 
 /**
- * Extension function to convert an integer representing milliseconds into a formatted string of minutes and seconds.
+ * Extension function to convert an integer representing milliseconds into a formatted string of
+ * minutes and seconds.
  *
- * @receiver Int The number of milliseconds to be converted.
  * @return String The formatted string in "MM:SS" format.
+ * @receiver Int The number of milliseconds to be converted.
  */
 fun Int.fromMillisToMinutes(): String {
     val totalSeconds = this / 1000

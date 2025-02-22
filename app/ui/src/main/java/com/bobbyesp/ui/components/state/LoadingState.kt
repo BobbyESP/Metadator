@@ -15,23 +15,16 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun LoadingState(text: String, modifier: Modifier = Modifier) {
-    Column(
-        modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(
-            8.dp,
-            Alignment.CenterVertically
-        ),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
+  Column(
+      modifier = modifier.fillMaxWidth(),
+      verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
+      horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
             text = text,
             style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Center,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier.fillMaxWidth()
-        )
-        LinearProgressIndicator(
-            modifier = Modifier.fillMaxWidth(0.8f)
-        )
-    }
+            modifier = Modifier.fillMaxWidth())
+        LinearProgressIndicator(modifier = Modifier.fillMaxWidth(0.8f))
+      }
 }

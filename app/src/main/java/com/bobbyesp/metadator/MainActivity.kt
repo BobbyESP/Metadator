@@ -31,69 +31,64 @@ import setCrashlyticsCollection
 
 @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
 class MainActivity : ComponentActivity(), KoinComponent {
-    private var startDestination: Route? = null
+  private var startDestination: Route? = null
 
-    private val appPreferences: AppPreferences by inject()
-    private val imageLoader: ImageLoader by inject()
+  private val appPreferences: AppPreferences by inject()
+  private val imageLoader: ImageLoader by inject()
 
-    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
-    override fun onCreate(savedInstanceState: Bundle?) {
-        val splashscreen = installSplashScreen()
+  @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+  override fun onCreate(savedInstanceState: Bundle?) {
+    val splashscreen = installSplashScreen()
 
-        lifecycleScope.launch(Dispatchers.IO) {
-            val completedOnboarding =
-                async { appPreferences.getSetting(COMPLETED_ONBOARDING, false) }
-            startDestination = if (completedOnboarding.await()) {
-                Route.MetadatorNavigator
-            } else {
-                Route.OnboardingNavigator
-            }
-        }
-
-        splashscreen.setKeepOnScreenCondition {
-            startDestination == null
-        }
-
-        enableEdgeToEdge()
-        super.onCreate(savedInstanceState)
-        setCrashlyticsCollection()
-        setContent {
-            val navController = rememberNavController()
-            val sonner = rememberToasterState()
-
-            val userPreferences =
-                appPreferences.userPreferencesFlow.collectAsStateWithLifecycle(
-                    emptyUserPreferences()
-                )
-
-            CompositionLocalProvider(
-                LocalNavController provides navController,
-            ) {
-                KoinContext {
-                    val windowSizeClass = calculateWindowSizeClass(this)
-
-                    AppLocalSettingsProvider(
-                        windowWidthSize = windowSizeClass.widthSizeClass,
-                        sonner = sonner,
-                        appPreferences = appPreferences,
-                        imageLoader = imageLoader
-                    ) {
-                        MetadatorTheme {
-                            Navigator(
-                                navController = navController,
-                                startDestination = startDestination
-                                    ?: throw IllegalStateException("Start destination couldn't be determinate"),
-                                preferences = userPreferences
-                            )
-                            Toaster(
-                                state = sonner,
-                                richColors = true,
-                                darkTheme = userPreferences.value.darkThemePreference.isDarkTheme()
-                            )
-                        }
-                    }
-                }
-            }
-        }
+    lifecycleScope.launch(Dispatchers.IO) {
+      val completedOnboarding = async { appPreferences.getSetting(COMPLETED_ONBOARDING, false) }
+      startDestination =
+          if (completedOnboarding.await()) {
+            Route.MetadatorNavigator
+          } else {
+            Route.OnboardingNavigator
+          }
     }
+
+    splashscreen.setKeepOnScreenCondition { startDestination == null }
+
+    enableEdgeToEdge()
+    super.onCreate(savedInstanceState)
+    setCrashlyticsCollection()
+    setContent {
+      val navController = rememberNavController()
+      val sonner = rememberToasterState()
+
+      val userPreferences =
+          appPreferences.userPreferencesFlow.collectAsStateWithLifecycle(emptyUserPreferences())
+
+      CompositionLocalProvider(
+          LocalNavController provides navController,
+      ) {
+        KoinContext {
+          val windowSizeClass = calculateWindowSizeClass(this)
+
+          AppLocalSettingsProvider(
+              windowWidthSize = windowSizeClass.widthSizeClass,
+              sonner = sonner,
+              appPreferences = appPreferences,
+              imageLoader = imageLoader) {
+                MetadatorTheme {
+                  Navigator(
+                      navController = navController,
+                      startDestination =
+                          startDestination
+                              ?: throw IllegalStateException(
+                                  "Start destination couldn't be determinate"),
+                      preferences = userPreferences)
+                  Toaster(
+                      state = sonner,
+                      richColors = true,
+                      darkTheme = userPreferences.value.darkThemePreference.isDarkTheme())
+                }
+              }
+        }
+      }
+    }
+  }
 }

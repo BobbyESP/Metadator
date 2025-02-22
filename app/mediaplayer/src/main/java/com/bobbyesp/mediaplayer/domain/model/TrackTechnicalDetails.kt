@@ -13,4 +13,4 @@ data class TrackTechnicalDetails(
     val bitrate: Int,
     val sampleRate: Int,
     val channels: AudioChannels,
-): Parcelable
+) : Parcelable

@@ -7,33 +7,37 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 
-class PlaybackService: KoinComponent, MediaLibraryService() {
+class PlaybackService : KoinComponent, MediaLibraryService() {
 
-    // We inject the ExoPlayer instance
-    private val player: ExoPlayer by inject()
+  // We inject the ExoPlayer instance
+  private val player: ExoPlayer by inject()
 
-    //Callback for MediaLibrarySession
-    private val callback = object : MediaLibrarySession.Callback {
-        //Whatever we need...
+  // Callback for MediaLibrarySession
+  private val callback =
+      object : MediaLibrarySession.Callback {
+        // Whatever we need...
+      }
+
+  // MediaLibrarySession has to be lazily created because it needs the callback
+  private var mediaLibrarySession: MediaLibrarySession? = null
+
+  override fun onCreate() {
+    super.onCreate()
+    mediaLibrarySession =
+        getKoin().get {
+          parametersOf(callback)
+        } // We pass the callback to the MediaLibrarySession constructor
+  }
+
+  override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaLibrarySession? =
+      mediaLibrarySession
+
+  override fun onDestroy() {
+    mediaLibrarySession?.run {
+      release()
+      mediaLibrarySession = null
     }
-
-    // MediaLibrarySession has to be lazily created because it needs the callback
-    private var mediaLibrarySession: MediaLibrarySession? = null
-
-    override fun onCreate() {
-        super.onCreate()
-        mediaLibrarySession = getKoin().get { parametersOf(callback) } // We pass the callback to the MediaLibrarySession constructor
-    }
-
-    override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaLibrarySession? =
-        mediaLibrarySession
-
-    override fun onDestroy() {
-        mediaLibrarySession?.run {
-            release()
-            mediaLibrarySession = null
-        }
-        player.release()
-        super.onDestroy()
-    }
+    player.release()
+    super.onDestroy()
+  }
 }

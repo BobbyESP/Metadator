@@ -13,22 +13,22 @@ import com.bobbyesp.ui.R
 
 @Composable
 fun BackButton(onClick: () -> Unit) {
-    IconButton(modifier = Modifier, onClick = onClick) {
-        Icon(
-            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-            contentDescription = stringResource(R.string.back),
-        )
-    }
+  IconButton(modifier = Modifier, onClick = onClick) {
+    Icon(
+        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+        contentDescription = stringResource(R.string.back),
+    )
+  }
 }
 
 @Composable
 fun CloseButton(onClick: () -> Unit) {
-    IconButton(modifier = Modifier, onClick = onClick) {
-        Icon(
-            imageVector = Icons.Default.Close,
-            contentDescription = stringResource(R.string.back),
-        )
-    }
+  IconButton(modifier = Modifier, onClick = onClick) {
+    Icon(
+        imageVector = Icons.Default.Close,
+        contentDescription = stringResource(R.string.back),
+    )
+  }
 }
 
 @Composable
@@ -39,11 +39,11 @@ fun DynamicButton(
     isIcon1: Boolean,
     onClick: () -> Unit
 ) {
-    FilledTonalIconButton(modifier = modifier, onClick = onClick) {
-        if (isIcon1) {
-            icon()
-        } else {
-            icon2()
-        }
+  FilledTonalIconButton(modifier = modifier, onClick = onClick) {
+    if (isIcon1) {
+      icon()
+    } else {
+      icon2()
     }
+  }
 }

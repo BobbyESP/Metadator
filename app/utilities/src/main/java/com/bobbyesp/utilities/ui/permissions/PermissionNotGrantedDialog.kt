@@ -37,73 +37,63 @@ import kotlinx.collections.immutable.persistentListOf
 fun PermissionNotGrantedDialog(
     modifier: Modifier = Modifier,
     neededPermissions: PersistentList<PermissionType>,
-        shouldShowRationale: Boolean = false,
+    shouldShowRationale: Boolean = false,
     onGrantRequest: () -> Unit,
     onDismissRequest: () -> Unit,
 ) {
-    AlertDialog(icon = {
-        Icon(
-            imageVector = Icons.Outlined.NotInterested,
-            contentDescription = "Permission not granted"
-        )
-    }, modifier = modifier, onDismissRequest = onDismissRequest, title = {
-        Text(text = stringResource(id = R.string.permission_not_granted))
-    }, text = {
-        Column {
-            if (shouldShowRationale) {
-                Text(
-                    text = stringResource(id = R.string.permission_not_granted_rationale_desc),
-                    textAlign = TextAlign.Justify
-                )
-            } else {
-                Text(
-                    text = stringResource(id = R.string.permission_not_granted_description),
-                    textAlign = TextAlign.Justify
-                )
-            }
+    AlertDialog(
+        icon = {
+            Icon(
+                imageVector = Icons.Outlined.NotInterested,
+                contentDescription = "Permission not granted",
+            )
+        },
+        modifier = modifier,
+        onDismissRequest = onDismissRequest,
+        title = { Text(text = stringResource(id = R.string.permission_not_granted)) },
+        text = {
+            Column {
+                if (shouldShowRationale) {
+                    Text(
+                        text = stringResource(id = R.string.permission_not_granted_rationale_desc),
+                        textAlign = TextAlign.Justify,
+                    )
+                } else {
+                    Text(
+                        text = stringResource(id = R.string.permission_not_granted_description),
+                        textAlign = TextAlign.Justify,
+                    )
+                }
 
-            HorizontalDivider(modifier = Modifier.padding(vertical = 6.dp))
-            Text(text = stringResource(id = R.string.permissions_to_grant))
+                HorizontalDivider(modifier = Modifier.padding(vertical = 6.dp))
+                Text(text = stringResource(id = R.string.permissions_to_grant))
 
-            Column(
-                modifier = Modifier.padding(6.dp),
-                verticalArrangement = Arrangement.spacedBy(2.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                neededPermissions.forEach {
-                    TextWithDot(text = it.toPermissionString())
+                Column(
+                    modifier = Modifier.padding(6.dp),
+                    verticalArrangement = Arrangement.spacedBy(2.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    neededPermissions.forEach { TextWithDot(text = it.toPermissionString()) }
                 }
             }
-        }
-    }, confirmButton = {
-        TextButton(
-            onClick = onGrantRequest
-        ) {
-            Text(stringResource(id = R.string.grant))
-        }
-    }, dismissButton = {
-        TextButton(
-            onClick = onDismissRequest
-        ) {
-            Text(stringResource(id = R.string.dismiss))
-        }
-    })
+        },
+        confirmButton = {
+            TextButton(onClick = onGrantRequest) { Text(stringResource(id = R.string.grant)) }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismissRequest) { Text(stringResource(id = R.string.dismiss)) }
+        },
+    )
 }
 
 @Composable
 fun TextWithDot(text: String) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Box(
-            modifier = Modifier
-                .size(8.dp)
-                .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.primary)
+            modifier =
+                Modifier.size(8.dp).clip(CircleShape).background(MaterialTheme.colorScheme.primary)
         )
-        Text(
-            text = text,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(start = 8.dp)
-        )
+        Text(text = text, fontWeight = FontWeight.Bold, modifier = Modifier.padding(start = 8.dp))
     }
 }
 
@@ -181,9 +171,11 @@ private fun PermissionNotGrantedPreview() {
         PermissionNotGrantedDialog(
             onGrantRequest = {},
             onDismissRequest = {},
-            neededPermissions = persistentListOf(
-                PermissionType.READ_EXTERNAL_STORAGE, PermissionType.WRITE_EXTERNAL_STORAGE
-            )
+            neededPermissions =
+                persistentListOf(
+                    PermissionType.READ_EXTERNAL_STORAGE,
+                    PermissionType.WRITE_EXTERNAL_STORAGE,
+                ),
         )
     }
 }

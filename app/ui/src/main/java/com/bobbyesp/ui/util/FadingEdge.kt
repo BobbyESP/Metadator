@@ -13,58 +13,44 @@ fun Modifier.fadingEdge(
     top: Dp? = null,
     right: Dp? = null,
     bottom: Dp? = null,
-): Modifier = this
-    .graphicsLayer(alpha = 0.99f)
-    .drawWithContent {
-        drawContent()
-        top?.let {
-            drawRect(
-                brush = Brush.verticalGradient(
-                    colors = listOf(Color.Transparent, Color.Black),
-                    startY = 0f,
-                    endY = it.toPx()
-                ),
-                blendMode = BlendMode.DstIn
-            )
-        }
-        bottom?.let {
-            drawRect(
-                brush = Brush.verticalGradient(
+): Modifier =
+    this.graphicsLayer(alpha = 0.99f).drawWithContent {
+      drawContent()
+      top?.let {
+        drawRect(
+            brush =
+                Brush.verticalGradient(
+                    colors = listOf(Color.Transparent, Color.Black), startY = 0f, endY = it.toPx()),
+            blendMode = BlendMode.DstIn)
+      }
+      bottom?.let {
+        drawRect(
+            brush =
+                Brush.verticalGradient(
                     colors = listOf(Color.Black, Color.Transparent),
                     startY = size.height - it.toPx(),
-                    endY = size.height
-                ),
-                blendMode = BlendMode.DstIn
-            )
-        }
-        left?.let {
-            drawRect(
-                brush = Brush.horizontalGradient(
-                    colors = listOf(Color.Black, Color.Transparent),
-                    startX = 0f,
-                    endX = it.toPx()
-                ),
-                blendMode = BlendMode.DstIn
-            )
-        }
-        right?.let {
-            drawRect(
-                brush = Brush.horizontalGradient(
+                    endY = size.height),
+            blendMode = BlendMode.DstIn)
+      }
+      left?.let {
+        drawRect(
+            brush =
+                Brush.horizontalGradient(
+                    colors = listOf(Color.Black, Color.Transparent), startX = 0f, endX = it.toPx()),
+            blendMode = BlendMode.DstIn)
+      }
+      right?.let {
+        drawRect(
+            brush =
+                Brush.horizontalGradient(
                     colors = listOf(Color.Transparent, Color.Black),
                     startX = size.width - it.toPx(),
-                    endX = size.width
-                ),
-                blendMode = BlendMode.DstIn
-            )
-        }
+                    endX = size.width),
+            blendMode = BlendMode.DstIn)
+      }
     }
 
 fun Modifier.fadingEdge(
     horizontal: Dp? = null,
     vertical: Dp? = null,
-) = fadingEdge(
-    left = horizontal,
-    right = horizontal,
-    top = vertical,
-    bottom = vertical
-)
+) = fadingEdge(left = horizontal, right = horizontal, top = vertical, bottom = vertical)

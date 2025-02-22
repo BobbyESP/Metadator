@@ -44,50 +44,48 @@ fun ConditionedMarqueeText(
     animationDuration: Float = 4000f,
     delayBetweenAnimations: Long = 500L
 ) {
-    val (useMarqueeText) = rememberPreferenceState(MARQUEE_TEXT_ENABLED)
+  val (useMarqueeText) = rememberPreferenceState(MARQUEE_TEXT_ENABLED)
 
-    if (useMarqueeText.value) {
-        MarqueeText(
-            text,
-            modifier,
-            textModifier,
-            color,
-            fontSize,
-            fontStyle,
-            fontWeight,
-            fontFamily,
-            letterSpacing,
-            textDecoration,
-            textAlign,
-            lineHeight,
-            maxLines,
-            overflow,
-            softWrap,
-            onTextLayout,
-            style,
-            sideGradient,
-            customEasing,
-            animationDuration,
-            delayBetweenAnimations
-        )
-    } else {
-        Text(
-            text = text,
-            modifier = textModifier,
-            color = color,
-            fontSize = fontSize,
-            fontStyle = fontStyle,
-            fontWeight = fontWeight,
-            fontFamily = fontFamily,
-            letterSpacing = letterSpacing,
-            textDecoration = textDecoration,
-            textAlign = textAlign,
-            lineHeight = lineHeight,
-            maxLines = maxLines,
-            overflow = overflow,
-            softWrap = softWrap,
-            onTextLayout = onTextLayout,
-            style = style
-        )
-    }
+  if (useMarqueeText.value) {
+    MarqueeText(
+        text,
+        modifier,
+        textModifier,
+        color,
+        fontSize,
+        fontStyle,
+        fontWeight,
+        fontFamily,
+        letterSpacing,
+        textDecoration,
+        textAlign,
+        lineHeight,
+        maxLines,
+        overflow,
+        softWrap,
+        onTextLayout,
+        style,
+        sideGradient,
+        customEasing,
+        animationDuration,
+        delayBetweenAnimations)
+  } else {
+    Text(
+        text = text,
+        modifier = textModifier,
+        color = color,
+        fontSize = fontSize,
+        fontStyle = fontStyle,
+        fontWeight = fontWeight,
+        fontFamily = fontFamily,
+        letterSpacing = letterSpacing,
+        textDecoration = textDecoration,
+        textAlign = textAlign,
+        lineHeight = lineHeight,
+        maxLines = maxLines,
+        overflow = overflow,
+        softWrap = softWrap,
+        onTextLayout = onTextLayout,
+        style = style)
+  }
 }

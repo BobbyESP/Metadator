@@ -23,46 +23,34 @@ fun <T : Any> LazyListScope.handlePagingState(
     errorContent: @Composable LazyItemScope.(errorMessage: String?) -> Unit = { errorMessage ->
         // Default error content.
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
+            modifier = Modifier.fillMaxWidth().padding(16.dp),
             verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Text(
-                text = errorMessage ?: stringResource(R.string.unknown_error),
-            )
+            Text(text = errorMessage ?: stringResource(R.string.unknown_error))
         }
-    }
+    },
 ) {
     items?.let { pagingItems ->
         when {
             pagingItems.loadState.refresh is LoadState.Loading -> {
                 // Initial loading state.
-                items(initialLoadingItemCount) {
-                    loadingContent()
-                }
+                items(initialLoadingItemCount) { loadingContent() }
             }
 
             pagingItems.loadState.append is LoadState.Loading -> {
                 // Loading more items state.
-                item {
-                    loadingContent()
-                }
+                item { loadingContent() }
             }
 
             pagingItems.loadState.refresh is LoadState.Error -> {
                 val error = pagingItems.loadState.refresh as LoadState.Error
-                item {
-                    errorContent(error.error.message)
-                }
+                item { errorContent(error.error.message) }
             }
 
             pagingItems.loadState.append is LoadState.Error -> {
                 val error = pagingItems.loadState.append as LoadState.Error
-                item {
-                    errorContent(error.error.message)
-                }
+                item { errorContent(error.error.message) }
             }
 
             else -> {
@@ -70,11 +58,10 @@ fun <T : Any> LazyListScope.handlePagingState(
                 // To avoid unexpected behavior in future changes.
             }
         }
-    } ?: run {
-        // Handle the case where items is null.
-        // For example, display an empty state or an error message.
-        item {
-            errorContent(stringResource(id = R.string.list_items_null))
-        }
     }
+        ?: run {
+            // Handle the case where items is null.
+            // For example, display an empty state or an error message.
+            item { errorContent(stringResource(id = R.string.list_items_null)) }
+        }
 }

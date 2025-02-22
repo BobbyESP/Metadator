@@ -9,8 +9,8 @@ import com.bobbyesp.metadator.core.data.local.preferences.PreferencesKey.SONGS_L
 import com.bobbyesp.metadator.core.data.local.preferences.PreferencesKey.SONG_CARD_SIZE
 import com.bobbyesp.metadator.core.data.local.preferences.PreferencesKey.THEME_COLOR
 import com.bobbyesp.metadator.core.data.local.preferences.PreferencesKey.USE_DYNAMIC_COLORING
-import com.bobbyesp.metadator.mediastore.domain.enums.LayoutType
 import com.bobbyesp.metadator.mediastore.domain.enums.CompactCardSize
+import com.bobbyesp.metadator.mediastore.domain.enums.LayoutType
 import com.materialkolor.PaletteStyle
 
 @Stable
@@ -24,17 +24,16 @@ data class UserPreferences(
     val themeColor: Int,
     val paletteStyle: PaletteStyle
 ) {
-    companion object {
-        fun emptyUserPreferences(): UserPreferences =
-            UserPreferences(
-                songsLayout = LayoutType.valueOf(SONGS_LAYOUT.defaultValue),
-                reduceShadows = REDUCE_SHADOWS.defaultValue,
-                marqueeTextEnabled = MARQUEE_TEXT_ENABLED.defaultValue,
-                songCardSize = CompactCardSize.valueOf(SONG_CARD_SIZE.defaultValue),
-                darkThemePreference = DarkThemePreference(),
-                useDynamicColoring = USE_DYNAMIC_COLORING.defaultValue,
-                themeColor = THEME_COLOR.defaultValue,
-                paletteStyle = PaletteStyle.valueOf(PALETTE_STYLE.defaultValue)
-            )
-    }
+  companion object {
+    fun emptyUserPreferences(): UserPreferences =
+        UserPreferences(
+            songsLayout = LayoutType.valueOf(SONGS_LAYOUT.defaultValue),
+            reduceShadows = REDUCE_SHADOWS.defaultValue,
+            marqueeTextEnabled = MARQUEE_TEXT_ENABLED.defaultValue,
+            songCardSize = CompactCardSize.valueOf(SONG_CARD_SIZE.defaultValue),
+            darkThemePreference = DarkThemePreference(),
+            useDynamicColoring = USE_DYNAMIC_COLORING.defaultValue,
+            themeColor = THEME_COLOR.defaultValue,
+            paletteStyle = PaletteStyle.valueOf(PALETTE_STYLE.defaultValue))
+  }
 }

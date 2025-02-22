@@ -21,9 +21,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 
-/**
- * Made by Konstantin Klassen (https://twitter.com/Snokbert)
- */
+/** Made by Konstantin Klassen (https://twitter.com/Snokbert) */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PullToRefreshLayout(
@@ -31,45 +29,45 @@ fun PullToRefreshLayout(
     pullState: PullState = rememberPullState(),
     content: @Composable () -> Unit,
 ) {
-    CompositionLocalProvider(
-        LocalOverscrollConfiguration provides null // Disable overscroll otherwise it consumes the drag before we get the chance
-    ) {
+  CompositionLocalProvider(
+      LocalOverscrollConfiguration provides
+          null // Disable overscroll otherwise it consumes the drag before we get the chance
+      ) {
         Box(
-            modifier = modifier
-                .background(MaterialTheme.colorScheme.primaryContainer)
-                .background(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(
-                            MaterialTheme.colorScheme.background,
-                            Color.Transparent
-                        ),
-                        startY = -10f,
-                        endY = pullState.progressRefreshTrigger * 120
-                    )
-                )
-                .nestedScroll(pullState.scrollConnection),
+            modifier =
+                modifier
+                    .background(MaterialTheme.colorScheme.primaryContainer)
+                    .background(
+                        brush =
+                            Brush.verticalGradient(
+                                colors =
+                                    listOf(MaterialTheme.colorScheme.background, Color.Transparent),
+                                startY = -10f,
+                                endY = pullState.progressRefreshTrigger * 120))
+                    .nestedScroll(pullState.scrollConnection),
         ) {
-            Indicator(pullState = pullState)
-            Column {
-                // This invisible spacer height + current top inset is always equals max top inset to keep scroll speed constant
-                Spacer(modifier = Modifier.height(LocalDensity.current.run { pullState.maxInsetTop.toDp() } - pullState.insetTop))
+          Indicator(pullState = pullState)
+          Column {
+            // This invisible spacer height + current top inset is always equals max top inset to
+            // keep scroll speed constant
+            Spacer(
+                modifier =
+                    Modifier.height(
+                        LocalDensity.current.run { pullState.maxInsetTop.toDp() } -
+                            pullState.insetTop))
 
-                Surface(
-                    modifier = Modifier
-                        .offset {
-                            IntOffset(0, pullState.offsetY.toInt())
-                        },
-                    color = Color.Transparent,
-                    shape = RoundedCornerShape(
+            Surface(
+                modifier = Modifier.offset { IntOffset(0, pullState.offsetY.toInt()) },
+                color = Color.Transparent,
+                shape =
+                    RoundedCornerShape(
                         topStart = 16.dp * pullState.progressRefreshTrigger,
                         topEnd = 16.dp * pullState.progressRefreshTrigger,
                         bottomStart = 0.dp,
-                        bottomEnd = 0.dp
-                    )
-                ) {
-                    content()
+                        bottomEnd = 0.dp)) {
+                  content()
                 }
-            }
+          }
         }
-    }
+      }
 }

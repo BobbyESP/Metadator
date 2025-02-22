@@ -16,21 +16,20 @@ fun DropdownItemContainer(
     contentPadding: androidx.compose.ui.unit.Dp = 0.dp,
     content: @Composable RowScope.() -> Unit
 ) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            // Preferred min and max width used during the intrinsic measurement.
-            .sizeIn(
-                minWidth = DropdownMenuItemDefaultMinWidth,
-                maxWidth = DropdownMenuItemDefaultMaxWidth,
-                minHeight = ListItemContainerHeight
-            )
-            .padding(contentPadding)
-            .padding(horizontal = DropdownMenuItemHorizontalPadding),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
+  Row(
+      modifier =
+          modifier
+              .fillMaxWidth()
+              // Preferred min and max width used during the intrinsic measurement.
+              .sizeIn(
+                  minWidth = DropdownMenuItemDefaultMinWidth,
+                  maxWidth = DropdownMenuItemDefaultMaxWidth,
+                  minHeight = ListItemContainerHeight)
+              .padding(contentPadding)
+              .padding(horizontal = DropdownMenuItemHorizontalPadding),
+      verticalAlignment = Alignment.CenterVertically) {
         content()
-    }
+      }
 }
 
 private val DropdownMenuItemHorizontalPadding = 12.dp

@@ -7,15 +7,6 @@ import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 val tagEditorViewModelsModule = module {
-    viewModel {
-        MetadataEditorViewModel(
-            context = androidContext(),
-            stateHandle = get()
-        )
-    }
-    viewModel {
-        MetadataBottomSheetViewModel(
-            searchService = get()
-        )
-    }
+  viewModel { MetadataEditorViewModel(context = androidContext(), stateHandle = get()) }
+  viewModel { MetadataBottomSheetViewModel(searchService = get()) }
 }

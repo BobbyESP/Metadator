@@ -22,20 +22,15 @@ fun OutlinedButtonWithIcon(
     contentColor: Color = MaterialTheme.colorScheme.primary,
     contentDescription: String? = null
 ) {
-    OutlinedButton(
-        modifier = modifier,
-        onClick = onClick,
-        contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
-        colors = ButtonDefaults.outlinedButtonColors(contentColor = contentColor)
-    ) {
+  OutlinedButton(
+      modifier = modifier,
+      onClick = onClick,
+      contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
+      colors = ButtonDefaults.outlinedButtonColors(contentColor = contentColor)) {
         Icon(
             modifier = Modifier.size(18.dp),
             imageVector = icon,
-            contentDescription = contentDescription
-        )
-        Text(
-            modifier = Modifier.padding(start = 8.dp),
-            text = text
-        )
-    }
+            contentDescription = contentDescription)
+        Text(modifier = Modifier.padding(start = 8.dp), text = text)
+      }
 }

@@ -22,52 +22,51 @@ import org.koin.core.component.inject
  * @property searchService The service that will be used to search for tracks on Spotify.
  */
 class SearchRepositoryImpl : SearchRepository, KoinComponent {
-    private val searchService by inject<SpotifySearchService>()
+  private val searchService by inject<SpotifySearchService>()
 
-    /**
-     * Search for tracks on Spotify. The search does support pagination but this implementation
-     * does not support it. For now, it will only return up to 50 results.
-     */
-    override suspend fun searchTracks(query: String): Result<List<Track>> {
-        try {
-            val searchResult = searchService.search(
-                query,
-                searchTypes = arrayOf(SearchApi.SearchType.Track),
-                filters = emptyList()
-            )
+  /**
+   * Search for tracks on Spotify. The search does support pagination but this implementation does
+   * not support it. For now, it will only return up to 50 results.
+   */
+  override suspend fun searchTracks(query: String): Result<List<Track>> {
+    try {
+      val searchResult =
+          searchService.search(
+              query, searchTypes = arrayOf(SearchApi.SearchType.Track), filters = emptyList())
 
-            searchResult.tracks?.let { return Result.success(it.items) }
-                ?: return Result.failure(NullPointerException("Search result is null"))
-        } catch (th: Throwable) {
-            return Result.failure(th)
-        }
+      searchResult.tracks?.let {
+        return Result.success(it.items)
+      } ?: return Result.failure(NullPointerException("Search result is null"))
+    } catch (th: Throwable) {
+      return Result.failure(th)
     }
+  }
 
-    override suspend fun searchAlbums(query: String): Result<List<Album>> {
-        TODO("Not yet implemented")
-    }
+  override suspend fun searchAlbums(query: String): Result<List<Album>> {
+    TODO("Not yet implemented")
+  }
 
-    override suspend fun searchPlaylists(query: String): Result<List<Playlist>> {
-        TODO("Not yet implemented")
-    }
+  override suspend fun searchPlaylists(query: String): Result<List<Playlist>> {
+    TODO("Not yet implemented")
+  }
 
-    override suspend fun searchArtists(query: String): Result<List<Artist>> {
-        TODO("Not yet implemented")
-    }
+  override suspend fun searchArtists(query: String): Result<List<Artist>> {
+    TODO("Not yet implemented")
+  }
 
-    override suspend fun searchPaginatedTracks(query: String): Pager<Int, Track> {
-        TODO("Not yet implemented")
-    }
+  override suspend fun searchPaginatedTracks(query: String): Pager<Int, Track> {
+    TODO("Not yet implemented")
+  }
 
-    override suspend fun searchPaginatedAlbums(query: String): Pager<Int, Album> {
-        TODO("Not yet implemented")
-    }
+  override suspend fun searchPaginatedAlbums(query: String): Pager<Int, Album> {
+    TODO("Not yet implemented")
+  }
 
-    override suspend fun searchPaginatedPlaylists(query: String): Pager<Int, Playlist> {
-        TODO("Not yet implemented")
-    }
+  override suspend fun searchPaginatedPlaylists(query: String): Pager<Int, Playlist> {
+    TODO("Not yet implemented")
+  }
 
-    override suspend fun searchPaginatedArtists(query: String): Pager<Int, Artist> {
-        TODO("Not yet implemented")
-    }
+  override suspend fun searchPaginatedArtists(query: String): Pager<Int, Artist> {
+    TODO("Not yet implemented")
+  }
 }

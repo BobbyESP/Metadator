@@ -42,10 +42,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEach
 import androidx.compose.ui.util.fastForEachIndexed
 import com.bobbyesp.metadator.R
-import com.bobbyesp.ui.util.AnimatedTextContentTransformation
 import com.bobbyesp.metadator.onboarding.domain.PermissionItem
 import com.bobbyesp.metadator.onboarding.presentation.components.OnboardingScreenHeader
 import com.bobbyesp.ui.components.others.AdditionalInformation
+import com.bobbyesp.ui.util.AnimatedTextContentTransformation
 import com.bobbyesp.ui.util.isDeviceInLandscape
 import com.bobbyesp.utilities.ui.permissions.PermissionType
 import com.bobbyesp.utilities.ui.permissions.PermissionType.Companion.toPermissionType
@@ -60,127 +60,100 @@ fun OnboardingPermissionsPage(
     onNextClick: () -> Unit = {},
 ) {
 
-    val shouldShowRationale = neededPermissions.any {
-        !rememberPermissionState(it.permission).status.isGranted
-    }
+  val shouldShowRationale =
+      neededPermissions.any { !rememberPermissionState(it.permission).status.isGranted }
 
-    val allPermissionsGranted = neededPermissions.all {
-        rememberPermissionState(it.permission).status.isGranted
-    }
+  val allPermissionsGranted =
+      neededPermissions.all { rememberPermissionState(it.permission).status.isGranted }
 
-    val permissions = neededPermissions.map {
+  val permissions =
+      neededPermissions.map {
         val storagePermissionState = rememberPermissionState(it.permission)
 
         PermissionItem(
             permission = it.permission.toPermissionType(),
             icon = it.toPermissionIcon(),
             isGranted = storagePermissionState.status.isGranted,
-            onClick = { storagePermissionState.launchPermissionRequest() }
-        )
-    }
+            onClick = { storagePermissionState.launchPermissionRequest() })
+      }
 
+  Scaffold(
+      modifier = Modifier.fillMaxSize(),
+      floatingActionButton = {
+        val transitionState = remember { MutableTransitionState(allPermissionsGranted) }
 
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        floatingActionButton = {
-            val transitionState = remember {
-                MutableTransitionState(allPermissionsGranted)
-            }
-
-            LaunchedEffect(allPermissionsGranted) {
-                transitionState.targetState = allPermissionsGranted
-            }
-
-            val transition = rememberTransition(transitionState = transitionState)
-
-
-            Button(
-                modifier = Modifier
-                    .padding(16.dp),
-                onClick = {
-                    //if they are all granted, go to the next page, otherwise request the permissions
-                    if (allPermissionsGranted) {
-                        onNextClick()
-                    } else {
-                        permissions.fastForEach {
-                            it.onClick()
-                        }
-                    }
-                },
-            ) {
-                transition.AnimatedContent(
-                    transitionSpec = { AnimatedTextContentTransformation }
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
-                        val textId =
-                            if (it) R.string.finish else com.bobbyesp.utilities.R.string.grant
-                        val icon =
-                            if (it) Icons.AutoMirrored.Rounded.KeyboardArrowRight else Icons.Rounded.Check
-
-                        Text(text = stringResource(id = textId))
-                        Icon(
-                            modifier = Modifier,
-                            imageVector = icon,
-                            contentDescription = stringResource(id = textId)
-                        )
-                    }
-                }
-            }
+        LaunchedEffect(allPermissionsGranted) {
+          transitionState.targetState = allPermissionsGranted
         }
-    ) { paddingValues ->
+
+        val transition = rememberTransition(transitionState = transitionState)
+
+        Button(
+            modifier = Modifier.padding(16.dp),
+            onClick = {
+              // if they are all granted, go to the next page, otherwise request the permissions
+              if (allPermissionsGranted) {
+                onNextClick()
+              } else {
+                permissions.fastForEach { it.onClick() }
+              }
+            },
+        ) {
+          transition.AnimatedContent(transitionSpec = { AnimatedTextContentTransformation }) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                  val textId = if (it) R.string.finish else com.bobbyesp.utilities.R.string.grant
+                  val icon =
+                      if (it) Icons.AutoMirrored.Rounded.KeyboardArrowRight else Icons.Rounded.Check
+
+                  Text(text = stringResource(id = textId))
+                  Icon(
+                      modifier = Modifier,
+                      imageVector = icon,
+                      contentDescription = stringResource(id = textId))
+                }
+          }
+        }
+      }) { paddingValues ->
         if (isDeviceInLandscape()) {
 
-            val scrollState = rememberScrollState()
+          val scrollState = rememberScrollState()
 
-            Row(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues),
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+          Row(
+              modifier = Modifier.fillMaxSize().padding(paddingValues),
+              horizontalArrangement = Arrangement.spacedBy(16.dp),
+              verticalAlignment = Alignment.CenterVertically) {
                 OnboardingScreenHeader(
                     modifier = Modifier.padding(16.dp).weight(0.4f),
                     title = stringResource(R.string.permissions),
                     description = stringResource(R.string.permissions_description),
-                    icon = Icons.Rounded.Security
-                )
+                    icon = Icons.Rounded.Security)
 
                 PermissionsScreenContent(
                     modifier = Modifier.weight(0.6f),
                     permissions = permissions,
                     shouldShowRationale = shouldShowRationale,
-                    scrollState = scrollState
-                )
-
-            }
+                    scrollState = scrollState)
+              }
         } else {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
-                    .padding(horizontal = 16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
+          Column(
+              modifier = Modifier.fillMaxSize().padding(paddingValues).padding(horizontal = 16.dp),
+              horizontalAlignment = Alignment.CenterHorizontally,
+              verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 OnboardingScreenHeader(
                     modifier = Modifier.padding(16.dp),
                     title = stringResource(R.string.permissions),
                     description = stringResource(R.string.permissions_description),
-                    icon = Icons.Rounded.Security
-                )
+                    icon = Icons.Rounded.Security)
                 PermissionsScreenContent(
                     modifier = Modifier,
                     permissions = permissions,
                     shouldShowRationale = shouldShowRationale,
-                    scrollState = rememberScrollState()
-                )
-            }
+                    scrollState = rememberScrollState())
+              }
         }
-    }
+      }
 }
 
 @Composable
@@ -190,56 +163,34 @@ fun PermissionsScreenContent(
     shouldShowRationale: Boolean,
     scrollState: ScrollState
 ) {
-    Column(
-        modifier = modifier
-            .padding(horizontal = 16.dp)
-            .verticalScroll(scrollState)
-    ) {
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(4.dp)
-        ) {
-            PermissionItemsGroup(
-                modifier = Modifier.padding(vertical = 16.dp),
-                permissionItems = permissions
-            )
-        }
-
-        AnimatedContent(
-            targetState = shouldShowRationale,
-            modifier = Modifier
-        ) { visible ->
-            if (visible) {
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    HorizontalDivider()
-
-                    AdditionalInformation(
-                        modifier = Modifier,
-                        text = stringResource(R.string.permissions_additional_information),
-                        fontFamily = FontFamily.Monospace
-                    )
-                }
-
-            }
-        }
+  Column(modifier = modifier.padding(horizontal = 16.dp).verticalScroll(scrollState)) {
+    Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+      PermissionItemsGroup(
+          modifier = Modifier.padding(vertical = 16.dp), permissionItems = permissions)
     }
+
+    AnimatedContent(targetState = shouldShowRationale, modifier = Modifier) { visible ->
+      if (visible) {
+        Column(
+            modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+              HorizontalDivider()
+
+              AdditionalInformation(
+                  modifier = Modifier,
+                  text = stringResource(R.string.permissions_additional_information),
+                  fontFamily = FontFamily.Monospace)
+            }
+      }
+    }
+  }
 }
 
 @Preview
 @Composable
 private fun OnboardingPermissionsPagePreview() {
-    val neededPermissions = listOf(
-        PermissionType.READ_EXTERNAL_STORAGE,
-        PermissionType.READ_MEDIA_AUDIO
-    )
-    MaterialTheme {
-        OnboardingPermissionsPage(
-            neededPermissions = neededPermissions
-        )
-    }
+  val neededPermissions =
+      listOf(PermissionType.READ_EXTERNAL_STORAGE, PermissionType.READ_MEDIA_AUDIO)
+  MaterialTheme { OnboardingPermissionsPage(neededPermissions = neededPermissions) }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -248,49 +199,48 @@ private fun PermissionItemButton(
     permissionItem: PermissionItem,
     modifier: Modifier = Modifier,
 ) {
-    val animatedBackgroundColor by animateColorAsState(
-        targetValue = if (!permissionItem.isGranted) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.primary
-    )
+  val animatedBackgroundColor by
+      animateColorAsState(
+          targetValue =
+              if (!permissionItem.isGranted) MaterialTheme.colorScheme.tertiary
+              else MaterialTheme.colorScheme.primary)
 
-    val animatedTextColor by animateColorAsState(
-        targetValue = if (!permissionItem.isGranted) MaterialTheme.colorScheme.onTertiary else MaterialTheme.colorScheme.onPrimary
-    )
+  val animatedTextColor by
+      animateColorAsState(
+          targetValue =
+              if (!permissionItem.isGranted) MaterialTheme.colorScheme.onTertiary
+              else MaterialTheme.colorScheme.onPrimary)
 
-    Row(
-        modifier = modifier
-            .background(color = MaterialTheme.colorScheme.surfaceContainer)
-            .combinedClickable(
-                onClick = permissionItem.onClick
-            )
-            .padding(horizontal = 24.dp, vertical = 16.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
+  Row(
+      modifier =
+          modifier
+              .background(color = MaterialTheme.colorScheme.surfaceContainer)
+              .combinedClickable(onClick = permissionItem.onClick)
+              .padding(horizontal = 24.dp, vertical = 16.dp),
+      verticalAlignment = Alignment.CenterVertically,
+      horizontalArrangement = Arrangement.spacedBy(16.dp)) {
         Icon(
-            modifier = Modifier
-                .size(48.dp)
-                .clip(CircleShape)
-                .background(animatedBackgroundColor)
-                .padding(8.dp),
+            modifier =
+                Modifier.size(48.dp)
+                    .clip(CircleShape)
+                    .background(animatedBackgroundColor)
+                    .padding(8.dp),
             imageVector = permissionItem.icon,
             tint = animatedTextColor,
-            contentDescription = null
-        )
+            contentDescription = null)
 
         Column {
-            Text(
-                text = permissionItem.permission.toPermissionString(),
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSurface
-            )
+          Text(
+              text = permissionItem.permission.toPermissionString(),
+              style = MaterialTheme.typography.titleMedium,
+              color = MaterialTheme.colorScheme.onSurface)
 
-            Text(
-                text = permissionItem.permission.toPermissionDescription(),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
+          Text(
+              text = permissionItem.permission.toPermissionDescription(),
+              style = MaterialTheme.typography.bodyMedium,
+              color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
-    }
+      }
 }
 
 @Composable
@@ -298,41 +248,34 @@ private fun PermissionItemsGroup(
     permissionItems: List<PermissionItem>,
     modifier: Modifier = Modifier,
 ) {
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(4.dp)
-    ) {
-        permissionItems.fastForEachIndexed { index, item ->
-            PermissionItemButton(
-                permissionItem = item,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(
-                        when {
-                            permissionItems.size == 1 -> {
-                                MaterialTheme.shapes.extraLarge
-                            }
-
-                            index == 0 -> {
-                                MaterialTheme.shapes.extraLarge.copy(
-                                    bottomStart = MaterialTheme.shapes.medium.bottomStart,
-                                    bottomEnd = MaterialTheme.shapes.medium.bottomEnd
-                                )
-                            }
-
-                            index == permissionItems.lastIndex -> {
-                                MaterialTheme.shapes.extraLarge.copy(
-                                    topStart = MaterialTheme.shapes.medium.topStart,
-                                    topEnd = MaterialTheme.shapes.medium.topEnd
-                                )
-                            }
-
-                            else -> {
-                                MaterialTheme.shapes.medium
-                            }
+  Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(4.dp)) {
+    permissionItems.fastForEachIndexed { index, item ->
+      PermissionItemButton(
+          permissionItem = item,
+          modifier =
+              Modifier.fillMaxWidth()
+                  .clip(
+                      when {
+                        permissionItems.size == 1 -> {
+                          MaterialTheme.shapes.extraLarge
                         }
-                    )
-            )
-        }
+
+                        index == 0 -> {
+                          MaterialTheme.shapes.extraLarge.copy(
+                              bottomStart = MaterialTheme.shapes.medium.bottomStart,
+                              bottomEnd = MaterialTheme.shapes.medium.bottomEnd)
+                        }
+
+                        index == permissionItems.lastIndex -> {
+                          MaterialTheme.shapes.extraLarge.copy(
+                              topStart = MaterialTheme.shapes.medium.topStart,
+                              topEnd = MaterialTheme.shapes.medium.topEnd)
+                        }
+
+                        else -> {
+                          MaterialTheme.shapes.medium
+                        }
+                      }))
     }
+  }
 }

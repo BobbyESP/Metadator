@@ -1,6 +1,5 @@
 package com.bobbyesp.metadator.core.presentation.theme
 
-import android.os.Build
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ProvideTextStyle
@@ -16,48 +15,37 @@ import com.bobbyesp.metadator.core.presentation.common.LocalDynamicColoringSwitc
 import com.bobbyesp.metadator.core.presentation.common.LocalDynamicThemeState
 import com.materialkolor.DynamicMaterialTheme
 
-
-
 val MetadatorLogoForeground = Color(0xFFFFFFF0)
 val MetadatorLogoBackground = Color(0xFF313638)
 
 @Composable
-fun MetadatorTheme(
-    content: @Composable () -> Unit
-) {
-    val themeState = LocalDynamicThemeState.current
-    val dynamicColoring = LocalDynamicColoringSwitch.current
-    val context = LocalContext.current
-    val canUseDynamicColor = dynamicColoring && isDynamicColoringSupported()
+fun MetadatorTheme(content: @Composable () -> Unit) {
+  val themeState = LocalDynamicThemeState.current
+  val dynamicColoring = LocalDynamicColoringSwitch.current
+  val context = LocalContext.current
+  val canUseDynamicColor = dynamicColoring && isDynamicColoringSupported()
 
-    val dynamicColorScheme = if (canUseDynamicColor) {
+  val dynamicColorScheme =
+      if (canUseDynamicColor) {
         if (themeState.isDark) {
-            dynamicDarkColorScheme(context).let {
-                if (themeState.isAmoled) it.copy(
-                    surface = Color.Black,
-                    background = Color.Black
-                ) else it
-            }
+          dynamicDarkColorScheme(context).let {
+            if (themeState.isAmoled) it.copy(surface = Color.Black, background = Color.Black)
+            else it
+          }
         } else {
-            dynamicLightColorScheme(context)
+          dynamicLightColorScheme(context)
         }
-    } else null
+      } else null
 
-    ProvideTextStyle(
-        value = LocalTextStyle.current.copy(
-            lineBreak = LineBreak.Paragraph,
-            textDirection = TextDirection.Content
-        )
-    ) {
+  ProvideTextStyle(
+      value =
+          LocalTextStyle.current.copy(
+              lineBreak = LineBreak.Paragraph, textDirection = TextDirection.Content)) {
         if (dynamicColorScheme != null) {
-            MaterialTheme(colorScheme = dynamicColorScheme, shapes = AppShapes, content = content)
+          MaterialTheme(colorScheme = dynamicColorScheme, shapes = AppShapes, content = content)
         } else {
-            DynamicMaterialTheme(
-                state = themeState,
-                animate = true,
-                shapes = AppShapes,
-                content = content
-            )
+          DynamicMaterialTheme(
+              state = themeState, animate = true, shapes = AppShapes, content = content)
         }
-    }
+      }
 }

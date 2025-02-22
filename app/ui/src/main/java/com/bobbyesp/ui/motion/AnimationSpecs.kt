@@ -13,14 +13,15 @@ import com.bobbyesp.ui.motion.MotionConstants.DURATION_EXIT
 import com.bobbyesp.ui.motion.MotionConstants.DURATION_EXIT_SHORT
 
 fun PathInterpolator.toEasing(): Easing {
-    return Easing { f -> this.getInterpolation(f) }
+  return Easing { f -> this.getInterpolation(f) }
 }
 
-private val path = Path().apply {
-    moveTo(0f, 0f)
-    cubicTo(0.05F, 0F, 0.133333F, 0.06F, 0.166666F, 0.4F)
-    cubicTo(0.208333F, 0.82F, 0.25F, 1F, 1F, 1F)
-}
+private val path =
+    Path().apply {
+      moveTo(0f, 0f)
+      cubicTo(0.05F, 0F, 0.133333F, 0.06F, 0.166666F, 0.4F)
+      cubicTo(0.208333F, 0.82F, 0.25F, 1F, 1F, 1F)
+    }
 
 val EmphasizedPathInterpolator = PathInterpolator(path)
 val EmphasizedEasing = EmphasizedPathInterpolator.toEasing()
@@ -36,25 +37,17 @@ val MotionEasingStandard = CubicBezierEasing(0.4F, 0.0F, 0.2F, 1F)
 
 val tweenSpec = tween<Float>(durationMillis = DURATION_ENTER, easing = EmphasizedEasing)
 
-fun <T> tweenEnter(
-    delayMillis: Int = DURATION_EXIT,
-    durationMillis: Int = DURATION_ENTER
-) =
+fun <T> tweenEnter(delayMillis: Int = DURATION_EXIT, durationMillis: Int = DURATION_ENTER) =
     tween<T>(
         delayMillis = delayMillis,
         durationMillis = durationMillis,
-        easing = EmphasizedDecelerateEasing
-    )
+        easing = EmphasizedDecelerateEasing)
 
 fun <T> tweenExit(
     durationMillis: Int = DURATION_EXIT_SHORT,
-) = tween<T>(
-    durationMillis = durationMillis,
-    easing = EmphasizedAccelerateEasing
-)
+) = tween<T>(durationMillis = durationMillis, easing = EmphasizedAccelerateEasing)
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 val DefaultBoundsTransform = BoundsTransform { _, _ ->
-    tween(easing = EmphasizedEasing, durationMillis = DURATION)
+  tween(easing = EmphasizedEasing, durationMillis = DURATION)
 }
-

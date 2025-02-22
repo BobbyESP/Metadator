@@ -7,14 +7,14 @@ import com.adamratzman.spotify.models.SpotifySearchResult
 import com.adamratzman.spotify.models.Track
 
 interface SpotifySearchService {
-    suspend fun search(
-        query: String,
-        vararg searchTypes: SearchApi.SearchType,
-        filters: List<SearchFilter>
-    ): SpotifySearchResult
+  suspend fun search(
+      query: String,
+      vararg searchTypes: SearchApi.SearchType,
+      filters: List<SearchFilter>
+  ): SpotifySearchResult
 
-    suspend fun searchPaginatedTracks(
-        query: String,
-        filters: List<SearchFilter>,
-    ): Pager<Int, Track>
+  suspend fun searchPaginatedTracks(
+      query: String,
+      filters: List<SearchFilter>,
+  ): Pager<Int, Track>
 }

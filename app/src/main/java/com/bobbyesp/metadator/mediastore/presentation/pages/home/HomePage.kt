@@ -82,200 +82,161 @@ fun HomePage(
     preferences: State<UserPreferences>,
     onEvent: (MediaStorePageViewModel.Companion.Events) -> Unit = {}
 ) {
-    val context = LocalActivity.current
-    val readAudioFiles = when {
-        Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU -> Manifest.permission.READ_EXTERNAL_STORAGE
+  val context = LocalActivity.current
+  val readAudioFiles =
+      when {
+        Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ->
+            Manifest.permission.READ_EXTERNAL_STORAGE
 
         else -> Manifest.permission.READ_MEDIA_AUDIO
+      }
+
+  val storagePermissionState = rememberPermissionState(permission = readAudioFiles)
+
+  LaunchedEffect(storagePermissionState.status.isGranted) {
+    if (storagePermissionState.status.isGranted && songs.value !is ResourceState.Success) {
+      onEvent(MediaStorePageViewModel.Companion.Events.StartObservingMediaStore)
     }
+  }
 
-    val storagePermissionState = rememberPermissionState(permission = readAudioFiles)
+  val navController = LocalNavController.current
+  val scope = rememberCoroutineScope()
 
-    LaunchedEffect(storagePermissionState.status.isGranted) {
-        if (storagePermissionState.status.isGranted && songs.value !is ResourceState.Success) {
-            onEvent(MediaStorePageViewModel.Companion.Events.StartObservingMediaStore)
-        }
-    }
+  var moreOptionsVisible by remember { mutableStateOf(false) }
 
-    val navController = LocalNavController.current
-    val scope = rememberCoroutineScope()
+  val mediaStoreLazyGridState = rememberForeverLazyGridState(key = "lazyGrid")
+  val mediaStoreLazyColumnState = rememberLazyListState()
 
-    var moreOptionsVisible by remember {
-        mutableStateOf(false)
-    }
+  val configuredLayout = preferences.value.songsLayout
+  val (_, setConfiguredLayout) = rememberPreferenceState(SONGS_LAYOUT)
 
-    val mediaStoreLazyGridState = rememberForeverLazyGridState(key = "lazyGrid")
-    val mediaStoreLazyColumnState = rememberLazyListState()
+  val songCardSize = preferences.value.songCardSize
 
-    val configuredLayout = preferences.value.songsLayout
-    val (_, setConfiguredLayout) = rememberPreferenceState(SONGS_LAYOUT)
+  val gridIsFirstItemVisible by remember {
+    derivedStateOf { mediaStoreLazyGridState.firstVisibleItemIndex == 0 }
+  }
+  val listIsFirstItemVisible by remember {
+    derivedStateOf { mediaStoreLazyColumnState.firstVisibleItemIndex == 0 }
+  }
 
-    val songCardSize = preferences.value.songCardSize
-
-    val gridIsFirstItemVisible by remember {
-        derivedStateOf {
-            mediaStoreLazyGridState.firstVisibleItemIndex == 0
-        }
-    }
-    val listIsFirstItemVisible by remember {
-        derivedStateOf {
-            mediaStoreLazyColumnState.firstVisibleItemIndex == 0
-        }
-    }
-
-    Scaffold(
-        modifier = modifier.fillMaxSize(),
-        topBar = {
-            TopAppBar(
-                title = {
-                    Column(
-                        horizontalAlignment = Alignment.Start,
-                    ) {
-                        Text(
-                            text = stringResource(id = R.string.app_name).uppercase(),
-                            fontWeight = FontWeight.SemiBold,
-                            fontFamily = FontFamily.Monospace,
-                            style = MaterialTheme.typography.titleLarge.copy(
-                                letterSpacing = 4.sp,
-                            ),
-                        )
-                        AutoResizableText(
-                            text = stringResource(id = R.string.app_desc).uppercase(),
-                            fontWeight = FontWeight.Normal,
-                            fontFamily = FontFamily.Monospace,
-                            style = MaterialTheme.typography.bodySmall.copy(
-                                letterSpacing = 2.sp,
-                            ),
-                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
-                        )
-                    }
-                }, actions = {
-                    IconButton(
-                        onClick = {
-                            scope.launch {
-                                moreOptionsVisible = false
-                            }
-                            navController.navigate(Route.MediaplayerNavigator)
-                        }
-                    ) {
+  Scaffold(
+      modifier = modifier.fillMaxSize(),
+      topBar = {
+        TopAppBar(
+            title = {
+              Column(
+                  horizontalAlignment = Alignment.Start,
+              ) {
+                Text(
+                    text = stringResource(id = R.string.app_name).uppercase(),
+                    fontWeight = FontWeight.SemiBold,
+                    fontFamily = FontFamily.Monospace,
+                    style =
+                        MaterialTheme.typography.titleLarge.copy(
+                            letterSpacing = 4.sp,
+                        ),
+                )
+                AutoResizableText(
+                    text = stringResource(id = R.string.app_desc).uppercase(),
+                    fontWeight = FontWeight.Normal,
+                    fontFamily = FontFamily.Monospace,
+                    style =
+                        MaterialTheme.typography.bodySmall.copy(
+                            letterSpacing = 2.sp,
+                        ),
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f))
+              }
+            },
+            actions = {
+              IconButton(
+                  onClick = {
+                    scope.launch { moreOptionsVisible = false }
+                    navController.navigate(Route.MediaplayerNavigator)
+                  }) {
+                    Icon(
+                        imageVector = Icons.Rounded.PlayArrow,
+                        contentDescription = stringResource(id = R.string.mediaplayer))
+                  }
+              IconButton(onClick = { navController.navigate(Route.SettingsNavigator.Settings) }) {
+                Icon(
+                    imageVector = Icons.Rounded.Settings,
+                    contentDescription = stringResource(id = R.string.settings))
+              }
+              IconButton(onClick = { moreOptionsVisible = !moreOptionsVisible }) {
+                Icon(
+                    imageVector = Icons.Rounded.MoreVert,
+                    contentDescription = stringResource(id = R.string.open_more_options))
+              }
+              AnimatedDropdownMenu(
+                  expanded = moreOptionsVisible,
+                  onDismissRequest = { moreOptionsVisible = false }) {
+                    DropdownMenuContent(
+                        desiredLayout = configuredLayout,
+                        onLayoutChanged = { setConfiguredLayout(it.name) })
+                  }
+            })
+      },
+      floatingActionButton = {
+        when (configuredLayout) {
+          LayoutType.Grid -> {
+            AnimatedVisibility(
+                visible = !gridIsFirstItemVisible,
+                enter = fadeIn() + scaleIn(),
+                exit = fadeOut() + scaleOut()) {
+                  FloatingActionButton(
+                      onClick = {
+                        scope.launch { mediaStoreLazyGridState.animateScrollToItem(0) }
+                      }) {
                         Icon(
-                            imageVector = Icons.Rounded.PlayArrow,
-                            contentDescription = stringResource(
-                                id = R.string.mediaplayer
-                            )
-                        )
-                    }
-                    IconButton(
-                        onClick = { navController.navigate(Route.SettingsNavigator.Settings) }) {
-                        Icon(
-                            imageVector = Icons.Rounded.Settings,
-                            contentDescription = stringResource(
-                                id = R.string.settings
-                            )
-                        )
-                    }
-                    IconButton(
-                        onClick = {
-                            moreOptionsVisible = !moreOptionsVisible
-                        }) {
-                        Icon(
-                            imageVector = Icons.Rounded.MoreVert,
-                            contentDescription = stringResource(
-                                id = R.string.open_more_options
-                            )
-                        )
-                    }
-                    AnimatedDropdownMenu(
-                        expanded = moreOptionsVisible, onDismissRequest = {
-                            moreOptionsVisible = false
-                        }) {
-                        DropdownMenuContent(
-                            desiredLayout = configuredLayout,
-                            onLayoutChanged = {
-                                setConfiguredLayout(it.name)
-                            }
-                        )
-                    }
-
-                })
-        }, floatingActionButton = {
-            when (configuredLayout) {
-                LayoutType.Grid -> {
-                    AnimatedVisibility(
-                        visible = !gridIsFirstItemVisible,
-                        enter = fadeIn() + scaleIn(),
-                        exit = fadeOut() + scaleOut()
-                    ) {
-                        FloatingActionButton(
-                            onClick = {
-                                scope.launch {
-                                    mediaStoreLazyGridState.animateScrollToItem(0)
-                                }
-                            }) {
-                            Icon(
-                                imageVector = Icons.Rounded.KeyboardDoubleArrowUp,
-                                contentDescription = stringResource(
-                                    id = R.string.scroll_to_top
-                                )
-                            )
-                        }
-                    }
+                            imageVector = Icons.Rounded.KeyboardDoubleArrowUp,
+                            contentDescription = stringResource(id = R.string.scroll_to_top))
+                      }
                 }
+          }
 
-                LayoutType.List -> {
-                    AnimatedVisibility(
-                        visible = !listIsFirstItemVisible,
-                        enter = fadeIn() + scaleIn(),
-                        exit = fadeOut() + scaleOut()
-                    ) {
-                        FloatingActionButton(onClick = {
-                            scope.launch {
-                                mediaStoreLazyColumnState.animateScrollToItem(0)
-                            }
-                        }) {
-                            Icon(
-                                imageVector = Icons.Rounded.KeyboardDoubleArrowUp,
-                                contentDescription = stringResource(
-                                    id = R.string.scroll_to_top
-                                )
-                            )
-                        }
-                    }
+          LayoutType.List -> {
+            AnimatedVisibility(
+                visible = !listIsFirstItemVisible,
+                enter = fadeIn() + scaleIn(),
+                exit = fadeOut() + scaleOut()) {
+                  FloatingActionButton(
+                      onClick = {
+                        scope.launch { mediaStoreLazyColumnState.animateScrollToItem(0) }
+                      }) {
+                        Icon(
+                            imageVector = Icons.Rounded.KeyboardDoubleArrowUp,
+                            contentDescription = stringResource(id = R.string.scroll_to_top))
+                      }
                 }
-            }
-        }) { paddingValues ->
+          }
+        }
+      }) { paddingValues ->
         PermissionRequestHandler(
             permissionState = storagePermissionState,
             deniedContent = { shouldShowRationale ->
-                PermissionNotGrantedDialog(
-                    neededPermissions = persistentListOf(readAudioFiles.toPermissionType()),
-                    onGrantRequest = {
-                        storagePermissionState.launchPermissionRequest()
-                    },
-                    onDismissRequest = {
-                        context?.finish()
-                    },
-                    shouldShowRationale = shouldShowRationale
-                )
+              PermissionNotGrantedDialog(
+                  neededPermissions = persistentListOf(readAudioFiles.toPermissionType()),
+                  onGrantRequest = { storagePermissionState.launchPermissionRequest() },
+                  onDismissRequest = { context?.finish() },
+                  shouldShowRationale = shouldShowRationale)
             },
             content = {
-                MediaStorePage(
-                    modifier = Modifier.padding(paddingValues = paddingValues),
-                    songs = songs,
-                    lazyGridState = mediaStoreLazyGridState,
-                    lazyListState = mediaStoreLazyColumnState,
-                    desiredLayout = configuredLayout,
-                    compactCardSize = songCardSize,
-                    onReloadMediaStore = {
-                        onEvent(MediaStorePageViewModel.Companion.Events.ReloadMediaStore)
-                    },
-                    onItemClicked = { song ->
-                        navController.navigate(
-                            Route.UtilitiesNavigator.TagEditor(song.toParcelableSong())
-                        )
-                    })
+              MediaStorePage(
+                  modifier = Modifier.padding(paddingValues = paddingValues),
+                  songs = songs,
+                  lazyGridState = mediaStoreLazyGridState,
+                  lazyListState = mediaStoreLazyColumnState,
+                  desiredLayout = configuredLayout,
+                  compactCardSize = songCardSize,
+                  onReloadMediaStore = {
+                    onEvent(MediaStorePageViewModel.Companion.Events.ReloadMediaStore)
+                  },
+                  onItemClicked = { song ->
+                    navController.navigate(
+                        Route.UtilitiesNavigator.TagEditor(song.toParcelableSong()))
+                  })
             })
-    }
+      }
 }
 
 @Composable
@@ -283,42 +244,35 @@ private fun DropdownMenuContent(
     desiredLayout: LayoutType,
     onLayoutChanged: (LayoutType) -> Unit,
 ) {
-    val availableLayoutType = LayoutType.entries.toImmutableList()
+  val availableLayoutType = LayoutType.entries.toImmutableList()
 
-    Column(
-        modifier = Modifier,
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
+  Column(
+      modifier = Modifier,
+      verticalArrangement = Arrangement.spacedBy(8.dp),
+      horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
             text = stringResource(id = R.string.layout_type),
             modifier = Modifier.fillMaxWidth(),
             color = MaterialTheme.colorScheme.primary,
-            style = MaterialTheme.typography.labelMedium
-        )
+            style = MaterialTheme.typography.labelMedium)
         DropdownItemContainer(
             modifier = Modifier,
             content = {
-                SingleChoiceSegmentedButtonRow {
-                    availableLayoutType.forEachIndexed { index, listType ->
-                        SegmentedButton(
-                            selected = desiredLayout.ordinal == listType.ordinal,
-                            onClick = {
-                                onLayoutChanged(listType)
-                            },
-                            shape = SegmentedButtonDefaults.itemShape(
-                                index = index, count = availableLayoutType.size
-                            ),
-                        ) {
-                            Icon(
-                                imageVector = listType.icon,
-                                contentDescription = stringResource(id = R.string.list_type)
-                            )
-                        }
-                    }
+              SingleChoiceSegmentedButtonRow {
+                availableLayoutType.forEachIndexed { index, listType ->
+                  SegmentedButton(
+                      selected = desiredLayout.ordinal == listType.ordinal,
+                      onClick = { onLayoutChanged(listType) },
+                      shape =
+                          SegmentedButtonDefaults.itemShape(
+                              index = index, count = availableLayoutType.size),
+                  ) {
+                    Icon(
+                        imageVector = listType.icon,
+                        contentDescription = stringResource(id = R.string.list_type))
+                  }
                 }
-            }
-        )
-    }
+              }
+            })
+      }
 }
-

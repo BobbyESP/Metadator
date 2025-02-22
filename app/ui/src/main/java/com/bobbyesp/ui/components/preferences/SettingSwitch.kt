@@ -29,47 +29,36 @@ fun SettingSwitch(
     onCheckedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Row(
-        modifier = modifier
-            .clip(ShapeDefaults.Large)
-            .clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null
-            ) {
+  Row(
+      modifier =
+          modifier.clip(ShapeDefaults.Large).clickable(
+              interactionSource = remember { MutableInteractionSource() }, indication = null) {
                 onCheckedChange(!isChecked)
-            },
-        verticalAlignment = Alignment.CenterVertically
-    ) {
+              },
+      verticalAlignment = Alignment.CenterVertically) {
         Icon(
             imageVector = icon,
             tint = MaterialTheme.colorScheme.onSurface,
-            contentDescription = null
-        )
+            contentDescription = null)
 
-        Column(
-            modifier = Modifier
-                .weight(1f)
-                .padding(horizontal = 16.dp)
-        ) {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSurface
-            )
+        Column(modifier = Modifier.weight(1f).padding(horizontal = 16.dp)) {
+          Text(
+              text = title,
+              style = MaterialTheme.typography.titleMedium,
+              color = MaterialTheme.colorScheme.onSurface)
 
-            Text(
-                text = supportingText,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
+          Text(
+              text = supportingText,
+              style = MaterialTheme.typography.bodyMedium,
+              color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
 
         Switch(
             checked = isChecked,
             onCheckedChange = onCheckedChange,
-            colors = SwitchDefaults.colors(
-                uncheckedBorderColor = Color.Transparent,
-            )
-        )
-    }
+            colors =
+                SwitchDefaults.colors(
+                    uncheckedBorderColor = Color.Transparent,
+                ))
+      }
 }

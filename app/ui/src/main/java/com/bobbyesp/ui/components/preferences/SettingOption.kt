@@ -1,4 +1,3 @@
-
 package com.bobbyesp.ui.components.preferences
 
 sealed class SettingOption(

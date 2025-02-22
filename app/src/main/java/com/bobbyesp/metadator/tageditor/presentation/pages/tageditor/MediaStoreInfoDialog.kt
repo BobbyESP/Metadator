@@ -14,20 +14,12 @@ fun MediaStoreInfoDialog(
     modifier: Modifier = Modifier,
     onDismissRequest: () -> Unit,
 ) {
-    AlertDialog(
-        modifier = modifier,
-        onDismissRequest = onDismissRequest,
-        text = {
-            Column {
-            }
-        },
-        confirmButton = {},
-        dismissButton = {
-            TextButton(
-                onClick = onDismissRequest
-            ) {
-                Text(stringResource(id = R.string.dismiss))
-            }
-        }
-    )
+  AlertDialog(
+      modifier = modifier,
+      onDismissRequest = onDismissRequest,
+      text = { Column {} },
+      confirmButton = {},
+      dismissButton = {
+        TextButton(onClick = onDismissRequest) { Text(stringResource(id = R.string.dismiss)) }
+      })
 }

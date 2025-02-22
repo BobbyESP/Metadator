@@ -36,58 +36,53 @@ fun AppUtilityCard(
     icon: ImageVector,
     onClick: () -> Unit
 ) {
-    val xOffset = cardSize / 2.3f
-    val yOffset = cardSize / 5
+  val xOffset = cardSize / 2.3f
+  val yOffset = cardSize / 5
 
-    OutlinedCard(
-        modifier = modifier
-            .aspectRatio(1.0f)
-            .background(MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp)),
-        onClick = onClick,
-        shape = MaterialTheme.shapes.small,
-    ) {
-        Box(
-            modifier = Modifier
-        ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = "Utility Icon",
-                modifier = Modifier
-                    .fillMaxSize(0.8f)
-                    .offset(xOffset, yOffset),
-                tint = MaterialTheme.colorScheme.onSurface
-            )
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(
-                        brush = Brush.verticalGradient(
-                            colors = listOf(
-                                Color.Transparent,
-                                MaterialTheme.colorScheme.surface,
-                            ), startY = -200f
-                        )
-                    ), contentAlignment = Alignment.BottomEnd
-            ) {
-                MarqueeText(
-                    modifier = Modifier.padding(12.dp),
-                    text = utilityName,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = MaterialTheme.typography.headlineSmall.fontSize
-                )
-            }
-        }
+  OutlinedCard(
+      modifier =
+          modifier
+              .aspectRatio(1.0f)
+              .background(MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp)),
+      onClick = onClick,
+      shape = MaterialTheme.shapes.small,
+  ) {
+    Box(modifier = Modifier) {
+      Icon(
+          imageVector = icon,
+          contentDescription = "Utility Icon",
+          modifier = Modifier.fillMaxSize(0.8f).offset(xOffset, yOffset),
+          tint = MaterialTheme.colorScheme.onSurface)
+      Box(
+          modifier =
+              Modifier.fillMaxSize()
+                  .background(
+                      brush =
+                          Brush.verticalGradient(
+                              colors =
+                                  listOf(
+                                      Color.Transparent,
+                                      MaterialTheme.colorScheme.surface,
+                                  ),
+                              startY = -200f)),
+          contentAlignment = Alignment.BottomEnd) {
+            MarqueeText(
+                modifier = Modifier.padding(12.dp),
+                text = utilityName,
+                fontWeight = FontWeight.Bold,
+                fontSize = MaterialTheme.typography.headlineSmall.fontSize)
+          }
     }
+  }
 }
 
 @Preview
 @Preview(uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun AppUtilityCardPreview() {
-    AppUtilityCard(
-        modifier = Modifier.size(200.dp),
-        onClick = {},
-        icon = Icons.AutoMirrored.Outlined.AirplaneTicket,
-        utilityName = "Flights"
-    )
+  AppUtilityCard(
+      modifier = Modifier.size(200.dp),
+      onClick = {},
+      icon = Icons.AutoMirrored.Outlined.AirplaneTicket,
+      utilityName = "Flights")
 }

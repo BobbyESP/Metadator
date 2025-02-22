@@ -41,20 +41,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun SubtextOverline(
-    text: String,
-    modifier: Modifier = Modifier
-) {
-    Text(
-        text,
-        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
-        letterSpacing = 2.sp,
-        fontSize = 12.sp,
-        lineHeight = 18.sp,
-        maxLines = 2,
-        overflow = TextOverflow.Ellipsis,
-        modifier = modifier
-    )
+fun SubtextOverline(text: String, modifier: Modifier = Modifier) {
+  Text(
+      text,
+      color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+      letterSpacing = 2.sp,
+      fontSize = 12.sp,
+      lineHeight = 18.sp,
+      maxLines = 2,
+      overflow = TextOverflow.Ellipsis,
+      modifier = modifier)
 }
 
 /**
@@ -106,14 +102,15 @@ fun MarqueeText(
     animationDuration: Float = 4000f,
     delayBetweenAnimations: Long = 500L
 ) {
-    // State to track text layout information
-    var textLayoutInfo by remember { mutableStateOf<TextLayoutInfo?>(null) }
+  // State to track text layout information
+  var textLayoutInfo by remember { mutableStateOf<TextLayoutInfo?>(null) }
 
-    // Offset state with improved performance optimization
-    var offset by remember(text) { mutableIntStateOf(0) }
+  // Offset state with improved performance optimization
+  var offset by remember(text) { mutableIntStateOf(0) }
 
-    // Composable to create the text with consistent styling
-    val createText = @Composable { localModifier: Modifier ->
+  // Composable to create the text with consistent styling
+  val createText =
+      @Composable { localModifier: Modifier ->
         Text(
             text = text,
             textAlign = textAlign,
@@ -132,120 +129,108 @@ fun MarqueeText(
             onTextLayout = onTextLayout,
             style = style,
         )
-    }
+      }
 
-    LaunchedEffect(textLayoutInfo) {
-        val layoutInfo = textLayoutInfo ?: return@LaunchedEffect
+  LaunchedEffect(textLayoutInfo) {
+    val layoutInfo = textLayoutInfo ?: return@LaunchedEffect
 
-        // Skip animation if text fits within container
-        if (layoutInfo.textWidth <= layoutInfo.containerWidth) return@LaunchedEffect
+    // Skip animation if text fits within container
+    if (layoutInfo.textWidth <= layoutInfo.containerWidth) return@LaunchedEffect
 
-        val duration = 4000 * layoutInfo.textWidth / layoutInfo.containerWidth
+    val duration = 4000 * layoutInfo.textWidth / layoutInfo.containerWidth
 
-        // Simple, declarative animation approach
-        animate(
-            initialValue = 0f,
-            targetValue = -layoutInfo.textWidth.toFloat(),
-            animationSpec = infiniteRepeatable(
-                animation = tween(
-                    durationMillis = duration,
-                    delayMillis = 1000,
-                    easing = customEasing ?: LinearEasing
-                ),
-                repeatMode = RepeatMode.Restart
-            )
-        ) { value, _ ->
-            offset = value.toInt()
+    // Simple, declarative animation approach
+    animate(
+        initialValue = 0f,
+        targetValue = -layoutInfo.textWidth.toFloat(),
+        animationSpec =
+            infiniteRepeatable(
+                animation =
+                    tween(
+                        durationMillis = duration,
+                        delayMillis = 1000,
+                        easing = customEasing ?: LinearEasing),
+                repeatMode = RepeatMode.Restart)) { value, _ ->
+          offset = value.toInt()
         }
-    }
+  }
 
-    // SubcomposeLayout for flexible text rendering
-    SubcomposeLayout(
-        modifier = modifier.clipToBounds()
-    ) { constraints ->
-        // Allow infinite width for text measurement
-        val infiniteWidthConstraints = constraints.copy(maxWidth = Int.MAX_VALUE)
+  // SubcomposeLayout for flexible text rendering
+  SubcomposeLayout(modifier = modifier.clipToBounds()) { constraints ->
+    // Allow infinite width for text measurement
+    val infiniteWidthConstraints = constraints.copy(maxWidth = Int.MAX_VALUE)
 
-        // Measure main text
-        val mainText = subcompose(MarqueeLayers.MainText) {
-            createText(textModifier)
-        }.first().measure(infiniteWidthConstraints)
+    // Measure main text
+    val mainText =
+        subcompose(MarqueeLayers.MainText) { createText(textModifier) }
+            .first()
+            .measure(infiniteWidthConstraints)
 
-        // Initialize placeholders
-        var gradient: Placeable? = null
-        var secondPlaceableWithOffset: Pair<Placeable, Int>? = null
+    // Initialize placeholders
+    var gradient: Placeable? = null
+    var secondPlaceableWithOffset: Pair<Placeable, Int>? = null
 
-        // Determine marquee behavior
-        if (mainText.width <= constraints.maxWidth) {
-            // Text fits, reset offset
-            offset = 0
-            textLayoutInfo = null
-        } else {
-            // Calculate spacing and layout info
-            val spacing = constraints.maxWidth * 2 / 3
-            textLayoutInfo = TextLayoutInfo(
-                textWidth = mainText.width + spacing,
-                containerWidth = constraints.maxWidth
-            )
+    // Determine marquee behavior
+    if (mainText.width <= constraints.maxWidth) {
+      // Text fits, reset offset
+      offset = 0
+      textLayoutInfo = null
+    } else {
+      // Calculate spacing and layout info
+      val spacing = constraints.maxWidth * 2 / 3
+      textLayoutInfo =
+          TextLayoutInfo(
+              textWidth = mainText.width + spacing, containerWidth = constraints.maxWidth)
 
-            // Prepare secondary text placement
-            val secondTextOffset = mainText.width + offset + spacing
-            val secondTextSpace = constraints.maxWidth - secondTextOffset
+      // Prepare secondary text placement
+      val secondTextOffset = mainText.width + offset + spacing
+      val secondTextSpace = constraints.maxWidth - secondTextOffset
 
-            if (secondTextSpace > 0) {
-                secondPlaceableWithOffset = subcompose(MarqueeLayers.SecondaryText) {
-                    createText(textModifier)
-                }.first().measure(infiniteWidthConstraints) to secondTextOffset
-            }
+      if (secondTextSpace > 0) {
+        secondPlaceableWithOffset =
+            subcompose(MarqueeLayers.SecondaryText) { createText(textModifier) }
+                .first()
+                .measure(infiniteWidthConstraints) to secondTextOffset
+      }
 
-            // Create gradient edges
-            gradient = subcompose(MarqueeLayers.EdgesGradient) {
+      // Create gradient edges
+      gradient =
+          subcompose(MarqueeLayers.EdgesGradient) {
                 Row {
-                    if (sideGradient.left) {
-                        GradientEdge(
-                            startColor = sideGradient.color,
-                            endColor = Color.Transparent
-                        )
-                    }
-                    Spacer(modifier = Modifier.weight(1f))
-                    if (sideGradient.right) {
-                        GradientEdge(
-                            startColor = Color.Transparent,
-                            endColor = sideGradient.color
-                        )
-                    }
+                  if (sideGradient.left) {
+                    GradientEdge(startColor = sideGradient.color, endColor = Color.Transparent)
+                  }
+                  Spacer(modifier = Modifier.weight(1f))
+                  if (sideGradient.right) {
+                    GradientEdge(startColor = Color.Transparent, endColor = sideGradient.color)
+                  }
                 }
-            }.first().measure(constraints.copy(maxHeight = mainText.height))
-        }
-
-        // Final layout placement
-        layout(
-            width = if (mainText.width > constraints.maxWidth) constraints.maxWidth else mainText.width,
-            height = mainText.height
-        ) {
-            mainText.place(offset, 0)
-            secondPlaceableWithOffset?.let {
-                it.first.place(it.second, 0)
-            }
-            gradient?.place(0, 0)
-        }
+              }
+              .first()
+              .measure(constraints.copy(maxHeight = mainText.height))
     }
+
+    // Final layout placement
+    layout(
+        width = if (mainText.width > constraints.maxWidth) constraints.maxWidth else mainText.width,
+        height = mainText.height) {
+          mainText.place(offset, 0)
+          secondPlaceableWithOffset?.let { it.first.place(it.second, 0) }
+          gradient?.place(0, 0)
+        }
+  }
 }
 
 @Composable
 private fun GradientEdge(
-    startColor: Color, endColor: Color,
+    startColor: Color,
+    endColor: Color,
 ) {
-    Box(
-        modifier = Modifier
-            .width(10.dp)
-            .fillMaxHeight()
-            .background(
-                brush = Brush.horizontalGradient(
-                    listOf(startColor, endColor)
-                )
-            )
-    )
+  Box(
+      modifier =
+          Modifier.width(10.dp)
+              .fillMaxHeight()
+              .background(brush = Brush.horizontalGradient(listOf(startColor, endColor))))
 }
 
 data class MarqueeTextGradientOptions(
@@ -254,5 +239,10 @@ data class MarqueeTextGradientOptions(
     val left: Boolean = true
 )
 
-private enum class MarqueeLayers { MainText, SecondaryText, EdgesGradient }
+private enum class MarqueeLayers {
+  MainText,
+  SecondaryText,
+  EdgesGradient
+}
+
 private data class TextLayoutInfo(val textWidth: Int, val containerWidth: Int)

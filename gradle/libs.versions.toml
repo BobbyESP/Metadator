@@ -74,6 +74,7 @@ espresso-core = "3.6.1"
 androidx-baselineprofile = "1.3.3"
 profileinstaller = "1.4.1"
 scrollbar = "2.2.0"
+ktfmt = "0.20.1"
 
 [libraries]
 #Core libraries
@@ -197,6 +198,7 @@ compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "
 androidTest = { id = "com.android.test", version.ref = "agp" }
 firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlyticsGradle" }
 google-gms = { id = "com.google.gms.google-services", version.ref = "googleServices" }
+ktfmt-gradle = { id = "com.ncorti.ktfmt.gradle", version.ref = "ktfmt" }
 androidx-baselineprofile = { id = "androidx.baselineprofile", version.ref = "androidx-baselineprofile" }
 
 [bundles]

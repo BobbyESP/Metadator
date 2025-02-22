@@ -6,9 +6,7 @@ package com.bobbyesp.utilities.states
  * @param T The type of data held by this state.
  */
 sealed interface ScreenState<out T> {
-    /**
-     * Represents a loading state.
-     */
+    /** Represents a loading state. */
     data object Loading : ScreenState<Nothing>
 
     /**

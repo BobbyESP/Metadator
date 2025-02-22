@@ -10,15 +10,11 @@ import androidx.compose.ui.res.stringResource
 import com.bobbyesp.mediaplayer.R
 
 @Composable
-fun ShuffleStateIcon(
-    modifier: Modifier = Modifier, isShuffleEnabled: Boolean
-) {
-    val icon = if (isShuffleEnabled) Icons.Rounded.ShuffleOn else Icons.Rounded.Shuffle
-    val description = stringResource(
-        id = if (isShuffleEnabled) R.string.action_shuffle_on else R.string.action_shuffle_off
-    )
+fun ShuffleStateIcon(modifier: Modifier = Modifier, isShuffleEnabled: Boolean) {
+  val icon = if (isShuffleEnabled) Icons.Rounded.ShuffleOn else Icons.Rounded.Shuffle
+  val description =
+      stringResource(
+          id = if (isShuffleEnabled) R.string.action_shuffle_on else R.string.action_shuffle_off)
 
-    Icon(
-        imageVector = icon, contentDescription = description, modifier = modifier
-    )
+  Icon(imageVector = icon, contentDescription = description, modifier = modifier)
 }

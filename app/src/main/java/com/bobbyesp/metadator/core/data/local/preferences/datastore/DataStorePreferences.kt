@@ -19,34 +19,31 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
-val Context.dataStore: DataStore<Preferences> by preferencesDataStore(
-    name = PREFERENCES_NAME,
-    corruptionHandler = ReplaceFileCorruptionHandler(
-        produceNewData = { emptyPreferences() }
-    ),
-    //migrations = emptyList(),
-    scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
-)
+val Context.dataStore: DataStore<Preferences> by
+    preferencesDataStore(
+        name = PREFERENCES_NAME,
+        corruptionHandler = ReplaceFileCorruptionHandler(produceNewData = { emptyPreferences() }),
+        // migrations = emptyList(),
+        scope = CoroutineScope(Dispatchers.IO + SupervisorJob()))
 
 @Composable
 fun <T> rememberPreferenceState(
     key: PreferencesKey<T>,
     defaultValue: T = key.defaultValue
 ): Pair<androidx.compose.runtime.State<T>, (T) -> Unit> {
-    val appPreferences = LocalAppPreferencesController.current
-    val coroutineScope = rememberCoroutineScope()
+  val appPreferences = LocalAppPreferencesController.current
+  val coroutineScope = rememberCoroutineScope()
 
-    val preferenceFlow =
-        remember { appPreferences.getSettingFlow(key, defaultValue).distinctUntilChanged() }
-    val valueState = preferenceFlow.collectAsStateWithLifecycle(initialValue = defaultValue)
+  val preferenceFlow = remember {
+    appPreferences.getSettingFlow(key, defaultValue).distinctUntilChanged()
+  }
+  val valueState = preferenceFlow.collectAsStateWithLifecycle(initialValue = defaultValue)
 
-    val updatePreference: (T) -> Unit = { newValue ->
-        if (valueState.value != newValue) {
-            coroutineScope.launch(Dispatchers.IO) {
-                appPreferences.saveSetting(key, newValue)
-            }
-        }
+  val updatePreference: (T) -> Unit = { newValue ->
+    if (valueState.value != newValue) {
+      coroutineScope.launch(Dispatchers.IO) { appPreferences.saveSetting(key, newValue) }
     }
+  }
 
-    return valueState to updatePreference
+  return valueState to updatePreference
 }

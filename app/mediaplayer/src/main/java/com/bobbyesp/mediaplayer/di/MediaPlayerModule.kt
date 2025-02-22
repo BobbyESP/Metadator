@@ -14,41 +14,26 @@ import org.koin.dsl.module
 
 @OptIn(UnstableApi::class)
 val mediaplayerInternalsModule: Module = module {
+  single {
+    ExoPlayer.Builder(androidContext())
+        .setSeekBackIncrementMs(5000)
+        .setSeekForwardIncrementMs(5000)
+        .setHandleAudioBecomingNoisy(true)
+        .setTrackSelector(DefaultTrackSelector(androidContext()))
+        .setAudioAttributes(get<AudioAttributes>(), true)
+        .build()
+  }
 
-    single {
-        ExoPlayer.Builder(androidContext())
-            .setSeekBackIncrementMs(5000)
-            .setSeekForwardIncrementMs(5000)
-            .setHandleAudioBecomingNoisy(true)
-            .setTrackSelector(DefaultTrackSelector(androidContext()))
-            .setAudioAttributes(
-                get<AudioAttributes>(),
-                true
-            )
-            .build()
-    }
+  single {
+    AudioAttributes.Builder()
+        .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
+        .setUsage(C.USAGE_MEDIA)
+        .build()
+  }
 
-    single {
-        AudioAttributes.Builder()
-            .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
-            .setUsage(C.USAGE_MEDIA)
-            .build()
-    }
+  single { (callback: MediaLibrarySession.Callback) ->
+    MediaLibrarySession.Builder(get<MediaLibraryService>(), get<ExoPlayer>(), callback).build()
+  }
 
-    single { (callback: MediaLibrarySession.Callback) ->
-        MediaLibrarySession
-            .Builder(
-                get<MediaLibraryService>(),
-                get<ExoPlayer>(),
-                callback
-            )
-            .build()
-    }
-
-    single<MusicScanner> {
-        MusicScannerImpl(
-            context = androidContext()
-        )
-    }
-
+  single<MusicScanner> { MusicScannerImpl(context = androidContext()) }
 }

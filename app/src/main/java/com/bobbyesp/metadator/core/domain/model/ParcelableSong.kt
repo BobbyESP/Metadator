@@ -3,11 +3,11 @@ package com.bobbyesp.metadator.core.domain.model
 import android.net.Uri
 import android.os.Parcelable
 import androidx.compose.runtime.Immutable
+import androidx.core.net.toUri
 import com.bobbyesp.mediaplayer.domain.model.MusicTrack
 import com.bobbyesp.utilities.mediastore.model.UriSerializer
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.Serializable
-import androidx.core.net.toUri
 
 @Parcelize
 @Immutable
@@ -19,13 +19,12 @@ data class ParcelableSong(
     @Serializable(with = UriSerializer::class) val artworkPath: Uri? = null,
     val filename: String
 ) : Parcelable {
-    fun MusicTrack.toParcelableSong(): ParcelableSong {
-        return ParcelableSong(
-            name = title,
-            mainArtist = artist ?: "",
-            localPath = path,
-            artworkPath = artworkUri?.toUri(),
-            filename = title
-        )
-    }
+  fun MusicTrack.toParcelableSong(): ParcelableSong {
+    return ParcelableSong(
+        name = title,
+        mainArtist = artist ?: "",
+        localPath = path,
+        artworkPath = artworkUri?.toUri(),
+        filename = title)
+  }
 }

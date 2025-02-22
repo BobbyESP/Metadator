@@ -45,4 +45,4 @@ data class MusicTrack(
     val modifiedTimestamp: Long? = null,
     val size: Long? = null,
     val trackTechnicalDetails: TrackTechnicalDetails? = null
-): Parcelable
+) : Parcelable
