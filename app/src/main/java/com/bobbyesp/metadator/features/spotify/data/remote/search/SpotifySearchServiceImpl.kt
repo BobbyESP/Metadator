@@ -14,32 +14,23 @@ import org.koin.core.component.KoinComponent
 class SpotifySearchServiceImpl(private val spotifyService: SpotifyService) :
     SpotifySearchService, KoinComponent {
 
-  override suspend fun search(
-      query: String,
-      vararg searchTypes: SearchApi.SearchType,
-      filters: List<SearchFilter>
-  ): SpotifySearchResult {
-    val api = spotifyService.getSpotifyApi()
-    return api.search.search(query = query, searchTypes = searchTypes, filters = filters)
-  }
+    override suspend fun search(
+        query: String,
+        vararg searchTypes: SearchApi.SearchType,
+        filters: List<SearchFilter>,
+    ): SpotifySearchResult {
+        val api = spotifyService.getSpotifyApi()
+        return api.search.search(query = query, searchTypes = searchTypes, filters = filters)
+    }
 
-  override suspend fun searchPaginatedTracks(
-      query: String,
-      filters: List<SearchFilter>
-  ): Pager<Int, Track> {
-    val api = spotifyService.getSpotifyApi()
-    return Pager(
-        config =
-            PagingConfig(
-                pageSize = 20,
-                enablePlaceholders = false,
-                initialLoadSize = 40,
-            ),
-        pagingSourceFactory = {
-          TracksPagingSource(
-              spotifyApi = api,
-              query = query,
-          )
-        })
-  }
+    override suspend fun searchPaginatedTracks(
+        query: String,
+        filters: List<SearchFilter>,
+    ): Pager<Int, Track> {
+        val api = spotifyService.getSpotifyApi()
+        return Pager(
+            config = PagingConfig(pageSize = 20, enablePlaceholders = false, initialLoadSize = 40),
+            pagingSourceFactory = { TracksPagingSource(spotifyApi = api, query = query) },
+        )
+    }
 }

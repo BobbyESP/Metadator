@@ -10,7 +10,9 @@ import com.bobbyesp.ui.util.AnimatableSaver
 @Composable
 fun rememberAnimatable(
     initialValue: Float,
-    visibilityThreshold: Float = Spring.DefaultDisplacementThreshold
+    visibilityThreshold: Float = Spring.DefaultDisplacementThreshold,
 ): Animatable<Float, AnimationVector1D> {
-  return rememberSaveable(saver = AnimatableSaver) { Animatable(initialValue, visibilityThreshold) }
+    return rememberSaveable(saver = AnimatableSaver) {
+        Animatable(initialValue, visibilityThreshold)
+    }
 }

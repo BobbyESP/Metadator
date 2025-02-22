@@ -16,12 +16,13 @@ fun ExtraLargeCategoryTitle(
     text: String,
     color: Color = MaterialTheme.colorScheme.primary,
 ) {
-  Text(
-      text = text,
-      modifier = modifier.fillMaxWidth().padding(start = 4.dp, top = 16.dp, bottom = 8.dp),
-      color = color,
-      style = MaterialTheme.typography.titleMedium,
-      fontWeight = FontWeight.Bold)
+    Text(
+        text = text,
+        modifier = modifier.fillMaxWidth().padding(start = 4.dp, top = 16.dp, bottom = 8.dp),
+        color = color,
+        style = MaterialTheme.typography.titleMedium,
+        fontWeight = FontWeight.Bold,
+    )
 }
 
 @Composable
@@ -30,11 +31,12 @@ fun LargeCategoryTitle(
     text: String,
     color: Color = MaterialTheme.colorScheme.primary,
 ) {
-  Text(
-      text = text,
-      modifier = modifier.fillMaxWidth().padding(start = 4.dp, top = 16.dp, bottom = 8.dp),
-      color = color,
-      style = MaterialTheme.typography.labelLarge)
+    Text(
+        text = text,
+        modifier = modifier.fillMaxWidth().padding(start = 4.dp, top = 16.dp, bottom = 8.dp),
+        color = color,
+        style = MaterialTheme.typography.labelLarge,
+    )
 }
 
 @Composable
@@ -43,11 +45,12 @@ fun MediumCategoryTitle(
     text: String,
     color: Color = MaterialTheme.colorScheme.primary,
 ) {
-  Text(
-      text = text,
-      modifier = modifier.fillMaxWidth().padding(start = 4.dp, top = 16.dp, bottom = 8.dp),
-      color = color,
-      style = MaterialTheme.typography.labelMedium)
+    Text(
+        text = text,
+        modifier = modifier.fillMaxWidth().padding(start = 4.dp, top = 16.dp, bottom = 8.dp),
+        color = color,
+        style = MaterialTheme.typography.labelMedium,
+    )
 }
 
 @Composable
@@ -56,9 +59,10 @@ fun SmallCategoryTitle(
     text: String,
     color: Color = MaterialTheme.colorScheme.primary,
 ) {
-  Text(
-      text = text,
-      modifier = modifier.fillMaxWidth().padding(start = 4.dp, top = 16.dp, bottom = 8.dp),
-      color = color,
-      style = MaterialTheme.typography.labelSmall)
+    Text(
+        text = text,
+        modifier = modifier.fillMaxWidth().padding(start = 4.dp, top = 16.dp, bottom = 8.dp),
+        color = color,
+        style = MaterialTheme.typography.labelSmall,
+    )
 }

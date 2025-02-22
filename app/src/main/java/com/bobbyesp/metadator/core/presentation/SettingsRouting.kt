@@ -8,17 +8,15 @@ import com.bobbyesp.metadator.core.presentation.pages.settings.modules.GeneralSe
 import com.bobbyesp.ui.motion.animatedComposable
 
 fun NavGraphBuilder.settingsRouting(onNavigateBack: () -> Unit) {
-  navigation<Route.SettingsNavigator>(
-      startDestination = Route.SettingsNavigator.Settings,
-  ) {
-    animatedComposable<Route.SettingsNavigator.Settings> {
-      SettingsPage(onBackPressed = onNavigateBack)
+    navigation<Route.SettingsNavigator>(startDestination = Route.SettingsNavigator.Settings) {
+        animatedComposable<Route.SettingsNavigator.Settings> {
+            SettingsPage(onBackPressed = onNavigateBack)
+        }
+
+        animatedComposable<Route.SettingsNavigator.Settings.General> { GeneralSettingsPage() }
+
+        animatedComposable<Route.SettingsNavigator.Settings.Appearance> {}
+
+        animatedComposable<Route.SettingsNavigator.Settings.About> {}
     }
-
-    animatedComposable<Route.SettingsNavigator.Settings.General> { GeneralSettingsPage() }
-
-    animatedComposable<Route.SettingsNavigator.Settings.Appearance> {}
-
-    animatedComposable<Route.SettingsNavigator.Settings.About> {}
-  }
 }

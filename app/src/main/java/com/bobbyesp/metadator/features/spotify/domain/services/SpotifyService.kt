@@ -4,7 +4,7 @@ import com.adamratzman.spotify.SpotifyAppApi
 import com.adamratzman.spotify.models.Token
 
 interface SpotifyService {
-  suspend fun getSpotifyApi(): SpotifyAppApi
+    suspend fun getSpotifyApi(): SpotifyAppApi
 
-  suspend fun getSpotifyToken(): Token
+    suspend fun getSpotifyToken(): Token
 }

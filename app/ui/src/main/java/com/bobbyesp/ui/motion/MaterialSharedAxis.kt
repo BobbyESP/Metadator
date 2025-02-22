@@ -43,20 +43,18 @@ import androidx.compose.ui.unit.Dp
  * @param slideDistance Value to the slide distance dimension, 30dp by default.
  */
 @Composable
-fun rememberSlideDistance(
-    slideDistance: Dp = MotionConstants.DefaultSlideDistance,
-): Int {
-  val density = LocalDensity.current
-  return remember(density, slideDistance) { with(density) { slideDistance.roundToPx() } }
+fun rememberSlideDistance(slideDistance: Dp = MotionConstants.DefaultSlideDistance): Int {
+    val density = LocalDensity.current
+    return remember(density, slideDistance) { with(density) { slideDistance.roundToPx() } }
 }
 
 private const val ProgressThreshold = 0.35f
 
 private val Int.ForOutgoing: Int
-  get() = (this * ProgressThreshold).toInt()
+    get() = (this * ProgressThreshold).toInt()
 
 private val Int.ForIncoming: Int
-  get() = this - this.ForOutgoing
+    get() = this - this.ForOutgoing
 
 /** [materialSharedAxisX] allows to switch a layout with shared X-axis transition. */
 fun materialSharedAxisX(
@@ -65,7 +63,9 @@ fun materialSharedAxisX(
     durationMillis: Int = MotionConstants.DefaultMotionDuration,
 ): ContentTransform =
     materialSharedAxisXIn(
-        initialOffsetX = initialOffsetX, durationMillis = durationMillis) togetherWith
+        initialOffsetX = initialOffsetX,
+        durationMillis = durationMillis,
+    ) togetherWith
         materialSharedAxisXOut(targetOffsetX = targetOffsetX, durationMillis = durationMillis)
 
 /** [materialSharedAxisXIn] allows to switch a layout with shared X-axis enter transition. */
@@ -75,13 +75,16 @@ fun materialSharedAxisXIn(
 ): EnterTransition =
     slideInHorizontally(
         animationSpec = tween(durationMillis = durationMillis, easing = FastOutSlowInEasing),
-        initialOffsetX = initialOffsetX) +
+        initialOffsetX = initialOffsetX,
+    ) +
         fadeIn(
             animationSpec =
                 tween(
                     durationMillis = durationMillis.ForIncoming,
                     delayMillis = durationMillis.ForOutgoing,
-                    easing = LinearOutSlowInEasing))
+                    easing = LinearOutSlowInEasing,
+                )
+        )
 
 /** [materialSharedAxisXOut] allows to switch a layout with shared X-axis exit transition. */
 fun materialSharedAxisXOut(
@@ -90,13 +93,16 @@ fun materialSharedAxisXOut(
 ): ExitTransition =
     slideOutHorizontally(
         animationSpec = tween(durationMillis = durationMillis, easing = FastOutSlowInEasing),
-        targetOffsetX = targetOffsetX) +
+        targetOffsetX = targetOffsetX,
+    ) +
         fadeOut(
             animationSpec =
                 tween(
                     durationMillis = durationMillis.ForOutgoing,
                     delayMillis = 0,
-                    easing = FastOutLinearInEasing))
+                    easing = FastOutLinearInEasing,
+                )
+        )
 
 /** [materialSharedAxisY] allows to switch a layout with shared Y-axis transition. */
 fun materialSharedAxisY(
@@ -105,7 +111,9 @@ fun materialSharedAxisY(
     durationMillis: Int = MotionConstants.DefaultMotionDuration,
 ): ContentTransform =
     materialSharedAxisYIn(
-        initialOffsetY = initialOffsetX, durationMillis = durationMillis) togetherWith
+        initialOffsetY = initialOffsetX,
+        durationMillis = durationMillis,
+    ) togetherWith
         materialSharedAxisYOut(targetOffsetY = targetOffsetY, durationMillis = durationMillis)
 
 /** [materialSharedAxisYIn] allows to switch a layout with shared Y-axis enter transition. */
@@ -115,13 +123,16 @@ fun materialSharedAxisYIn(
 ): EnterTransition =
     slideInVertically(
         animationSpec = tween(durationMillis = durationMillis, easing = FastOutSlowInEasing),
-        initialOffsetY = initialOffsetY) +
+        initialOffsetY = initialOffsetY,
+    ) +
         fadeIn(
             animationSpec =
                 tween(
                     durationMillis = durationMillis.ForIncoming,
                     delayMillis = durationMillis.ForOutgoing,
-                    easing = LinearOutSlowInEasing))
+                    easing = LinearOutSlowInEasing,
+                )
+        )
 
 /** [materialSharedAxisYOut] allows to switch a layout with shared Y-axis exit transition. */
 fun materialSharedAxisYOut(
@@ -130,13 +141,16 @@ fun materialSharedAxisYOut(
 ): ExitTransition =
     slideOutVertically(
         animationSpec = tween(durationMillis = durationMillis, easing = FastOutSlowInEasing),
-        targetOffsetY = targetOffsetY) +
+        targetOffsetY = targetOffsetY,
+    ) +
         fadeOut(
             animationSpec =
                 tween(
                     durationMillis = durationMillis.ForOutgoing,
                     delayMillis = 0,
-                    easing = FastOutLinearInEasing))
+                    easing = FastOutLinearInEasing,
+                )
+        )
 
 /**
  * [materialSharedAxisZ] allows to switch a layout with shared Z-axis transition.
@@ -166,10 +180,13 @@ fun materialSharedAxisZIn(
             tween(
                 durationMillis = durationMillis.ForIncoming,
                 delayMillis = durationMillis.ForOutgoing,
-                easing = LinearOutSlowInEasing)) +
+                easing = LinearOutSlowInEasing,
+            )
+    ) +
         scaleIn(
             animationSpec = tween(durationMillis = durationMillis, easing = FastOutSlowInEasing),
-            initialScale = if (forward) 0.8f else 1.1f)
+            initialScale = if (forward) 0.8f else 1.1f,
+        )
 
 /**
  * [materialSharedAxisZOut] allows to switch a layout with shared Z-axis exit transition.
@@ -186,7 +203,10 @@ fun materialSharedAxisZOut(
             tween(
                 durationMillis = durationMillis.ForOutgoing,
                 delayMillis = 0,
-                easing = FastOutLinearInEasing)) +
+                easing = FastOutLinearInEasing,
+            )
+    ) +
         scaleOut(
             animationSpec = tween(durationMillis = durationMillis, easing = FastOutSlowInEasing),
-            targetScale = if (forward) 1.1f else 0.8f)
+            targetScale = if (forward) 1.1f else 0.8f,
+        )

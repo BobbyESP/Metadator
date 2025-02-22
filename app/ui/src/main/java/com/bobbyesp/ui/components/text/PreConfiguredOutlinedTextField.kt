@@ -33,40 +33,44 @@ fun PreConfiguredOutlinedTextField(
     singleLine: Boolean = false,
     maxLines: Int = 2,
     minLines: Int = 1,
-    returnModifiedValue: (String) -> Unit = {}
+    returnModifiedValue: (String) -> Unit = {},
 ) {
-  val (text, setText) = rememberVolatileSaveable(value ?: "")
-  val originalValue = remember { value ?: "" }
+    val (text, setText) = rememberVolatileSaveable(value ?: "")
+    val originalValue = remember { value ?: "" }
 
-  OutlinedTextField(
-      modifier = modifier,
-      value = text,
-      onValueChange = { newValue ->
-        setText(newValue)
-        returnModifiedValue(newValue)
-      },
-      label = { Text(text = label, maxLines = 1, overflow = TextOverflow.Ellipsis) },
-      enabled = enabled,
-      readOnly = readOnly,
-      keyboardOptions = keyboardOptions,
-      keyboardActions = keyboardActions,
-      singleLine = singleLine,
-      maxLines = maxLines,
-      minLines = minLines,
-      trailingIcon = {
-        AnimatedVisibility(
-            visible = text != originalValue,
-            enter = fadeIn() + slideInHorizontally(),
-            exit = fadeOut() + slideOutHorizontally()) {
-              IconButton(
-                  onClick = {
-                    setText(originalValue)
-                    returnModifiedValue(originalValue)
-                  }) {
+    OutlinedTextField(
+        modifier = modifier,
+        value = text,
+        onValueChange = { newValue ->
+            setText(newValue)
+            returnModifiedValue(newValue)
+        },
+        label = { Text(text = label, maxLines = 1, overflow = TextOverflow.Ellipsis) },
+        enabled = enabled,
+        readOnly = readOnly,
+        keyboardOptions = keyboardOptions,
+        keyboardActions = keyboardActions,
+        singleLine = singleLine,
+        maxLines = maxLines,
+        minLines = minLines,
+        trailingIcon = {
+            AnimatedVisibility(
+                visible = text != originalValue,
+                enter = fadeIn() + slideInHorizontally(),
+                exit = fadeOut() + slideOutHorizontally(),
+            ) {
+                IconButton(
+                    onClick = {
+                        setText(originalValue)
+                        returnModifiedValue(originalValue)
+                    }
+                ) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Rounded.Undo,
-                        contentDescription = stringResource(id = R.string.undo))
-                  }
+                        contentDescription = stringResource(id = R.string.undo),
+                    )
+                }
             }
-      })
+        },
+    )
 }

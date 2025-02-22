@@ -9,11 +9,11 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 val spotifyMainModule = module {
-  single(named("client_id")) { BuildConfig.CLIENT_ID }
-  single(named("client_secret")) { BuildConfig.CLIENT_SECRET }
-  single<SpotifyService> { SpotifyServiceImpl() }
+    single(named("client_id")) { BuildConfig.CLIENT_ID }
+    single(named("client_secret")) { BuildConfig.CLIENT_SECRET }
+    single<SpotifyService> { SpotifyServiceImpl() }
 }
 
 val spotifyServicesModule = module {
-  single<SpotifySearchService> { SpotifySearchServiceImpl(get()) }
+    single<SpotifySearchService> { SpotifySearchServiceImpl(get()) }
 }

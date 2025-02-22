@@ -11,28 +11,28 @@ import com.bobbyesp.utilities.R
 @Stable
 data class DarkThemePreference(
     val darkThemeValue: DarkThemeValue = DarkThemeValue.valueOf(DARK_THEME_VALUE.defaultValue),
-    val isHighContrastModeEnabled: Boolean = HIGH_CONTRAST.defaultValue
+    val isHighContrastModeEnabled: Boolean = HIGH_CONTRAST.defaultValue,
 ) {
-  companion object {
-    enum class DarkThemeValue {
-      FOLLOW_SYSTEM,
-      ON,
-      OFF
+    companion object {
+        enum class DarkThemeValue {
+            FOLLOW_SYSTEM,
+            ON,
+            OFF,
+        }
     }
-  }
 
-  @Composable
-  fun isDarkTheme(): Boolean {
-    return if (darkThemeValue == DarkThemeValue.FOLLOW_SYSTEM) isSystemInDarkTheme()
-    else darkThemeValue == DarkThemeValue.ON
-  }
-
-  @Composable
-  fun getDarkThemeDescription(): String {
-    return when (darkThemeValue) {
-      DarkThemeValue.FOLLOW_SYSTEM -> stringResource(R.string.follow_system)
-      DarkThemeValue.ON -> stringResource(R.string.on)
-      else -> stringResource(R.string.off)
+    @Composable
+    fun isDarkTheme(): Boolean {
+        return if (darkThemeValue == DarkThemeValue.FOLLOW_SYSTEM) isSystemInDarkTheme()
+        else darkThemeValue == DarkThemeValue.ON
     }
-  }
+
+    @Composable
+    fun getDarkThemeDescription(): String {
+        return when (darkThemeValue) {
+            DarkThemeValue.FOLLOW_SYSTEM -> stringResource(R.string.follow_system)
+            DarkThemeValue.ON -> stringResource(R.string.on)
+            else -> stringResource(R.string.off)
+        }
+    }
 }

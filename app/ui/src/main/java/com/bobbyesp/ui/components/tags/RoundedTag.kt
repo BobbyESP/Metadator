@@ -18,22 +18,26 @@ import androidx.compose.ui.unit.dp
 fun RoundedTag(
     modifier: Modifier = Modifier,
     text: String,
-    shape: Shape = MaterialTheme.shapes.medium
+    shape: Shape = MaterialTheme.shapes.medium,
 ) {
-  Surface(
-      modifier = modifier, color = MaterialTheme.colorScheme.secondaryContainer, shape = shape) {
+    Surface(
+        modifier = modifier,
+        color = MaterialTheme.colorScheme.secondaryContainer,
+        shape = shape,
+    ) {
         Row(
             modifier = Modifier,
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center,
         ) {
-          Text(
-              text = text,
-              style = MaterialTheme.typography.bodySmall,
-              color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f),
-              overflow = TextOverflow.Ellipsis,
-              fontWeight = FontWeight.Bold,
-              modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp))
+            Text(
+                text = text,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f),
+                overflow = TextOverflow.Ellipsis,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+            )
         }
-      }
+    }
 }

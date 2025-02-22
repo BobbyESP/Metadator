@@ -14,22 +14,26 @@ import com.bobbyesp.utilities.ui.permissions.PermissionType.Companion.toPermissi
 
 fun NavGraphBuilder.onboardingRouting(
     onNavigate: (Route) -> Unit,
-    onCompletedOnboarding: () -> Unit
+    onCompletedOnboarding: () -> Unit,
 ) {
-  navigation<Route.OnboardingNavigator>(
-      startDestination = Route.OnboardingNavigator.Welcome::class,
-  ) {
-    animatedComposable<Route.OnboardingNavigator.Welcome> {
-      OnboardingWelcomePage(onGetStarted = { onNavigate(Route.OnboardingNavigator.Permissions) })
-    }
+    navigation<Route.OnboardingNavigator>(
+        startDestination = Route.OnboardingNavigator.Welcome::class
+    ) {
+        animatedComposable<Route.OnboardingNavigator.Welcome> {
+            OnboardingWelcomePage(
+                onGetStarted = { onNavigate(Route.OnboardingNavigator.Permissions) }
+            )
+        }
 
-    animatedComposable<Route.OnboardingNavigator.Permissions> {
-      val neededPermissions by remember {
-        mutableStateOf(getNeededStoragePermissions().map { it.toPermissionType() })
-      }
+        animatedComposable<Route.OnboardingNavigator.Permissions> {
+            val neededPermissions by remember {
+                mutableStateOf(getNeededStoragePermissions().map { it.toPermissionType() })
+            }
 
-      OnboardingPermissionsPage(
-          neededPermissions = neededPermissions, onNextClick = { onCompletedOnboarding() })
+            OnboardingPermissionsPage(
+                neededPermissions = neededPermissions,
+                onNextClick = { onCompletedOnboarding() },
+            )
+        }
     }
-  }
 }

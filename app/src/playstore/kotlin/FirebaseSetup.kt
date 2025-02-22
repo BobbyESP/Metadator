@@ -4,7 +4,7 @@ import com.google.firebase.crashlytics.crashlytics
 import com.google.firebase.initialize
 
 fun App.initializeFirebase() {
-  Firebase.initialize(this)
+    Firebase.initialize(this)
 }
 
 /**
@@ -14,5 +14,5 @@ fun App.initializeFirebase() {
  * collect crash reports for the application.
  */
 fun setCrashlyticsCollection() {
-  Firebase.crashlytics.setCrashlyticsCollectionEnabled(true)
+    Firebase.crashlytics.setCrashlyticsCollectionEnabled(true)
 }

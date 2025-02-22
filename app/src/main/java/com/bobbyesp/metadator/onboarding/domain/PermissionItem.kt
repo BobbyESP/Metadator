@@ -9,5 +9,5 @@ data class PermissionItem(
     val permission: PermissionType,
     val icon: ImageVector,
     val isGranted: Boolean,
-    val onClick: () -> Unit
+    val onClick: () -> Unit,
 )

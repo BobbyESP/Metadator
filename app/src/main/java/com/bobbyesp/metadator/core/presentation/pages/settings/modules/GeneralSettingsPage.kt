@@ -24,45 +24,53 @@ import com.bobbyesp.ui.components.preferences.PreferenceSwitch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GeneralSettingsPage() {
-  val (useMarqueeText, updateMarqueeText) = rememberPreferenceState(MARQUEE_TEXT_ENABLED)
-  val (reduceShadows, updateReduceShadows) = rememberPreferenceState(REDUCE_SHADOWS)
+    val (useMarqueeText, updateMarqueeText) = rememberPreferenceState(MARQUEE_TEXT_ENABLED)
+    val (reduceShadows, updateReduceShadows) = rememberPreferenceState(REDUCE_SHADOWS)
 
-  val navController = LocalNavController.current
-  val scrollBehavior =
-      TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
-          state = rememberTopAppBarState(), canScroll = { true })
+    val navController = LocalNavController.current
+    val scrollBehavior =
+        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
+            state = rememberTopAppBarState(),
+            canScroll = { true },
+        )
 
-  Scaffold(
-      modifier = Modifier.fillMaxSize().nestedScroll(scrollBehavior.nestedScrollConnection),
-      topBar = {
-        MediumTopAppBar(
-            title = {
-              Text(
-                  text = stringResource(id = R.string.general),
-                  style = MaterialTheme.typography.titleLarge)
-            },
-            scrollBehavior = scrollBehavior,
-            navigationIcon = { BackButton { navController.popBackStack() } })
-      }) { paddingValues ->
+    Scaffold(
+        modifier = Modifier.fillMaxSize().nestedScroll(scrollBehavior.nestedScrollConnection),
+        topBar = {
+            MediumTopAppBar(
+                title = {
+                    Text(
+                        text = stringResource(id = R.string.general),
+                        style = MaterialTheme.typography.titleLarge,
+                    )
+                },
+                scrollBehavior = scrollBehavior,
+                navigationIcon = { BackButton { navController.popBackStack() } },
+            )
+        },
+    ) { paddingValues ->
         LazyColumn(
             modifier = Modifier.fillMaxSize().nestedScroll(scrollBehavior.nestedScrollConnection),
-            contentPadding = paddingValues) {
-              item {
+            contentPadding = paddingValues,
+        ) {
+            item {
                 PreferenceSwitch(
                     title = stringResource(R.string.marquee_text),
                     description = stringResource(R.string.marquee_text_description),
                     isChecked = useMarqueeText.value,
                     thumbContent = null,
-                    onClick = { updateMarqueeText(!useMarqueeText.value) })
-              }
-              item {
+                    onClick = { updateMarqueeText(!useMarqueeText.value) },
+                )
+            }
+            item {
                 PreferenceSwitch(
                     title = stringResource(R.string.reduce_shadows),
                     description = stringResource(R.string.reduce_shadows_description),
                     isChecked = reduceShadows.value,
                     thumbContent = null,
-                    onClick = { updateReduceShadows(!reduceShadows.value) })
-              }
+                    onClick = { updateReduceShadows(!reduceShadows.value) },
+                )
             }
-      }
+        }
+    }
 }

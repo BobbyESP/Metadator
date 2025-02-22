@@ -22,18 +22,19 @@ data class UserPreferences(
     val darkThemePreference: DarkThemePreference,
     val useDynamicColoring: Boolean,
     val themeColor: Int,
-    val paletteStyle: PaletteStyle
+    val paletteStyle: PaletteStyle,
 ) {
-  companion object {
-    fun emptyUserPreferences(): UserPreferences =
-        UserPreferences(
-            songsLayout = LayoutType.valueOf(SONGS_LAYOUT.defaultValue),
-            reduceShadows = REDUCE_SHADOWS.defaultValue,
-            marqueeTextEnabled = MARQUEE_TEXT_ENABLED.defaultValue,
-            songCardSize = CompactCardSize.valueOf(SONG_CARD_SIZE.defaultValue),
-            darkThemePreference = DarkThemePreference(),
-            useDynamicColoring = USE_DYNAMIC_COLORING.defaultValue,
-            themeColor = THEME_COLOR.defaultValue,
-            paletteStyle = PaletteStyle.valueOf(PALETTE_STYLE.defaultValue))
-  }
+    companion object {
+        fun emptyUserPreferences(): UserPreferences =
+            UserPreferences(
+                songsLayout = LayoutType.valueOf(SONGS_LAYOUT.defaultValue),
+                reduceShadows = REDUCE_SHADOWS.defaultValue,
+                marqueeTextEnabled = MARQUEE_TEXT_ENABLED.defaultValue,
+                songCardSize = CompactCardSize.valueOf(SONG_CARD_SIZE.defaultValue),
+                darkThemePreference = DarkThemePreference(),
+                useDynamicColoring = USE_DYNAMIC_COLORING.defaultValue,
+                themeColor = THEME_COLOR.defaultValue,
+                paletteStyle = PaletteStyle.valueOf(PALETTE_STYLE.defaultValue),
+            )
+    }
 }

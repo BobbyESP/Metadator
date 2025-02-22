@@ -38,30 +38,31 @@ fun ExpandableText(
     softWrap: Boolean = true,
     style: TextStyle = LocalTextStyle.current.plus(TextStyle()),
 ) {
-  var expanded by remember { mutableStateOf(false) }
-  var canBeExpanded by remember { mutableStateOf(false) }
+    var expanded by remember { mutableStateOf(false) }
+    var canBeExpanded by remember { mutableStateOf(false) }
 
-  Text(
-      modifier =
-          if (canBeExpanded) modifier.clickable { expanded = !expanded }.animateContentSize()
-          else modifier,
-      text = text,
-      color = color,
-      fontSize = fontSize,
-      fontStyle = fontStyle,
-      fontWeight = fontWeight,
-      fontFamily = fontFamily,
-      letterSpacing = letterSpacing,
-      textDecoration = textDecoration,
-      textAlign = textAlign,
-      lineHeight = lineHeight,
-      overflow = overflow,
-      softWrap = softWrap,
-      style = style,
-      maxLines = if (expanded) Int.MAX_VALUE else maxLines,
-      onTextLayout = {
-        if (!canBeExpanded) {
-          canBeExpanded = it.hasVisualOverflow
-        }
-      })
+    Text(
+        modifier =
+            if (canBeExpanded) modifier.clickable { expanded = !expanded }.animateContentSize()
+            else modifier,
+        text = text,
+        color = color,
+        fontSize = fontSize,
+        fontStyle = fontStyle,
+        fontWeight = fontWeight,
+        fontFamily = fontFamily,
+        letterSpacing = letterSpacing,
+        textDecoration = textDecoration,
+        textAlign = textAlign,
+        lineHeight = lineHeight,
+        overflow = overflow,
+        softWrap = softWrap,
+        style = style,
+        maxLines = if (expanded) Int.MAX_VALUE else maxLines,
+        onTextLayout = {
+            if (!canBeExpanded) {
+                canBeExpanded = it.hasVisualOverflow
+            }
+        },
+    )
 }

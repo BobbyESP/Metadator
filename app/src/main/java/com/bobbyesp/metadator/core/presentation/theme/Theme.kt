@@ -20,32 +20,40 @@ val MetadatorLogoBackground = Color(0xFF313638)
 
 @Composable
 fun MetadatorTheme(content: @Composable () -> Unit) {
-  val themeState = LocalDynamicThemeState.current
-  val dynamicColoring = LocalDynamicColoringSwitch.current
-  val context = LocalContext.current
-  val canUseDynamicColor = dynamicColoring && isDynamicColoringSupported()
+    val themeState = LocalDynamicThemeState.current
+    val dynamicColoring = LocalDynamicColoringSwitch.current
+    val context = LocalContext.current
+    val canUseDynamicColor = dynamicColoring && isDynamicColoringSupported()
 
-  val dynamicColorScheme =
-      if (canUseDynamicColor) {
-        if (themeState.isDark) {
-          dynamicDarkColorScheme(context).let {
-            if (themeState.isAmoled) it.copy(surface = Color.Black, background = Color.Black)
-            else it
-          }
-        } else {
-          dynamicLightColorScheme(context)
-        }
-      } else null
+    val dynamicColorScheme =
+        if (canUseDynamicColor) {
+            if (themeState.isDark) {
+                dynamicDarkColorScheme(context).let {
+                    if (themeState.isAmoled)
+                        it.copy(surface = Color.Black, background = Color.Black)
+                    else it
+                }
+            } else {
+                dynamicLightColorScheme(context)
+            }
+        } else null
 
-  ProvideTextStyle(
-      value =
-          LocalTextStyle.current.copy(
-              lineBreak = LineBreak.Paragraph, textDirection = TextDirection.Content)) {
+    ProvideTextStyle(
+        value =
+            LocalTextStyle.current.copy(
+                lineBreak = LineBreak.Paragraph,
+                textDirection = TextDirection.Content,
+            )
+    ) {
         if (dynamicColorScheme != null) {
-          MaterialTheme(colorScheme = dynamicColorScheme, shapes = AppShapes, content = content)
+            MaterialTheme(colorScheme = dynamicColorScheme, shapes = AppShapes, content = content)
         } else {
-          DynamicMaterialTheme(
-              state = themeState, animate = true, shapes = AppShapes, content = content)
+            DynamicMaterialTheme(
+                state = themeState,
+                animate = true,
+                shapes = AppShapes,
+                content = content,
+            )
         }
-      }
+    }
 }

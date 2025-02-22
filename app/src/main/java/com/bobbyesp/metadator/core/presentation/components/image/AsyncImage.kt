@@ -42,66 +42,68 @@ fun AsyncImage(
     imageOptions: ImageOptions =
         ImageOptions(contentDescription = null, contentScale = ContentScale.Crop),
     requestListener: (() -> ImageRequest.Listener)? = null,
-    onSuccessData: (CoilImageState.Success) -> Unit = { _ -> }
+    onSuccessData: (CoilImageState.Success) -> Unit = { _ -> },
 ) {
-  val imageUrl by remember(imageModel) { mutableStateOf(imageModel) }
+    val imageUrl by remember(imageModel) { mutableStateOf(imageModel) }
 
-  CoilImage(
-      modifier = modifier.clip(shape),
-      imageModel = { imageUrl },
-      imageOptions = imageOptions,
-      onImageStateChanged = { state ->
-        if (state is CoilImageState.Success) {
-          onSuccessData(state)
-        }
-      },
-      requestListener = requestListener,
-      loading = {
-        Placeholder(
-            modifier = imageModifier.fillMaxSize(),
-            icon = placeholder ?: Icons.Rounded.MusicNote,
-            colorful = false,
-            contentDescription = "Song cover placeholder")
-      },
-      failure = { error ->
-        val icon =
-            if (error.reason is FileNotFoundException) {
-              Icons.Rounded.MusicNote
-            } else {
-              Icons.Rounded.ErrorOutline
+    CoilImage(
+        modifier = modifier.clip(shape),
+        imageModel = { imageUrl },
+        imageOptions = imageOptions,
+        onImageStateChanged = { state ->
+            if (state is CoilImageState.Success) {
+                onSuccessData(state)
             }
-        Placeholder(
-            modifier = imageModifier.fillMaxSize(),
-            icon = icon,
-            colorful = false,
-            contentDescription = "Song cover failed to load")
-      },
-      imageLoader = { imageLoader ?: ImageLoader(context) },
-  )
+        },
+        requestListener = requestListener,
+        loading = {
+            Placeholder(
+                modifier = imageModifier.fillMaxSize(),
+                icon = placeholder ?: Icons.Rounded.MusicNote,
+                colorful = false,
+                contentDescription = "Song cover placeholder",
+            )
+        },
+        failure = { error ->
+            val icon =
+                if (error.reason is FileNotFoundException) {
+                    Icons.Rounded.MusicNote
+                } else {
+                    Icons.Rounded.ErrorOutline
+                }
+            Placeholder(
+                modifier = imageModifier.fillMaxSize(),
+                icon = icon,
+                colorful = false,
+                contentDescription = "Song cover failed to load",
+            )
+        },
+        imageLoader = { imageLoader ?: ImageLoader(context) },
+    )
 }
 
 @Composable
 fun loadBitmapFromUrl(url: String): Bitmap? {
-  var bitmap by remember { mutableStateOf<Bitmap?>(null) }
-  val context = LocalContext.current
+    var bitmap by remember { mutableStateOf<Bitmap?>(null) }
+    val context = LocalContext.current
 
-  LaunchedEffect(url) {
-    val imageLoader = ImageLoader(context)
-    val request =
-        ImageRequest.Builder(context)
-            .data(url)
-            .target { drawable ->
-              if (drawable is BitmapDrawable) {
-                bitmap = drawable.bitmap
-              }
-            }
-            .build()
+    LaunchedEffect(url) {
+        val imageLoader = ImageLoader(context)
+        val request =
+            ImageRequest.Builder(context)
+                .data(url)
+                .target { drawable ->
+                    if (drawable is BitmapDrawable) {
+                        bitmap = drawable.bitmap
+                    }
+                }
+                .build()
 
-    val result = (imageLoader.execute(request) as SuccessResult).drawable
-    if (result is BitmapDrawable) {
-      bitmap = result.bitmap
+        val result = (imageLoader.execute(request) as SuccessResult).drawable
+        if (result is BitmapDrawable) {
+            bitmap = result.bitmap
+        }
     }
-  }
 
-  return bitmap
+    return bitmap
 }

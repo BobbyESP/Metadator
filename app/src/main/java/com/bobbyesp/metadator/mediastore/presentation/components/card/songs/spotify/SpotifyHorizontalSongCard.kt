@@ -39,51 +39,58 @@ fun SpotifyHorizontalSongCard(
     onClick: () -> Unit = {},
     onLongClick: () -> Unit = {},
 ) {
-  val albumArtPath by remember(track) { mutableStateOf(track.album.images?.getOrNull(0)?.url) }
+    val albumArtPath by remember(track) { mutableStateOf(track.album.images?.getOrNull(0)?.url) }
 
-  Surface(
-      modifier =
-          modifier
-              .fillMaxWidth()
-              .clip(MaterialTheme.shapes.extraSmall)
-              .combinedClickable(onClick = onClick, onLongClick = onLongClick),
-      color = surfaceColor) {
+    Surface(
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .clip(MaterialTheme.shapes.extraSmall)
+                .combinedClickable(onClick = onClick, onLongClick = onLongClick),
+        color = surfaceColor,
+    ) {
         Row(
             modifier = innerModifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically) {
-              if (listIndex != null) {
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            if (listIndex != null) {
                 Text(
                     text = "${listIndex + 1}",
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(8.dp).padding(end = 4.dp))
-              }
-              Box(contentAlignment = Alignment.CenterStart) {
+                    modifier = Modifier.padding(8.dp).padding(end = 4.dp),
+                )
+            }
+            Box(contentAlignment = Alignment.CenterStart) {
                 AsyncImage(
                     modifier = imageModifier.size(64.dp),
                     imageModel = albumArtPath,
-                    shape = MaterialTheme.shapes.extraSmall)
-              }
-              Row(
-                  modifier = Modifier.weight(1f),
-                  verticalAlignment = Alignment.CenterVertically,
-                  horizontalArrangement = Arrangement.Center) {
-                    Column(
-                        horizontalAlignment = Alignment.Start,
-                        modifier = Modifier.padding(8.dp).weight(1f)) {
-                          ConditionedMarqueeText(
-                              text = track.name,
-                              style = MaterialTheme.typography.bodyLarge,
-                              fontWeight = FontWeight.Bold,
-                          )
-                          ConditionedMarqueeText(
-                              text = track.artists.formatArtists(),
-                              style =
-                                  MaterialTheme.typography.bodyMedium.copy(
-                                      color =
-                                          MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)))
-                        }
-                  }
+                    shape = MaterialTheme.shapes.extraSmall,
+                )
             }
-      }
+            Row(
+                modifier = Modifier.weight(1f),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center,
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.Start,
+                    modifier = Modifier.padding(8.dp).weight(1f),
+                ) {
+                    ConditionedMarqueeText(
+                        text = track.name,
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Bold,
+                    )
+                    ConditionedMarqueeText(
+                        text = track.artists.formatArtists(),
+                        style =
+                            MaterialTheme.typography.bodyMedium.copy(
+                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                            ),
+                    )
+                }
+            }
+        }
+    }
 }

@@ -41,103 +41,122 @@ fun MediaStorePage(
     desiredLayout: LayoutType,
     compactCardSize: CompactCardSize,
     onReloadMediaStore: () -> Unit,
-    onItemClicked: (Song) -> Unit
+    onItemClicked: (Song) -> Unit,
 ) {
-  val songsList = songs.value
+    val songsList = songs.value
 
-  Crossfade(
-      modifier = modifier.fillMaxSize(),
-      targetState = desiredLayout,
-      label = "List item transition",
-      animationSpec = tween(200)) { type ->
+    Crossfade(
+        modifier = modifier.fillMaxSize(),
+        targetState = desiredLayout,
+        label = "List item transition",
+        animationSpec = tween(200),
+    ) { type ->
         when (songsList) {
-          is ResourceState.Loading ->
-              LoadingPage(text = stringResource(R.string.loading_mediastore))
+            is ResourceState.Loading ->
+                LoadingPage(text = stringResource(R.string.loading_mediastore))
 
-          is ResourceState.Error ->
-              ErrorPage(
-                  modifier = Modifier.fillMaxSize(),
-                  throwable = Exception(songsList.message ?: stringResource(R.string.unknown))) {
+            is ResourceState.Error ->
+                ErrorPage(
+                    modifier = Modifier.fillMaxSize(),
+                    throwable = Exception(songsList.message ?: stringResource(R.string.unknown)),
+                ) {
                     onReloadMediaStore()
-                  }
-
-          is ResourceState.Success -> {
-            val dataSongsList =
-                songsList.data ?: throw IllegalStateException(stringResource(R.string.data_null))
-            if (dataSongsList.isEmpty()) {
-              EmptyMediaStoreWarning(modifier = Modifier.fillMaxSize())
-            } else {
-              when (type) {
-                LayoutType.Grid -> {
-                  LazyVerticalGridScrollbar(
-                      state = lazyGridState,
-                      settings =
-                          ScrollbarSettings(
-                              thumbUnselectedColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                              thumbSelectedColor = MaterialTheme.colorScheme.primary,
-                              selectionActionable = ScrollbarSelectionActionable.WhenVisible,
-                          )) {
-                        LazyVerticalGrid(
-                            columns = GridCells.Adaptive(125.dp),
-                            verticalArrangement = Arrangement.spacedBy(6.dp),
-                            horizontalArrangement = Arrangement.spacedBy(6.dp),
-                            contentPadding = PaddingValues(8.dp),
-                            modifier =
-                                Modifier.fillMaxSize()
-                                    .background(MaterialTheme.colorScheme.background),
-                            state = lazyGridState) {
-                              items(
-                                  count = dataSongsList.size,
-                                  key = { index -> dataSongsList[index].id },
-                                  contentType = { _ -> "songItem" }) { index ->
-                                    val song = dataSongsList[index]
-
-                                    CompactSongCard(
-                                        modifier =
-                                            Modifier.animateItem(
-                                                fadeInSpec = null, fadeOutSpec = null),
-                                        size = compactCardSize,
-                                        name = song.title,
-                                        artists = song.artist,
-                                        artworkUri = song.artworkPath,
-                                        onClick = { onItemClicked(song) })
-                                  }
-                            }
-                      }
                 }
 
-                LayoutType.List -> {
-                  LazyColumnScrollbar(
-                      state = lazyListState,
-                      settings =
-                          ScrollbarSettings(
-                              thumbUnselectedColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                              thumbSelectedColor = MaterialTheme.colorScheme.primary,
-                              selectionActionable = ScrollbarSelectionActionable.WhenVisible,
-                          )) {
-                        LazyColumn(
-                            modifier =
-                                Modifier.fillMaxSize()
-                                    .background(MaterialTheme.colorScheme.background),
-                            state = lazyListState,
-                        ) {
-                          items(
-                              count = dataSongsList.size,
-                              key = { index -> dataSongsList[index].id },
-                              contentType = { _ -> "songHorizontalItem" }) { index ->
-                                val song = dataSongsList[index]
-                                HorizontalSongCard(
-                                    song = song,
+            is ResourceState.Success -> {
+                val dataSongsList =
+                    songsList.data
+                        ?: throw IllegalStateException(stringResource(R.string.data_null))
+                if (dataSongsList.isEmpty()) {
+                    EmptyMediaStoreWarning(modifier = Modifier.fillMaxSize())
+                } else {
+                    when (type) {
+                        LayoutType.Grid -> {
+                            LazyVerticalGridScrollbar(
+                                state = lazyGridState,
+                                settings =
+                                    ScrollbarSettings(
+                                        thumbUnselectedColor =
+                                            MaterialTheme.colorScheme.onSurfaceVariant,
+                                        thumbSelectedColor = MaterialTheme.colorScheme.primary,
+                                        selectionActionable =
+                                            ScrollbarSelectionActionable.WhenVisible,
+                                    ),
+                            ) {
+                                LazyVerticalGrid(
+                                    columns = GridCells.Adaptive(125.dp),
+                                    verticalArrangement = Arrangement.spacedBy(6.dp),
+                                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                                    contentPadding = PaddingValues(8.dp),
                                     modifier =
-                                        Modifier.animateItem(fadeInSpec = null, fadeOutSpec = null),
-                                    onClick = { onItemClicked(song) })
-                              }
+                                        Modifier.fillMaxSize()
+                                            .background(MaterialTheme.colorScheme.background),
+                                    state = lazyGridState,
+                                ) {
+                                    items(
+                                        count = dataSongsList.size,
+                                        key = { index -> dataSongsList[index].id },
+                                        contentType = { _ -> "songItem" },
+                                    ) { index ->
+                                        val song = dataSongsList[index]
+
+                                        CompactSongCard(
+                                            modifier =
+                                                Modifier.animateItem(
+                                                    fadeInSpec = null,
+                                                    fadeOutSpec = null,
+                                                ),
+                                            size = compactCardSize,
+                                            name = song.title,
+                                            artists = song.artist,
+                                            artworkUri = song.artworkPath,
+                                            onClick = { onItemClicked(song) },
+                                        )
+                                    }
+                                }
+                            }
                         }
-                      }
+
+                        LayoutType.List -> {
+                            LazyColumnScrollbar(
+                                state = lazyListState,
+                                settings =
+                                    ScrollbarSettings(
+                                        thumbUnselectedColor =
+                                            MaterialTheme.colorScheme.onSurfaceVariant,
+                                        thumbSelectedColor = MaterialTheme.colorScheme.primary,
+                                        selectionActionable =
+                                            ScrollbarSelectionActionable.WhenVisible,
+                                    ),
+                            ) {
+                                LazyColumn(
+                                    modifier =
+                                        Modifier.fillMaxSize()
+                                            .background(MaterialTheme.colorScheme.background),
+                                    state = lazyListState,
+                                ) {
+                                    items(
+                                        count = dataSongsList.size,
+                                        key = { index -> dataSongsList[index].id },
+                                        contentType = { _ -> "songHorizontalItem" },
+                                    ) { index ->
+                                        val song = dataSongsList[index]
+                                        HorizontalSongCard(
+                                            song = song,
+                                            modifier =
+                                                Modifier.animateItem(
+                                                    fadeInSpec = null,
+                                                    fadeOutSpec = null,
+                                                ),
+                                            onClick = { onItemClicked(song) },
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
-              }
             }
-          }
         }
-      }
+    }
 }

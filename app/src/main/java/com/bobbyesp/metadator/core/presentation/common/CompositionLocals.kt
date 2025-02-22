@@ -35,7 +35,7 @@ val LocalNavController =
     compositionLocalOf<NavHostController> { error("No nav controller provided") }
 
 val LocalWindowWidthState = staticCompositionLocalOf {
-  WindowWidthSizeClass.Compact
+    WindowWidthSizeClass.Compact
 } // This value probably will never change, that's why it is static
 
 val LocalSonner = compositionLocalOf<ToasterState> { error("No sonner toaster state provided") }
@@ -46,40 +46,44 @@ fun AppLocalSettingsProvider(
     sonner: ToasterState = rememberToasterState(),
     appPreferences: AppPreferences,
     imageLoader: ImageLoader,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
-  val settingsFlow =
-      appPreferences.userPreferencesFlow.collectAsStateWithLifecycle(
-          initialValue = emptyUserPreferences())
+    val settingsFlow =
+        appPreferences.userPreferencesFlow.collectAsStateWithLifecycle(
+            initialValue = emptyUserPreferences()
+        )
 
-  val seedColor = settingsFlow.value.themeColor
-  val darkTheme = settingsFlow.value.darkThemePreference
-  val themeStyle = settingsFlow.value.paletteStyle
+    val seedColor = settingsFlow.value.themeColor
+    val darkTheme = settingsFlow.value.darkThemePreference
+    val themeStyle = settingsFlow.value.paletteStyle
 
-  val config = LocalConfiguration.current
+    val config = LocalConfiguration.current
 
-  val themeState =
-      rememberDynamicMaterialThemeState(
-          seedColor = Color(seedColor),
-          isDark = darkTheme.isDarkTheme(),
-          style = themeStyle,
-          isAmoled = darkTheme.isHighContrastModeEnabled)
+    val themeState =
+        rememberDynamicMaterialThemeState(
+            seedColor = Color(seedColor),
+            isDark = darkTheme.isDarkTheme(),
+            style = themeStyle,
+            isAmoled = darkTheme.isHighContrastModeEnabled,
+        )
 
-  CompositionLocalProvider(
-      LocalDarkTheme provides darkTheme, // Tells the app what dark theme to use
-      // TODO: Modify to handle multiple colors (like based on images)
-      LocalSeedColor provides seedColor, // Tells the app what color to use as seed for the palette
-      LocalDynamicColoringSwitch provides
-          settingsFlow.value
-              .useDynamicColoring, // Tells the app if it should use dynamic colors or not (Android
-      // 12+ feature)
-      LocalDynamicThemeState provides themeState, // Provides the theme state to the app
-      LocalAppPreferencesController provides appPreferences,
-      LocalWindowWidthState provides windowWidthSize,
-      LocalOrientation provides config.orientation,
-      LocalSonner provides sonner,
-      LocalCoilImageLoader provides imageLoader,
-  ) {
-    content() // The content of the app
-  }
+    CompositionLocalProvider(
+        LocalDarkTheme provides darkTheme, // Tells the app what dark theme to use
+        // TODO: Modify to handle multiple colors (like based on images)
+        LocalSeedColor provides
+            seedColor, // Tells the app what color to use as seed for the palette
+        LocalDynamicColoringSwitch provides
+            settingsFlow.value
+                .useDynamicColoring, // Tells the app if it should use dynamic colors or not
+                                     // (Android
+        // 12+ feature)
+        LocalDynamicThemeState provides themeState, // Provides the theme state to the app
+        LocalAppPreferencesController provides appPreferences,
+        LocalWindowWidthState provides windowWidthSize,
+        LocalOrientation provides config.orientation,
+        LocalSonner provides sonner,
+        LocalCoilImageLoader provides imageLoader,
+    ) {
+        content() // The content of the app
+    }
 }

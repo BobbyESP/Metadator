@@ -49,119 +49,142 @@ fun SpMetadataBsSearch(
     artist: String,
     listState: LazyListState = rememberLazyListState(),
     pageViewState: State<MetadataBottomSheetViewModel.ViewState>,
-    onChooseTrack: (Track) -> Unit
+    onChooseTrack: (Track) -> Unit,
 ) {
-  val paginatedTracksState = pageViewState.value.searchedTracks
-  val paginatedTracks = paginatedTracksState.data?.collectAsLazyPagingItems()
+    val paginatedTracksState = pageViewState.value.searchedTracks
+    val paginatedTracks = paginatedTracksState.data?.collectAsLazyPagingItems()
 
-  LazyColumn(state = listState, modifier = Modifier.fillMaxSize()) {
-    if (name.isNotEmpty() && artist.isNotEmpty()) {
-      item {
-        Row(
-            modifier =
-                Modifier.fillMaxWidth()
-                    .background(
-                        brush =
-                            Brush.verticalGradient(
-                                colors =
-                                    listOf(
-                                        MaterialTheme.colorScheme.surfaceContainerLow,
-                                        Color.Transparent),
-                                startY = 50f))
-                    .padding(8.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center) { // TODO: Be able to change the query
-              Row(
-                  modifier = Modifier.fillMaxWidth().padding(4.dp),
-                  horizontalArrangement = Arrangement.spacedBy(8.dp),
-              ) {
-                Column(
-                    modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                      Text(
-                          text = stringResource(R.string.showing_results_for).uppercase(),
-                          style =
-                              MaterialTheme.typography.labelLarge.copy(
-                                  color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
-                                  letterSpacing = 2.sp))
-                      Text(text = name, style = MaterialTheme.typography.headlineSmall)
-                      Text(
-                          text =
-                              buildAnnotatedString {
-                                append(stringResource(R.string.by))
-                                append(" ")
-                                withStyle(MaterialTheme.typography.titleMedium.toSpanStyle()) {
-                                  append(artist)
-                                }
-                              },
-                      )
-                    }
+    LazyColumn(state = listState, modifier = Modifier.fillMaxSize()) {
+        if (name.isNotEmpty() && artist.isNotEmpty()) {
+            item {
                 Row(
-                    modifier = Modifier.fillMaxHeight().weight(1f),
-                    horizontalArrangement = Arrangement.SpaceEvenly,
-                    verticalAlignment = Alignment.CenterVertically) {
-                      VerticalButtonWithIconAndText(
-                          icon = Icons.Rounded.Edit,
-                          text = stringResource(R.string.edit_query),
-                          modifier = Modifier.weight(1f),
-                          onClick = { /* TODO: Edit query */ },
-                          enabled = true,
-                          shape = RoundedCornerShape(8.dp))
+                    modifier =
+                        Modifier.fillMaxWidth()
+                            .background(
+                                brush =
+                                    Brush.verticalGradient(
+                                        colors =
+                                            listOf(
+                                                MaterialTheme.colorScheme.surfaceContainerLow,
+                                                Color.Transparent,
+                                            ),
+                                        startY = 50f,
+                                    )
+                            )
+                            .padding(8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center,
+                ) { // TODO: Be able to change the query
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(4.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        Column(
+                            modifier = Modifier.weight(1f),
+                            verticalArrangement = Arrangement.spacedBy(4.dp),
+                        ) {
+                            Text(
+                                text = stringResource(R.string.showing_results_for).uppercase(),
+                                style =
+                                    MaterialTheme.typography.labelLarge.copy(
+                                        color =
+                                            MaterialTheme.colorScheme.onBackground.copy(
+                                                alpha = 0.5f
+                                            ),
+                                        letterSpacing = 2.sp,
+                                    ),
+                            )
+                            Text(text = name, style = MaterialTheme.typography.headlineSmall)
+                            Text(
+                                text =
+                                    buildAnnotatedString {
+                                        append(stringResource(R.string.by))
+                                        append(" ")
+                                        withStyle(
+                                            MaterialTheme.typography.titleMedium.toSpanStyle()
+                                        ) {
+                                            append(artist)
+                                        }
+                                    }
+                            )
+                        }
+                        Row(
+                            modifier = Modifier.fillMaxHeight().weight(1f),
+                            horizontalArrangement = Arrangement.SpaceEvenly,
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            VerticalButtonWithIconAndText(
+                                icon = Icons.Rounded.Edit,
+                                text = stringResource(R.string.edit_query),
+                                modifier = Modifier.weight(1f),
+                                onClick = { /* TODO: Edit query */ },
+                                enabled = true,
+                                shape = RoundedCornerShape(8.dp),
+                            )
+                        }
                     }
-              }
+                }
             }
-      }
-    }
-
-    when (paginatedTracksState) {
-      is ResourceState.Loading -> {
-        item { LoadingState(stringResource(id = R.string.retrieving_spotify_token)) }
-      }
-
-      is ResourceState.Success -> {
-        items(
-            count = paginatedTracks!!.itemCount,
-            key = paginatedTracks.itemKey(),
-            contentType = paginatedTracks.itemContentType()) { index ->
-              val item = paginatedTracks[index] ?: return@items
-              SpotifyHorizontalSongCard(
-                  innerModifier = Modifier.padding(8.dp),
-                  surfaceColor = Color.Transparent,
-                  track = item,
-                  onClick = { onChooseTrack(item) })
-            }
-
-        handlePagingState(
-            items = paginatedTracks,
-            initialLoadingItemCount = 1,
-            loadingContent = { LoadingState(stringResource(id = R.string.loading)) },
-            errorContent = { errorMessage -> })
-      }
-
-      is ResourceState.Error -> {
-        item {
-          Surface(
-              modifier = Modifier.fillMaxWidth().padding(8.dp),
-              border = BorderStroke(1.dp, MaterialTheme.colorScheme.error.copy(alpha = 0.5f)),
-              contentColor = MaterialTheme.colorScheme.error,
-              shape = MaterialTheme.shapes.medium) {
-                Column(
-                    modifier = Modifier.padding(4.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
-                    horizontalAlignment = Alignment.CenterHorizontally) {
-                      Text(
-                          modifier = Modifier,
-                          text =
-                              paginatedTracksState.message
-                                  ?: stringResource(
-                                      id = com.bobbyesp.ui.R.string.unknown_error_title),
-                          style = MaterialTheme.typography.bodyMedium,
-                          textAlign = TextAlign.Center,
-                          fontWeight = FontWeight.Normal)
-                    }
-              }
         }
-      }
+
+        when (paginatedTracksState) {
+            is ResourceState.Loading -> {
+                item { LoadingState(stringResource(id = R.string.retrieving_spotify_token)) }
+            }
+
+            is ResourceState.Success -> {
+                items(
+                    count = paginatedTracks!!.itemCount,
+                    key = paginatedTracks.itemKey(),
+                    contentType = paginatedTracks.itemContentType(),
+                ) { index ->
+                    val item = paginatedTracks[index] ?: return@items
+                    SpotifyHorizontalSongCard(
+                        innerModifier = Modifier.padding(8.dp),
+                        surfaceColor = Color.Transparent,
+                        track = item,
+                        onClick = { onChooseTrack(item) },
+                    )
+                }
+
+                handlePagingState(
+                    items = paginatedTracks,
+                    initialLoadingItemCount = 1,
+                    loadingContent = { LoadingState(stringResource(id = R.string.loading)) },
+                    errorContent = { errorMessage -> },
+                )
+            }
+
+            is ResourceState.Error -> {
+                item {
+                    Surface(
+                        modifier = Modifier.fillMaxWidth().padding(8.dp),
+                        border =
+                            BorderStroke(1.dp, MaterialTheme.colorScheme.error.copy(alpha = 0.5f)),
+                        contentColor = MaterialTheme.colorScheme.error,
+                        shape = MaterialTheme.shapes.medium,
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(4.dp),
+                            verticalArrangement =
+                                Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                        ) {
+                            Text(
+                                modifier = Modifier,
+                                text =
+                                    paginatedTracksState.message
+                                        ?: stringResource(
+                                            id = com.bobbyesp.ui.R.string.unknown_error_title
+                                        ),
+                                style = MaterialTheme.typography.bodyMedium,
+                                textAlign = TextAlign.Center,
+                                fontWeight = FontWeight.Normal,
+                            )
+                        }
+                    }
+                }
+            }
+        }
     }
-  }
 }

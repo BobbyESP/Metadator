@@ -15,7 +15,7 @@ import androidx.navigation.NavHostController
  * @return `true` if the navigation controller can go back, `false` otherwise.
  */
 val NavHostController.canGoBack: Boolean
-  get() = this.currentBackStackEntry?.lifecycle?.currentState == Lifecycle.State.RESUMED
+    get() = this.currentBackStackEntry?.lifecycle?.currentState == Lifecycle.State.RESUMED
 
 /**
  * Navigates back to the previous destination in the navigation stack, if possible.
@@ -28,9 +28,9 @@ val NavHostController.canGoBack: Boolean
  * @receiver The [NavHostController] instance that manages the navigation stack.
  */
 fun NavHostController.navigateBack() {
-  if (canGoBack) {
-    popBackStack()
-  }
+    if (canGoBack) {
+        popBackStack()
+    }
 }
 
 /**
@@ -42,10 +42,10 @@ fun NavHostController.navigateBack() {
  */
 fun <T : Any> NavHostController.cleanNavigate(destination: T) =
     navigate(destination) {
-      // Pop up to the start destination of the graph, saving the state
-      popUpTo(graph.startDestinationId) { saveState = true }
-      // Launch the destination as a single top instance
-      launchSingleTop = true
-      // Restore the state if possible
-      restoreState = true
+        // Pop up to the start destination of the graph, saving the state
+        popUpTo(graph.startDestinationId) { saveState = true }
+        // Launch the destination as a single top instance
+        launchSingleTop = true
+        // Restore the state if possible
+        restoreState = true
     }

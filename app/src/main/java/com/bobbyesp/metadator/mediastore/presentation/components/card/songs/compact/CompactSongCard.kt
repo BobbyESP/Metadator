@@ -38,54 +38,57 @@ fun CompactSongCard(
     artworkUri: Uri? = null,
     listIndex: Int? = null,
     size: CompactCardSize = CompactCardSize.LARGE,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
-  val (reduceShadows, _) = rememberPreferenceState(REDUCE_SHADOWS)
-  val cardSize by remember(size) { mutableStateOf(size.value) }
-  val formalizedShape = size.toShape()
+    val (reduceShadows, _) = rememberPreferenceState(REDUCE_SHADOWS)
+    val cardSize by remember(size) { mutableStateOf(size.value) }
+    val formalizedShape = size.toShape()
 
-  Box(modifier = modifier.clip(formalizedShape).size(cardSize).clickable(onClick = onClick)) {
-    AsyncImage(
-        modifier = Modifier.fillMaxSize(),
-        imageModel = artworkUri,
-    )
+    Box(modifier = modifier.clip(formalizedShape).size(cardSize).clickable(onClick = onClick)) {
+        AsyncImage(modifier = Modifier.fillMaxSize(), imageModel = artworkUri)
 
-    listIndex?.let {
-      Text(
-          text = "$it.",
-          style = MaterialTheme.typography.bodySmall,
-          color = Color.White.copy(alpha = 0.8f),
-          fontWeight = FontWeight.Bold,
-          modifier = Modifier.padding(8.dp).align(Alignment.TopEnd))
-    }
-    Column(
-        modifier =
-            Modifier.background(
-                    brush =
-                        Brush.verticalGradient(
-                            colors = listOf(Color.Transparent, MaterialTheme.colorScheme.scrim),
-                            startY = 0f,
-                            endY = 500f),
-                    alpha = if (reduceShadows.value) 0f else 0.6f)
-                .fillMaxSize()
-                .padding(horizontal = 8.dp, vertical = 6.dp),
-        verticalArrangement = Arrangement.Bottom,
-        horizontalAlignment = Alignment.Start) {
-          ConditionedMarqueeText(
-              text = name,
-              style = MaterialTheme.typography.titleSmall,
-              color = Color.White,
-              overflow = TextOverflow.Ellipsis,
-              maxLines = 1)
-
-          if (artists.isNotEmpty()) {
-            ConditionedMarqueeText(
-                text = artists,
+        listIndex?.let {
+            Text(
+                text = "$it.",
                 style = MaterialTheme.typography.bodySmall,
-                color = Color.White.copy(alpha = 0.6f),
-                overflow = TextOverflow.Ellipsis,
-                maxLines = 1)
-          }
+                color = Color.White.copy(alpha = 0.8f),
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(8.dp).align(Alignment.TopEnd),
+            )
         }
-  }
+        Column(
+            modifier =
+                Modifier.background(
+                        brush =
+                            Brush.verticalGradient(
+                                colors = listOf(Color.Transparent, MaterialTheme.colorScheme.scrim),
+                                startY = 0f,
+                                endY = 500f,
+                            ),
+                        alpha = if (reduceShadows.value) 0f else 0.6f,
+                    )
+                    .fillMaxSize()
+                    .padding(horizontal = 8.dp, vertical = 6.dp),
+            verticalArrangement = Arrangement.Bottom,
+            horizontalAlignment = Alignment.Start,
+        ) {
+            ConditionedMarqueeText(
+                text = name,
+                style = MaterialTheme.typography.titleSmall,
+                color = Color.White,
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 1,
+            )
+
+            if (artists.isNotEmpty()) {
+                ConditionedMarqueeText(
+                    text = artists,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color.White.copy(alpha = 0.6f),
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 1,
+                )
+            }
+        }
+    }
 }

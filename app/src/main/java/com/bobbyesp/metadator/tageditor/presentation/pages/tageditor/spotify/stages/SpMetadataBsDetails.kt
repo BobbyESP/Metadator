@@ -56,118 +56,132 @@ fun SpMetadataBsDetails(
     onEvent: (MetadataBottomSheetViewModel.Event) -> Unit,
     onCloseSheet: () -> Unit,
 ) {
-  BackHandler { onEvent(MetadataBottomSheetViewModel.Event.SelectTrack(null)) }
+    BackHandler { onEvent(MetadataBottomSheetViewModel.Event.SelectTrack(null)) }
 
-  val chosenMetadata = rememberSaveable(key = "chosenMetadata") { mutableMapOf<String, String>() }
+    val chosenMetadata = rememberSaveable(key = "chosenMetadata") { mutableMapOf<String, String>() }
 
-  val lazyGirdState = rememberLazyGridState()
+    val lazyGirdState = rememberLazyGridState()
 
-  Column(
-      modifier = modifier.padding(horizontal = 8.dp).fillMaxWidth(),
-      horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(
+        modifier = modifier.padding(horizontal = 8.dp).fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.Start),
-            verticalAlignment = Alignment.CenterVertically) {
-              BackButton(
-                  onClick = { onEvent(MetadataBottomSheetViewModel.Event.SelectTrack(null)) })
-              Text(
-                  text = stringResource(id = R.string.spotify_metadata),
-                  style =
-                      MaterialTheme.typography.titleSmall.copy(
-                          fontSize = 20.sp, fontWeight = FontWeight.Bold),
-                  overflow = TextOverflow.Ellipsis,
-                  modifier = Modifier)
-              Spacer(modifier = Modifier.weight(1f))
-              TextButton(
-                  onClick = {
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            BackButton(onClick = { onEvent(MetadataBottomSheetViewModel.Event.SelectTrack(null)) })
+            Text(
+                text = stringResource(id = R.string.spotify_metadata),
+                style =
+                    MaterialTheme.typography.titleSmall.copy(
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                    ),
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier,
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            TextButton(
+                onClick = {
                     onEvent(
                         MetadataBottomSheetViewModel.Event.UpdateMetadataFields(
-                            chosenMetadata.toMap()))
+                            chosenMetadata.toMap()
+                        )
+                    )
                     onCloseSheet()
-                  }) {
-                    Text(text = stringResource(id = R.string.save))
-                  }
+                }
+            ) {
+                Text(text = stringResource(id = R.string.save))
             }
+        }
         pageViewState.value.selectedTrack?.let { track ->
-          val context = LocalContext.current
-          val metadataMap = createMetadataMap(context, track)
+            val context = LocalContext.current
+            val metadataMap = createMetadataMap(context, track)
 
-          TrackInfo(modifier = Modifier.padding(vertical = 6.dp, horizontal = 8.dp), track = track)
+            TrackInfo(
+                modifier = Modifier.padding(vertical = 6.dp, horizontal = 8.dp),
+                track = track,
+            )
 
-          LazyVerticalGrid(
-              state = lazyGirdState,
-              columns = GridCells.Adaptive(200.dp),
-              modifier = Modifier.fillMaxWidth(),
-              contentPadding = PaddingValues(8.dp)) {
+            LazyVerticalGrid(
+                state = lazyGirdState,
+                columns = GridCells.Adaptive(200.dp),
+                modifier = Modifier.fillMaxWidth(),
+                contentPadding = PaddingValues(8.dp),
+            ) {
                 val metadataList = metadataMap.toList()
                 val isTheListOdd = metadataList.size % 2 != 0
 
                 items(metadataList.size) { index ->
-                  // Skip the last item if the size of metadataMap is odd
-                  if (isTheListOdd && index == metadataList.size - 1) {
-                    return@items
-                  }
+                    // Skip the last item if the size of metadataMap is odd
+                    if (isTheListOdd && index == metadataList.size - 1) {
+                        return@items
+                    }
 
-                  val (field, retrievedValue) = metadataList[index]
-                  SelectableMetadataField(
-                      modifier = Modifier.padding(4.dp).heightIn(min = 100.dp),
-                      title = field,
-                      value = retrievedValue,
-                      onSelectMetadata = { title, value -> chosenMetadata[title] = value },
-                      onDeleteMetadata = { title -> chosenMetadata.remove(title) })
-                }
-
-                if (isTheListOdd) {
-                  val lastElement = metadataList.last()
-                  val (field, retrievedValue) = lastElement
-                  item(span = { GridItemSpan(maxLineSpan) }) {
+                    val (field, retrievedValue) = metadataList[index]
                     SelectableMetadataField(
                         modifier = Modifier.padding(4.dp).heightIn(min = 100.dp),
                         title = field,
                         value = retrievedValue,
                         onSelectMetadata = { title, value -> chosenMetadata[title] = value },
-                        onDeleteMetadata = { title -> chosenMetadata.remove(title) })
-                  }
+                        onDeleteMetadata = { title -> chosenMetadata.remove(title) },
+                    )
                 }
-              }
+
+                if (isTheListOdd) {
+                    val lastElement = metadataList.last()
+                    val (field, retrievedValue) = lastElement
+                    item(span = { GridItemSpan(maxLineSpan) }) {
+                        SelectableMetadataField(
+                            modifier = Modifier.padding(4.dp).heightIn(min = 100.dp),
+                            title = field,
+                            value = retrievedValue,
+                            onSelectMetadata = { title, value -> chosenMetadata[title] = value },
+                            onDeleteMetadata = { title -> chosenMetadata.remove(title) },
+                        )
+                    }
+                }
+            }
         }
-      }
+    }
 }
 
 @Composable
 fun createMetadataMap(context: Context, track: Track) = rememberSaveable {
-  mutableMapOf(
-      "TITLE" to track.name,
-      "ARTIST" to track.artists.formatArtists(),
-      "ALBUM" to track.album.name,
-      "ALBUMARTIST" to track.album.artists.formatArtists(),
-      "TRACKNUMBER" to track.trackNumber.toString(),
-      "DISCNUMBER" to track.discNumber.toString(),
-      "DATE" to
-          (track.album.releaseDate?.format(track.album.releaseDatePrecisionString)
-              ?: context.getString(R.string.unknown)),
-  )
+    mutableMapOf(
+        "TITLE" to track.name,
+        "ARTIST" to track.artists.formatArtists(),
+        "ALBUM" to track.album.name,
+        "ALBUMARTIST" to track.album.artists.formatArtists(),
+        "TRACKNUMBER" to track.trackNumber.toString(),
+        "DISCNUMBER" to track.discNumber.toString(),
+        "DATE" to
+            (track.album.releaseDate?.format(track.album.releaseDatePrecisionString)
+                ?: context.getString(R.string.unknown)),
+    )
 }
 
 @Composable
-private fun TrackInfo(
-    modifier: Modifier = Modifier,
-    track: Track,
-) {
-  val albumArtPath = track.album.images?.getOrNull(0)?.url
+private fun TrackInfo(modifier: Modifier = Modifier, track: Track) {
+    val albumArtPath = track.album.images?.getOrNull(0)?.url
 
-  Row(modifier = modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-    AsyncImage(
-        modifier = Modifier.size(64.dp),
-        imageModel = albumArtPath,
-        shape = MaterialTheme.shapes.extraSmall)
-    Row(
-        modifier = Modifier.weight(1f),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center) {
-          Column(
-              horizontalAlignment = Alignment.Start, modifier = Modifier.padding(8.dp).weight(1f)) {
+    Row(modifier = modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+        AsyncImage(
+            modifier = Modifier.size(64.dp),
+            imageModel = albumArtPath,
+            shape = MaterialTheme.shapes.extraSmall,
+        )
+        Row(
+            modifier = Modifier.weight(1f),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center,
+        ) {
+            Column(
+                horizontalAlignment = Alignment.Start,
+                modifier = Modifier.padding(8.dp).weight(1f),
+            ) {
                 ConditionedMarqueeText(
                     text = track.name,
                     style = MaterialTheme.typography.bodyLarge,
@@ -177,12 +191,14 @@ private fun TrackInfo(
                     text = track.artists.formatArtists(),
                     style =
                         MaterialTheme.typography.bodyMedium.copy(
-                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)),
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                        ),
                     maxLines = 2,
-                    overflow = TextOverflow.Ellipsis)
-              }
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
         }
-  }
+    }
 }
 
 @Composable
@@ -192,75 +208,82 @@ private fun SelectableMetadataField(
     value: String,
     useIcon: Boolean = true,
     onSelectMetadata: (title: String, value: String) -> Unit,
-    onDeleteMetadata: (title: String) -> Unit
+    onDeleteMetadata: (title: String) -> Unit,
 ) {
-  var isSelected by rememberVolatileSaveable(initialValue = false)
-  SelectableSurface(
-      modifier = modifier,
-      isSelected = isSelected,
-      tonalElevation = 2.dp,
-      borderStroke = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
-      onSelected = {
-        isSelected = !isSelected
-        if (isSelected) onSelectMetadata(title, value) else onDeleteMetadata(title)
-      },
-      shape = MaterialTheme.shapes.medium,
-  ) {
-    Box {
-      Column(
-          modifier = Modifier.padding(8.dp),
-          verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.Top),
-          horizontalAlignment = Alignment.Start) {
-            Row(
-                modifier = Modifier,
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.Start)) {
-                  if (useIcon) {
-                    Icon(imageVector = title.toImageVector(), contentDescription = null)
-                  }
-                  Text(
-                      text = title.toLocalizedName(),
-                      style =
-                          MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold))
-                }
-            Text(
-                text = value,
-                style = MaterialTheme.typography.bodyMedium,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis)
-          }
-
-      RadioButton(
-          selected = isSelected,
-          onClick = {
+    var isSelected by rememberVolatileSaveable(initialValue = false)
+    SelectableSurface(
+        modifier = modifier,
+        isSelected = isSelected,
+        tonalElevation = 2.dp,
+        borderStroke = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+        onSelected = {
             isSelected = !isSelected
             if (isSelected) onSelectMetadata(title, value) else onDeleteMetadata(title)
-          },
-          modifier = Modifier.align(Alignment.BottomEnd))
+        },
+        shape = MaterialTheme.shapes.medium,
+    ) {
+        Box {
+            Column(
+                modifier = Modifier.padding(8.dp),
+                verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.Top),
+                horizontalAlignment = Alignment.Start,
+            ) {
+                Row(
+                    modifier = Modifier,
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.Start),
+                ) {
+                    if (useIcon) {
+                        Icon(imageVector = title.toImageVector(), contentDescription = null)
+                    }
+                    Text(
+                        text = title.toLocalizedName(),
+                        style =
+                            MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
+                    )
+                }
+                Text(
+                    text = value,
+                    style = MaterialTheme.typography.bodyMedium,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
+
+            RadioButton(
+                selected = isSelected,
+                onClick = {
+                    isSelected = !isSelected
+                    if (isSelected) onSelectMetadata(title, value) else onDeleteMetadata(title)
+                },
+                modifier = Modifier.align(Alignment.BottomEnd),
+            )
+        }
     }
-  }
 }
 
 @Preview
 @Composable
 fun SelectableMetadataFieldNoIconPreview() {
-  SelectableMetadataField(
-      modifier = Modifier.size(200.dp),
-      title = "TITLE",
-      value = "Title",
-      onSelectMetadata = { _, _ -> },
-      onDeleteMetadata = {},
-      useIcon = false)
+    SelectableMetadataField(
+        modifier = Modifier.size(200.dp),
+        title = "TITLE",
+        value = "Title",
+        onSelectMetadata = { _, _ -> },
+        onDeleteMetadata = {},
+        useIcon = false,
+    )
 }
 
 @Preview
 @Composable
 fun SelectableMetadataFieldWithIconPreview() {
-  SelectableMetadataField(
-      modifier = Modifier.size(200.dp),
-      title = "TITLE",
-      value = "Title",
-      onSelectMetadata = { _, _ -> },
-      onDeleteMetadata = {},
-      useIcon = true)
+    SelectableMetadataField(
+        modifier = Modifier.size(200.dp),
+        title = "TITLE",
+        value = "Title",
+        onSelectMetadata = { _, _ -> },
+        onDeleteMetadata = {},
+        useIcon = true,
+    )
 }

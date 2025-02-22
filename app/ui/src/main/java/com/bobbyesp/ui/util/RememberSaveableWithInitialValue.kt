@@ -20,9 +20,11 @@ import androidx.compose.runtime.saveable.rememberSaveable
 @Composable
 fun <T : Any?> rememberVolatileSaveable(
     initialValue: T?,
-    saver: Saver<T?, out Any> = autoSaver()
+    saver: Saver<T?, out Any> = autoSaver(),
 ): MutableState<T?> {
-  return key(initialValue) { rememberSaveable(stateSaver = saver) { mutableStateOf(initialValue) } }
+    return key(initialValue) {
+        rememberSaveable(stateSaver = saver) { mutableStateOf(initialValue) }
+    }
 }
 
 /**
@@ -38,7 +40,9 @@ fun <T : Any?> rememberVolatileSaveable(
 @Composable
 fun <T : Any> rememberVolatileSaveable(
     initialValue: T,
-    saver: Saver<T, out Any> = autoSaver()
+    saver: Saver<T, out Any> = autoSaver(),
 ): MutableState<T> {
-  return key(initialValue) { rememberSaveable(stateSaver = saver) { mutableStateOf(initialValue) } }
+    return key(initialValue) {
+        rememberSaveable(stateSaver = saver) { mutableStateOf(initialValue) }
+    }
 }

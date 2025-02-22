@@ -37,41 +37,43 @@ fun VerticalButtonWithIconAndText(
     border: Boolean = false,
     backgroundColor: Color = MaterialTheme.colorScheme.secondaryContainer,
     shape: CornerBasedShape = MaterialTheme.shapes.small,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
 ) {
 
-  val animatedAlpha by animateFloatAsState(targetValue = if (enabled) 1f else 0.4f)
+    val animatedAlpha by animateFloatAsState(targetValue = if (enabled) 1f else 0.4f)
 
-  Surface(
-      modifier = modifier.semantics { role = Role.Button }.alpha(animatedAlpha),
-      onClick = onClick,
-      enabled = enabled,
-      shape = shape,
-      border = if (border) BorderStroke(1.dp, MaterialTheme.colorScheme.outline) else null,
-      color = backgroundColor) {
+    Surface(
+        modifier = modifier.semantics { role = Role.Button }.alpha(animatedAlpha),
+        onClick = onClick,
+        enabled = enabled,
+        shape = shape,
+        border = if (border) BorderStroke(1.dp, MaterialTheme.colorScheme.outline) else null,
+        color = backgroundColor,
+    ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterVertically),
             modifier =
                 Modifier.padding(8.dp)
                     .defaultMinSize(
-                        minWidth = ButtonDefaults.MinWidth, minHeight = ButtonDefaults.MinHeight)
-                    .fillMaxWidth()) {
-              Icon(
-                  imageVector = icon,
-                  contentDescription = null,
-                  tint = MaterialTheme.colorScheme.onSurface)
-              Text(
-                  text = text,
-                  style =
-                      MaterialTheme.typography.bodySmall.copy(
-                          fontWeight = FontWeight.Medium,
-                      ),
-                  color = MaterialTheme.colorScheme.onSurface,
-                  overflow = TextOverflow.Ellipsis,
-              )
-            }
-      }
+                        minWidth = ButtonDefaults.MinWidth,
+                        minHeight = ButtonDefaults.MinHeight,
+                    )
+                    .fillMaxWidth(),
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurface,
+            )
+            Text(
+                text = text,
+                style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Medium),
+                color = MaterialTheme.colorScheme.onSurface,
+                overflow = TextOverflow.Ellipsis,
+            )
+        }
+    }
 }
 
 @Composable
@@ -83,35 +85,35 @@ fun HorizontalButtonWithIconAndText(
     border: Boolean = false,
     backgroundColor: Color = MaterialTheme.colorScheme.secondaryContainer,
     shape: CornerBasedShape = MaterialTheme.shapes.small,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
 ) {
 
-  val animatedAlpha by animateFloatAsState(targetValue = if (enabled) 1f else 0.4f)
+    val animatedAlpha by animateFloatAsState(targetValue = if (enabled) 1f else 0.4f)
 
-  Surface(
-      modifier = modifier.semantics { role = Role.Button }.alpha(animatedAlpha),
-      onClick = onClick,
-      enabled = enabled,
-      shape = shape,
-      border = if (border) BorderStroke(1.dp, MaterialTheme.colorScheme.outline) else null,
-      color = backgroundColor) {
+    Surface(
+        modifier = modifier.semantics { role = Role.Button }.alpha(animatedAlpha),
+        onClick = onClick,
+        enabled = enabled,
+        shape = shape,
+        border = if (border) BorderStroke(1.dp, MaterialTheme.colorScheme.outline) else null,
+        color = backgroundColor,
+    ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(4.dp),
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(8.dp)) {
-              Icon(
-                  imageVector = icon,
-                  contentDescription = null,
-                  tint = MaterialTheme.colorScheme.onSurface)
-              Text(
-                  text = text,
-                  style =
-                      MaterialTheme.typography.bodySmall.copy(
-                          fontWeight = FontWeight.Medium,
-                      ),
-                  color = MaterialTheme.colorScheme.onSurface,
-                  overflow = TextOverflow.Ellipsis,
-              )
-            }
-      }
+            modifier = Modifier.padding(8.dp),
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurface,
+            )
+            Text(
+                text = text,
+                style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Medium),
+                color = MaterialTheme.colorScheme.onSurface,
+                overflow = TextOverflow.Ellipsis,
+            )
+        }
+    }
 }

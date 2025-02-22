@@ -45,6 +45,14 @@ android {
     }
 }
 
+ktfmt {
+    // Google style - 2 space indentation & automatically adds/removes trailing commas
+    //googleStyle()
+
+    // KotlinLang style - 4 space indentation - From https://kotlinlang.org/docs/coding-conventions.html
+    kotlinLangStyle()
+}
+
 ksp {
     arg("KOIN_CONFIG_CHECK", "true")
 }

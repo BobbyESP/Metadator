@@ -22,16 +22,17 @@ fun MediumText(
     fontSize: TextUnit = 16.sp,
     textAlign: TextAlign? = null,
 ) {
-  Text(
-      text,
-      textAlign = textAlign,
-      color = color,
-      fontSize = fontSize,
-      fontWeight = fontWeight,
-      maxLines = maxLines,
-      lineHeight = lineHeight,
-      overflow = TextOverflow.Ellipsis,
-      modifier = modifier)
+    Text(
+        text,
+        textAlign = textAlign,
+        color = color,
+        fontSize = fontSize,
+        fontWeight = fontWeight,
+        maxLines = maxLines,
+        lineHeight = lineHeight,
+        overflow = TextOverflow.Ellipsis,
+        modifier = modifier,
+    )
 }
 
 @Composable
@@ -42,13 +43,14 @@ fun Subtext(
     maxLines: Int = 2,
     textAlign: TextAlign? = null,
 ) {
-  Text(
-      text,
-      textAlign = textAlign,
-      color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
-      fontSize = fontSize,
-      lineHeight = 18.sp,
-      maxLines = maxLines,
-      overflow = TextOverflow.Ellipsis,
-      modifier = modifier)
+    Text(
+        text,
+        textAlign = textAlign,
+        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+        fontSize = fontSize,
+        lineHeight = 18.sp,
+        maxLines = maxLines,
+        overflow = TextOverflow.Ellipsis,
+        modifier = modifier,
+    )
 }

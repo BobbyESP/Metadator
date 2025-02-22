@@ -21,42 +21,44 @@ import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.GlobalContext.startKoin
 
 class App : Application() {
-  override fun onCreate() {
-    startKoin {
-      androidLogger()
-      androidContext(this@App)
-      modules(appSystemManagers, appCoroutinesScope, coreFunctionalitiesModule)
-      modules(mediaplayerInternalsModule)
-      modules(mediaStoreViewModelsModule, tagEditorViewModelsModule, mediaplayerViewModels)
-      modules(spotifyMainModule, spotifyServicesModule)
-    }
-    packageInfo =
-        packageManager.run {
-          if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-              getPackageInfo(packageName, PackageManager.PackageInfoFlags.of(0))
-          else getPackageInfo(packageName, 0)
+    override fun onCreate() {
+        startKoin {
+            androidLogger()
+            androidContext(this@App)
+            modules(appSystemManagers, appCoroutinesScope, coreFunctionalitiesModule)
+            modules(mediaplayerInternalsModule)
+            modules(mediaStoreViewModelsModule, tagEditorViewModelsModule, mediaplayerViewModels)
+            modules(spotifyMainModule, spotifyServicesModule)
         }
-    isPlayStoreBuild = (BuildConfig.FLAVOR == "playstore")
-    super.onCreate()
+        packageInfo =
+            packageManager.run {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+                    getPackageInfo(packageName, PackageManager.PackageInfoFlags.of(0))
+                else getPackageInfo(packageName, 0)
+            }
+        isPlayStoreBuild = (BuildConfig.FLAVOR == "playstore")
+        super.onCreate()
 
-    if (!isPlayStoreBuild)
-        setupCrashHandler(
-            reportInfo = ReportInfo(androidVersion = true, deviceInfo = true, supportedABIs = true),
-            reportUrl = CRASH_REPORT_URL)
-  }
+        if (!isPlayStoreBuild)
+            setupCrashHandler(
+                reportInfo =
+                    ReportInfo(androidVersion = true, deviceInfo = true, supportedABIs = true),
+                reportUrl = CRASH_REPORT_URL,
+            )
+    }
 
-  companion object {
-    lateinit var packageInfo: PackageInfo
-    var isPlayStoreBuild by Delegates.notNull<Boolean>()
+    companion object {
+        lateinit var packageInfo: PackageInfo
+        var isPlayStoreBuild by Delegates.notNull<Boolean>()
 
-    val appVersion: String
-      get() = packageInfo.versionName.toString()
+        val appVersion: String
+            get() = packageInfo.versionName.toString()
 
-    const val APP_PACKAGE_NAME = "com.bobbyesp.metadator"
-    const val PREFERENCES_NAME = "${APP_PACKAGE_NAME}_preferences"
-    const val APP_FILE_PROVIDER = "$APP_PACKAGE_NAME.fileprovider"
+        const val APP_PACKAGE_NAME = "com.bobbyesp.metadator"
+        const val PREFERENCES_NAME = "${APP_PACKAGE_NAME}_preferences"
+        const val APP_FILE_PROVIDER = "$APP_PACKAGE_NAME.fileprovider"
 
-    const val CRASH_REPORT_URL =
-        "https://github.com/BobbyESP/Metadator/issues/new?assignees=&labels=bug&projects=&template=bug_report.yml&title=%5BApp%20crash%5D"
-  }
+        const val CRASH_REPORT_URL =
+            "https://github.com/BobbyESP/Metadator/issues/new?assignees=&labels=bug&projects=&template=bug_report.yml&title=%5BApp%20crash%5D"
+    }
 }

@@ -39,26 +39,30 @@ fun SettingSegmentOptions(
     icon: ImageVector,
     options: List<SettingSegmentOption>,
     selectedOptionIndex: Int,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
-  Row(
-      modifier = modifier.clip(ShapeDefaults.Large),
-      verticalAlignment = Alignment.CenterVertically) {
+    Row(
+        modifier = modifier.clip(ShapeDefaults.Large),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
         Icon(
             imageVector = icon,
             tint = MaterialTheme.colorScheme.onSurface,
-            contentDescription = null)
+            contentDescription = null,
+        )
 
         Column(modifier = Modifier.weight(1f).padding(horizontal = 16.dp)) {
-          Text(
-              text = title,
-              style = MaterialTheme.typography.titleMedium,
-              color = MaterialTheme.colorScheme.onSurface)
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
 
-          Text(
-              text = supportingText,
-              style = MaterialTheme.typography.bodyMedium,
-              color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text(
+                text = supportingText,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
         }
 
         Box(
@@ -67,42 +71,45 @@ fun SettingSegmentOptions(
                     .width(IntrinsicSize.Min)
                     .height(IntrinsicSize.Min)
                     .clip(ShapeDefaults.ExtraLarge)
-                    .background(color = MaterialTheme.colorScheme.surfaceContainerHighest)) {
-              var midPoint by remember { mutableStateOf(0.dp) }
-              val density = LocalDensity.current
-              val capsuleOffset by
-                  animateDpAsState(
-                      targetValue = if (selectedOptionIndex == 0) 0.dp else midPoint,
-                      label = "capsule-offset-animation")
+                    .background(color = MaterialTheme.colorScheme.surfaceContainerHighest)
+        ) {
+            var midPoint by remember { mutableStateOf(0.dp) }
+            val density = LocalDensity.current
+            val capsuleOffset by
+                animateDpAsState(
+                    targetValue = if (selectedOptionIndex == 0) 0.dp else midPoint,
+                    label = "capsule-offset-animation",
+                )
 
-              Box(
-                  modifier =
-                      Modifier.fillMaxHeight()
-                          .fillMaxWidth(.5f)
-                          .offset(x = capsuleOffset)
-                          .clip(ShapeDefaults.ExtraLarge)
-                          .background(color = MaterialTheme.colorScheme.primary))
+            Box(
+                modifier =
+                    Modifier.fillMaxHeight()
+                        .fillMaxWidth(.5f)
+                        .offset(x = capsuleOffset)
+                        .clip(ShapeDefaults.ExtraLarge)
+                        .background(color = MaterialTheme.colorScheme.primary)
+            )
 
-              Row(
-                  verticalAlignment = Alignment.CenterVertically,
-                  modifier =
-                      Modifier.onGloballyPositioned {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier =
+                    Modifier.onGloballyPositioned {
                         midPoint = with(density) { (it.size.width / 2).toDp() }
-                      }) {
-                    options.fastForEachIndexed { index, option ->
-                      Icon(
-                          imageVector = option.icon,
-                          contentDescription = option.contentDescription,
-                          tint =
-                              if (selectedOptionIndex == index) {
+                    },
+            ) {
+                options.fastForEachIndexed { index, option ->
+                    Icon(
+                        imageVector = option.icon,
+                        contentDescription = option.contentDescription,
+                        tint =
+                            if (selectedOptionIndex == index) {
                                 MaterialTheme.colorScheme.onPrimary
-                              } else MaterialTheme.colorScheme.onSurface,
-                          modifier =
-                              Modifier.padding(8.dp).clip(CircleShape).clickable {
-                                option.onClick()
-                              })
-                    }
-                  }
+                            } else MaterialTheme.colorScheme.onSurface,
+                        modifier =
+                            Modifier.padding(8.dp).clip(CircleShape).clickable { option.onClick() },
+                    )
+                }
             }
-      }
+        }
+    }
 }

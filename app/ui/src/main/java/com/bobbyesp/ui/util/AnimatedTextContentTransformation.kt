@@ -9,4 +9,5 @@ val AnimatedTextContentTransformation =
     ContentTransform(
         materialSharedAxisXIn(initialOffsetX = { it / 10 }),
         materialSharedAxisXOut(targetOffsetX = { -it / 10 }),
-        sizeTransform = SizeTransform(clip = false))
+        sizeTransform = SizeTransform(clip = false),
+    )

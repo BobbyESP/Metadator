@@ -29,10 +29,10 @@ fun PullToRefreshLayout(
     pullState: PullState = rememberPullState(),
     content: @Composable () -> Unit,
 ) {
-  CompositionLocalProvider(
-      LocalOverscrollConfiguration provides
-          null // Disable overscroll otherwise it consumes the drag before we get the chance
-      ) {
+    CompositionLocalProvider(
+        LocalOverscrollConfiguration provides
+            null // Disable overscroll otherwise it consumes the drag before we get the chance
+    ) {
         Box(
             modifier =
                 modifier
@@ -43,31 +43,38 @@ fun PullToRefreshLayout(
                                 colors =
                                     listOf(MaterialTheme.colorScheme.background, Color.Transparent),
                                 startY = -10f,
-                                endY = pullState.progressRefreshTrigger * 120))
-                    .nestedScroll(pullState.scrollConnection),
+                                endY = pullState.progressRefreshTrigger * 120,
+                            )
+                    )
+                    .nestedScroll(pullState.scrollConnection)
         ) {
-          Indicator(pullState = pullState)
-          Column {
-            // This invisible spacer height + current top inset is always equals max top inset to
-            // keep scroll speed constant
-            Spacer(
-                modifier =
-                    Modifier.height(
-                        LocalDensity.current.run { pullState.maxInsetTop.toDp() } -
-                            pullState.insetTop))
+            Indicator(pullState = pullState)
+            Column {
+                // This invisible spacer height + current top inset is always equals max top inset
+                // to
+                // keep scroll speed constant
+                Spacer(
+                    modifier =
+                        Modifier.height(
+                            LocalDensity.current.run { pullState.maxInsetTop.toDp() } -
+                                pullState.insetTop
+                        )
+                )
 
-            Surface(
-                modifier = Modifier.offset { IntOffset(0, pullState.offsetY.toInt()) },
-                color = Color.Transparent,
-                shape =
-                    RoundedCornerShape(
-                        topStart = 16.dp * pullState.progressRefreshTrigger,
-                        topEnd = 16.dp * pullState.progressRefreshTrigger,
-                        bottomStart = 0.dp,
-                        bottomEnd = 0.dp)) {
-                  content()
+                Surface(
+                    modifier = Modifier.offset { IntOffset(0, pullState.offsetY.toInt()) },
+                    color = Color.Transparent,
+                    shape =
+                        RoundedCornerShape(
+                            topStart = 16.dp * pullState.progressRefreshTrigger,
+                            topEnd = 16.dp * pullState.progressRefreshTrigger,
+                            bottomStart = 0.dp,
+                            bottomEnd = 0.dp,
+                        ),
+                ) {
+                    content()
                 }
-          }
+            }
         }
-      }
+    }
 }

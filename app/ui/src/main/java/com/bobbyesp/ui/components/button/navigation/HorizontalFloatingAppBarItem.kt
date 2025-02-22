@@ -43,63 +43,69 @@ fun HorizontalFloatingAppBarItem(
     badge: (@Composable () -> Unit)? = null,
     shape: Shape = CircleShape,
     colors: NavigationDrawerItemColors = NavigationDrawerItemDefaults.colors(),
-    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
 ) {
-  val animatedSurfaceColor by
-      animateColorAsState(
-          targetValue = colors.containerColor(selected).value, label = "Animated Surface Color")
+    val animatedSurfaceColor by
+        animateColorAsState(
+            targetValue = colors.containerColor(selected).value,
+            label = "Animated Surface Color",
+        )
 
-  Surface(
-      onClick = onClick,
-      modifier = modifier.semantics { role = Role.Companion.Tab },
-      shape = shape,
-      color = animatedSurfaceColor,
-      interactionSource = interactionSource) {
+    Surface(
+        onClick = onClick,
+        modifier = modifier.semantics { role = Role.Companion.Tab },
+        shape = shape,
+        color = animatedSurfaceColor,
+        interactionSource = interactionSource,
+    ) {
         Row(
             modifier = Modifier.Companion.padding(8.dp),
             verticalAlignment = Alignment.Companion.CenterVertically,
         ) {
-          icon?.let {
-            Box(contentAlignment = Alignment.Companion.Center) {
-              ProvideColor(colors.iconColor(selected).value) { icon() }
-              if (badge != null) {
-                Box(
-                    modifier =
-                        Modifier.Companion.align(Alignment.Companion.BottomEnd)
-                            .padding(bottom = 4.dp, end = 4.dp)) {
-                      ProvideColor(colors.badgeColor(selected).value) { badge() }
+            icon?.let {
+                Box(contentAlignment = Alignment.Companion.Center) {
+                    ProvideColor(colors.iconColor(selected).value) { icon() }
+                    if (badge != null) {
+                        Box(
+                            modifier =
+                                Modifier.Companion.align(Alignment.Companion.BottomEnd)
+                                    .padding(bottom = 4.dp, end = 4.dp)
+                        ) {
+                            ProvideColor(colors.badgeColor(selected).value) { badge() }
+                        }
                     }
-              }
+                }
             }
-          }
 
-          AnimatedVisibility(visible = expanded && !selected, modifier = Modifier.Companion) {
-            ProvideColor(colors.textColor(selected).value) { label() }
-          }
+            AnimatedVisibility(visible = expanded && !selected, modifier = Modifier.Companion) {
+                ProvideColor(colors.textColor(selected).value) { label() }
+            }
         }
-      }
+    }
 }
 
 @Composable
 private fun ProvideColor(color: Color, content: @Composable () -> Unit) {
-  CompositionLocalProvider(LocalContentColor provides color, content = content)
+    CompositionLocalProvider(LocalContentColor provides color, content = content)
 }
 
 @Preview
 @Composable
 private fun HorizontalFloatingAppBarItemPreview() {
-  var expanded by remember { mutableStateOf(true) }
-  var selected by remember { mutableStateOf(true) }
-  HorizontalFloatingAppBarItem(
-      label = {
-        Text(
-            modifier = Modifier.Companion.padding(horizontal = 12.dp),
-            text = "Home",
-            fontWeight = FontWeight.Companion.Bold)
-      },
-      selected = selected,
-      expanded = expanded,
-      onClick = { selected = !selected },
-      icon = { Icon(imageVector = Icons.Rounded.Home, contentDescription = "Home") },
-      badge = null)
+    var expanded by remember { mutableStateOf(true) }
+    var selected by remember { mutableStateOf(true) }
+    HorizontalFloatingAppBarItem(
+        label = {
+            Text(
+                modifier = Modifier.Companion.padding(horizontal = 12.dp),
+                text = "Home",
+                fontWeight = FontWeight.Companion.Bold,
+            )
+        },
+        selected = selected,
+        expanded = expanded,
+        onClick = { selected = !selected },
+        icon = { Icon(imageVector = Icons.Rounded.Home, contentDescription = "Home") },
+        badge = null,
+    )
 }

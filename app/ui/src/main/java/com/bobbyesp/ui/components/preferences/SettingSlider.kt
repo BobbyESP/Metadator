@@ -23,29 +23,32 @@ fun SettingSlider(
     onValueChangeFinished: () -> Unit,
     valueToShow: String? = null,
     @IntRange steps: Int = 0,
-    valueRange: ClosedFloatingPointRange<Float> = 0f..1f
+    valueRange: ClosedFloatingPointRange<Float> = 0f..1f,
 ) {
-  Column(modifier = modifier) {
-    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-      Text(
-          text = title,
-          style = MaterialTheme.typography.titleMedium,
-          color = MaterialTheme.colorScheme.onSurface)
+    Column(modifier = modifier) {
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
 
-      Text(
-          text = "${valueToShow ?: value.toInt()}",
-          style = MaterialTheme.typography.titleMedium,
-          color = MaterialTheme.colorScheme.onSurface)
+            Text(
+                text = "${valueToShow ?: value.toInt()}",
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+        }
+
+        Spacer(modifier = Modifier.height(4.dp))
+
+        Slider(
+            value = value,
+            onValueChange = onValueChange,
+            onValueChangeFinished = onValueChangeFinished,
+            steps = steps,
+            valueRange = valueRange,
+            modifier = Modifier.fillMaxWidth(),
+        )
     }
-
-    Spacer(modifier = Modifier.height(4.dp))
-
-    Slider(
-        value = value,
-        onValueChange = onValueChange,
-        onValueChangeFinished = onValueChangeFinished,
-        steps = steps,
-        valueRange = valueRange,
-        modifier = Modifier.fillMaxWidth())
-  }
 }

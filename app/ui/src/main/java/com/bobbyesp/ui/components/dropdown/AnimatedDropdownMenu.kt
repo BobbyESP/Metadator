@@ -65,24 +65,26 @@ fun AnimatedDropdownMenu(
     offset: DpOffset = DpOffset(0.dp, 0.dp),
     scrollState: ScrollState = rememberScrollState(),
     properties: PopupProperties = PopupProperties(focusable = true),
-    content: @Composable ColumnScope.() -> Unit
+    content: @Composable ColumnScope.() -> Unit,
 ) {
-  val expandedState = remember { MutableTransitionState(false) }
-  expandedState.targetState = expanded
+    val expandedState = remember { MutableTransitionState(false) }
+    expandedState.targetState = expanded
 
-  if (expandedState.currentState || expandedState.targetState || !expandedState.isIdle) {
-    val density = LocalDensity.current
-    val popupPositionProvider =
-        remember(offset, density) { DropdownMenuPositionProvider(offset, density) }
-    Popup(
-        onDismissRequest = onDismissRequest,
-        popupPositionProvider = popupPositionProvider,
-        properties = properties) {
-          DropdownMenuContent(
-              expandedState = expandedState,
-              scrollState = scrollState,
-              modifier = modifier,
-              content = content)
+    if (expandedState.currentState || expandedState.targetState || !expandedState.isIdle) {
+        val density = LocalDensity.current
+        val popupPositionProvider =
+            remember(offset, density) { DropdownMenuPositionProvider(offset, density) }
+        Popup(
+            onDismissRequest = onDismissRequest,
+            popupPositionProvider = popupPositionProvider,
+            properties = properties,
+        ) {
+            DropdownMenuContent(
+                expandedState = expandedState,
+                scrollState = scrollState,
+                modifier = modifier,
+                content = content,
+            )
         }
-  }
+    }
 }

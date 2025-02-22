@@ -27,36 +27,41 @@ import com.bobbyesp.metadator.core.util.getAppVersionName
 
 @Composable
 fun AppDetails(modifier: Modifier = Modifier, subtitle: String? = null) {
-  val context = LocalContext.current
-  val isDarkMode = isSystemInDarkTheme()
+    val context = LocalContext.current
+    val isDarkMode = isSystemInDarkTheme()
 
-  val animatedColor by
-      animateColorAsState(
-          targetValue = if (isDarkMode) MetadatorLogoForeground else MetadatorLogoBackground)
+    val animatedColor by
+        animateColorAsState(
+            targetValue = if (isDarkMode) MetadatorLogoForeground else MetadatorLogoBackground
+        )
 
-  Column(
-      modifier = modifier,
-      horizontalAlignment = Alignment.CenterHorizontally,
-      verticalArrangement = Arrangement.spacedBy(8.dp)) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
         Image(
             painter = painterResource(R.drawable.metadator_logo_foreground),
             colorFilter = ColorFilter.tint(animatedColor),
             contentDescription = null,
             modifier =
                 Modifier.size(200.dp).graphicsLayer {
-                  scaleX = 2f
-                  scaleY = 2f
-                })
+                    scaleX = 2f
+                    scaleY = 2f
+                },
+        )
 
         Text(
             text = stringResource(R.string.app_name).uppercase(),
             style = MaterialTheme.typography.displayMedium,
             fontWeight = FontWeight.SemiBold,
-            fontFamily = FontFamily.Monospace)
+            fontFamily = FontFamily.Monospace,
+        )
 
         Text(
             text = subtitle ?: context.getAppVersionName(),
             color = MaterialTheme.colorScheme.outline,
-            fontFamily = FontFamily.Monospace)
-      }
+            fontFamily = FontFamily.Monospace,
+        )
+    }
 }

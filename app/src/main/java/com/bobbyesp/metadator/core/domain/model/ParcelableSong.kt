@@ -17,14 +17,15 @@ data class ParcelableSong(
     val mainArtist: String,
     val localPath: String,
     @Serializable(with = UriSerializer::class) val artworkPath: Uri? = null,
-    val filename: String
+    val filename: String,
 ) : Parcelable {
-  fun MusicTrack.toParcelableSong(): ParcelableSong {
-    return ParcelableSong(
-        name = title,
-        mainArtist = artist ?: "",
-        localPath = path,
-        artworkPath = artworkUri?.toUri(),
-        filename = title)
-  }
+    fun MusicTrack.toParcelableSong(): ParcelableSong {
+        return ParcelableSong(
+            name = title,
+            mainArtist = artist ?: "",
+            localPath = path,
+            artworkPath = artworkUri?.toUri(),
+            filename = title,
+        )
+    }
 }

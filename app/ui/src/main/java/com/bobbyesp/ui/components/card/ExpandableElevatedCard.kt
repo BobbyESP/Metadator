@@ -38,54 +38,62 @@ fun ExpandableElevatedCard(
     icon: ImageVector,
     content: @Composable () -> Unit,
 ) {
-  var expanded by rememberSaveable { mutableStateOf(isExpanded) }
+    var expanded by rememberSaveable { mutableStateOf(isExpanded) }
 
-  val animatedDegree =
-      animateFloatAsState(targetValue = if (expanded) 0f else -180f, label = "Button Rotation")
+    val animatedDegree =
+        animateFloatAsState(targetValue = if (expanded) 0f else -180f, label = "Button Rotation")
 
-  ElevatedCard(
-      modifier = modifier, onClick = { expanded = !expanded }, shape = MaterialTheme.shapes.small) {
+    ElevatedCard(
+        modifier = modifier,
+        onClick = { expanded = !expanded },
+        shape = MaterialTheme.shapes.small,
+    ) {
         Row(
             modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-          Icon(
-              modifier = Modifier.weight(0.1f),
-              imageVector = icon,
-              contentDescription = "Device information")
-          Column(
-              modifier = Modifier.fillMaxWidth().padding(6.dp).weight(1f),
-          ) {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.Bold)
-            Text(
-                text = subtitle,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.62f),
-                fontWeight = FontWeight.Normal)
-          }
-          FilledTonalIconButton(
-              modifier = Modifier.padding().size(24.dp), onClick = { expanded = !expanded }) {
+            Icon(
+                modifier = Modifier.weight(0.1f),
+                imageVector = icon,
+                contentDescription = "Device information",
+            )
+            Column(modifier = Modifier.fillMaxWidth().padding(6.dp).weight(1f)) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Bold,
+                )
+                Text(
+                    text = subtitle,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.62f),
+                    fontWeight = FontWeight.Normal,
+                )
+            }
+            FilledTonalIconButton(
+                modifier = Modifier.padding().size(24.dp),
+                onClick = { expanded = !expanded },
+            ) {
                 Icon(
                     Icons.Outlined.ExpandLess,
                     null,
                     tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                    modifier = Modifier.rotate(animatedDegree.value))
-              }
+                    modifier = Modifier.rotate(animatedDegree.value),
+                )
+            }
         }
         AnimatedVisibility(visible = expanded) { content() }
-      }
+    }
 }
 
 @Composable
 @Preview
 @Preview(uiMode = UI_MODE_NIGHT_YES)
 private fun ExpandableElevatedCardPreview() {
-  ExpandableElevatedCard(
-      title = "Title",
-      subtitle = "Subtitle",
-      content = { Text(text = "Content") },
-      icon = Icons.Outlined.PermDeviceInformation)
+    ExpandableElevatedCard(
+        title = "Title",
+        subtitle = "Subtitle",
+        content = { Text(text = "Content") },
+        icon = Icons.Outlined.PermDeviceInformation,
+    )
 }

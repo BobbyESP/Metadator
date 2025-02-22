@@ -9,9 +9,9 @@ fun NavGraphBuilder.mediaplayerRouting(
     // mediaplayerViewModel: MediaplayerViewModel,
     onNavigateBack: () -> Unit
 ) {
-  navigation<Route.MediaplayerNavigator>(
-      startDestination = Route.MediaplayerNavigator.Mediaplayer,
-  ) {
-    animatedComposable<Route.MediaplayerNavigator.Mediaplayer> {}
-  }
+    navigation<Route.MediaplayerNavigator>(
+        startDestination = Route.MediaplayerNavigator.Mediaplayer
+    ) {
+        animatedComposable<Route.MediaplayerNavigator.Mediaplayer> {}
+    }
 }
