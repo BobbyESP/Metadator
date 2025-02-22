@@ -75,7 +75,7 @@ fun AppLocalSettingsProvider(
         LocalDynamicColoringSwitch provides
             settingsFlow.value
                 .useDynamicColoring, // Tells the app if it should use dynamic colors or not
-                                     // (Android
+        // (Android
         // 12+ feature)
         LocalDynamicThemeState provides themeState, // Provides the theme state to the app
         LocalAppPreferencesController provides appPreferences,
