@@ -18,7 +18,7 @@ import com.bobbyesp.metadator.core.data.local.preferences.PreferencesKey.THEME_C
 import com.bobbyesp.metadator.core.data.local.preferences.PreferencesKey.USE_DYNAMIC_COLORING
 import com.bobbyesp.metadator.mediastore.domain.enums.LayoutType
 import com.bobbyesp.metadator.mediastore.domain.enums.CompactCardSize
-import com.bobbyesp.metadator.core.presentation.theme.isDynamicColoringSupported
+import com.bobbyesp.coreutilities.theming.isDynamicColoringSupported
 import com.materialkolor.PaletteStyle
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow

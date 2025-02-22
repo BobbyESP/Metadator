@@ -11,13 +11,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.LineBreak
 import androidx.compose.ui.text.style.TextDirection
+import com.bobbyesp.coreutilities.theming.isDynamicColoringSupported
 import com.bobbyesp.metadator.core.presentation.common.LocalDynamicColoringSwitch
 import com.bobbyesp.metadator.core.presentation.common.LocalDynamicThemeState
 import com.materialkolor.DynamicMaterialTheme
 
-fun isDynamicColoringSupported(): Boolean {
-    return Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
-}
+
 
 val MetadatorLogoForeground = Color(0xFFFFFFF0)
 val MetadatorLogoBackground = Color(0xFF313638)

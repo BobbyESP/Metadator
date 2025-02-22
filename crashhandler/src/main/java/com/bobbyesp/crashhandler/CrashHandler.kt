@@ -6,7 +6,6 @@ import android.content.Intent
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.os.Build
-import androidx.core.content.ContextCompat.startActivity
 import java.io.File
 
 object CrashHandler {
@@ -17,6 +16,7 @@ object CrashHandler {
      * @param packageInfo The package information for which the report is to be generated.
      * @param reportInfo The report information which specifies what information should be included in the report. Defaults to a new instance of ReportInfo.
      * @param logfilePath The path of the log file to be passed to the CrashReportActivity.
+     * @param reportUrl The URL to which the report will be sent.
      *
      * The function creates a new Intent for the CrashReportActivity and sets the necessary flags.
      * It then adds the version report and the log file path as extras to the Intent.
@@ -26,12 +26,14 @@ object CrashHandler {
         context: Context,
         packageInfo: PackageInfo,
         reportInfo: ReportInfo = ReportInfo(),
-        logfilePath: String
+        logfilePath: String,
+        reportUrl: String
     ) {
         context.startActivity(Intent(context, CrashHandlerActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK
             putExtra("version_report", getVersionReport(packageInfo, reportInfo))
             putExtra("logfile_path", logfilePath)
+            putExtra("report_url", reportUrl)
         }, null)
     }
 
@@ -39,6 +41,7 @@ object CrashHandler {
      * This function sets up the crash handler for the application.
      *
      * @param reportInfo The report information which specifies what information should be included in the report. Defaults to a new instance of ReportInfo.
+     * @param reportUrl The URL to which the report will be sent.
      *
      * The function sets the default uncaught exception handler to a new handler that creates a log file with the stack trace of the uncaught exception,
      * retrieves the package information for the application, and starts the CrashReportActivity with the generated log file and package information.
@@ -47,7 +50,9 @@ object CrashHandler {
      * The package information is retrieved using the package manager and includes the version name, version code, and package name.
      * The CrashReportActivity is started with a new Intent that includes the version report and the path of the log file as extras.
      */
-    fun Application.setupCrashHandler(reportInfo: ReportInfo = ReportInfo()) {
+    fun Application.setupCrashHandler(
+        reportInfo: ReportInfo = ReportInfo(), reportUrl: String
+    ) {
         Thread.setDefaultUncaughtExceptionHandler { _, throwable ->
             val logfile = createLogFile(this, throwable.stackTraceToString())
             val packageInfo = packageManager.run {
@@ -55,7 +60,13 @@ object CrashHandler {
                     packageName, PackageManager.PackageInfoFlags.of(0)
                 ) else getPackageInfo(packageName, 0)
             }
-            startCrashReportActivity(this, packageInfo, reportInfo, logfile)
+            startCrashReportActivity(
+                context = this,
+                packageInfo = packageInfo,
+                reportInfo = reportInfo,
+                logfilePath = logfile,
+                reportUrl = reportUrl
+            )
         }
     }
 
@@ -75,39 +86,24 @@ object CrashHandler {
      */
     fun getVersionReport(packageInfo: PackageInfo, info: ReportInfo = ReportInfo()): String {
         val versionName = packageInfo.versionName
-
-        @Suppress("DEPRECATION") val versionCode =
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                packageInfo.longVersionCode
-            } else {
-                packageInfo.versionCode.toLong()
-            }
-
+        val versionCode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            packageInfo.longVersionCode
+        } else {
+            @Suppress("DEPRECATION")
+            packageInfo.versionCode.toLong()
+        }
         val androidVersion = if (Build.VERSION.SDK_INT >= 30) {
             Build.VERSION.RELEASE_OR_CODENAME
         } else {
             Build.VERSION.RELEASE
         }
-
-        val packageName = packageInfo.packageName
-
-        val report =
-            StringBuilder().append("App version: $packageName $versionName ($versionCode)\n")
-
-
-        if (info.androidVersion) {
-            report.append("Android version: Android $androidVersion (API ${Build.VERSION.SDK_INT})\n")
+        val report = StringBuilder().apply {
+            append("App version: ${packageInfo.packageName} $versionName ($versionCode)\n")
+            if (info.androidVersion) append("Android version: Android $androidVersion (API ${Build.VERSION.SDK_INT})\n")
+            if (info.deviceInfo) append("Device: ${Build.MANUFACTURER} ${Build.MODEL}\n")
+            if (info.supportedABIs) append("Supported ABIs: ${Build.SUPPORTED_ABIS.contentToString()}\n")
         }
-
-        if (info.deviceInfo) {
-            report.append("Device: ${Build.MANUFACTURER} ${Build.MODEL}\n")
-        }
-
-        if (info.supportedABIs) {
-            report.append("Supported ABIs: ${Build.SUPPORTED_ABIS.contentToString()}\n")
-        }
-
-        return report.toString() //It's only returned supportedABIs for some reason among the appended value at the creation of the "report" val
+        return report.toString()
     }
 
     /**

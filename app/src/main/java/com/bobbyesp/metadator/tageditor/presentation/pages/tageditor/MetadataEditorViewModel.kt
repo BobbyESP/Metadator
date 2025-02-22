@@ -38,6 +38,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 
+//TODO: Rewrite (please, remove context)
 class MetadataEditorViewModel(
     private val context: Context,
     private val stateHandle: SavedStateHandle

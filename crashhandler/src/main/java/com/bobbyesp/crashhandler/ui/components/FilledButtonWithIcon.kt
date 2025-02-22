@@ -9,6 +9,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -18,23 +19,25 @@ fun FilledButtonWithIcon(
     icon: ImageVector,
     enabled: Boolean = true,
     text: String,
-    contentDescription: String? = null
+    contentDescription: String? = null,
+    maxLines: Int = 1
 ) {
     Button(
         modifier = modifier,
         onClick = onClick,
         enabled = enabled,
         contentPadding = ButtonDefaults.ButtonWithIconContentPadding
-    )
-    {
+    ) {
         Icon(
-            modifier = Modifier.size(18.dp),
+            modifier = Modifier.size(24.dp),
             imageVector = icon,
             contentDescription = contentDescription
         )
         Text(
-            modifier = Modifier.padding(start = 6.dp),
-            text = text
+            modifier = Modifier.padding(start = 8.dp),
+            text = text,
+            maxLines = maxLines,
+            overflow = TextOverflow.Ellipsis
         )
     }
 }

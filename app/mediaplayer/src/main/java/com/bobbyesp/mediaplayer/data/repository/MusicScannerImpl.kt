@@ -104,7 +104,9 @@ class MusicScannerImpl(
                 selection.append(filterSelection)
             } else {
                 selection.append(
-                    "${MediaStore.Audio.Media.TITLE} LIKE '%$term%' OR " + "${MediaStore.Audio.Media.ARTIST} LIKE '%$term%' OR " + "${MediaStore.Audio.Media.ALBUM} LIKE '%$term%'"
+                    "${MediaStore.Audio.Media.TITLE} LIKE '%$term%' OR " +
+                            "${MediaStore.Audio.Media.ARTIST} LIKE '%$term%' OR " +
+                            "${MediaStore.Audio.Media.ALBUM} LIKE '%$term%'"
                 )
             }
             selection.append(")")
