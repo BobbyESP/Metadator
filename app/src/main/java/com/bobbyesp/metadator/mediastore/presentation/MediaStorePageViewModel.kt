@@ -4,7 +4,7 @@ import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bobbyesp.mediaplayer.domain.model.MusicTrack
-import com.bobbyesp.mediaplayer.domain.repository.MusicScanner
+import com.bobbyesp.mediaplayer.domain.repository.MusicLibraryRepository
 import com.bobbyesp.utilities.mediastore.model.Song
 import com.bobbyesp.utilities.states.ResourceState
 import kotlinx.coroutines.Dispatchers
@@ -15,13 +15,13 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class MediaStorePageViewModel(musicScanner: MusicScanner) : ViewModel() {
+class MediaStorePageViewModel(musicLibraryRepository: MusicLibraryRepository) : ViewModel() {
     private val _songs: MutableStateFlow<ResourceState<List<Song>>> =
         MutableStateFlow(ResourceState.Loading())
     val songs = _songs.asStateFlow()
 
     private val mediaStoreSongsFlow =
-        musicScanner.observeMusicLibrary(null, null).map { musicTracks ->
+        musicLibraryRepository.observeMusicLibrary(null, null).map { musicTracks ->
             musicTracks.map { it.toSong() }
         }
 

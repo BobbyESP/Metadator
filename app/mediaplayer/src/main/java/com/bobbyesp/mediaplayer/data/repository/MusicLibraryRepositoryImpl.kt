@@ -10,11 +10,14 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
+import androidx.core.database.getStringOrNull
 import androidx.core.net.toUri
 import com.bobbyesp.coreutilities.observe
 import com.bobbyesp.mediaplayer.domain.enums.MediaStoreSearchFilter
+import com.bobbyesp.mediaplayer.domain.model.Genre
 import com.bobbyesp.mediaplayer.domain.model.MusicTrack
-import com.bobbyesp.mediaplayer.domain.repository.MusicScanner
+import com.bobbyesp.mediaplayer.domain.repository.MusicLibraryRepository
+import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
@@ -23,17 +26,17 @@ import kotlinx.coroutines.withContext
 
 private const val TAG = "MusicScannerImpl"
 
-class MusicScannerImpl(private val context: Context) : MusicScanner {
+class MusicLibraryRepositoryImpl(private val context: Context) : MusicLibraryRepository {
 
     override suspend fun getMusicLibrary(
-        searchQuery: String?,
-        filters: List<MediaStoreSearchFilter>?,
+        query: String?,
+        searchFilters: List<MediaStoreSearchFilter>?,
     ): List<MusicTrack> =
         withContext(Dispatchers.IO) {
             val musicList = mutableListOf<MusicTrack>()
             val projection = projectionBasedOnVersion()
-            val selection = buildSelection(searchQuery, filters)
-            val selectionArgs = buildSelectionArgs(searchQuery, filters)
+            val selection = buildSelection(query, searchFilters)
+            val selectionArgs = buildSelectionArgs(query, searchFilters)
             val sortOrder = MediaStore.Audio.Media.TITLE
 
             context.contentResolver
@@ -50,13 +53,85 @@ class MusicScannerImpl(private val context: Context) : MusicScanner {
         }
 
     override fun observeMusicLibrary(
-        searchQuery: String?,
-        filters: List<MediaStoreSearchFilter>?,
+        query: String?,
+        searchFilters: List<MediaStoreSearchFilter>?,
     ): Flow<List<MusicTrack>> =
         context.contentResolver
             .observe(musicUri)
-            .map { getMusicLibrary(searchQuery, filters) }
+            .map { getMusicLibrary(query, searchFilters) }
             .flowOn(Dispatchers.IO)
+
+    override fun getGenres(): List<Genre> {
+        val projection = arrayOf(MediaStore.Audio.Genres._ID, MediaStore.Audio.Genres.NAME)
+
+        val query = context.contentResolver.query(musicUri, projection, null, null, null)
+
+        val genres = mutableListOf<Genre>()
+        query?.use { cursor ->
+            val idColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Genres._ID)
+            val nameColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Genres.NAME)
+
+            while (cursor.moveToNext()) {
+                val id = getLong(cursor, idColumn) ?: continue
+                val name = getString(cursor, nameColumn) ?: "<unknown>"
+
+                genres.add(Genre(id = id, name = name))
+            }
+        }
+
+        return genres
+    }
+
+    override fun getTrackIdMapToGenreName(): Map<Long, String> {
+        val trackIdToGenreMap = mutableMapOf<Long, String>()
+
+        getGenres().forEach { genre ->
+            val collection = MediaStore.Audio.Genres.Members.getContentUri("external", genre.id)
+            val projection = arrayOf(MediaStore.Audio.Genres.Members.AUDIO_ID)
+
+            context.contentResolver.query(collection, projection, null, null, null)?.use { cursor ->
+                val audioIdColumn =
+                    cursor.getColumnIndexOrThrow(MediaStore.Audio.Genres.Members.AUDIO_ID)
+                while (cursor.moveToNext()) {
+                    trackIdToGenreMap[cursor.getLong(audioIdColumn)] = genre.name
+                }
+            }
+        }
+
+        return trackIdToGenreMap
+    }
+
+    override fun getFoldersWithAudio(): Set<String> {
+        val projection = arrayOf(MediaStore.Audio.Media.DATA)
+
+        val selection = "${MediaStore.Audio.Media.DURATION} >= ?"
+
+        // 30 seconds will be the minimum duration for the audios to be considered tracks.
+        // This may be considered a preference in the future.
+        val selectionArgs = arrayOf(TimeUnit.MILLISECONDS.convert(30, TimeUnit.SECONDS).toString())
+
+        val query =
+            context.contentResolver.query(
+                musicUri,
+                projection,
+                selection, // .takeIf { settings.ignoreShortTracks },
+                selectionArgs, // . takeIf { settings.ignoreShortTracks },
+                null,
+            )
+
+        val paths = mutableSetOf<String>()
+        query?.use { cursor ->
+            val dataColumn = cursor.getColumnIndex(MediaStore.Audio.Media.DATA)
+            if (dataColumn < 0) return emptySet()
+
+            while (cursor.moveToNext()) {
+                val data = cursor.getStringOrNull(dataColumn) ?: continue
+                paths += data.substringBeforeLast('/')
+            }
+        }
+
+        return paths
+    }
 
     private fun projectionBasedOnVersion(): Array<String> =
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -94,6 +169,7 @@ class MusicScannerImpl(private val context: Context) : MusicScanner {
             )
         }
 
+    // TODO: Add support for more filters (like ignore some folders, genres, etc...)
     private fun buildSelection(
         searchTerm: String?,
         filters: List<MediaStoreSearchFilter>?,
@@ -133,11 +209,11 @@ class MusicScannerImpl(private val context: Context) : MusicScanner {
         while (cursor.moveToNext()) {
             val id =
                 getLong(cursor, columnIndices.id)
-                    ?: throw IllegalStateException("ID cannot be null")
+                    ?: continue // throw IllegalStateException("ID cannot be null")
             val albumId = getLong(cursor, columnIndices.albumId)
             val path =
                 getString(cursor, columnIndices.path)
-                    ?: throw IllegalStateException("Path cannot be null")
+                    ?: continue // throw IllegalStateException("Path cannot be null")
             val title = getString(cursor, columnIndices.title) ?: path.substringAfterLast("/")
             val artist = getString(cursor, columnIndices.artist)
             val album = getString(cursor, columnIndices.album)
