@@ -26,7 +26,7 @@ import com.bobbyesp.ui.util.rememberVolatileSaveable
 import com.materialkolor.DynamicMaterialTheme
 
 @Composable
-fun PreConfiguredOutlinedTextField(
+fun MetadataOutlinedTextField(
     modifier: Modifier = Modifier,
     value: String?,
     label: String = "",
@@ -84,7 +84,7 @@ fun PreConfiguredOutlinedTextField(
 @Composable
 private fun PreConfiguredOutlineTextFieldPreview() {
     DynamicMaterialTheme(seedColor = Color(0xFF4565FF)) {
-        PreConfiguredOutlinedTextField(
+        MetadataOutlinedTextField(
             value = "Hello, World!",
             label = "Label",
             returnModifiedValue = {}

@@ -22,7 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.bobbyesp.metadator.R
-import com.bobbyesp.metadator.tageditor.presentation.components.textfield.PreConfiguredOutlinedTextField
+import com.bobbyesp.metadator.tageditor.presentation.components.textfield.MetadataOutlinedTextField
 
 @Composable
 fun NoSongInformationProvided(onRetrySearch: (String, String) -> Unit) {
@@ -49,7 +49,8 @@ fun NoSongInformationProvided(onRetrySearch: (String, String) -> Unit) {
                 fontWeight = FontWeight.SemiBold,
             )
             Row(modifier = Modifier.fillMaxWidth()) {
-                PreConfiguredOutlinedTextField(
+                //TODO: Modify this
+                MetadataOutlinedTextField(
                     value = name,
                     label = stringResource(id = R.string.title),
                     modifier = Modifier.weight(0.5f),
@@ -57,7 +58,7 @@ fun NoSongInformationProvided(onRetrySearch: (String, String) -> Unit) {
                     setName(title)
                 }
                 Spacer(modifier = Modifier.width(8.dp))
-                PreConfiguredOutlinedTextField(
+                MetadataOutlinedTextField(
                     value = artist,
                     label = stringResource(id = R.string.artist),
                     modifier = Modifier.weight(0.5f),

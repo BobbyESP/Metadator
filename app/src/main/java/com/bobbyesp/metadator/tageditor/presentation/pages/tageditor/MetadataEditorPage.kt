@@ -75,7 +75,7 @@ import com.bobbyesp.ui.common.pages.LoadingPage
 import com.bobbyesp.ui.components.button.CloseButton
 import com.bobbyesp.ui.components.others.MetadataTag
 import com.bobbyesp.ui.components.text.LargeCategoryTitle
-import com.bobbyesp.metadator.tageditor.presentation.components.textfield.PreConfiguredOutlinedTextField
+import com.bobbyesp.metadator.tageditor.presentation.components.textfield.MetadataOutlinedTextField
 import com.bobbyesp.utilities.ext.fromMillisToMinutes
 import com.bobbyesp.utilities.ext.isNeitherNullNorBlank
 import com.bobbyesp.utilities.states.ResourceState
@@ -494,7 +494,7 @@ private fun SongProperties(
         text = stringResource(id = R.string.general_tags),
     )
 
-    PreConfiguredOutlinedTextField(
+    MetadataOutlinedTextField(
         value = mutablePropertiesMap["TITLE"],
         label = stringResource(id = R.string.title),
         modifier = Modifier.fillMaxWidth(),
@@ -502,7 +502,7 @@ private fun SongProperties(
         mutablePropertiesMap["TITLE"] = title
     }
 
-    PreConfiguredOutlinedTextField(
+    MetadataOutlinedTextField(
         value = mutablePropertiesMap["ARTIST"],
         label = stringResource(id = R.string.artist),
         modifier = Modifier.fillMaxWidth(),
@@ -510,7 +510,7 @@ private fun SongProperties(
         mutablePropertiesMap["ARTIST"] = artists
     }
 
-    PreConfiguredOutlinedTextField(
+    MetadataOutlinedTextField(
         value = mutablePropertiesMap["ALBUM"],
         label = stringResource(id = R.string.album),
         modifier = Modifier.fillMaxWidth(),
@@ -518,7 +518,7 @@ private fun SongProperties(
         mutablePropertiesMap["ALBUM"] = album
     }
 
-    PreConfiguredOutlinedTextField(
+    MetadataOutlinedTextField(
         value = mutablePropertiesMap["ALBUMARTIST"],
         label = stringResource(id = R.string.album_artist),
         modifier = Modifier.fillMaxWidth(),
@@ -531,14 +531,14 @@ private fun SongProperties(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            PreConfiguredOutlinedTextField(
+            MetadataOutlinedTextField(
                 value = mutablePropertiesMap["TRACKNUMBER"],
                 label = stringResource(id = R.string.track_number),
                 modifier = Modifier.weight(0.5f),
             ) { trackNumber ->
                 mutablePropertiesMap["TRACKNUMBER"] = trackNumber
             }
-            PreConfiguredOutlinedTextField(
+            MetadataOutlinedTextField(
                 value = mutablePropertiesMap["DISCNUMBER"],
                 label = stringResource(id = R.string.disc_number),
                 modifier = Modifier.weight(0.5f),
@@ -550,14 +550,14 @@ private fun SongProperties(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            PreConfiguredOutlinedTextField(
+            MetadataOutlinedTextField(
                 value = mutablePropertiesMap["DATE"],
                 label = stringResource(id = R.string.date),
                 modifier = Modifier.weight(0.5f),
             ) { date ->
                 mutablePropertiesMap["DATE"] = date
             }
-            PreConfiguredOutlinedTextField(
+            MetadataOutlinedTextField(
                 value = mutablePropertiesMap["GENRE"],
                 label = stringResource(id = R.string.genre),
                 modifier = Modifier.weight(0.5f),
@@ -577,14 +577,14 @@ private fun SongProperties(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            PreConfiguredOutlinedTextField(
+            MetadataOutlinedTextField(
                 value = mutablePropertiesMap["COMPOSER"],
                 label = stringResource(id = R.string.composer),
                 modifier = Modifier.weight(0.5f),
             ) { composer ->
                 mutablePropertiesMap["COMPOSER"] = composer
             }
-            PreConfiguredOutlinedTextField(
+            MetadataOutlinedTextField(
                 value = mutablePropertiesMap["LYRICIST"],
                 label = stringResource(id = R.string.lyricist),
                 modifier = Modifier.weight(0.5f),
@@ -596,14 +596,14 @@ private fun SongProperties(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            PreConfiguredOutlinedTextField(
+            MetadataOutlinedTextField(
                 value = mutablePropertiesMap["CONDUCTOR"],
                 label = stringResource(id = R.string.conductor),
                 modifier = Modifier.weight(0.5f),
             ) { conductor ->
                 mutablePropertiesMap["CONDUCTOR"] = conductor
             }
-            PreConfiguredOutlinedTextField(
+            MetadataOutlinedTextField(
                 value = mutablePropertiesMap["REMIXER"],
                 label = stringResource(id = R.string.remixer),
                 modifier = Modifier.weight(0.5f),
@@ -611,7 +611,7 @@ private fun SongProperties(
                 mutablePropertiesMap["REMIXER"] = remixer
             }
         }
-        PreConfiguredOutlinedTextField(
+        MetadataOutlinedTextField(
             value = mutablePropertiesMap["PERFORMER"],
             label = stringResource(id = R.string.performer),
             modifier = Modifier.fillMaxWidth(),
@@ -628,7 +628,7 @@ private fun SongProperties(
             modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
-            PreConfiguredOutlinedTextField(
+            MetadataOutlinedTextField(
                 value = mutablePropertiesMap["COMMENT"],
                 label = stringResource(id = R.string.comment),
                 modifier = Modifier.fillMaxWidth(),
@@ -651,7 +651,7 @@ private fun SongProperties(
                         Text(text = stringResource(id = R.string.retrieve_lyrics))
                     }
                 }
-                PreConfiguredOutlinedTextField(
+                MetadataOutlinedTextField(
                     value = mutablePropertiesMap["LYRICS"],
                     label = stringResource(id = R.string.lyrics),
                     modifier = Modifier.fillMaxWidth(),
