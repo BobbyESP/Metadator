@@ -15,19 +15,19 @@ import org.koin.dsl.module
 @OptIn(UnstableApi::class)
 val mediaplayerInternalsModule: Module = module {
     single {
+        AudioAttributes.Builder()
+            .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
+            .setUsage(C.USAGE_MEDIA)
+            .build()
+    }
+
+    single {
         ExoPlayer.Builder(androidContext())
             .setSeekBackIncrementMs(5000)
             .setSeekForwardIncrementMs(5000)
             .setHandleAudioBecomingNoisy(true)
             .setTrackSelector(DefaultTrackSelector(androidContext()))
             .setAudioAttributes(get<AudioAttributes>(), true)
-            .build()
-    }
-
-    single {
-        AudioAttributes.Builder()
-            .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
-            .setUsage(C.USAGE_MEDIA)
             .build()
     }
 

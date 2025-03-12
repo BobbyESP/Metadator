@@ -22,7 +22,7 @@ fun SongSyncNeededDialog(modifier: Modifier = Modifier, onDismissRequest: () -> 
     val uriLauncher = LocalUriHandler.current
     AlertDialog(
         icon = {
-            Icon(imageVector = Icons.Filled.Lyrics, contentDescription = "SongSync app needed")
+            Icon(imageVector = Icons.Filled.Lyrics, contentDescription = "SongSync app icon")
         },
         modifier = modifier,
         onDismissRequest = onDismissRequest,

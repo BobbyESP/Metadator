@@ -9,12 +9,12 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import com.bobbyesp.metadator.R
 
 @Immutable
-enum class DestinationInfo(val icon: ImageVector, @StringRes val title: Int) {
+enum class NavigatorInfo(val icon: ImageVector, @StringRes val title: Int) {
     HOME(icon = Icons.Rounded.Home, title = R.string.home),
     MEDIAPLAYER(icon = Icons.Rounded.PlayArrow, title = R.string.mediaplayer);
 
     companion object {
-        fun fromRoute(route: Route): DestinationInfo? {
+        fun fromRoute(route: Route): NavigatorInfo? {
             return when (route) {
                 is Route.MetadatorNavigator -> HOME
                 is Route.MediaplayerNavigator -> MEDIAPLAYER

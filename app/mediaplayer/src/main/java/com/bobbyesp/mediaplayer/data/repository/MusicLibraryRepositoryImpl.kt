@@ -24,7 +24,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
-private const val TAG = "MusicScannerImpl"
+private const val TAG = "MusicLibraryRepositoryImpl"
 
 class MusicLibraryRepositoryImpl(private val context: Context) : MusicLibraryRepository {
 

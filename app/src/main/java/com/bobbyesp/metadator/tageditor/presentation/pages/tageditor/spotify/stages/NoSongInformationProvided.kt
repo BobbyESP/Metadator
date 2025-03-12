@@ -22,7 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.bobbyesp.metadator.R
-import com.bobbyesp.ui.components.text.PreConfiguredOutlinedTextField
+import com.bobbyesp.metadator.tageditor.presentation.components.textfield.PreConfiguredOutlinedTextField
 
 @Composable
 fun NoSongInformationProvided(onRetrySearch: (String, String) -> Unit) {

@@ -1,5 +1,6 @@
 package com.bobbyesp.mediaplayer.data.service
 
+import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.MediaLibraryService
 import androidx.media3.session.MediaSession
@@ -27,6 +28,18 @@ class PlaybackService : KoinComponent, MediaLibraryService() {
             getKoin().get {
                 parametersOf(callback)
             } // We pass the callback to the MediaLibrarySession constructor
+//        player.addListener(
+//            object : Player.Listener {
+//                override fun onPlaybackStateChanged(playbackState: Int) {
+//                    if (playbackState == Player.STATE_READY || playbackState == Player.STATE_BUFFERING) {
+//                        val audioSessionId = player.audioSessionId
+//                        if (audioSessionId != C.AUDIO_SESSION_ID_UNSET) {
+//                            equalizerController.updateEqualizer(audioSessionId)
+//                        }
+//                    }
+//                }
+//            }
+//        )
     }
 
     override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaLibrarySession? =

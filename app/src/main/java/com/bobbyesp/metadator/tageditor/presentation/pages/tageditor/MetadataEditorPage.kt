@@ -75,7 +75,7 @@ import com.bobbyesp.ui.common.pages.LoadingPage
 import com.bobbyesp.ui.components.button.CloseButton
 import com.bobbyesp.ui.components.others.MetadataTag
 import com.bobbyesp.ui.components.text.LargeCategoryTitle
-import com.bobbyesp.ui.components.text.PreConfiguredOutlinedTextField
+import com.bobbyesp.metadator.tageditor.presentation.components.textfield.PreConfiguredOutlinedTextField
 import com.bobbyesp.utilities.ext.fromMillisToMinutes
 import com.bobbyesp.utilities.ext.isNeitherNullNorBlank
 import com.bobbyesp.utilities.states.ResourceState
