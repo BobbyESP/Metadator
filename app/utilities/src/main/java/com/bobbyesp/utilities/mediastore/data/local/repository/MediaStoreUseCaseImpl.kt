@@ -1,4 +1,4 @@
-package com.bobbyesp.utilities.mediastore
+package com.bobbyesp.utilities.mediastore.data.local.repository
 
 import android.content.ContentUris
 import android.content.Context
@@ -6,17 +6,17 @@ import android.net.Uri
 import android.os.ParcelFileDescriptor
 import android.provider.MediaStore
 import android.util.Log
+import com.bobbyesp.utilities.mediastore.model.FileDescriptorMode
+import com.bobbyesp.utilities.mediastore.model.repository.MediaStoreUseCase
 import java.io.FileNotFoundException
 
-// Todo: Move this to an interface
-object MediaStoreHelpers {
+class MediaStoreUseCaseImpl(
+    private val context: Context
+) : MediaStoreUseCase {
 
-    private val audioUri: Uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
-
-    fun getFileDescriptorFromPath(
-        context: Context,
+    override fun getFileDescriptorFromPath(
         filePath: String,
-        mode: String = "r",
+        mode: FileDescriptorMode,
     ): ParcelFileDescriptor? {
         val resolver = context.contentResolver
         val selection = "${MediaStore.Files.FileColumns.DATA} = ?"
@@ -38,7 +38,7 @@ object MediaStoreHelpers {
                         )
                     val fileUri = ContentUris.withAppendedId(audioUri, fileId.toLong())
                     return try {
-                        resolver.openFileDescriptor(fileUri, mode)
+                        resolver.openFileDescriptor(fileUri, mode.modeKey)
                     } catch (e: FileNotFoundException) {
                         Log.e("MediaStoreHelper", "File not found: ${e.message}")
                         null

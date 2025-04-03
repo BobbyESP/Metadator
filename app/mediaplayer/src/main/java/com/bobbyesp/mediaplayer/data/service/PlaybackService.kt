@@ -1,6 +1,5 @@
 package com.bobbyesp.mediaplayer.data.service
 
-import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.MediaLibraryService
 import androidx.media3.session.MediaSession

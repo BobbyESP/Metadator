@@ -13,6 +13,7 @@ import com.bobbyesp.metadator.features.spotify.di.spotifyMainModule
 import com.bobbyesp.metadator.features.spotify.di.spotifyServicesModule
 import com.bobbyesp.metadator.mediaplayer.di.mediaplayerViewModels
 import com.bobbyesp.metadator.mediastore.di.mediaStoreViewModelsModule
+import com.bobbyesp.metadator.tageditor.di.tagEditorModule
 import com.bobbyesp.metadator.tageditor.di.tagEditorViewModelsModule
 import kotlin.properties.Delegates
 import mediaplayerInternalsModule
@@ -28,6 +29,7 @@ class App : Application() {
             modules(appSystemManagers, appCoroutinesScope, coreFunctionalitiesModule)
             modules(mediaplayerInternalsModule)
             modules(mediaStoreViewModelsModule, tagEditorViewModelsModule, mediaplayerViewModels)
+            modules(tagEditorModule)
             modules(spotifyMainModule, spotifyServicesModule)
         }
         packageInfo =

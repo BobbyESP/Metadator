@@ -13,12 +13,11 @@ import com.bobbyesp.metadator.core.domain.model.ParcelableSong
 import com.bobbyesp.metadator.core.presentation.common.Route
 import com.bobbyesp.metadator.tageditor.presentation.pages.tageditor.MetadataEditorPage
 import com.bobbyesp.metadator.tageditor.presentation.pages.tageditor.MetadataEditorViewModel
-import com.bobbyesp.metadator.tageditor.presentation.pages.tageditor.spotify.MetadataBottomSheetViewModel
 import com.bobbyesp.ui.motion.slideInVerticallyComposable
 import com.bobbyesp.utilities.navigation.parcelableType
-import kotlin.reflect.typeOf
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.compose.koinViewModel
+import kotlin.reflect.typeOf
 
 fun NavGraphBuilder.tagEditorRouting(onNavigateBack: () -> Unit) {
     navigation<Route.UtilitiesNavigator>(
@@ -27,22 +26,25 @@ fun NavGraphBuilder.tagEditorRouting(onNavigateBack: () -> Unit) {
         slideInVerticallyComposable<Route.UtilitiesNavigator.TagEditor>(
             typeMap = mapOf(typeOf<ParcelableSong>() to parcelableType<ParcelableSong>())
         ) {
+            val viewModel = koinViewModel<MetadataEditorViewModel>()
+
             val song = it.toRoute<Route.UtilitiesNavigator.TagEditor>()
 
-            val viewModel = koinViewModel<MetadataEditorViewModel>()
-            val bsViewModel = koinViewModel<MetadataBottomSheetViewModel>()
+            LaunchedEffect(song) {
+                viewModel.onEvent(
+                    MetadataEditorViewModel.Event.LoadMetadata(song.selectedSong.localPath)
+                )
+            }
 
             val state = viewModel.state.collectAsStateWithLifecycle()
-            val bsState = bsViewModel.viewStateFlow.collectAsStateWithLifecycle()
-            val securityErrorHandler =
-                rememberLauncherForActivityResult(
-                    contract = ActivityResultContracts.StartIntentSenderForResult()
-                ) { result ->
-                    if (result.resultCode == Activity.RESULT_OK) {
-                        viewModel.savePropertyMap(audioPath = song.selectedSong.localPath)
-                        onNavigateBack()
-                    }
+            val securityErrorHandler = rememberLauncherForActivityResult(
+                contract = ActivityResultContracts.StartIntentSenderForResult()
+            ) { result ->
+                if (result.resultCode == Activity.RESULT_OK) {
+                    viewModel.onEvent(MetadataEditorViewModel.Event.SaveProperties(song.selectedSong.localPath))
+                    onNavigateBack()
                 }
+            }
 
             LaunchedEffect(true) {
                 viewModel.eventFlow.collectLatest { event ->
@@ -59,28 +61,9 @@ fun NavGraphBuilder.tagEditorRouting(onNavigateBack: () -> Unit) {
                 }
             }
 
-            LaunchedEffect(true) {
-                bsViewModel.outerEventsFlow.collectLatest { event ->
-                    when (event) {
-                        is MetadataBottomSheetViewModel.OuterEvent.SaveMetadata -> {
-                            event.modifiedFields.forEach { field ->
-                                viewModel.onEvent(
-                                    MetadataEditorViewModel.Event.UpdateProperty(
-                                        field.key,
-                                        field.value,
-                                    )
-                                )
-                            }
-                        }
-                    }
-                }
-            }
-
             MetadataEditorPage(
-                state = state,
-                bsViewState = bsState,
+                pageState = state.value,
                 receivedAudio = song.selectedSong,
-                onBsEvent = bsViewModel::onEvent,
                 onEvent = viewModel::onEvent,
             )
         }
