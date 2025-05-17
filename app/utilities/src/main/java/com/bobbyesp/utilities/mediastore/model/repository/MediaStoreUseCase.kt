@@ -6,10 +6,7 @@ import android.provider.MediaStore
 import com.bobbyesp.utilities.mediastore.model.FileDescriptorMode
 
 interface MediaStoreUseCase {
-    fun getFileDescriptorFromPath(
-        filePath: String,
-        mode: FileDescriptorMode,
-    ): ParcelFileDescriptor?
+    fun getFileDescriptorFromPath(filePath: String, mode: FileDescriptorMode): ParcelFileDescriptor?
 
     val audioUri: Uri
         get() = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI

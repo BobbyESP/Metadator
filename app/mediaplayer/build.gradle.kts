@@ -24,38 +24,33 @@ android {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
     }
     libraryVariants.all {
         val variantName = name
         sourceSets {
-            getByName("main") {
-                java.srcDir(File("build/generated/ksp/$variantName/kotlin"))
-            }
+            getByName("main") { java.srcDir(File("build/generated/ksp/$variantName/kotlin")) }
         }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
     }
-    kotlinOptions {
-        jvmTarget = "21"
-    }
+    kotlinOptions { jvmTarget = "21" }
 }
 
 ktfmt {
     // Google style - 2 space indentation & automatically adds/removes trailing commas
-    //googleStyle()
+    // googleStyle()
 
-    // KotlinLang style - 4 space indentation - From https://kotlinlang.org/docs/coding-conventions.html
+    // KotlinLang style - 4 space indentation - From
+    // https://kotlinlang.org/docs/coding-conventions.html
     kotlinLangStyle()
 }
 
-ksp {
-    arg("KOIN_CONFIG_CHECK", "true")
-}
+ksp { arg("KOIN_CONFIG_CHECK", "true") }
 
 dependencies {
     implementation(libs.core.ktx)
@@ -65,16 +60,16 @@ dependencies {
 
     // Todo create a top level utilities
 
-    //DI (Dependency Injection - Koin)
+    // DI (Dependency Injection - Koin)
     implementation(libs.bundles.koin)
 
-    //Media3
+    // Media3
     implementation(libs.bundles.media3)
 
-    //KotlinX Serialization
+    // KotlinX Serialization
     implementation(libs.kotlinx.serialization.json)
 
-    //Coil
+    // Coil
     implementation(libs.coil)
 
     testImplementation(libs.junit)

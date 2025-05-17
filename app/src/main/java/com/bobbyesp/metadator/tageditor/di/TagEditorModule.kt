@@ -9,17 +9,9 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
 val tagEditorModule = module {
-    single<MediaStoreUseCase> {
-        MediaStoreUseCaseImpl(
-            context = androidContext()
-        )
-    }
+    single<MediaStoreUseCase> { MediaStoreUseCaseImpl(context = androidContext()) }
 
-    single<UriToPictureConverter> {
-        UriToPictureConverter(androidContext())
-    }
+    single<UriToPictureConverter> { UriToPictureConverter(androidContext()) }
 
-    single<AudioMetadataRepository> {
-        AudioMetadataRepositoryImpl(get())
-    }
+    single<AudioMetadataRepository> { AudioMetadataRepositoryImpl(get()) }
 }

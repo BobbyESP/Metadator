@@ -9,5 +9,5 @@ enum class FileDescriptorMode(val modeKey: String) {
     TRUNCATE("wt"),
     TRUNCATE_READ("rwt"),
     APPEND_TRUNCATE("wta"),
-    APPEND_TRUNCATE_READ("rwta")
+    APPEND_TRUNCATE_READ("rwta"),
 }

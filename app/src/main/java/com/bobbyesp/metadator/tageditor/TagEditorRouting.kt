@@ -15,9 +15,9 @@ import com.bobbyesp.metadator.tageditor.presentation.pages.tageditor.MetadataEdi
 import com.bobbyesp.metadator.tageditor.presentation.pages.tageditor.MetadataEditorViewModel
 import com.bobbyesp.ui.motion.slideInVerticallyComposable
 import com.bobbyesp.utilities.navigation.parcelableType
+import kotlin.reflect.typeOf
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.compose.koinViewModel
-import kotlin.reflect.typeOf
 
 fun NavGraphBuilder.tagEditorRouting(onNavigateBack: () -> Unit) {
     navigation<Route.UtilitiesNavigator>(
@@ -37,14 +37,19 @@ fun NavGraphBuilder.tagEditorRouting(onNavigateBack: () -> Unit) {
             }
 
             val state = viewModel.state.collectAsStateWithLifecycle()
-            val securityErrorHandler = rememberLauncherForActivityResult(
-                contract = ActivityResultContracts.StartIntentSenderForResult()
-            ) { result ->
-                if (result.resultCode == Activity.RESULT_OK) {
-                    viewModel.onEvent(MetadataEditorViewModel.Event.SaveProperties(song.selectedSong.localPath))
-                    onNavigateBack()
+            val securityErrorHandler =
+                rememberLauncherForActivityResult(
+                    contract = ActivityResultContracts.StartIntentSenderForResult()
+                ) { result ->
+                    if (result.resultCode == Activity.RESULT_OK) {
+                        viewModel.onEvent(
+                            MetadataEditorViewModel.Event.SaveProperties(
+                                song.selectedSong.localPath
+                            )
+                        )
+                        onNavigateBack()
+                    }
                 }
-            }
 
             LaunchedEffect(true) {
                 viewModel.eventFlow.collectLatest { event ->

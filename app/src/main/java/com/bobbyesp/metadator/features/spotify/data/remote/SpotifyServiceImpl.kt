@@ -104,7 +104,6 @@ class SpotifyServiceImpl : SpotifyService, KoinComponent {
                     clearApi()
                     buildApi()
                     recursionDepth++
-                    return@let
                 }
             }
         }

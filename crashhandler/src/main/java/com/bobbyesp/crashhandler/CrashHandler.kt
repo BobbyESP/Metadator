@@ -9,6 +9,7 @@ import android.os.Build
 import java.io.File
 
 object CrashHandler {
+
     /**
      * This extension function is used to start the CrashReportActivity from any Activity.
      *
@@ -73,16 +74,15 @@ object CrashHandler {
     /**
      * This function generates a version report for the given package and report information.
      *
-     * @param packageInfo The package information for which the report is to be generated.
-     * @param info The report information which specifies what information should be included in the report.
+     * The report includes:
+     * - The application version, including package name, version name, and version code.
+     * - The Android version, including the release name/codename and API level, if `info.androidVersion` is true.
+     * - The device information, including manufacturer and model, if `info.deviceInfo` is true.
+     * - The supported ABIs, if `info.supportedABIs` is true.
      *
-     * The function first retrieves the version name and version code from the package information.
-     * It then determines the Android release version.
-     *
-     * A map is created where each key is a boolean condition from the report information and each value is the corresponding string to be appended to the report.
-     * The function then iterates over the map, and for each entry, if the key (the condition) is true, the value (the string) is appended to the report.
-     *
-     * @return The generated version report as a string.
+     * @param packageInfo The [PackageInfo] object containing information about the application package.
+     * @param info An optional [ReportInfo] object specifying which details to include in the report. Defaults to a [ReportInfo] instance with default settings.
+     * @return A [String] containing the formatted version report.
      */
     fun getVersionReport(packageInfo: PackageInfo, info: ReportInfo = ReportInfo()): String {
         val versionName = packageInfo.versionName
@@ -110,10 +110,16 @@ object CrashHandler {
      * This function is used to create a log file in the specified directory with the provided error report.
      * If the directory is not specified, it defaults to the application's files directory.
      *
-     * @param context The application context.
-     * @param errorReport The error report to be written to the log file.
-     * @param directory The directory where the log file will be created. Defaults to the application's files directory.
-     * @return The absolute path of the created log file.
+     * The function first gets the current time in milliseconds and uses it to create a unique file name for the log file.
+     * It then creates a new file in the specified directory with the generated file name.
+     * If the file does not already exist, it creates a new file.
+     * The function then appends the error report to the log file.
+     * Finally, it returns the absolute path of the log file.
+     *
+     * @param context The application context. This is used to get the default files directory if no directory is specified.
+     * @param errorReport The error report string that needs to be written to the log file.
+     * @param directory The directory in which the log file should be created. If not specified, it defaults to the application's files directory.
+     * @return The absolute path of the created log file as a String.
      */
     fun createLogFile(
         context: Context, errorReport: String, directory: File = context.filesDir

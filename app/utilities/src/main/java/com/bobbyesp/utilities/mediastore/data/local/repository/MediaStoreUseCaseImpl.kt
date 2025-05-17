@@ -2,7 +2,6 @@ package com.bobbyesp.utilities.mediastore.data.local.repository
 
 import android.content.ContentUris
 import android.content.Context
-import android.net.Uri
 import android.os.ParcelFileDescriptor
 import android.provider.MediaStore
 import android.util.Log
@@ -10,9 +9,7 @@ import com.bobbyesp.utilities.mediastore.model.FileDescriptorMode
 import com.bobbyesp.utilities.mediastore.model.repository.MediaStoreUseCase
 import java.io.FileNotFoundException
 
-class MediaStoreUseCaseImpl(
-    private val context: Context
-) : MediaStoreUseCase {
+class MediaStoreUseCaseImpl(private val context: Context) : MediaStoreUseCase {
 
     override fun getFileDescriptorFromPath(
         filePath: String,

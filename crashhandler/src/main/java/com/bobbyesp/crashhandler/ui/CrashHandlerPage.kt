@@ -23,6 +23,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalUriHandler
@@ -34,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import com.bobbyesp.crashhandler.R
 import com.bobbyesp.crashhandler.ui.components.ExpandableElevatedCard
 import com.bobbyesp.crashhandler.ui.components.FilledButtonWithIcon
+import com.bobbyesp.crashhandler.ui.components.OutlinedButtonWithIcon
 
 @Composable
 fun CrashReportPage(
@@ -52,27 +54,27 @@ fun CrashReportPage(
             modifier = Modifier
                 .fillMaxWidth()
                 .navigationBarsPadding()
-                .padding(vertical = 8.dp)
+                .padding(vertical = 8.dp, horizontal = 16.dp),
+            horizontalArrangement = Arrangement.SpaceAround,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            FilledButtonWithIcon(
+            OutlinedButtonWithIcon(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 16.dp)
-                    .weight(1f),
-                onClick = onExitPressed,
-                icon = Icons.Rounded.Close,
-                text = stringResource(R.string.copy_and_exit)
-            )
-            Spacer(modifier = Modifier.width(12.dp))
-            FilledButtonWithIcon(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(end = 16.dp)
                     .weight(1f),
                 onClick = {
                     clipboardManager.setText(AnnotatedString(errorMessage))
                     uriOpener.openUri(reportUrl)
                 }, icon = Icons.Rounded.CancelScheduleSend, text = stringResource(R.string.report_github)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            FilledButtonWithIcon(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
+                onClick = onExitPressed,
+                icon = Icons.Rounded.Close,
+                text = stringResource(R.string.copy_and_exit)
             )
         }
     }) {

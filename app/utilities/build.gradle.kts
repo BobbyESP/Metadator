@@ -23,7 +23,7 @@ android {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
     }
@@ -35,21 +35,17 @@ android {
         compose = true
         buildConfig = true
     }
-    composeCompiler {
-        reportsDestination = layout.buildDirectory.dir("compose_compiler")
-    }
-    kotlinOptions {
-        jvmTarget = "21"
-    }
+    composeCompiler { reportsDestination = layout.buildDirectory.dir("compose_compiler") }
+    kotlinOptions { jvmTarget = "21" }
 }
 
 ktfmt {
     // Google style - 2 space indentation & automatically adds/removes trailing commas
-    //googleStyle()
+    // googleStyle()
 
-    // KotlinLang style - 4 space indentation - From https://kotlinlang.org/docs/coding-conventions.html
+    // KotlinLang style - 4 space indentation - From
+    // https://kotlinlang.org/docs/coding-conventions.html
     kotlinLangStyle()
-
 }
 
 dependencies {

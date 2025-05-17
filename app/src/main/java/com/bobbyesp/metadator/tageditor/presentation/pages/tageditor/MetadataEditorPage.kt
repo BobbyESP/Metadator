@@ -9,18 +9,15 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.Crossfade
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -53,7 +50,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bobbyesp.metadator.R
@@ -95,55 +91,62 @@ fun MetadataEditorPage(
     var newArtworkAddress by rememberSaveable { mutableStateOf<Uri?>(null) }
     var showInstallSongSyncDialog by remember { mutableStateOf(false) }
 
-    val singleImagePickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.PickVisualMedia(),
-        onResult = { uri -> newArtworkAddress = uri }
-    )
+    val singleImagePickerLauncher =
+        rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.PickVisualMedia(),
+            onResult = { uri -> newArtworkAddress = uri },
+        )
 
-    val lyricsActivityLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-        when (result.resultCode) {
-            Activity.RESULT_OK -> {
-                val receivedLyrics = result.data?.getStringExtra("lyrics")
-                if (receivedLyrics.isNeitherNullNorBlank()) {
-                    onEvent(MetadataEditorViewModel.Event.UpdateProperty("LYRICS", receivedLyrics!!))
-                    scope.launch {
-                        sonner.show(
-                            message = context.getString(R.string.lyrics_received),
-                            type = ToastType.Success
+    val lyricsActivityLauncher =
+        rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.StartActivityForResult()
+        ) { result ->
+            when (result.resultCode) {
+                Activity.RESULT_OK -> {
+                    val receivedLyrics = result.data?.getStringExtra("lyrics")
+                    if (receivedLyrics.isNeitherNullNorBlank()) {
+                        onEvent(
+                            MetadataEditorViewModel.Event.UpdateProperty("LYRICS", receivedLyrics!!)
                         )
-                    }
-                } else {
-                    scope.launch {
-                        sonner.show(
-                            message = context.getString(R.string.empty_lyrics_received),
-                            type = ToastType.Error
-                        )
+                        scope.launch {
+                            sonner.show(
+                                message = context.getString(R.string.lyrics_received),
+                                type = ToastType.Success,
+                            )
+                        }
+                    } else {
+                        scope.launch {
+                            sonner.show(
+                                message = context.getString(R.string.empty_lyrics_received),
+                                type = ToastType.Error,
+                            )
+                        }
                     }
                 }
-            }
-            Activity.RESULT_CANCELED -> scope.launch {
-                sonner.show(
-                    message = context.getString(R.string.lyrics_retrieve_cancelled),
-                    type = ToastType.Info
-                )
-            }
-            else -> scope.launch {
-                sonner.show(
-                    message = context.getString(R.string.something_unexpected_occurred),
-                    type = ToastType.Error
-                )
+                Activity.RESULT_CANCELED ->
+                    scope.launch {
+                        sonner.show(
+                            message = context.getString(R.string.lyrics_retrieve_cancelled),
+                            type = ToastType.Info,
+                        )
+                    }
+                else ->
+                    scope.launch {
+                        sonner.show(
+                            message = context.getString(R.string.something_unexpected_occurred),
+                            type = ToastType.Error,
+                        )
+                    }
             }
         }
-    }
 
-    val lyricsRetrieveIntent = Intent("android.intent.action.SEND").apply {
-        putExtra("songName", pageState.properties["TITLE"])
-        putExtra("artistName", pageState.properties["ARTIST"])
-        type = "text/plain"
-        setPackage("pl.lambada.songsync")
-    }
+    val lyricsRetrieveIntent =
+        Intent("android.intent.action.SEND").apply {
+            putExtra("songName", pageState.properties["TITLE"])
+            putExtra("artistName", pageState.properties["ARTIST"])
+            type = "text/plain"
+            setPackage("pl.lambada.songsync")
+        }
 
     fun launchLyricsRetrieveIntent() {
         try {
@@ -155,7 +158,7 @@ fun MetadataEditorPage(
                 scope.launch {
                     sonner.show(
                         message = context.getString(R.string.something_unexpected_occurred),
-                        type = ToastType.Error
+                        type = ToastType.Error,
                     )
                 }
             }
@@ -174,26 +177,24 @@ fun MetadataEditorPage(
                     onEvent(
                         MetadataEditorViewModel.Event.SaveAll(
                             receivedAudio.localPath,
-                            listOf(newArtworkAddress ?: receivedAudio.artworkPath ?: Uri.EMPTY)
+                            listOf(newArtworkAddress ?: receivedAudio.artworkPath ?: Uri.EMPTY),
                         )
                     )
-                }
+                },
             )
         }
     ) { innerPadding ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-        ) {
+        Box(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
             EditorContent(
                 pageState = pageState,
                 artworkUri = newArtworkAddress ?: receivedAudio.artworkPath,
                 onEditArtwork = {
-                    singleImagePickerLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                    singleImagePickerLauncher.launch(
+                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                    )
                 },
                 onRetrieveLyrics = { launchLyricsRetrieveIntent() },
-                onEvent = onEvent
+                onEvent = onEvent,
             )
         }
     }
@@ -202,54 +203,44 @@ fun MetadataEditorPage(
 /** Composable para la TopAppBar del editor */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun EditorTopBar(
-    onClose: () -> Unit,
-    onSave: () -> Unit,
-) {
+private fun EditorTopBar(onClose: () -> Unit, onSave: () -> Unit) {
     TopAppBar(
         title = {
             Text(
                 text = stringResource(id = R.string.viewing_metadata),
-                style = MaterialTheme.typography.bodyLarge.copy(fontSize = 20.sp)
+                style = MaterialTheme.typography.bodyLarge.copy(fontSize = 20.sp),
             )
         },
         navigationIcon = { CloseButton(onClick = onClose) },
         actions = {
-            TextButton(onClick = onSave) {
-                Text(text = stringResource(id = R.string.save))
-            }
+            TextButton(onClick = onSave) { Text(text = stringResource(id = R.string.save)) }
         },
-        scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+        scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(),
     )
 }
 
-/** Composable que muestra el contenido principal según el estado de la página */
 @Composable
 private fun EditorContent(
     pageState: MetadataEditorViewModel.PageViewState,
     artworkUri: Uri?,
     onEditArtwork: () -> Unit,
     onRetrieveLyrics: () -> Unit,
-    onEvent: (MetadataEditorViewModel.Event) -> Unit
+    onEvent: (MetadataEditorViewModel.Event) -> Unit,
 ) {
     val scrollState = rememberScrollState()
     val configuration = LocalConfiguration.current
 
-    Crossfade(
-        targetState = pageState.pageState,
-        animationSpec = tween(175)
-    ) { state ->
+    Crossfade(targetState = pageState.pageState, animationSpec = tween(175)) { state ->
         when (state) {
-            is ScreenState.Error -> ErrorPage(
-                modifier = Modifier.fillMaxSize(),
-                throwable = state.exception
-            ) {
-                // Acción de reintento, según convenga
-            }
-            ScreenState.Loading -> LoadingPage(
-                modifier = Modifier.fillMaxSize(),
-                text = stringResource(id = R.string.loading_metadata)
-            )
+            is ScreenState.Error ->
+                ErrorPage(modifier = Modifier.fillMaxSize(), throwable = state.exception) {
+                    // Acción de reintento, según convenga
+                }
+            ScreenState.Loading ->
+                LoadingPage(
+                    modifier = Modifier.fillMaxSize(),
+                    text = stringResource(id = R.string.loading_metadata),
+                )
             is ScreenState.Success -> {
                 if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
                     PortraitContent(
@@ -258,7 +249,7 @@ private fun EditorContent(
                         onEditArtwork = onEditArtwork,
                         onRetrieveLyrics = onRetrieveLyrics,
                         scrollState = scrollState,
-                        onEvent = onEvent
+                        onEvent = onEvent,
                     )
                 } else {
                     LandscapeContent(
@@ -267,7 +258,7 @@ private fun EditorContent(
                         onEditArtwork = onEditArtwork,
                         onRetrieveLyrics = onRetrieveLyrics,
                         scrollState = scrollState,
-                        onEvent = onEvent
+                        onEvent = onEvent,
                     )
                 }
             }
@@ -286,20 +277,17 @@ private fun PortraitContent(
     onEvent: (MetadataEditorViewModel.Event) -> Unit,
 ) {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(scrollState)
-            .padding(horizontal = 16.dp)
+        modifier = Modifier.fillMaxSize().verticalScroll(scrollState).padding(horizontal = 16.dp)
     ) {
         ArtworkSection(
             artworkUri = artworkUri,
             onEditArtwork = onEditArtwork,
-            modifier = Modifier
-                .size(250.dp)
-                .padding(8.dp)
-                .align(Alignment.CenterHorizontally)
+            modifier = Modifier.size(250.dp).padding(8.dp).align(Alignment.CenterHorizontally),
         )
-        if (pageState.audioProperties is ResourceState.Success && pageState.audioProperties.data != null) {
+        if (
+            pageState.audioProperties is ResourceState.Success &&
+                pageState.audioProperties.data != null
+        ) {
             AudioPropertiesSection(audioProperties = pageState.audioProperties.data!!)
         }
         if (pageState.metadata is ResourceState.Success) {
@@ -309,7 +297,7 @@ private fun PortraitContent(
                 onUpdateProperty = { key, value ->
                     onEvent(MetadataEditorViewModel.Event.UpdateProperty(key, value))
                 },
-                onRetrieveLyrics = onRetrieveLyrics
+                onRetrieveLyrics = onRetrieveLyrics,
             )
         }
     }
@@ -326,25 +314,19 @@ private fun LandscapeContent(
     onEvent: (MetadataEditorViewModel.Event) -> Unit,
 ) {
     Row(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        horizontalArrangement = Arrangement.spacedBy(16.dp)
+        modifier = Modifier.fillMaxSize().padding(16.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         ArtworkSection(
             artworkUri = artworkUri,
             onEditArtwork = onEditArtwork,
-            modifier = Modifier
-                .padding(8.dp)
-                .aspectRatio(1f)
-                .align(Alignment.CenterVertically)
+            modifier = Modifier.padding(8.dp).aspectRatio(1f).align(Alignment.CenterVertically),
         )
-        Column(
-            modifier = Modifier
-                .weight(0.5f)
-                .verticalScroll(scrollState)
-        ) {
-            if (pageState.audioProperties is ResourceState.Success && pageState.audioProperties.data != null) {
+        Column(modifier = Modifier.weight(0.5f).verticalScroll(scrollState)) {
+            if (
+                pageState.audioProperties is ResourceState.Success &&
+                    pageState.audioProperties.data != null
+            ) {
                 AudioPropertiesSection(audioProperties = pageState.audioProperties.data!!)
             }
             if (pageState.metadata is ResourceState.Success) {
@@ -354,7 +336,7 @@ private fun LandscapeContent(
                     onUpdateProperty = { key, value ->
                         onEvent(MetadataEditorViewModel.Event.UpdateProperty(key, value))
                     },
-                    onRetrieveLyrics = onRetrieveLyrics
+                    onRetrieveLyrics = onRetrieveLyrics,
                 )
             }
         }
@@ -366,31 +348,28 @@ private fun LandscapeContent(
 private fun ArtworkSection(
     artworkUri: Uri?,
     onEditArtwork: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Box(modifier = modifier) {
         AsyncImage(
-            modifier = Modifier
-                .fillMaxSize()
-                .clip(MaterialTheme.shapes.small),
-            imageModel = artworkUri
+            modifier = Modifier.fillMaxSize().clip(MaterialTheme.shapes.small),
+            imageModel = artworkUri,
         )
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(8.dp),
-            contentAlignment = Alignment.BottomEnd
+            modifier = Modifier.fillMaxSize().padding(8.dp),
+            contentAlignment = Alignment.BottomEnd,
         ) {
             IconButton(
-                colors = IconButtonDefaults.iconButtonColors(
-                    containerColor = Color.Black.copy(alpha = 0.5f)
-                ),
-                onClick = onEditArtwork
+                colors =
+                    IconButtonDefaults.iconButtonColors(
+                        containerColor = Color.Black.copy(alpha = 0.5f)
+                    ),
+                onClick = onEditArtwork,
             ) {
                 Icon(
                     imageVector = Icons.Rounded.Edit,
                     tint = Color.White.harmonize(Color.Black.copy(alpha = 0.5f)),
-                    contentDescription = stringResource(id = R.string.edit_image)
+                    contentDescription = stringResource(id = R.string.edit_image),
                 )
             }
         }
@@ -398,39 +377,29 @@ private fun ArtworkSection(
 }
 
 @Composable
-private fun AudioPropertiesSection(
-    audioProperties: AudioProperties
-) {
+private fun AudioPropertiesSection(audioProperties: AudioProperties) {
     LargeCategoryTitle(
         modifier = Modifier.padding(vertical = 6.dp),
-        text = stringResource(id = R.string.audio_details)
+        text = stringResource(id = R.string.audio_details),
     )
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 8.dp)
-        ) {
+        Row(modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)) {
             MetadataTag(
                 modifier = Modifier.weight(0.5f),
                 typeOfMetadata = stringResource(id = R.string.bitrate),
-                metadata = "${audioProperties.bitrate} kbps"
+                metadata = "${audioProperties.bitrate} kbps",
             )
             MetadataTag(
                 modifier = Modifier.weight(0.5f),
                 typeOfMetadata = stringResource(id = R.string.sample_rate),
-                metadata = "${audioProperties.sampleRate} Hz"
+                metadata = "${audioProperties.sampleRate} Hz",
             )
         }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 8.dp)
-        ) {
+        Row(modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)) {
             MetadataTag(
                 modifier = Modifier.weight(0.5f),
                 typeOfMetadata = stringResource(id = R.string.channels),
@@ -439,7 +408,7 @@ private fun AudioPropertiesSection(
             MetadataTag(
                 modifier = Modifier.weight(0.5f),
                 typeOfMetadata = stringResource(id = R.string.duration),
-                metadata = audioProperties.length.fromMillisToMinutes()
+                metadata = audioProperties.length.fromMillisToMinutes(),
             )
         }
     }
@@ -460,7 +429,7 @@ private fun SongPropertiesSection(
         modifiedKeys = modifiedKeys,
         label = stringResource(id = R.string.title),
         onUpdateProperty = onUpdateProperty,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
     )
     MetadataField(
         key = "ARTIST",
@@ -468,7 +437,7 @@ private fun SongPropertiesSection(
         modifiedKeys = modifiedKeys,
         label = stringResource(id = R.string.artist),
         onUpdateProperty = onUpdateProperty,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
     )
     MetadataField(
         key = "ALBUM",
@@ -476,7 +445,7 @@ private fun SongPropertiesSection(
         modifiedKeys = modifiedKeys,
         label = stringResource(id = R.string.album),
         onUpdateProperty = onUpdateProperty,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
     )
     MetadataField(
         key = "ALBUMARTIST",
@@ -484,19 +453,16 @@ private fun SongPropertiesSection(
         modifiedKeys = modifiedKeys,
         label = stringResource(id = R.string.album_artist),
         onUpdateProperty = onUpdateProperty,
-        modifier = Modifier.fillMaxWidth()
-    )
-    Row(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
+    )
+    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         MetadataField(
             key = "TRACKNUMBER",
             properties = properties,
             modifiedKeys = modifiedKeys,
             label = stringResource(id = R.string.track_number),
             onUpdateProperty = onUpdateProperty,
-            modifier = Modifier.weight(0.5f)
+            modifier = Modifier.weight(0.5f),
         )
         MetadataField(
             key = "DISCNUMBER",
@@ -504,20 +470,17 @@ private fun SongPropertiesSection(
             modifiedKeys = modifiedKeys,
             label = stringResource(id = R.string.disc_number),
             onUpdateProperty = onUpdateProperty,
-            modifier = Modifier.weight(0.5f)
+            modifier = Modifier.weight(0.5f),
         )
     }
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
+    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         MetadataField(
             key = "DATE",
             properties = properties,
             modifiedKeys = modifiedKeys,
             label = stringResource(id = R.string.date),
             onUpdateProperty = onUpdateProperty,
-            modifier = Modifier.weight(0.5f)
+            modifier = Modifier.weight(0.5f),
         )
         MetadataField(
             key = "GENRE",
@@ -525,21 +488,18 @@ private fun SongPropertiesSection(
             modifiedKeys = modifiedKeys,
             label = stringResource(id = R.string.genre),
             onUpdateProperty = onUpdateProperty,
-            modifier = Modifier.weight(0.5f)
+            modifier = Modifier.weight(0.5f),
         )
     }
     SectionHeader(title = stringResource(id = R.string.credits))
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
+    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         MetadataField(
             key = "COMPOSER",
             properties = properties,
             modifiedKeys = modifiedKeys,
             label = stringResource(id = R.string.composer),
             onUpdateProperty = onUpdateProperty,
-            modifier = Modifier.weight(0.5f)
+            modifier = Modifier.weight(0.5f),
         )
         MetadataField(
             key = "LYRICIST",
@@ -547,20 +507,17 @@ private fun SongPropertiesSection(
             modifiedKeys = modifiedKeys,
             label = stringResource(id = R.string.lyricist),
             onUpdateProperty = onUpdateProperty,
-            modifier = Modifier.weight(0.5f)
+            modifier = Modifier.weight(0.5f),
         )
     }
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
+    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         MetadataField(
             key = "CONDUCTOR",
             properties = properties,
             modifiedKeys = modifiedKeys,
             label = stringResource(id = R.string.conductor),
             onUpdateProperty = onUpdateProperty,
-            modifier = Modifier.weight(0.5f)
+            modifier = Modifier.weight(0.5f),
         )
         MetadataField(
             key = "REMIXER",
@@ -568,7 +525,7 @@ private fun SongPropertiesSection(
             modifiedKeys = modifiedKeys,
             label = stringResource(id = R.string.remixer),
             onUpdateProperty = onUpdateProperty,
-            modifier = Modifier.weight(0.5f)
+            modifier = Modifier.weight(0.5f),
         )
     }
     MetadataField(
@@ -577,7 +534,7 @@ private fun SongPropertiesSection(
         modifiedKeys = modifiedKeys,
         label = stringResource(id = R.string.performer),
         onUpdateProperty = onUpdateProperty,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
     )
     SectionHeader(title = stringResource(id = R.string.others))
     MetadataField(
@@ -587,21 +544,18 @@ private fun SongPropertiesSection(
         label = stringResource(id = R.string.comment),
         onUpdateProperty = onUpdateProperty,
         modifier = Modifier.fillMaxWidth(),
-        maxLines = 3
+        maxLines = 3,
     )
     Column(modifier = Modifier.fillMaxWidth()) {
-        TextButton(
-            modifier = Modifier.align(Alignment.End),
-            onClick = onRetrieveLyrics
-        ) {
+        TextButton(modifier = Modifier.align(Alignment.End), onClick = onRetrieveLyrics) {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Icon(
                     imageVector = Icons.Rounded.Lyrics,
                     contentDescription = null,
-                    modifier = Modifier.size(16.dp)
+                    modifier = Modifier.size(16.dp),
                 )
                 Text(text = stringResource(id = R.string.retrieve_lyrics))
             }
@@ -613,7 +567,7 @@ private fun SongPropertiesSection(
             label = stringResource(id = R.string.lyrics),
             onUpdateProperty = onUpdateProperty,
             modifier = Modifier.fillMaxWidth(),
-            maxLines = 20
+            maxLines = 20,
         )
     }
 }
@@ -621,10 +575,7 @@ private fun SongPropertiesSection(
 /** Encabezado de sección */
 @Composable
 private fun SectionHeader(title: String) {
-    LargeCategoryTitle(
-        modifier = Modifier.padding(vertical = 12.dp),
-        text = title
-    )
+    LargeCategoryTitle(modifier = Modifier.padding(vertical = 12.dp), text = title)
 }
 
 /** Campo editable de metadata */
@@ -636,7 +587,7 @@ private fun MetadataField(
     label: String,
     onUpdateProperty: (String, String) -> Unit,
     modifier: Modifier = Modifier,
-    maxLines: Int = 1
+    maxLines: Int = 1,
 ) {
     val value = properties[key] ?: ""
     val isModified = key in modifiedKeys
@@ -647,6 +598,6 @@ private fun MetadataField(
         isModified = isModified,
         modifier = modifier,
         maxLines = maxLines,
-        onValueChange = { onUpdateProperty(key, it) }
+        onValueChange = { onUpdateProperty(key, it) },
     )
 }

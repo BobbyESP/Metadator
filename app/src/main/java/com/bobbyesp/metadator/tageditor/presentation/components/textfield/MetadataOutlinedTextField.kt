@@ -20,7 +20,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -29,7 +28,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.bobbyesp.ui.R
-import com.bobbyesp.ui.util.rememberVolatileSaveable
 import com.materialkolor.DynamicMaterialTheme
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
@@ -69,16 +67,15 @@ fun MetadataOutlinedTextField(
         maxLines = maxLines,
         minLines = minLines,
         shape = MaterialTheme.shapes.large,
-        colors = OutlinedTextFieldDefaults.colors(
-            focusedBorderColor = if (fieldModified)
-                MaterialTheme.colorScheme.primary
-            else
-                MaterialTheme.colorScheme.outline,
-            unfocusedBorderColor = if (fieldModified)
-                MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
-            else
-                MaterialTheme.colorScheme.outline
-        ),
+        colors =
+            OutlinedTextFieldDefaults.colors(
+                focusedBorderColor =
+                    if (fieldModified) MaterialTheme.colorScheme.primary
+                    else MaterialTheme.colorScheme.outline,
+                unfocusedBorderColor =
+                    if (fieldModified) MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
+                    else MaterialTheme.colorScheme.outline,
+            ),
         trailingIcon = {
             AnimatedVisibility(
                 visible = fieldModified,
@@ -105,9 +102,6 @@ fun MetadataOutlinedTextField(
 @Composable
 private fun PreConfiguredOutlineTextFieldPreview() {
     DynamicMaterialTheme(seedColor = Color(0xFF4565FF)) {
-        MetadataOutlinedTextField(
-            value = "Hello, World!",
-            label = "Label",
-        )
+        MetadataOutlinedTextField(value = "Hello, World!", label = "Label")
     }
 }

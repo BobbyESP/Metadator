@@ -33,7 +33,7 @@ val coreFunctionalitiesModule = module {
             .diskCache {
                 DiskCache.Builder()
                     .directory(context.cacheDir.resolve("image_cache"))
-                    .maxSizeBytes(7 * 1024 * 1024)
+                    .maxSizeBytes(64 * 1024 * 1024)
                     .build()
             }
             .respectCacheHeaders(false)

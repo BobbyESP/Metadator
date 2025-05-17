@@ -8,5 +8,5 @@ enum class PictureType(val id3Type: String) {
     BAND("Band"),
     COMPOSER("Composer"),
     DURING_RECORDING("During Recording"),
-    ILLUSTRATION("Illustration")
+    ILLUSTRATION("Illustration"),
 }

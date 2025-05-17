@@ -47,13 +47,13 @@ class MetadataEditorViewModel(
         val audioProperties: ResourceState<AudioProperties?> = ResourceState.Loading(),
         val pageState: ScreenState<Nothing> = ScreenState.Loading,
         val properties: Map<String, String> = emptyMap(), // Immutable properties
-        val modifiedKeys: Set<String> = emptySet() //Which keys have been modified
-
+        val modifiedKeys: Set<String> = emptySet(), // Which keys have been modified
     )
 
     private val _state = MutableStateFlow(PageViewState())
     val state =
-        _state.onStart { stateHandle.get<String>("path")?.let { onEvent(Event.LoadMetadata(it)) } }
+        _state
+            .onStart { stateHandle.get<String>("path")?.let { onEvent(Event.LoadMetadata(it)) } }
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), PageViewState())
 
     override fun onCleared() {
@@ -67,51 +67,55 @@ class MetadataEditorViewModel(
     private suspend fun loadTrackMetadata(path: String, scope: CoroutineScope) {
         _state.update {
             it.copy(
-                pageState = ScreenState.Loading, properties = emptyMap(), modifiedKeys = emptySet()
+                pageState = ScreenState.Loading,
+                properties = emptyMap(),
+                modifiedKeys = emptySet(),
             )
         }
 
         try {
             stateHandle["path"] = path
 
-            val metadataDeferred = scope.async {
-                repository.getMetadata(path)
-            }
+            val metadataDeferred = scope.async { repository.getMetadata(path) }
 
-            val audioPropertiesDeferred = scope.async {
-                repository.getAudioProperties(path, AudioPropertiesReadStyle.Average)
-            }
+            val audioPropertiesDeferred =
+                scope.async {
+                    repository.getAudioProperties(path, AudioPropertiesReadStyle.Average)
+                }
 
             val metadataResult = metadataDeferred.await()
             val audioPropertiesResult = audioPropertiesDeferred.await()
 
-            metadataResult.fold(onSuccess = { metadata ->
-                val propMap = metadata.propertyMap?.toModifiableMap()?.mapValues { it.value ?: "" }
-                    ?: emptyMap()
-                _state.update {
-                    it.copy(
-                        metadata = ResourceState.Success(metadata), properties = propMap
-                    )
-                }
-            }, onFailure = { error ->
-                _state.update {
-                    it.copy(metadata = ResourceState.Error(error.message ?: error.toString()))
-                }
-            })
+            metadataResult.fold(
+                onSuccess = { metadata ->
+                    val propMap =
+                        metadata.propertyMap?.toModifiableMap()?.mapValues { it.value ?: "" }
+                            ?: emptyMap()
+                    _state.update {
+                        it.copy(metadata = ResourceState.Success(metadata), properties = propMap)
+                    }
+                },
+                onFailure = { error ->
+                    _state.update {
+                        it.copy(metadata = ResourceState.Error(error.message ?: error.toString()))
+                    }
+                },
+            )
 
-            audioPropertiesResult.fold(onSuccess = { audioProperties ->
-                _state.update {
-                    it.copy(audioProperties = ResourceState.Success(audioProperties))
-                }
-            }, onFailure = { error ->
-                _state.update {
-                    it.copy(
-                        audioProperties = ResourceState.Error(
-                            error.message ?: error.toString()
+            audioPropertiesResult.fold(
+                onSuccess = { audioProperties ->
+                    _state.update {
+                        it.copy(audioProperties = ResourceState.Success(audioProperties))
+                    }
+                },
+                onFailure = { error ->
+                    _state.update {
+                        it.copy(
+                            audioProperties = ResourceState.Error(error.message ?: error.toString())
                         )
-                    )
-                }
-            })
+                    }
+                },
+            )
 
             updateState(ScreenState.Success(null))
         } catch (error: Exception) {
@@ -122,14 +126,10 @@ class MetadataEditorViewModel(
 
     private fun updateMapProperty(key: String, value: String) {
         _state.update { currentState ->
-            val updatedProperties = currentState.properties.toMutableMap().apply {
-                put(key, value)
-            }
+            val updatedProperties = currentState.properties.toMutableMap().apply { put(key, value) }
             val updatedModifiedKeys = currentState.modifiedKeys + key
 
-            currentState.copy(
-                properties = updatedProperties, modifiedKeys = updatedModifiedKeys
-            )
+            currentState.copy(properties = updatedProperties, modifiedKeys = updatedModifiedKeys)
         }
     }
 
@@ -141,16 +141,19 @@ class MetadataEditorViewModel(
             // Convert the actual properties to a PropertyMap
             val propertyMap = _state.value.properties.toAudioFileMetadata().toPropertyMap()
 
-            repository.writePropertyMap(audioPath, propertyMap).onSuccess {
-                // Having successfully saved the properties, we can clear the modified keys
-                _state.update { it.copy(modifiedKeys = emptySet()) }
-            }.onFailure { error ->
-                if (error is SecurityException) {
-                    handleSecurityException(error, intentPassthrough)
-                } else {
-                    _state.update { it.copy(pageState = ScreenState.Error(error)) }
+            repository
+                .writePropertyMap(audioPath, propertyMap)
+                .onSuccess {
+                    // Having successfully saved the properties, we can clear the modified keys
+                    _state.update { it.copy(modifiedKeys = emptySet()) }
                 }
-            }
+                .onFailure { error ->
+                    if (error is SecurityException) {
+                        handleSecurityException(error, intentPassthrough)
+                    } else {
+                        _state.update { it.copy(pageState = ScreenState.Error(error)) }
+                    }
+                }
         } catch (e: Exception) {
             _state.update { it.copy(pageState = ScreenState.Error(e)) }
         }
@@ -181,9 +184,8 @@ class MetadataEditorViewModel(
     ) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             val recoverableSecurityException =
-                securityException as? RecoverableSecurityException ?: throw RuntimeException(
-                    securityException.message, securityException
-                )
+                securityException as? RecoverableSecurityException
+                    ?: throw RuntimeException(securityException.message, securityException)
 
             intentPassthrough(recoverableSecurityException.userAction.actionIntent)
         } else {
@@ -212,22 +214,23 @@ class MetadataEditorViewModel(
 
             is Event.SaveProperties -> {
                 viewModelScope.launch(Dispatchers.IO) {
-                    val succeeded = try {
-                        savePropertyMap(
-                            audioPath = event.path,
-                            intentPassthrough = { emitUiEvent(UiEvent.RequestPermission(it)) }
-                        )
-                        true
-                    } catch (e: Exception) {
-                        executeIfDebugging {
-                            Log.e(
-                                "MetadataEditorVM",
-                                "Error while trying to save the properties: ${e.message}"
+                    val succeeded =
+                        try {
+                            savePropertyMap(
+                                audioPath = event.path,
+                                intentPassthrough = { emitUiEvent(UiEvent.RequestPermission(it)) },
                             )
+                            true
+                        } catch (e: Exception) {
+                            executeIfDebugging {
+                                Log.e(
+                                    "MetadataEditorVM",
+                                    "Error while trying to save the properties: ${e.message}",
+                                )
+                            }
+                            emitUiEvent(UiEvent.SaveFailed)
+                            false
                         }
-                        emitUiEvent(UiEvent.SaveFailed)
-                        false
-                    }
 
                     if (succeeded) {
                         emitUiEvent(UiEvent.SaveSuccess(properties = true))
@@ -239,23 +242,24 @@ class MetadataEditorViewModel(
 
             is Event.SavePictures -> {
                 viewModelScope.launch(Dispatchers.IO) {
-                    val succeeded = try {
-                        savePictures(
-                            audioPath = event.path,
-                            imagesUri = event.imagesUri,
-                            intentPassthrough = { emitUiEvent(UiEvent.RequestPermission(it)) }
-                        )
-                        true
-                    } catch (e: Exception) {
-                        executeIfDebugging {
-                            Log.e(
-                                "MetadataEditorVM",
-                                "Error while trying to save the pictures: ${e.message}"
+                    val succeeded =
+                        try {
+                            savePictures(
+                                audioPath = event.path,
+                                imagesUri = event.imagesUri,
+                                intentPassthrough = { emitUiEvent(UiEvent.RequestPermission(it)) },
                             )
+                            true
+                        } catch (e: Exception) {
+                            executeIfDebugging {
+                                Log.e(
+                                    "MetadataEditorVM",
+                                    "Error while trying to save the pictures: ${e.message}",
+                                )
+                            }
+                            emitUiEvent(UiEvent.SaveFailed)
+                            false
                         }
-                        emitUiEvent(UiEvent.SaveFailed)
-                        false
-                    }
 
                     if (succeeded) {
                         emitUiEvent(UiEvent.SaveSuccess(pictures = true))
@@ -267,27 +271,28 @@ class MetadataEditorViewModel(
 
             is Event.SaveAll -> {
                 viewModelScope.launch(Dispatchers.IO) {
-                    val succeeded = try {
-                        savePropertyMap(
-                            audioPath = event.path,
-                            intentPassthrough = { emitUiEvent(UiEvent.RequestPermission(it)) }
-                        )
-                        savePictures(
-                            audioPath = event.path,
-                            imagesUri = event.imagesUri,
-                            intentPassthrough = { emitUiEvent(UiEvent.RequestPermission(it)) }
-                        )
-                        true
-                    } catch (e: Exception) {
-                        executeIfDebugging {
-                            Log.e(
-                                "MetadataEditorVM",
-                                "Error while trying to save all: ${e.message}"
+                    val succeeded =
+                        try {
+                            savePropertyMap(
+                                audioPath = event.path,
+                                intentPassthrough = { emitUiEvent(UiEvent.RequestPermission(it)) },
                             )
+                            savePictures(
+                                audioPath = event.path,
+                                imagesUri = event.imagesUri,
+                                intentPassthrough = { emitUiEvent(UiEvent.RequestPermission(it)) },
+                            )
+                            true
+                        } catch (e: Exception) {
+                            executeIfDebugging {
+                                Log.e(
+                                    "MetadataEditorVM",
+                                    "Error while trying to save all: ${e.message}",
+                                )
+                            }
+                            emitUiEvent(UiEvent.SaveFailed)
+                            false
                         }
-                        emitUiEvent(UiEvent.SaveFailed)
-                        false
-                    }
 
                     if (succeeded) {
                         emitUiEvent(UiEvent.SaveSuccess(pictures = true, properties = true))
@@ -305,14 +310,19 @@ class MetadataEditorViewModel(
 
     interface Event {
         data class LoadMetadata(val path: String) : Event
+
         data class SaveAll(val path: String, val imagesUri: List<Uri>) : Event
+
         data class SaveProperties(val path: String) : Event
+
         data class SavePictures(val path: String, val imagesUri: List<Uri>) : Event
+
         data class UpdateProperty(val key: String, val value: String) : Event
     }
 
     interface UiEvent {
         data class RequestPermission(val intent: PendingIntent) : UiEvent
+
         data class SaveSuccess(val pictures: Boolean? = null, val properties: Boolean? = null) :
             UiEvent
 

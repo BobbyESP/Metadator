@@ -27,18 +27,19 @@ class PlaybackService : KoinComponent, MediaLibraryService() {
             getKoin().get {
                 parametersOf(callback)
             } // We pass the callback to the MediaLibrarySession constructor
-//        player.addListener(
-//            object : Player.Listener {
-//                override fun onPlaybackStateChanged(playbackState: Int) {
-//                    if (playbackState == Player.STATE_READY || playbackState == Player.STATE_BUFFERING) {
-//                        val audioSessionId = player.audioSessionId
-//                        if (audioSessionId != C.AUDIO_SESSION_ID_UNSET) {
-//                            equalizerController.updateEqualizer(audioSessionId)
-//                        }
-//                    }
-//                }
-//            }
-//        )
+        //        player.addListener(
+        //            object : Player.Listener {
+        //                override fun onPlaybackStateChanged(playbackState: Int) {
+        //                    if (playbackState == Player.STATE_READY || playbackState ==
+        // Player.STATE_BUFFERING) {
+        //                        val audioSessionId = player.audioSessionId
+        //                        if (audioSessionId != C.AUDIO_SESSION_ID_UNSET) {
+        //                            equalizerController.updateEqualizer(audioSessionId)
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //        )
     }
 
     override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaLibrarySession? =

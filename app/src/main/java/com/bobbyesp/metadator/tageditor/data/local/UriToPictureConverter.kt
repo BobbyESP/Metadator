@@ -8,9 +8,7 @@ import com.kyant.taglib.Picture
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class UriToPictureConverter(
-    private val context: Context
-) {
+class UriToPictureConverter(private val context: Context) {
     /**
      * Converts a list of URIs into Picture objects.
      *
@@ -22,34 +20,37 @@ class UriToPictureConverter(
     suspend fun convert(
         uris: List<Uri>,
         pictureType: PictureType = PictureType.FRONT_COVER,
-        descriptionFormat: String = "Audio image %d - Metadator"
-    ): List<Picture> = withContext(Dispatchers.IO) {
-        uris.mapIndexedNotNull { index, uri ->
-            try {
-                val byteArray = context.contentResolver.openInputStream(uri)?.use { it.readBytes() }
-                    ?: run {
-                        Log.e(TAG, "Failed to read image data: $uri")
-                        return@mapIndexedNotNull null
-                    }
+        descriptionFormat: String = "Audio image %d - Metadator",
+    ): List<Picture> =
+        withContext(Dispatchers.IO) {
+            uris.mapIndexedNotNull { index, uri ->
+                try {
+                    val byteArray =
+                        context.contentResolver.openInputStream(uri)?.use { it.readBytes() }
+                            ?: run {
+                                Log.e(TAG, "Failed to read image data: $uri")
+                                return@mapIndexedNotNull null
+                            }
 
-                val mimeType = context.contentResolver.getType(uri)
-                    ?: run {
-                        Log.e(TAG, "Could not determine MIME type: $uri")
-                        return@mapIndexedNotNull null
-                    }
+                    val mimeType =
+                        context.contentResolver.getType(uri)
+                            ?: run {
+                                Log.e(TAG, "Could not determine MIME type: $uri")
+                                return@mapIndexedNotNull null
+                            }
 
-                Picture(
-                    data = byteArray,
-                    mimeType = mimeType,
-                    description = descriptionFormat.format(index + 1),
-                    pictureType = pictureType.id3Type
-                )
-            } catch (e: Exception) {
-                Log.e(TAG, "Error processing image: $uri", e)
-                null
+                    Picture(
+                        data = byteArray,
+                        mimeType = mimeType,
+                        description = descriptionFormat.format(index + 1),
+                        pictureType = pictureType.id3Type,
+                    )
+                } catch (e: Exception) {
+                    Log.e(TAG, "Error processing image: $uri", e)
+                    null
+                }
             }
         }
-    }
 
     /**
      * Converts a single URI into a Picture object.
@@ -62,7 +63,7 @@ class UriToPictureConverter(
     suspend fun convertSingle(
         uri: Uri,
         pictureType: PictureType = PictureType.FRONT_COVER,
-        description: String = "Audio image - Metadator"
+        description: String = "Audio image - Metadator",
     ): Picture? {
         return convert(listOf(uri), pictureType, description).firstOrNull()
     }
