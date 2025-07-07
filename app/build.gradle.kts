@@ -207,7 +207,7 @@ dependencies {
     implementation(libs.profileinstaller)
     implementation(libs.kotlinx.datetime)
     implementation(libs.kotlinx.serialization.json)
-    implementation(libs.taglib)
+    implementation(files("libs/taglib-release-1.0.3.aar"))
     implementation(libs.scrollbar)
     implementation(libs.sonner)
     implementation(libs.spotify.api.android)

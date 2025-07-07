@@ -10,7 +10,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bobbyesp.metadator.core.util.executeIfDebugging
 import com.bobbyesp.metadator.tageditor.data.local.UriToPictureConverter
+import com.bobbyesp.metadator.tageditor.domain.AudioEditableMetadata
 import com.bobbyesp.metadator.tageditor.model.repository.AudioMetadataRepository
+import com.bobbyesp.metadator.tageditor.presentation.state.MetadataEditorUiState
 import com.bobbyesp.utilities.ext.toModifiableMap
 import com.bobbyesp.utilities.mediastore.AudioFileMetadata.Companion.toAudioFileMetadata
 import com.bobbyesp.utilities.mediastore.AudioFileMetadata.Companion.toPropertyMap
@@ -19,9 +21,7 @@ import com.bobbyesp.utilities.states.ScreenState
 import com.kyant.taglib.AudioProperties
 import com.kyant.taglib.AudioPropertiesReadStyle
 import com.kyant.taglib.Metadata
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -46,8 +46,7 @@ class MetadataEditorViewModel(
         val metadata: ResourceState<Metadata?> = ResourceState.Loading(),
         val audioProperties: ResourceState<AudioProperties?> = ResourceState.Loading(),
         val pageState: ScreenState<Nothing> = ScreenState.Loading,
-        val properties: Map<String, String> = emptyMap(), // Immutable properties
-        val modifiedKeys: Set<String> = emptySet(), // Which keys have been modified
+        val uiState: MetadataEditorUiState = MetadataEditorUiState(),
     )
 
     private val _state = MutableStateFlow(PageViewState())
@@ -64,72 +63,42 @@ class MetadataEditorViewModel(
         }
     }
 
-    private suspend fun loadTrackMetadata(path: String, scope: CoroutineScope) {
-        _state.update {
-            it.copy(
-                pageState = ScreenState.Loading,
-                properties = emptyMap(),
-                modifiedKeys = emptySet(),
-            )
-        }
-
+    private suspend fun loadTrackMetadata(path: String) {
+        _state.update { it.copy(pageState = ScreenState.Loading) }
         try {
             stateHandle["path"] = path
+            val meta = repository.getMetadata(path).getOrThrow()
+            val audioProps =
+                repository.getAudioProperties(path, AudioPropertiesReadStyle.Average).getOrThrow()
 
-            val metadataDeferred = scope.async { repository.getMetadata(path) }
+            // Converts PropertyMap → AudioFileMetadata → AudioEditableMetadata
+            val flatMap =
+                meta.propertyMap?.toModifiableMap()?.mapValues { it.value ?: "" } ?: emptyMap()
+            val fileMeta = flatMap.toAudioFileMetadata()
+            val editable =
+                AudioEditableMetadata(
+                    title = fileMeta.title.orEmpty(),
+                    artist = fileMeta.artist.orEmpty(),
+                    album = fileMeta.album.orEmpty(),
+                    trackNumber = fileMeta.trackNumber?.toIntOrNull() ?: 0,
+                    discNumber = fileMeta.discNumber?.toIntOrNull() ?: 0,
+                    date = fileMeta.date.orEmpty(),
+                    genre = fileMeta.genre.orEmpty(),
+                    comment = fileMeta.comment.orEmpty(),
+                    lyrics = fileMeta.lyrics.orEmpty(),
+                )
 
-            val audioPropertiesDeferred =
-                scope.async {
-                    repository.getAudioProperties(path, AudioPropertiesReadStyle.Average)
-                }
-
-            val metadataResult = metadataDeferred.await()
-            val audioPropertiesResult = audioPropertiesDeferred.await()
-
-            metadataResult.fold(
-                onSuccess = { metadata ->
-                    val propMap =
-                        metadata.propertyMap?.toModifiableMap()?.mapValues { it.value ?: "" }
-                            ?: emptyMap()
-                    _state.update {
-                        it.copy(metadata = ResourceState.Success(metadata), properties = propMap)
-                    }
-                },
-                onFailure = { error ->
-                    _state.update {
-                        it.copy(metadata = ResourceState.Error(error.message ?: error.toString()))
-                    }
-                },
-            )
-
-            audioPropertiesResult.fold(
-                onSuccess = { audioProperties ->
-                    _state.update {
-                        it.copy(audioProperties = ResourceState.Success(audioProperties))
-                    }
-                },
-                onFailure = { error ->
-                    _state.update {
-                        it.copy(
-                            audioProperties = ResourceState.Error(error.message ?: error.toString())
-                        )
-                    }
-                },
-            )
-
-            updateState(ScreenState.Success(null))
-        } catch (error: Exception) {
-            Log.e("MetadataEditorVM", "Error while trying to load the audio file: ${error.message}")
-            updateState(ScreenState.Error(error))
-        }
-    }
-
-    private fun updateMapProperty(key: String, value: String) {
-        _state.update { currentState ->
-            val updatedProperties = currentState.properties.toMutableMap().apply { put(key, value) }
-            val updatedModifiedKeys = currentState.modifiedKeys + key
-
-            currentState.copy(properties = updatedProperties, modifiedKeys = updatedModifiedKeys)
+            _state.update {
+                it.copy(
+                    metadata = ResourceState.Success(meta),
+                    audioProperties = ResourceState.Success(audioProps),
+                    pageState = ScreenState.Success(null),
+                    uiState = MetadataEditorUiState().apply { loadFrom(editable) },
+                )
+            }
+        } catch (e: Exception) {
+            Log.e("MetadataEditorVM", "Error loading: ${e.message}")
+            _state.update { it.copy(pageState = ScreenState.Error(e)) }
         }
     }
 
@@ -139,7 +108,7 @@ class MetadataEditorViewModel(
     ) {
         try {
             // Convert the actual properties to a PropertyMap
-            val propertyMap = _state.value.properties.toAudioFileMetadata().toPropertyMap()
+            val propertyMap = _state.value.uiState. .toAudioFileMetadata().toPropertyMap()
 
             repository
                 .writePropertyMap(audioPath, propertyMap)
@@ -271,39 +240,19 @@ class MetadataEditorViewModel(
 
             is Event.SaveAll -> {
                 viewModelScope.launch(Dispatchers.IO) {
-                    val succeeded =
-                        try {
-                            savePropertyMap(
-                                audioPath = event.path,
-                                intentPassthrough = { emitUiEvent(UiEvent.RequestPermission(it)) },
-                            )
-                            savePictures(
-                                audioPath = event.path,
-                                imagesUri = event.imagesUri,
-                                intentPassthrough = { emitUiEvent(UiEvent.RequestPermission(it)) },
-                            )
-                            true
-                        } catch (e: Exception) {
-                            executeIfDebugging {
-                                Log.e(
-                                    "MetadataEditorVM",
-                                    "Error while trying to save all: ${e.message}",
-                                )
-                            }
-                            emitUiEvent(UiEvent.SaveFailed)
-                            false
-                        }
-
-                    if (succeeded) {
+                    val domain = state.value.uiState.toDomain()
+                    val propertyMap = domain.toPropertyMap()
+                    try {
+                        repository.writePropertyMap(event.path, propertyMap)
+                        val pictures = uriConverter.convert(event.imagesUri)
+                        repository.writePictures(event.path, pictures)
                         emitUiEvent(UiEvent.SaveSuccess(pictures = true, properties = true))
-                    } else {
+                    } catch (e: SecurityException) {
+                        handleSecurityException(e) { emitUiEvent(UiEvent.RequestPermission(it)) }
+                    } catch (e: Exception) {
                         emitUiEvent(UiEvent.SaveFailed)
                     }
                 }
-            }
-
-            is Event.UpdateProperty -> {
-                updateMapProperty(event.key, event.value)
             }
         }
     }

@@ -142,8 +142,8 @@ fun MetadataEditorPage(
 
     val lyricsRetrieveIntent =
         Intent("android.intent.action.SEND").apply {
-            putExtra("songName", pageState.properties["TITLE"])
-            putExtra("artistName", pageState.properties["ARTIST"])
+//            putExtra("songName", pageState.uiState.fields["TITLE"])
+//            putExtra("artistName", pageState.properties["ARTIST"])
             type = "text/plain"
             setPackage("pl.lambada.songsync")
         }

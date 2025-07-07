@@ -34,9 +34,6 @@ android {
     composeCompiler {
         reportsDestination = layout.buildDirectory.dir("compose_compiler")
     }
-    kotlinOptions {
-        jvmTarget = "21"
-    }
 }
 
 dependencies {
