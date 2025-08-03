@@ -73,7 +73,7 @@ class MetadataEditorViewModel(
 
             // Converts PropertyMap → AudioFileMetadata → AudioEditableMetadata
             val flatMap =
-                meta.propertyMap?.toModifiableMap()?.mapValues { it.value ?: "" } ?: emptyMap()
+                meta.propertyMap.toModifiableMap().mapValues { it.value ?: "" }
             val fileMeta = flatMap.toAudioFileMetadata()
             val editable =
                 AudioEditableMetadata(
@@ -108,13 +108,13 @@ class MetadataEditorViewModel(
     ) {
         try {
             // Convert the actual properties to a PropertyMap
-            val propertyMap = _state.value.uiState. .toAudioFileMetadata().toPropertyMap()
+            val flatMap = _state.value.uiState.fields.associate { it.key to it.current.toString() }
+            val propertyMap = flatMap.toAudioFileMetadata().toPropertyMap()
 
-            repository
-                .writePropertyMap(audioPath, propertyMap)
+            repository.writePropertyMap(audioPath, propertyMap)
                 .onSuccess {
-                    // Having successfully saved the properties, we can clear the modified keys
-                    _state.update { it.copy(modifiedKeys = emptySet()) }
+                    // Clear modified flags after saving properties
+                    _state.update { it.copy(uiState = it.uiState.clearModified()) }
                 }
                 .onFailure { error ->
                     if (error is SecurityException) {
@@ -175,7 +175,7 @@ class MetadataEditorViewModel(
             is Event.LoadMetadata -> {
                 viewModelScope.launch {
                     if (latestLoadedSongPath != event.path) {
-                        loadTrackMetadata(event.path, this)
+                        loadTrackMetadata(event.path)
                         latestLoadedSongPath = event.path
                     }
                 }
@@ -238,14 +238,21 @@ class MetadataEditorViewModel(
                 }
             }
 
+            is Event.UpdateProperty -> {
+                // Update a single field in the UI state
+                _state.update { it.copy(uiState = it.uiState.updateField(event.key, event.value)) }
+            }
+
             is Event.SaveAll -> {
                 viewModelScope.launch(Dispatchers.IO) {
-                    val domain = state.value.uiState.toDomain()
-                    val propertyMap = domain.toPropertyMap()
+                    val flatMap = state.value.uiState.fields.associate { it.key to it.current.toString() }
+                    val propertyMap = flatMap.toAudioFileMetadata().toPropertyMap()
                     try {
                         repository.writePropertyMap(event.path, propertyMap)
                         val pictures = uriConverter.convert(event.imagesUri)
                         repository.writePictures(event.path, pictures)
+                        // Clear all modified fields after full save
+                        _state.update { it.copy(uiState = it.uiState.clearModified()) }
                         emitUiEvent(UiEvent.SaveSuccess(pictures = true, properties = true))
                     } catch (e: SecurityException) {
                         handleSecurityException(e) { emitUiEvent(UiEvent.RequestPermission(it)) }

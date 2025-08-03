@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.bobbyesp.ui"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         minSdk = 24

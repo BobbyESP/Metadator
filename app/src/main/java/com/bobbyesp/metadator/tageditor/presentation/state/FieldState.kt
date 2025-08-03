@@ -1,21 +1,21 @@
 package com.bobbyesp.metadator.tageditor.presentation.state
 
-import androidx.annotation.StringRes
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-
-sealed class FieldState<T : Any>(
+sealed class FieldState<T>(
     val key: String,
-    @StringRes val labelRes: Int,
-    initial: T,
-    private val validator: (T) -> Boolean = { true },
+    val labelRes: Int,
+    val original: T,
+    var current: T
 ) {
-    var initialValue: T by mutableStateOf(initial)
-    var value: T by mutableStateOf(initial)
     val isModified: Boolean
-        get() = value != initialValue
+        get() = original != current
 
-    val errorMessage: String? by derivedStateOf { if (validator(value)) null else "Valor inválido" }
+    abstract val errorMessageRes: Int?
+
+    private var _error: Int? = null
+    val errorMessage: Int?
+        get() = _error
+
+    fun validate(validator: (T) -> Int?): FieldState<T> = apply {
+        _error = validator(current)
+    }
 }

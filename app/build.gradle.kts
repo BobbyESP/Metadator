@@ -19,12 +19,12 @@ val localProperties =
 
 android {
     namespace = "com.bobbyesp.metadator"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.bobbyesp.metadator"
         minSdk = 24
-        targetSdk = 35
+        targetSdk = 36
 
         versionCode = rootProject.extra["versionCode"] as Int
         versionName = rootProject.extra["versionName"] as String
@@ -109,10 +109,6 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
-    }
-    kotlinOptions {
-        jvmTarget = "21"
-        // freeCompilerArgs = listOf("-Xcontext-receivers", "-XXLanguage:+ExplicitBackingFields")
     }
     buildFeatures {
         compose = true
@@ -207,7 +203,7 @@ dependencies {
     implementation(libs.profileinstaller)
     implementation(libs.kotlinx.datetime)
     implementation(libs.kotlinx.serialization.json)
-    implementation(files("libs/taglib-release-1.0.3.aar"))
+    implementation(files("libs/taglib_1.0.2.aar"))
     implementation(libs.scrollbar)
     implementation(libs.sonner)
     implementation(libs.spotify.api.android)

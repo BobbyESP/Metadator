@@ -2,6 +2,7 @@ package com.bobbyesp.ui.components.pulltorefresh
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.LocalOverscrollConfiguration
+import androidx.compose.foundation.LocalOverscrollFactory
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,7 +31,7 @@ fun PullToRefreshLayout(
     content: @Composable () -> Unit,
 ) {
     CompositionLocalProvider(
-        LocalOverscrollConfiguration provides
+        LocalOverscrollFactory provides
             null // Disable overscroll otherwise it consumes the drag before we get the chance
     ) {
         Box(

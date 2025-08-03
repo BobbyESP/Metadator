@@ -1,11 +1,13 @@
 package com.bobbyesp.utilities
 
 import java.util.Locale
-import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 object Time {
+    @OptIn(ExperimentalTime::class)
     fun getZuluTimeSnapshot(): String {
         val instant = Clock.System.now()
         return instant.toLocalDateTime(TimeZone.currentSystemDefault()).toString()

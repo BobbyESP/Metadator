@@ -1,36 +1,52 @@
 package com.bobbyesp.metadator.tageditor.presentation.state
 
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.bobbyesp.metadator.R
 import com.bobbyesp.metadator.tageditor.domain.AudioEditableMetadata
 
 data class MetadataEditorUiState(
-    val fields: SnapshotStateList<FieldState<*>> = mutableStateListOf()
+    val fields: List<FieldState<*>> = emptyList()
 ) {
-    fun loadFrom(domain: AudioEditableMetadata) {
-        fields.clear()
-        fields += StringFieldState("TITLE", R.string.title, domain.title)
-        fields += StringFieldState("ARTIST", R.string.artist, domain.artist)
-        fields += StringFieldState("ALBUM", R.string.album, domain.album)
-        fields += IntFieldState("TRACKNUMBER", R.string.track_number, domain.trackNumber)
-        fields += IntFieldState("DISCNUMBER", R.string.disc_number, domain.discNumber)
-        fields += StringFieldState("DATE", R.string.date, domain.date)
-        fields += StringFieldState("GENRE", R.string.genre, domain.genre)
-        fields += StringFieldState("COMMENT", R.string.comment, domain.comment)
-        fields += StringFieldState("LYRICS", R.string.lyrics, domain.lyrics) { it.length <= 5000 }
+
+    fun loadFrom(editable: AudioEditableMetadata): MetadataEditorUiState =
+        copy(
+            fields = listOf(
+                StringFieldState("TITLE", R.string.title, editable.title),
+                StringFieldState("ARTIST", R.string.artist, editable.artist),
+                StringFieldState("ALBUM", R.string.album, editable.album),
+                IntFieldState("TRACKNUMBER", R.string.track_number, editable.trackNumber),
+                IntFieldState("DISCNUMBER", R.string.disc_number, editable.discNumber),
+                StringFieldState("DATE", R.string.date, editable.date),
+                StringFieldState("GENRE", R.string.genre, editable.genre),
+                StringFieldState("COMMENT", R.string.comment, editable.comment),
+                StringFieldState("LYRICS", R.string.lyrics, editable.lyrics),
+            )
+        )
+
+    fun toDomain(): AudioEditableMetadata {
+        val map = fields.associate { it.key to it.current.toString() }
+        return AudioEditableMetadata.fromMap(map)
     }
 
-    fun toDomain(): AudioEditableMetadata =
-        AudioEditableMetadata(
-            title = (fields.first { it.key == "TITLE" } as StringFieldState).value,
-            artist = (fields.first { it.key == "ARTIST" } as StringFieldState).value,
-            album = (fields.first { it.key == "ALBUM" } as StringFieldState).value,
-            trackNumber = (fields.first { it.key == "TRACKNUMBER" } as IntFieldState).value,
-            discNumber = (fields.first { it.key == "DISCNUMBER" } as IntFieldState).value,
-            date = (fields.first { it.key == "DATE" } as StringFieldState).value,
-            genre = (fields.first { it.key == "GENRE" } as StringFieldState).value,
-            comment = (fields.first { it.key == "COMMENT" } as StringFieldState).value,
-            lyrics = (fields.first { it.key == "LYRICS" } as StringFieldState).value,
-        )
+    val modifiedKeys: Set<String>
+        get() = fields.filter { it.isModified }.map { it.key }.toSet()
+
+    /** Update a single field's current value based on its key */
+    fun updateField(key: String, value: String): MetadataEditorUiState =
+        copy(fields = fields.map { field ->
+            if (field.key == key) {
+                when (field) {
+                    is StringFieldState -> StringFieldState(field.key, field.labelRes, field.current).apply { current = value }
+                    is IntFieldState -> IntFieldState(field.key, field.labelRes, field.original).apply { current = value.toIntOrNull() ?: original }
+                }
+            } else field
+        })
+
+    /** Reset the original values to the current ones, clearing modification state */
+    fun clearModified(): MetadataEditorUiState =
+        copy(fields = fields.map { field ->
+            when (field) {
+                is StringFieldState -> StringFieldState(field.key, field.labelRes, field.current)
+                is IntFieldState -> IntFieldState(field.key, field.labelRes, field.current)
+            }
+        })
 }

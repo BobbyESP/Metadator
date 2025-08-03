@@ -58,6 +58,8 @@ import com.bobbyesp.metadator.core.presentation.common.LocalNavController
 import com.bobbyesp.metadator.core.presentation.common.LocalSonner
 import com.bobbyesp.metadator.core.presentation.components.image.AsyncImage
 import com.bobbyesp.metadator.tageditor.presentation.components.textfield.MetadataOutlinedTextField
+import com.bobbyesp.metadator.tageditor.presentation.state.MetadataEditorUiState
+import com.bobbyesp.metadator.tageditor.presentation.state.FieldState
 import com.bobbyesp.ui.common.pages.ErrorPage
 import com.bobbyesp.ui.common.pages.LoadingPage
 import com.bobbyesp.ui.components.button.CloseButton
@@ -291,13 +293,12 @@ private fun PortraitContent(
             AudioPropertiesSection(audioProperties = pageState.audioProperties.data!!)
         }
         if (pageState.metadata is ResourceState.Success) {
-            SongPropertiesSection(
-                properties = pageState.properties,
-                modifiedKeys = pageState.modifiedKeys,
+            // Dynamic fields based on UI state
+            DynamicFieldsSection(
+                uiState = pageState.uiState,
                 onUpdateProperty = { key, value ->
                     onEvent(MetadataEditorViewModel.Event.UpdateProperty(key, value))
-                },
-                onRetrieveLyrics = onRetrieveLyrics,
+                }
             )
         }
     }
@@ -330,13 +331,12 @@ private fun LandscapeContent(
                 AudioPropertiesSection(audioProperties = pageState.audioProperties.data!!)
             }
             if (pageState.metadata is ResourceState.Success) {
-                SongPropertiesSection(
-                    properties = pageState.properties,
-                    modifiedKeys = pageState.modifiedKeys,
+                // Dynamic fields based on UI state
+                DynamicFieldsSection(
+                    uiState = pageState.uiState,
                     onUpdateProperty = { key, value ->
                         onEvent(MetadataEditorViewModel.Event.UpdateProperty(key, value))
-                    },
-                    onRetrieveLyrics = onRetrieveLyrics,
+                    }
                 )
             }
         }
@@ -414,164 +414,6 @@ private fun AudioPropertiesSection(audioProperties: AudioProperties) {
     }
 }
 
-/** Sección para mostrar y editar las propiedades de la canción */
-@Composable
-private fun SongPropertiesSection(
-    properties: Map<String, String>,
-    modifiedKeys: Set<String>,
-    onUpdateProperty: (String, String) -> Unit,
-    onRetrieveLyrics: () -> Unit,
-) {
-    SectionHeader(title = stringResource(id = R.string.general_tags))
-    MetadataField(
-        key = "TITLE",
-        properties = properties,
-        modifiedKeys = modifiedKeys,
-        label = stringResource(id = R.string.title),
-        onUpdateProperty = onUpdateProperty,
-        modifier = Modifier.fillMaxWidth(),
-    )
-    MetadataField(
-        key = "ARTIST",
-        properties = properties,
-        modifiedKeys = modifiedKeys,
-        label = stringResource(id = R.string.artist),
-        onUpdateProperty = onUpdateProperty,
-        modifier = Modifier.fillMaxWidth(),
-    )
-    MetadataField(
-        key = "ALBUM",
-        properties = properties,
-        modifiedKeys = modifiedKeys,
-        label = stringResource(id = R.string.album),
-        onUpdateProperty = onUpdateProperty,
-        modifier = Modifier.fillMaxWidth(),
-    )
-    MetadataField(
-        key = "ALBUMARTIST",
-        properties = properties,
-        modifiedKeys = modifiedKeys,
-        label = stringResource(id = R.string.album_artist),
-        onUpdateProperty = onUpdateProperty,
-        modifier = Modifier.fillMaxWidth(),
-    )
-    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        MetadataField(
-            key = "TRACKNUMBER",
-            properties = properties,
-            modifiedKeys = modifiedKeys,
-            label = stringResource(id = R.string.track_number),
-            onUpdateProperty = onUpdateProperty,
-            modifier = Modifier.weight(0.5f),
-        )
-        MetadataField(
-            key = "DISCNUMBER",
-            properties = properties,
-            modifiedKeys = modifiedKeys,
-            label = stringResource(id = R.string.disc_number),
-            onUpdateProperty = onUpdateProperty,
-            modifier = Modifier.weight(0.5f),
-        )
-    }
-    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        MetadataField(
-            key = "DATE",
-            properties = properties,
-            modifiedKeys = modifiedKeys,
-            label = stringResource(id = R.string.date),
-            onUpdateProperty = onUpdateProperty,
-            modifier = Modifier.weight(0.5f),
-        )
-        MetadataField(
-            key = "GENRE",
-            properties = properties,
-            modifiedKeys = modifiedKeys,
-            label = stringResource(id = R.string.genre),
-            onUpdateProperty = onUpdateProperty,
-            modifier = Modifier.weight(0.5f),
-        )
-    }
-    SectionHeader(title = stringResource(id = R.string.credits))
-    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        MetadataField(
-            key = "COMPOSER",
-            properties = properties,
-            modifiedKeys = modifiedKeys,
-            label = stringResource(id = R.string.composer),
-            onUpdateProperty = onUpdateProperty,
-            modifier = Modifier.weight(0.5f),
-        )
-        MetadataField(
-            key = "LYRICIST",
-            properties = properties,
-            modifiedKeys = modifiedKeys,
-            label = stringResource(id = R.string.lyricist),
-            onUpdateProperty = onUpdateProperty,
-            modifier = Modifier.weight(0.5f),
-        )
-    }
-    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        MetadataField(
-            key = "CONDUCTOR",
-            properties = properties,
-            modifiedKeys = modifiedKeys,
-            label = stringResource(id = R.string.conductor),
-            onUpdateProperty = onUpdateProperty,
-            modifier = Modifier.weight(0.5f),
-        )
-        MetadataField(
-            key = "REMIXER",
-            properties = properties,
-            modifiedKeys = modifiedKeys,
-            label = stringResource(id = R.string.remixer),
-            onUpdateProperty = onUpdateProperty,
-            modifier = Modifier.weight(0.5f),
-        )
-    }
-    MetadataField(
-        key = "PERFORMER",
-        properties = properties,
-        modifiedKeys = modifiedKeys,
-        label = stringResource(id = R.string.performer),
-        onUpdateProperty = onUpdateProperty,
-        modifier = Modifier.fillMaxWidth(),
-    )
-    SectionHeader(title = stringResource(id = R.string.others))
-    MetadataField(
-        key = "COMMENT",
-        properties = properties,
-        modifiedKeys = modifiedKeys,
-        label = stringResource(id = R.string.comment),
-        onUpdateProperty = onUpdateProperty,
-        modifier = Modifier.fillMaxWidth(),
-        maxLines = 3,
-    )
-    Column(modifier = Modifier.fillMaxWidth()) {
-        TextButton(modifier = Modifier.align(Alignment.End), onClick = onRetrieveLyrics) {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(4.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Icon(
-                    imageVector = Icons.Rounded.Lyrics,
-                    contentDescription = null,
-                    modifier = Modifier.size(16.dp),
-                )
-                Text(text = stringResource(id = R.string.retrieve_lyrics))
-            }
-        }
-        MetadataField(
-            key = "LYRICS",
-            properties = properties,
-            modifiedKeys = modifiedKeys,
-            label = stringResource(id = R.string.lyrics),
-            onUpdateProperty = onUpdateProperty,
-            modifier = Modifier.fillMaxWidth(),
-            maxLines = 20,
-        )
-    }
-}
-
 /** Encabezado de sección */
 @Composable
 private fun SectionHeader(title: String) {
@@ -600,4 +442,24 @@ private fun MetadataField(
         maxLines = maxLines,
         onValueChange = { onUpdateProperty(key, it) },
     )
+}
+
+// Dynamic rendering of fields from MetadataEditorUiState
+@Composable
+private fun DynamicFieldsSection(
+    uiState: MetadataEditorUiState,
+    onUpdateProperty: (String, String) -> Unit,
+) {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        uiState.fields.forEach { field: FieldState<*> ->
+            MetadataOutlinedTextField(
+                value = field.current.toString(),
+                label = stringResource(id = field.labelRes),
+                isModified = field.isModified,
+                modifier = Modifier.fillMaxWidth(),
+                maxLines = if (field is com.bobbyesp.metadator.tageditor.presentation.state.StringFieldState && field.key == "COMMENT") 3 else 1,
+                onValueChange = { onUpdateProperty(field.key, it) }
+            )
+        }
+    }
 }
