@@ -21,22 +21,20 @@ fun SingleChoiceChip(
     selected: Boolean,
     onClick: () -> Unit,
     label: String,
-    leadingIcon: ImageVector = Icons.Outlined.Check
+    leadingIcon: ImageVector = Icons.Outlined.Check,
 ) {
     FilterChip(
         modifier = modifier.padding(horizontal = 4.dp),
         selected = selected,
         onClick = onClick,
-        label = {
-            Text(text = label)
-        },
+        label = { Text(text = label) },
         leadingIcon = {
             Row {
                 AnimatedVisibility(visible = selected, modifier = Modifier) {
                     Icon(
                         imageVector = leadingIcon,
                         contentDescription = null,
-                        modifier = Modifier.size(FilterChipDefaults.IconSize)
+                        modifier = Modifier.size(FilterChipDefaults.IconSize),
                     )
                 }
             }

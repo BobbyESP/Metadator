@@ -29,14 +29,13 @@ import androidx.compose.ui.unit.dp
 import com.bobbyesp.ui.R
 
 @Composable
-fun Indicator(
-    pullState: PullState
-) {
+fun Indicator(pullState: PullState) {
     val hapticFeedback = LocalHapticFeedback.current
 
     val scale = remember { Animatable(1f) }
 
-    // Pop the indicator once shortly when reaching refresh trigger offset. Also trigger some haptic feedback
+    // Pop the indicator once shortly when reaching refresh trigger offset. Also trigger some haptic
+    // feedback
     LaunchedEffect(pullState.progressRefreshTrigger >= 1f) {
         if (pullState.progressRefreshTrigger >= 1f && !pullState.isRefreshing) {
             hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
@@ -46,49 +45,46 @@ fun Indicator(
     }
 
     Box(
-        modifier = Modifier
-            .statusBarsPadding()
-            .heightIn(
-                24.dp,
-                pullState.config.heightMax * pullState.progressHeightMax - pullState.insetTop
-            )
-            .fillMaxWidth(),
-        contentAlignment = Alignment.Center
+        modifier =
+            Modifier.statusBarsPadding()
+                .heightIn(
+                    24.dp,
+                    pullState.config.heightMax * pullState.progressHeightMax - pullState.insetTop,
+                )
+                .fillMaxWidth(),
+        contentAlignment = Alignment.Center,
     ) {
         Row(
-            modifier = Modifier
-                .scale(scale.value),
-            verticalAlignment = Alignment.CenterVertically
+            modifier = Modifier.scale(scale.value),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             if (pullState.isRefreshing) {
-                CircularProgressIndicator(
-                    modifier = Modifier
-                        .size(16.dp),
-                    strokeWidth = 2.dp,
-                )
+                CircularProgressIndicator(modifier = Modifier.size(16.dp), strokeWidth = 2.dp)
             } else if (pullState.isReloadFinished) {
                 Icon(
                     imageVector = Icons.Rounded.Check,
                     contentDescription = stringResource(R.string.successfully_refreshed),
-                    tint = MaterialTheme.colorScheme.primary
+                    tint = MaterialTheme.colorScheme.primary,
                 )
             } else {
                 CircularProgressIndicator(
                     progress = { pullState.progressRefreshTrigger },
-                    modifier = Modifier
-                        .size(16.dp),
+                    modifier = Modifier.size(16.dp),
                     strokeWidth = 2.dp,
                 )
             }
             Spacer(modifier = Modifier.width(8.dp))
             Text(
                 modifier = Modifier,
-                text = when {
-                    pullState.isRefreshing -> stringResource(id = R.string.refreshing)
-                    pullState.isReloadFinished -> stringResource(id = R.string.successfully_refreshed)
-                    pullState.progressRefreshTrigger >= 1f -> stringResource(id = R.string.release_to_refresh)
-                    else -> stringResource(id = R.string.pull_to_refresh)
-                },
+                text =
+                    when {
+                        pullState.isRefreshing -> stringResource(id = R.string.refreshing)
+                        pullState.isReloadFinished ->
+                            stringResource(id = R.string.successfully_refreshed)
+                        pullState.progressRefreshTrigger >= 1f ->
+                            stringResource(id = R.string.release_to_refresh)
+                        else -> stringResource(id = R.string.pull_to_refresh)
+                    },
                 style = MaterialTheme.typography.labelLarge,
             )
         }

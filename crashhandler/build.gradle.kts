@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "com.bobbyesp.crashhandler"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         minSdk = 24
@@ -33,9 +33,6 @@ android {
     }
     composeCompiler {
         reportsDestination = layout.buildDirectory.dir("compose_compiler")
-    }
-    kotlinOptions {
-        jvmTarget = "21"
     }
 }
 

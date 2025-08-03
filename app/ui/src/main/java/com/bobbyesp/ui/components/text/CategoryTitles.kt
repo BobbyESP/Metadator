@@ -18,12 +18,10 @@ fun ExtraLargeCategoryTitle(
 ) {
     Text(
         text = text,
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(start = 4.dp, top = 16.dp, bottom = 8.dp),
+        modifier = modifier.fillMaxWidth().padding(start = 4.dp, top = 16.dp, bottom = 8.dp),
         color = color,
         style = MaterialTheme.typography.titleMedium,
-        fontWeight = FontWeight.Bold
+        fontWeight = FontWeight.Bold,
     )
 }
 
@@ -35,11 +33,9 @@ fun LargeCategoryTitle(
 ) {
     Text(
         text = text,
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(start = 4.dp, top = 16.dp, bottom = 8.dp),
+        modifier = modifier.fillMaxWidth().padding(start = 4.dp, top = 16.dp, bottom = 8.dp),
         color = color,
-        style = MaterialTheme.typography.labelLarge
+        style = MaterialTheme.typography.labelLarge,
     )
 }
 
@@ -51,11 +47,9 @@ fun MediumCategoryTitle(
 ) {
     Text(
         text = text,
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(start = 4.dp, top = 16.dp, bottom = 8.dp),
+        modifier = modifier.fillMaxWidth().padding(start = 4.dp, top = 16.dp, bottom = 8.dp),
         color = color,
-        style = MaterialTheme.typography.labelMedium
+        style = MaterialTheme.typography.labelMedium,
     )
 }
 
@@ -67,10 +61,8 @@ fun SmallCategoryTitle(
 ) {
     Text(
         text = text,
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(start = 4.dp, top = 16.dp, bottom = 8.dp),
+        modifier = modifier.fillMaxWidth().padding(start = 4.dp, top = 16.dp, bottom = 8.dp),
         color = color,
-        style = MaterialTheme.typography.labelSmall
+        style = MaterialTheme.typography.labelSmall,
     )
 }

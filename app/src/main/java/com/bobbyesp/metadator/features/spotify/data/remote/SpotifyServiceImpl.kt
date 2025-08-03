@@ -26,11 +26,12 @@ class SpotifyServiceImpl : SpotifyService, KoinComponent {
      * Retrieves the Spotify API instance.
      *
      * This function returns a [SpotifyAppApi] instance, allowing interaction with the Spotify API.
-     * It ensures that the API is built before returning it. If the API has not been built yet, it will call the [buildApi] function to initialize it.
+     * It ensures that the API is built before returning it. If the API has not been built yet, it
+     * will call the [buildApi] function to initialize it.
      *
      * @return A [SpotifyAppApi] instance, ready for use.
-     * @throws IllegalStateException If the connection to the Spotify API was not established. This can occur due to network issues or server outages.
-     *
+     * @throws IllegalStateException If the connection to the Spotify API was not established. This
+     *   can occur due to network issues or server outages.
      */
     override suspend fun getSpotifyApi(): SpotifyAppApi {
         if (api == null) {
@@ -39,21 +40,19 @@ class SpotifyServiceImpl : SpotifyService, KoinComponent {
         return api
             ?: throw IllegalStateException(
                 "The connection to the Spotify API was not established." +
-                        " This may be due to a network error or a servers outage."
+                    " This may be due to a network error or a servers outage."
             )
     }
 
     /**
      * Retrieves the Spotify access token.
      *
-     * This function fetches the Spotify access token, ensuring it's available
-     * before returning it. If the token is null, it attempts to build/refresh
-     * the token via the `buildApi()` method.
+     * This function fetches the Spotify access token, ensuring it's available before returning it.
+     * If the token is null, it attempts to build/refresh the token via the `buildApi()` method.
      *
      * @return A [Token] object representing the Spotify access token.
-     * @throws IllegalStateException if the Spotify token is still null after
-     * attempting to build/refresh it. This indicates a failure in the token
-     * acquisition process.
+     * @throws IllegalStateException if the Spotify token is still null after attempting to
+     *   build/refresh it. This indicates a failure in the token acquisition process.
      */
     override suspend fun getSpotifyToken(): Token {
         if (token == null) {
@@ -63,14 +62,15 @@ class SpotifyServiceImpl : SpotifyService, KoinComponent {
     }
 
     /**
-     * This method is responsible for building the Spotify API.
-     * It first checks if the application is in debug mode, and if so, logs the client ID and secret.
-     * Then, it attempts to build the Spotify API with the provided client ID and secret.
-     * If the API is successfully built, it retrieves the token from the API and stores it.
+     * This method is responsible for building the Spotify API. It first checks if the application
+     * is in debug mode, and if so, logs the client ID and secret. Then, it attempts to build the
+     * Spotify API with the provided client ID and secret. If the API is successfully built, it
+     * retrieves the token from the API and stores it.
      *
-     * If an exception occurs during the building of the API, it logs the error.
-     * If a BadRequestException occurs, it checks if the token should be refreshed and if the recursion depth is less than the maximum allowed.
-     * If both conditions are met, it logs the information, clears the API, and attempts to build the API again, incrementing the recursion depth.
+     * If an exception occurs during the building of the API, it logs the error. If a
+     * BadRequestException occurs, it checks if the token should be refreshed and if the recursion
+     * depth is less than the maximum allowed. If both conditions are met, it logs the information,
+     * clears the API, and attempts to build the API again, incrementing the recursion depth.
      *
      * @throws Exception if there is an error building the API.
      * @throws SpotifyException.BadRequestException if a bad request is made to the Spotify API.
@@ -80,15 +80,16 @@ class SpotifyServiceImpl : SpotifyService, KoinComponent {
             executeIfDebugging {
                 Log.d(
                     "SpotifyApiRequests",
-                    "Building API with client ID: $clientId and client secret: $clientSecret"
+                    "Building API with client ID: $clientId and client secret: $clientSecret",
                 )
             }
-            api = spotifyAppApi(clientId, clientSecret).build().apply {
-                with(this.spotifyApiOptions) {
-                    automaticRefresh = true
-                    enableDebugMode = isDebug
+            api =
+                spotifyAppApi(clientId, clientSecret).build().apply {
+                    with(this.spotifyApiOptions) {
+                        automaticRefresh = true
+                        enableDebugMode = isDebug
+                    }
                 }
-            }
             token = api?.token
         } catch (e: Exception) {
             executeIfDebugging { Log.e("SpotifyApiRequests", "Error building API", e) }
@@ -98,12 +99,11 @@ class SpotifyServiceImpl : SpotifyService, KoinComponent {
                 if (it.shouldRefresh() && recursionDepth < MAX_RECURSION_DEPTH) {
                     Log.i(
                         "SpotifyApiRequests",
-                        "Token expired, refreshing token; recursion depth: $recursionDepth of $MAX_RECURSION_DEPTH"
+                        "Token expired, refreshing token; recursion depth: $recursionDepth of $MAX_RECURSION_DEPTH",
                     )
                     clearApi()
                     buildApi()
                     recursionDepth++
-                    return@let
                 }
             }
         }

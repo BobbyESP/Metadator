@@ -27,35 +27,28 @@ import com.bobbyesp.metadator.R
 import com.bobbyesp.metadator.core.presentation.theme.MetadatorTheme
 
 @Composable
-fun EmptyMediaStoreWarning(
-    modifier: Modifier = Modifier
-) {
-    Box(
-        modifier = modifier,
-        contentAlignment = Alignment.Center
-    ) {
+fun EmptyMediaStoreWarning(modifier: Modifier = Modifier) {
+    Box(modifier = modifier, contentAlignment = Alignment.Center) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Icon(
                 modifier = Modifier.size(72.dp),
                 imageVector = Icons.TwoTone.LibraryMusic,
-                contentDescription = stringResource(id = R.string.empty_media_store)
+                contentDescription = stringResource(id = R.string.empty_media_store),
             )
             HorizontalDivider(modifier = Modifier.fillMaxWidth(0.7f))
             Text(
                 text = stringResource(id = R.string.empty_media_store),
                 style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.SemiBold
+                fontWeight = FontWeight.SemiBold,
             )
             Text(
                 text = stringResource(id = R.string.empty_media_store_desc),
                 style = MaterialTheme.typography.bodyMedium,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
             )
         }
     }
@@ -67,9 +60,7 @@ fun EmptyMediaStoreWarning(
 private fun EmptyMediaStorePrev() {
     MetadatorTheme {
         EmptyMediaStoreWarning(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
+            modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)
         )
     }
 }

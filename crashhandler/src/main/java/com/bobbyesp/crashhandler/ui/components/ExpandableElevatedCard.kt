@@ -12,7 +12,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ExpandLess
 import androidx.compose.material.icons.outlined.PermDeviceInformation
 import androidx.compose.material3.ElevatedCard
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -49,7 +48,9 @@ fun ExpandableElevatedCard(
         modifier = modifier, onClick = { expanded = !expanded }, shape = MaterialTheme.shapes.small
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Icon(
@@ -58,7 +59,10 @@ fun ExpandableElevatedCard(
                 contentDescription = "Device information"
             )
             Column(
-                modifier = Modifier.fillMaxWidth().padding(6.dp).weight(1f),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(6.dp)
+                    .weight(1f),
             ) {
                 Text(
                     text = title,
@@ -72,8 +76,8 @@ fun ExpandableElevatedCard(
                     fontWeight = FontWeight.Normal
                 )
             }
-            FilledTonalIconButton(modifier = Modifier.padding().size(24.dp),
-                onClick = { expanded = !expanded }) {
+            FilledTonalIconButton(
+                modifier = Modifier.size(24.dp), onClick = { expanded = !expanded }) {
                 Icon(
                     Icons.Outlined.ExpandLess,
                     null,

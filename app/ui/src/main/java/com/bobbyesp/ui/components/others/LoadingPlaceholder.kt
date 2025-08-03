@@ -10,11 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun LoadingPlaceholder(
-    modifier: Modifier = Modifier,
-    progress: Float? = null,
-    colorful: Boolean,
-) {
+fun LoadingPlaceholder(modifier: Modifier = Modifier, progress: Float? = null, colorful: Boolean) {
 
     val color =
         if (colorful) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface
@@ -22,27 +18,18 @@ fun LoadingPlaceholder(
         if (colorful) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
     val elevation = if (colorful) 0.dp else 8.dp
 
-    Surface(
-        tonalElevation = elevation,
-        color = color,
-        modifier = modifier
-    ) {
+    Surface(tonalElevation = elevation, color = color, modifier = modifier) {
         if (progress == null) {
             CircularProgressIndicator(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(8.dp),
+                modifier = Modifier.fillMaxSize().padding(8.dp),
                 color = onColor,
             )
         } else {
             CircularProgressIndicator(
                 progress = { progress },
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(8.dp),
+                modifier = Modifier.fillMaxSize().padding(8.dp),
                 color = onColor,
             )
         }
-
     }
 }

@@ -25,10 +25,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.bobbyesp.metadator.core.data.local.preferences.PreferencesKey.REDUCE_SHADOWS
 import com.bobbyesp.metadator.core.data.local.preferences.datastore.rememberPreferenceState
-import com.bobbyesp.metadator.mediastore.domain.enums.CompactCardSize.Companion.toShape
 import com.bobbyesp.metadator.core.presentation.components.image.AsyncImage
 import com.bobbyesp.metadator.core.presentation.components.text.ConditionedMarqueeText
 import com.bobbyesp.metadator.mediastore.domain.enums.CompactCardSize
+import com.bobbyesp.metadator.mediastore.domain.enums.CompactCardSize.Companion.toShape
 
 @Composable
 fun CompactSongCard(
@@ -38,22 +38,14 @@ fun CompactSongCard(
     artworkUri: Uri? = null,
     listIndex: Int? = null,
     size: CompactCardSize = CompactCardSize.LARGE,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     val (reduceShadows, _) = rememberPreferenceState(REDUCE_SHADOWS)
     val cardSize by remember(size) { mutableStateOf(size.value) }
     val formalizedShape = size.toShape()
 
-    Box(
-        modifier = modifier
-            .clip(formalizedShape)
-            .size(cardSize)
-            .clickable(onClick = onClick)
-    ) {
-        AsyncImage(
-            modifier = Modifier.fillMaxSize(),
-            imageModel = artworkUri,
-        )
+    Box(modifier = modifier.clip(formalizedShape).size(cardSize).clickable(onClick = onClick)) {
+        AsyncImage(modifier = Modifier.fillMaxSize(), imageModel = artworkUri)
 
         listIndex?.let {
             Text(
@@ -61,31 +53,31 @@ fun CompactSongCard(
                 style = MaterialTheme.typography.bodySmall,
                 color = Color.White.copy(alpha = 0.8f),
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier
-                    .padding(8.dp)
-                    .align(Alignment.TopEnd)
+                modifier = Modifier.padding(8.dp).align(Alignment.TopEnd),
             )
         }
         Column(
-            modifier = Modifier
-                .background(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(Color.Transparent, MaterialTheme.colorScheme.scrim),
-                        startY = 0f, endY = 500f
-                    ),
-                    alpha = if (reduceShadows.value) 0f else 0.6f
-                )
-                .fillMaxSize()
-                .padding(horizontal = 8.dp, vertical = 6.dp),
+            modifier =
+                Modifier.background(
+                        brush =
+                            Brush.verticalGradient(
+                                colors = listOf(Color.Transparent, MaterialTheme.colorScheme.scrim),
+                                startY = 0f,
+                                endY = 500f,
+                            ),
+                        alpha = if (reduceShadows.value) 0f else 0.6f,
+                    )
+                    .fillMaxSize()
+                    .padding(horizontal = 8.dp, vertical = 6.dp),
             verticalArrangement = Arrangement.Bottom,
-            horizontalAlignment = Alignment.Start
+            horizontalAlignment = Alignment.Start,
         ) {
             ConditionedMarqueeText(
                 text = name,
                 style = MaterialTheme.typography.titleSmall,
                 color = Color.White,
                 overflow = TextOverflow.Ellipsis,
-                maxLines = 1
+                maxLines = 1,
             )
 
             if (artists.isNotEmpty()) {
@@ -94,7 +86,7 @@ fun CompactSongCard(
                     style = MaterialTheme.typography.bodySmall,
                     color = Color.White.copy(alpha = 0.6f),
                     overflow = TextOverflow.Ellipsis,
-                    maxLines = 1
+                    maxLines = 1,
                 )
             }
         }

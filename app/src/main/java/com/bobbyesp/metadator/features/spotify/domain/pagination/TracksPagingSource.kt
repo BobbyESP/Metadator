@@ -16,13 +16,14 @@ class TracksPagingSource(
         val offset = params.key ?: 0
 
         return try {
-            val response = spotifyApi.search.searchTrack(
-                query = query,
-                limit = params.loadSize,
-                offset = offset,
-                market = null,
-                filters = filters,
-            )
+            val response =
+                spotifyApi.search.searchTrack(
+                    query = query,
+                    limit = params.loadSize,
+                    offset = offset,
+                    market = null,
+                    filters = filters,
+                )
 
             if (response.isNotEmpty()) {
                 val tracks = response.items
@@ -30,7 +31,7 @@ class TracksPagingSource(
                 LoadResult.Page(
                     data = tracks,
                     prevKey = if (offset > 0) offset - params.loadSize else null,
-                    nextKey = if (tracks.isNotEmpty()) offset + params.loadSize else null
+                    nextKey = if (tracks.isNotEmpty()) offset + params.loadSize else null,
                 )
             } else {
                 LoadResult.Error(IllegalStateException("No tracks found"))

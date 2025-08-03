@@ -19,23 +19,20 @@ fun FilledButtonWithIcon(
     icon: ImageVector,
     enabled: Boolean = true,
     text: String,
-    contentDescription: String? = null
+    contentDescription: String? = null,
 ) {
     Button(
         modifier = modifier,
         onClick = onClick,
         enabled = enabled,
-        contentPadding = ButtonDefaults.ButtonWithIconContentPadding
+        contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
     ) {
         Icon(
             modifier = Modifier.size(18.dp),
             imageVector = icon,
-            contentDescription = contentDescription
+            contentDescription = contentDescription,
         )
-        Text(
-            modifier = Modifier.padding(start = 6.dp),
-            text = text
-        )
+        Text(modifier = Modifier.padding(start = 6.dp), text = text)
     }
 }
 
@@ -45,21 +42,18 @@ fun FilledTonalButtonWithIcon(
     onClick: () -> Unit,
     icon: ImageVector,
     text: String,
-    contentDescription: String? = null
+    contentDescription: String? = null,
 ) {
     FilledTonalButton(
         modifier = modifier,
         onClick = onClick,
-        contentPadding = ButtonDefaults.ButtonWithIconContentPadding
+        contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
     ) {
         Icon(
             modifier = Modifier.size(18.dp),
             imageVector = icon,
-            contentDescription = contentDescription
+            contentDescription = contentDescription,
         )
-        Text(
-            modifier = Modifier.padding(start = 8.dp),
-            text = text
-        )
+        Text(modifier = Modifier.padding(start = 8.dp), text = text)
     }
 }

@@ -10,8 +10,8 @@ fun App.initializeFirebase() {
 /**
  * Extension function for MainActivity to enable Crashlytics collection.
  *
- * This function sets the Crashlytics collection to be enabled, allowing Firebase Crashlytics
- * to collect crash reports for the application.
+ * This function sets the Crashlytics collection to be enabled, allowing Firebase Crashlytics to
+ * collect crash reports for the application.
  */
 fun setCrashlyticsCollection() {
     Firebase.crashlytics.setCrashlyticsCollectionEnabled(true)

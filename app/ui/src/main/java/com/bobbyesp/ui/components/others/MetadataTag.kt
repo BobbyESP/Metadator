@@ -25,22 +25,23 @@ fun MetadataTag(
     val clipboardManager = LocalClipboardManager.current
 
     Column(
-        modifier = modifier.clickable {
-            clipboardManager.setText(AnnotatedString(metadata))
-            Toast.makeText(context, R.string.copied_to_clipboard, Toast.LENGTH_SHORT).show()
-        }
+        modifier =
+            modifier.clickable {
+                clipboardManager.setText(AnnotatedString(metadata))
+                Toast.makeText(context, R.string.copied_to_clipboard, Toast.LENGTH_SHORT).show()
+            }
     ) {
         Text(
             text = typeOfMetadata,
             modifier = Modifier.alpha(alpha = 0.8f),
             style = MaterialTheme.typography.labelSmall,
-            textAlign = TextAlign.Start
+            textAlign = TextAlign.Start,
         )
         Text(
             modifier = Modifier,
             text = metadata,
             style = MaterialTheme.typography.titleLarge.copy(fontSize = 16.sp),
-            textAlign = TextAlign.Start
+            textAlign = TextAlign.Start,
         )
     }
 }

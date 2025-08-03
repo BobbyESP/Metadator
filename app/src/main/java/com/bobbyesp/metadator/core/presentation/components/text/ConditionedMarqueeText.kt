@@ -42,7 +42,7 @@ fun ConditionedMarqueeText(
     sideGradient: MarqueeTextGradientOptions = MarqueeTextGradientOptions(),
     customEasing: Easing? = null,
     animationDuration: Float = 4000f,
-    delayBetweenAnimations: Long = 500L
+    delayBetweenAnimations: Long = 500L,
 ) {
     val (useMarqueeText) = rememberPreferenceState(MARQUEE_TEXT_ENABLED)
 
@@ -68,7 +68,7 @@ fun ConditionedMarqueeText(
             sideGradient,
             customEasing,
             animationDuration,
-            delayBetweenAnimations
+            delayBetweenAnimations,
         )
     } else {
         Text(
@@ -87,7 +87,7 @@ fun ConditionedMarqueeText(
             overflow = overflow,
             softWrap = softWrap,
             onTextLayout = onTextLayout,
-            style = style
+            style = style,
         )
     }
 }

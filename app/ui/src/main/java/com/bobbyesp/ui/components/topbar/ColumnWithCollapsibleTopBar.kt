@@ -47,8 +47,8 @@ import kotlinx.coroutines.launch
 import my.nanihadesuka.compose.LazyColumnScrollbar
 import my.nanihadesuka.compose.ScrollbarSettings
 
-//Most of this components are from "Lotus" app
-//https://github.com/dn0ne/lotus/blob/master/app/src/main/java/com/dn0ne/player/app/presentation/components/topbar/ColumnWithCollapsibleTopBar.kt
+// Most of this components are from "Lotus" app
+// https://github.com/dn0ne/lotus/blob/master/app/src/main/java/com/dn0ne/player/app/presentation/components/topbar/ColumnWithCollapsibleTopBar.kt
 
 @Composable
 fun ColumnWithCollapsibleTopBar(
@@ -63,7 +63,7 @@ fun ColumnWithCollapsibleTopBar(
     contentHorizontalAlignment: Alignment.Horizontal = Alignment.Start,
     contentVerticalArrangement: Arrangement.Vertical = Arrangement.Top,
     modifier: Modifier = Modifier,
-    content: @Composable ColumnScope.() -> Unit
+    content: @Composable ColumnScope.() -> Unit,
 ) {
     val density = LocalDensity.current
     val coroutineScope = rememberCoroutineScope()
@@ -71,15 +71,18 @@ fun ColumnWithCollapsibleTopBar(
     val isInLandscapeOrientation by rememberUpdatedState(newValue = isDeviceInLandscape())
 
     val minHeightPx = with(density) { minTopBarHeight.toPx() }
-    val maxHeightPx = with(density) {
-        if (isInLandscapeOrientation) maxTopBarHeightLandscape.toPx() else maxTopBarHeight.toPx()
-    }
+    val maxHeightPx =
+        with(density) {
+            if (isInLandscapeOrientation) maxTopBarHeightLandscape.toPx()
+            else maxTopBarHeight.toPx()
+        }
 
     val topBarHeight = remember {
         Animatable(
-            initialValue = if (collapsedByDefault || isInLandscapeOrientation) {
-                minHeightPx
-            } else maxHeightPx
+            initialValue =
+                if (collapsedByDefault || isInLandscapeOrientation) {
+                    minHeightPx
+                } else maxHeightPx
         )
     }
 
@@ -91,25 +94,18 @@ fun ColumnWithCollapsibleTopBar(
 
     // Using derivedStateOf to avoid unnecessary recompositions
     val collapseFractionState by remember {
-        derivedStateOf {
-            (topBarHeight.value - minHeightPx) / (maxHeightPx - minHeightPx)
-        }
+        derivedStateOf { (topBarHeight.value - minHeightPx) / (maxHeightPx - minHeightPx) }
     }
 
-    LaunchedEffect(collapseFractionState) {
-        collapseFraction(collapseFractionState)
-    }
+    LaunchedEffect(collapseFractionState) { collapseFraction(collapseFractionState) }
 
     val topBarScrollConnection = remember {
         object : NestedScrollConnection {
             override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
                 val previousHeight = topBarHeight.value
-                val newHeight = (previousHeight + available.y)
-                    .coerceIn(minHeightPx, maxHeightPx)
+                val newHeight = (previousHeight + available.y).coerceIn(minHeightPx, maxHeightPx)
 
-                coroutineScope.launch {
-                    topBarHeight.snapTo(newHeight)
-                }
+                coroutineScope.launch { topBarHeight.snapTo(newHeight) }
 
                 return Offset(0f, newHeight - previousHeight)
             }
@@ -118,8 +114,9 @@ fun ColumnWithCollapsibleTopBar(
                 val threshold = (maxHeightPx - minHeightPx)
                 coroutineScope.launch {
                     topBarHeight.animateTo(
-                        targetValue = if (topBarHeight.value < threshold) minHeightPx else maxHeightPx,
-                        animationSpec = spring(stiffness = Spring.StiffnessLow)
+                        targetValue =
+                            if (topBarHeight.value < threshold) minHeightPx else maxHeightPx,
+                        animationSpec = spring(stiffness = Spring.StiffnessLow),
                     )
                 }
 
@@ -128,23 +125,17 @@ fun ColumnWithCollapsibleTopBar(
         }
     }
 
-    Box(
-        modifier = modifier
-            .nestedScroll(topBarScrollConnection)
-    ) {
+    Box(modifier = modifier.nestedScroll(topBarScrollConnection)) {
         Column {
-            Spacer(
-                modifier = Modifier
-                    .height(with(density) { topBarHeight.value.toDp() })
-            )
+            Spacer(modifier = Modifier.height(with(density) { topBarHeight.value.toDp() }))
 
             Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(contentScrollState)
-                    .padding(contentPadding),
+                modifier =
+                    Modifier.fillMaxSize()
+                        .verticalScroll(contentScrollState)
+                        .padding(contentPadding),
                 horizontalAlignment = contentHorizontalAlignment,
-                verticalArrangement = contentVerticalArrangement
+                verticalArrangement = contentVerticalArrangement,
             ) {
                 content()
                 Spacer(modifier = Modifier.height(200.dp))
@@ -152,9 +143,7 @@ fun ColumnWithCollapsibleTopBar(
         }
 
         Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(with(density) { topBarHeight.value.toDp() }),
+            modifier = Modifier.fillMaxWidth().height(with(density) { topBarHeight.value.toDp() })
         ) {
             CompositionLocalProvider(
                 LocalContentColor provides MaterialTheme.colorScheme.onSurface
@@ -179,7 +168,7 @@ fun LazyColumnWithCollapsibleTopBar(
     contentVerticalArrangement: Arrangement.Vertical = Arrangement.Top,
     enableScrollbar: Boolean = true,
     modifier: Modifier = Modifier,
-    content: LazyListScope.() -> Unit
+    content: LazyListScope.() -> Unit,
 ) {
     val density = LocalDensity.current
     val coroutineScope = rememberCoroutineScope()
@@ -193,15 +182,15 @@ fun LazyColumnWithCollapsibleTopBar(
             } else maxTopBarHeight.toPx()
         }
     }
-    val topBarHeight = rememberAnimatable(
-        initialValue = if (collapsedByDefault || isInLandscapeOrientation) {
-            minTopBarHeight
-        } else maxTopBarHeight
-    )
+    val topBarHeight =
+        rememberAnimatable(
+            initialValue =
+                if (collapsedByDefault || isInLandscapeOrientation) {
+                    minTopBarHeight
+                } else maxTopBarHeight
+        )
 
-    LaunchedEffect(isInLandscapeOrientation) {
-        topBarHeight.snapTo(maxTopBarHeight)
-    }
+    LaunchedEffect(isInLandscapeOrientation) { topBarHeight.snapTo(maxTopBarHeight) }
 
     LaunchedEffect(topBarHeight.value) {
         collapseFraction(
@@ -211,29 +200,19 @@ fun LazyColumnWithCollapsibleTopBar(
 
     val topBarScrollConnection = remember {
         return@remember object : NestedScrollConnection {
-            override fun onPreScroll(
-                available: Offset,
-                source: NestedScrollSource
-            ): Offset {
+            override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
                 val previousHeight = topBarHeight.value
-                val newHeight = if (listState.firstVisibleItemIndex >= 0 && available.y < 0) {
-                    (previousHeight + available.y).coerceIn(
-                        minTopBarHeight,
-                        maxTopBarHeight
-                    )
-                } else if (
-                    listState.firstVisibleItemIndex == 0 &&
-                    listState.layoutInfo.visibleItemsInfo.firstOrNull()?.offset == 0
-                ) {
-                    (previousHeight + available.y).coerceIn(
-                        minTopBarHeight,
-                        maxTopBarHeight
-                    )
-                } else previousHeight
+                val newHeight =
+                    if (listState.firstVisibleItemIndex >= 0 && available.y < 0) {
+                        (previousHeight + available.y).coerceIn(minTopBarHeight, maxTopBarHeight)
+                    } else if (
+                        listState.firstVisibleItemIndex == 0 &&
+                            listState.layoutInfo.visibleItemsInfo.firstOrNull()?.offset == 0
+                    ) {
+                        (previousHeight + available.y).coerceIn(minTopBarHeight, maxTopBarHeight)
+                    } else previousHeight
 
-                coroutineScope.launch {
-                    topBarHeight.snapTo(newHeight)
-                }
+                coroutineScope.launch { topBarHeight.snapTo(newHeight) }
                 return Offset(0f, newHeight - previousHeight)
             }
 
@@ -241,8 +220,10 @@ fun LazyColumnWithCollapsibleTopBar(
                 coroutineScope.launch {
                     val threshold = (maxTopBarHeight - minTopBarHeight)
                     topBarHeight.animateTo(
-                        targetValue = if (topBarHeight.value < threshold) minTopBarHeight else maxTopBarHeight,
-                        animationSpec = spring(stiffness = Spring.StiffnessLow)
+                        targetValue =
+                            if (topBarHeight.value < threshold) minTopBarHeight
+                            else maxTopBarHeight,
+                        animationSpec = spring(stiffness = Spring.StiffnessLow),
                     )
                 }
 
@@ -251,45 +232,34 @@ fun LazyColumnWithCollapsibleTopBar(
         }
     }
 
-    Box(
-        modifier = modifier
-            .nestedScroll(topBarScrollConnection)
-    ) {
+    Box(modifier = modifier.nestedScroll(topBarScrollConnection)) {
         Column {
-            Spacer(
-                modifier = Modifier
-                    .height(with(density) { topBarHeight.value.toDp() })
-            )
+            Spacer(modifier = Modifier.height(with(density) { topBarHeight.value.toDp() }))
 
             LazyColumnScrollbar(
                 state = listState,
-                settings = ScrollbarSettings(
-                    enabled = enableScrollbar,
-                    thumbUnselectedColor = MaterialTheme.colorScheme.surfaceContainer,
-                    thumbSelectedColor = MaterialTheme.colorScheme.primaryContainer,
-                )
+                settings =
+                    ScrollbarSettings(
+                        enabled = enableScrollbar,
+                        thumbUnselectedColor = MaterialTheme.colorScheme.surfaceContainer,
+                        thumbSelectedColor = MaterialTheme.colorScheme.primaryContainer,
+                    ),
             ) {
                 LazyColumn(
                     state = listState,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(contentPadding),
+                    modifier = Modifier.fillMaxSize().padding(contentPadding),
                     horizontalAlignment = contentHorizontalAlignment,
-                    verticalArrangement = contentVerticalArrangement
+                    verticalArrangement = contentVerticalArrangement,
                 ) {
                     content()
 
-                    item {
-                        Spacer(modifier = Modifier.height(200.dp))
-                    }
+                    item { Spacer(modifier = Modifier.height(200.dp)) }
                 }
             }
         }
 
         Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(with(density) { topBarHeight.value.toDp() }),
+            modifier = Modifier.fillMaxWidth().height(with(density) { topBarHeight.value.toDp() })
         ) {
             CompositionLocalProvider(
                 LocalContentColor provides MaterialTheme.colorScheme.onSurface

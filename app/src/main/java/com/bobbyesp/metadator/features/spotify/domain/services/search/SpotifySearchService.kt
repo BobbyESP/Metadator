@@ -10,11 +10,8 @@ interface SpotifySearchService {
     suspend fun search(
         query: String,
         vararg searchTypes: SearchApi.SearchType,
-        filters: List<SearchFilter>
+        filters: List<SearchFilter>,
     ): SpotifySearchResult
 
-    suspend fun searchPaginatedTracks(
-        query: String,
-        filters: List<SearchFilter>,
-    ): Pager<Int, Track>
+    suspend fun searchPaginatedTracks(query: String, filters: List<SearchFilter>): Pager<Int, Track>
 }

@@ -34,18 +34,17 @@ fun SelectableSurface(
     shape: Shape = MaterialTheme.shapes.small,
     isSelected: Boolean = false,
     onSelected: () -> Unit = {},
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
-    val animatedColor by animateColorAsState(
-        targetValue = selectColorHandler(isSelected), label = "Animated transition for color change"
-    )
+    val animatedColor by
+        animateColorAsState(
+            targetValue = selectColorHandler(isSelected),
+            label = "Animated transition for color change",
+        )
 
     Surface(
-        modifier = modifier.selectable(
-            selected = isSelected,
-            onClick = onSelected,
-            role = Role.Button
-        ),
+        modifier =
+            modifier.selectable(selected = isSelected, onClick = onSelected, role = Role.Button),
         color = animatedColor,
         border = borderStroke,
         shape = shape,
@@ -56,12 +55,9 @@ fun SelectableSurface(
 }
 
 @Composable
-private fun selectColorHandler(
-    isSelected: Boolean
-): Color {
-    return if (isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.harmonizeWithPrimary(
-        MaterialTheme.colorScheme.onSecondary
-    )
+private fun selectColorHandler(isSelected: Boolean): Color {
+    return if (isSelected) MaterialTheme.colorScheme.primaryContainer
+    else MaterialTheme.colorScheme.harmonizeWithPrimary(MaterialTheme.colorScheme.onSecondary)
 }
 
 @Preview
@@ -69,20 +65,18 @@ private fun selectColorHandler(
 fun SelectableSurfacePreview() {
     MaterialTheme {
         var selected by remember { mutableStateOf(false) }
-        SelectableSurface(
-            isSelected = selected,
-            onSelected = { selected = !selected }
-        ) {
+        SelectableSurface(isSelected = selected, onSelected = { selected = !selected }) {
             Column(
-                modifier = Modifier
-                    .size(200.dp)
-                    .padding(12.dp),
+                modifier = Modifier.size(200.dp).padding(12.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
-                horizontalAlignment = Alignment.Start
+                horizontalAlignment = Alignment.Start,
             ) {
                 Text(text = "SelectableSurface", fontWeight = FontWeight.Bold)
 
-                Text(text = "This is just a test to see how this should work. Lol this is a very long text don't you think? I think so.")
+                Text(
+                    text =
+                        "This is just a test to see how this should work. Lol this is a very long text don't you think? I think so."
+                )
             }
         }
     }

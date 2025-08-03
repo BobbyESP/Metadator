@@ -22,33 +22,24 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
-fun rememberPullState(
-    config: PullStateConfig = PullStateConfig()
-): PullState {
+fun rememberPullState(config: PullStateConfig = PullStateConfig()): PullState {
     val density = LocalDensity.current
     val scope = rememberCoroutineScope()
     val insetTop = WindowInsets.statusBars.getTop(density)
 
     return remember(insetTop, config, density, scope) {
-        PullState(
-            insetTop,
-            config,
-            density,
-            scope
-        )
+        PullState(insetTop, config, density, scope)
     }
 }
 
-data class PullStateConfig(
-    val heightRefreshing: Dp = 60.dp,
-    val heightMax: Dp = 80.dp,
-) {
+data class PullStateConfig(val heightRefreshing: Dp = 60.dp, val heightMax: Dp = 80.dp) {
     init {
         require(heightMax >= heightRefreshing)
     }
 }
 
-class PullState internal constructor(
+class PullState
+internal constructor(
     val maxInsetTop: Int,
     val config: PullStateConfig,
     private val density: Density,
@@ -58,16 +49,20 @@ class PullState internal constructor(
     private val heightMax = with(density) { config.heightMax.toPx() }
 
     private val _offsetY = Animatable(0f)
-    val offsetY: Float get() = _offsetY.value
+    val offsetY: Float
+        get() = _offsetY.value
 
     // 1f -> Refresh triggered on release
-    val progressRefreshTrigger: Float get() = (offsetY / heightRefreshing).coerceIn(0f, 1f)
+    val progressRefreshTrigger: Float
+        get() = (offsetY / heightRefreshing).coerceIn(0f, 1f)
 
     // 1f -> Max drag amount reached
-    val progressHeightMax: Float get() = (offsetY / heightMax).coerceIn(0f, 1f)
+    val progressHeightMax: Float
+        get() = (offsetY / heightMax).coerceIn(0f, 1f)
 
     // Use this for your content's top padding. Only relevant when app is drawing behind status bar
-    val insetTop: Dp get() = with(density) { (maxInsetTop - maxInsetTop * progressRefreshTrigger).toDp() }
+    val insetTop: Dp
+        get() = with(density) { (maxInsetTop - maxInsetTop * progressRefreshTrigger).toDp() }
 
     // User drag in progress
     var isDragging by mutableStateOf(false)
@@ -101,93 +96,94 @@ class PullState internal constructor(
         }
     }
 
-    val scrollConnection = object : NestedScrollConnection {
-        override fun onPostScroll(
-            consumed: Offset,
-            available: Offset,
-            source: NestedScrollSource
-        ): Offset {
-            when {
-                !isEnabled -> return Offset.Zero
-                available.y > 0 && source == NestedScrollSource.UserInput -> {
-                    // 1. User is dragging
-                    // 2. Scrollable container reached the top (OR max drag reached and neither scroll container nor P2R are interested. Poor available Offset...)
-                    // 3. There is still drag available that the scrollable container did not consume
-                    // -> Start drag. Because next frame offsetY will be > 0f, onPreScroll will take over from here
-                    isDragging = true
-                    scope.launch {
-                        _offsetY.snapTo((offsetY + available.y).coerceIn(0f, heightMax))
+    val scrollConnection =
+        object : NestedScrollConnection {
+            override fun onPostScroll(
+                consumed: Offset,
+                available: Offset,
+                source: NestedScrollSource,
+            ): Offset {
+                when {
+                    !isEnabled -> return Offset.Zero
+                    available.y > 0 && source == NestedScrollSource.UserInput -> {
+                        // 1. User is dragging
+                        // 2. Scrollable container reached the top (OR max drag reached and neither
+                        // scroll
+                        // container nor P2R are interested. Poor available Offset...)
+                        // 3. There is still drag available that the scrollable container did not
+                        // consume
+                        // -> Start drag. Because next frame offsetY will be > 0f, onPreScroll will
+                        // take over
+                        // from here
+                        isDragging = true
+                        scope.launch {
+                            _offsetY.snapTo((offsetY + available.y).coerceIn(0f, heightMax))
+                        }
                     }
                 }
+
+                return Offset.Zero
             }
 
-            return Offset.Zero
-        }
+            override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
+                when {
+                    !isEnabled -> return Offset.Zero
+                    offsetY > 0 && source == NestedScrollSource.UserInput -> {
+                        // Consumes the drag as long as the indicator is visible
+                        isDragging = true
+                        val newOffset = offsetY + available.y
 
-        override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
-            when {
-                !isEnabled -> return Offset.Zero
-                offsetY > 0 && source == NestedScrollSource.UserInput -> {
-                    // Consumes the drag as long as the indicator is visible
-                    isDragging = true
-                    val newOffset = offsetY + available.y
+                        // Surplus drag amount is not consumed
+                        val remaining =
+                            when {
+                                newOffset > heightMax -> newOffset - heightMax
+                                newOffset < 0f -> newOffset
+                                else -> 0f
+                            }
 
-                    // Surplus drag amount is not consumed
-                    val remaining = when {
-                        newOffset > heightMax -> newOffset - heightMax
-                        newOffset < 0f -> newOffset
-                        else -> 0f
+                        scope.launch { _offsetY.snapTo(newOffset.coerceIn(0f, heightMax)) }
+
+                        return Offset(0f, (available.y - remaining))
                     }
-
-                    scope.launch {
-                        _offsetY.snapTo(newOffset.coerceIn(0f, heightMax))
-                    }
-
-                    return Offset(0f, (available.y - remaining))
                 }
+
+                return Offset.Zero
             }
 
-            return Offset.Zero
-        }
+            override suspend fun onPreFling(available: Velocity): Velocity {
+                if (!isEnabled) return Velocity.Zero
 
-        override suspend fun onPreFling(available: Velocity): Velocity {
-            if (!isEnabled) return Velocity.Zero
+                isDragging = false
 
-            isDragging = false
+                when {
+                    // When refreshing and a drag stops, either settle to 0f or heightRefreshing,
+                    isRefreshing -> {
+                        val target =
+                            when {
+                                heightRefreshing - offsetY < heightRefreshing / 2 ->
+                                    heightRefreshing
+                                else -> 0f
+                            }
 
-            when {
-                // When refreshing and a drag stops, either settle to 0f or heightRefreshing,
-                isRefreshing -> {
-                    val target = when {
-                        heightRefreshing - offsetY < heightRefreshing / 2 -> heightRefreshing
-                        else -> 0f
+                        scope.launch { settle(target) }
+
+                        // Consume the velocity as long as the indicator is visible
+                        return if (offsetY == 0f) Velocity.Zero else available
                     }
 
-                    scope.launch {
-                        settle(target)
+                    // Trigger refresh
+                    offsetY >= heightRefreshing -> {
+                        isRefreshing = true
+                        scope.launch { settle(heightRefreshing) }
                     }
 
-                    // Consume the velocity as long as the indicator is visible
-                    return if (offsetY == 0f) Velocity.Zero else available
-                }
-
-                // Trigger refresh
-                offsetY >= heightRefreshing -> {
-                    isRefreshing = true
-                    scope.launch {
-                        settle(heightRefreshing)
-                    }
-                }
-
-                // Drag cancelled, go back to 0f
-                else -> {
-                    scope.launch {
-                        settle(0f)
+                    // Drag cancelled, go back to 0f
+                    else -> {
+                        scope.launch { settle(0f) }
                     }
                 }
+
+                return Velocity.Zero
             }
-
-            return Velocity.Zero
         }
-    }
 }

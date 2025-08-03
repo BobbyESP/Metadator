@@ -14,33 +14,18 @@ import androidx.media3.common.Player.REPEAT_MODE_ONE
 import com.bobbyesp.mediaplayer.R
 
 @Composable
-fun RepeatStateIcon(
-    modifier: Modifier = Modifier,
-    repeatMode: Int
-) {
-    when (repeatMode) {
-        REPEAT_MODE_OFF -> {
-            Icon(
-                imageVector = Icons.Rounded.Repeat,
-                contentDescription = stringResource(id = R.string.repeat_mode_off),
-                modifier = modifier.alpha(0.5f)
-            )
+fun RepeatStateIcon(modifier: Modifier = Modifier, repeatMode: Int) {
+    val (icon, description, alpha) =
+        when (repeatMode) {
+            REPEAT_MODE_OFF -> Triple(Icons.Rounded.Repeat, R.string.repeat_mode_off, 0.5f)
+            REPEAT_MODE_ONE -> Triple(Icons.Rounded.RepeatOne, R.string.repeat_mode_one, 1f)
+            REPEAT_MODE_ALL -> Triple(Icons.Rounded.Repeat, R.string.repeat_mode_all, 1f)
+            else -> Triple(Icons.Rounded.Repeat, R.string.repeat_mode_off, 0.5f)
         }
 
-        REPEAT_MODE_ONE -> {
-            Icon(
-                imageVector = Icons.Rounded.RepeatOne,
-                contentDescription = stringResource(id = R.string.repeat_mode_one),
-                modifier = modifier
-            )
-        }
-
-        REPEAT_MODE_ALL -> {
-            Icon(
-                imageVector = Icons.Rounded.Repeat,
-                contentDescription = stringResource(id = R.string.repeat_mode_all),
-                modifier = modifier
-            )
-        }
-    }
+    Icon(
+        imageVector = icon,
+        contentDescription = stringResource(id = description),
+        modifier = modifier.alpha(alpha),
+    )
 }

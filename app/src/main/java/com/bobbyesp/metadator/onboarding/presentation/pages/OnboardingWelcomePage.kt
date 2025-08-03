@@ -24,35 +24,22 @@ import com.bobbyesp.metadator.R
 import com.bobbyesp.metadator.core.presentation.components.AppDetails
 
 @Composable
-fun OnboardingWelcomePage(
-    onGetStarted: () -> Unit,
-    subtitle: String? = null
-) {
+fun OnboardingWelcomePage(onGetStarted: () -> Unit, subtitle: String? = null) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         floatingActionButton = {
-            Button(
-                modifier = Modifier
-                    .padding(16.dp),
-                onClick = onGetStarted,
-            ) {
+            Button(modifier = Modifier.padding(16.dp), onClick = onGetStarted) {
                 Text(text = stringResource(id = R.string.get_started))
                 Icon(
                     modifier = Modifier,
                     imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowRight,
-                    contentDescription = stringResource(id = R.string.get_started)
+                    contentDescription = stringResource(id = R.string.get_started),
                 )
             }
-        }
+        },
     ) { paddingValues ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues),
-        ) {
-            AppDetails(
-                modifier = Modifier.align(Alignment.Center), subtitle = subtitle
-            )
+        Box(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
+            AppDetails(modifier = Modifier.align(Alignment.Center), subtitle = subtitle)
         }
     }
 }
@@ -64,9 +51,6 @@ private fun OnboardingPreview() {
     MaterialTheme(
         colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
     ) {
-        OnboardingWelcomePage(
-            subtitle = "1.0.0-beta09",
-            onGetStarted = {}
-        )
+        OnboardingWelcomePage(subtitle = "1.0.0-beta09", onGetStarted = {})
     }
 }

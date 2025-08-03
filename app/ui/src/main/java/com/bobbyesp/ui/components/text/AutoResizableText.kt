@@ -20,7 +20,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.isUnspecified
 
-//Gotten from the Philip Slacker's YouTube channel
+// Gotten from the Philip Slacker's YouTube channel
 @Composable
 fun AutoResizableText(
     modifier: Modifier = Modifier,
@@ -29,12 +29,8 @@ fun AutoResizableText(
     color: Color = textStyle.color,
     maxLines: Int = 1,
 ) {
-    var resizedTextStyle by remember {
-        mutableStateOf(textStyle)
-    }
-    var shouldDraw by remember {
-        mutableStateOf(false)
-    }
+    var resizedTextStyle by remember { mutableStateOf(textStyle) }
+    var shouldDraw by remember { mutableStateOf(false) }
 
     val defaultFontSize = MaterialTheme.typography.bodySmall.fontSize
 
@@ -42,31 +38,29 @@ fun AutoResizableText(
         text = text,
         color = color,
         maxLines = maxLines,
-        modifier = modifier.drawWithContent {
-            if (shouldDraw) {
-                drawContent()
-            }
-        },
+        modifier =
+            modifier.drawWithContent {
+                if (shouldDraw) {
+                    drawContent()
+                }
+            },
         softWrap = false,
         style = resizedTextStyle,
         onTextLayout = { result ->
             if (result.didOverflowWidth) {
                 if (textStyle.fontSize.isUnspecified) {
-                    resizedTextStyle = resizedTextStyle.copy(
-                        fontSize = defaultFontSize
-                    )
+                    resizedTextStyle = resizedTextStyle.copy(fontSize = defaultFontSize)
                 }
-                resizedTextStyle = resizedTextStyle.copy(
-                    fontSize = resizedTextStyle.fontSize * 0.95
-                )
+                resizedTextStyle =
+                    resizedTextStyle.copy(fontSize = resizedTextStyle.fontSize * 0.95)
             } else {
                 shouldDraw = true
             }
-        }
+        },
     )
 }
 
-//auto resizable text but with all the text parameters
+// auto resizable text but with all the text parameters
 @Composable
 fun AutoResizableText(
     modifier: Modifier = Modifier,
@@ -83,12 +77,8 @@ fun AutoResizableText(
     style: TextStyle = LocalTextStyle.current.plus(TextStyle()),
     color: Color = style.color,
 ) {
-    var resizedTextStyle by remember {
-        mutableStateOf(style)
-    }
-    var shouldDraw by remember {
-        mutableStateOf(false)
-    }
+    var resizedTextStyle by remember { mutableStateOf(style) }
+    var shouldDraw by remember { mutableStateOf(false) }
 
     val defaultFontSize = MaterialTheme.typography.bodySmall.fontSize
 
@@ -104,27 +94,24 @@ fun AutoResizableText(
         textDecoration = textDecoration,
         textAlign = textAlign,
         lineHeight = lineHeight,
-
-        modifier = modifier.drawWithContent {
-            if (shouldDraw) {
-                drawContent()
-            }
-        },
+        modifier =
+            modifier.drawWithContent {
+                if (shouldDraw) {
+                    drawContent()
+                }
+            },
         softWrap = false,
         style = resizedTextStyle,
         onTextLayout = { result ->
             if (result.didOverflowWidth) {
                 if (style.fontSize.isUnspecified) {
-                    resizedTextStyle = resizedTextStyle.copy(
-                        fontSize = defaultFontSize
-                    )
+                    resizedTextStyle = resizedTextStyle.copy(fontSize = defaultFontSize)
                 }
-                resizedTextStyle = resizedTextStyle.copy(
-                    fontSize = resizedTextStyle.fontSize * 0.95
-                )
+                resizedTextStyle =
+                    resizedTextStyle.copy(fontSize = resizedTextStyle.fontSize * 0.95)
             } else {
                 shouldDraw = true
             }
-        }
+        },
     )
 }

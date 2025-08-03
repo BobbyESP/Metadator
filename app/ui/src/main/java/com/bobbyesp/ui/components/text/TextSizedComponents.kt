@@ -31,7 +31,7 @@ fun MediumText(
         maxLines = maxLines,
         lineHeight = lineHeight,
         overflow = TextOverflow.Ellipsis,
-        modifier = modifier
+        modifier = modifier,
     )
 }
 
@@ -51,6 +51,6 @@ fun Subtext(
         lineHeight = 18.sp,
         maxLines = maxLines,
         overflow = TextOverflow.Ellipsis,
-        modifier = modifier
+        modifier = modifier,
     )
 }

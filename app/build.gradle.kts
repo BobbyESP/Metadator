@@ -11,36 +11,32 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.ktfmt.gradle)
 }
 
-val localProperties = Properties().apply {
-    load(project.rootDir.resolve("local.properties").inputStream())
-}
+val localProperties =
+    Properties().apply { load(project.rootDir.resolve("local.properties").inputStream()) }
 
 android {
     namespace = "com.bobbyesp.metadator"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.bobbyesp.metadator"
         minSdk = 24
-        targetSdk = 35
+        targetSdk = 36
 
         versionCode = rootProject.extra["versionCode"] as Int
         versionName = rootProject.extra["versionName"] as String
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        vectorDrawables {
-            useSupportLibrary = true
-        }
+        vectorDrawables { useSupportLibrary = true }
 
         manifestPlaceholders["redirectHostName"] = "metadator"
         manifestPlaceholders["redirectSchemeName"] = "metadator"
     }
 
-    androidResources {
-        generateLocaleConfig = true
-    }
+    androidResources { generateLocaleConfig = true }
 
     signingConfigs {
         create("release") {
@@ -56,14 +52,19 @@ android {
     buildTypes {
         release {
             buildConfigField(
-                "String", "CLIENT_ID", "\"${localProperties.getProperty("CLIENT_ID")}\""
+                "String",
+                "CLIENT_ID",
+                "\"${localProperties.getProperty("CLIENT_ID")}\"",
             )
             buildConfigField(
-                "String", "CLIENT_SECRET", "\"${localProperties.getProperty("CLIENT_SECRET")}\""
+                "String",
+                "CLIENT_SECRET",
+                "\"${localProperties.getProperty("CLIENT_SECRET")}\"",
             )
             isMinifyEnabled = true
             proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro",
             )
             if (System.getenv("RELEASE_STORE_FILE") != null) {
                 signingConfig = signingConfigs["release"]
@@ -71,13 +72,17 @@ android {
         }
         debug {
             buildConfigField(
-                "String", "CLIENT_ID", "\"${localProperties.getProperty("CLIENT_ID")}\""
+                "String",
+                "CLIENT_ID",
+                "\"${localProperties.getProperty("CLIENT_ID")}\"",
             )
             buildConfigField(
-                "String", "CLIENT_SECRET", "\"${localProperties.getProperty("CLIENT_SECRET")}\""
+                "String",
+                "CLIENT_SECRET",
+                "\"${localProperties.getProperty("CLIENT_SECRET")}\"",
             )
             isMinifyEnabled = false
-//            applicationIdSuffix = ".debug"
+            //            applicationIdSuffix = ".debug"
             signingConfig = signingConfigs["debug"]
         }
     }
@@ -96,59 +101,46 @@ android {
                     nativeSymbolUploadEnabled = true
                 }
             }
-
         }
 
-        create("foss") {
-            dimension = "version"
-        }
+        create("foss") { dimension = "version" }
     }
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
     }
-    kotlinOptions {
-        jvmTarget = "21"
-        //freeCompilerArgs = listOf("-Xcontext-receivers", "-XXLanguage:+ExplicitBackingFields")
-    }
     buildFeatures {
         compose = true
         buildConfig = true
     }
-    composeCompiler {
-        reportsDestination = layout.buildDirectory.dir("compose_compiler")
-    }
-    kotlin {
-        sourceSets.all {
-            languageSettings {
-                languageVersion = "2.0"
-            }
-        }
-    }
-    packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
-    }
+    composeCompiler { reportsDestination = layout.buildDirectory.dir("compose_compiler") }
+    kotlin { sourceSets.all { languageSettings { languageVersion = "2.0" } } }
+    packaging { resources { excludes += "/META-INF/{AL2.0,LGPL2.1}" } }
     applicationVariants.all {
         val variantName = name
         sourceSets {
-            getByName("main") {
-                java.srcDir(File("build/generated/ksp/$variantName/kotlin"))
-            }
+            getByName("main") { java.srcDir(File("build/generated/ksp/$variantName/kotlin")) }
         }
         outputs.all {
             if (githubBuild) {
-                (this as com.android.build.gradle.internal.api.BaseVariantOutputImpl).outputFileName =
-                    "Metadator-${defaultConfig.versionName}-${name}_(GitHub).apk"
+                (this as com.android.build.gradle.internal.api.BaseVariantOutputImpl)
+                    .outputFileName = "Metadator-${defaultConfig.versionName}-${name}_(GitHub).apk"
             } else {
-                (this as com.android.build.gradle.internal.api.BaseVariantOutputImpl).outputFileName =
-                    "Metadator-${defaultConfig.versionName}-${name}.apk"
+                (this as com.android.build.gradle.internal.api.BaseVariantOutputImpl)
+                    .outputFileName = "Metadator-${defaultConfig.versionName}-${name}.apk"
             }
         }
     }
+}
 
+ktfmt {
+    // Google style - 2 space indentation & automatically adds/removes trailing commas
+    // googleStyle()
+
+    // KotlinLang style - 4 space indentation - From
+    // https://kotlinlang.org/docs/coding-conventions.html
+    kotlinLangStyle()
 }
 
 ksp {
@@ -158,69 +150,72 @@ ksp {
 
 dependencies {
     implementation(project(":app:utilities"))
+    implementation(project(":core-utilities"))
     implementation(project(":app:ui"))
-//---------------Core----------------//
-    implementation(libs.bundles.core) //⚠️ This contains core kotlinx libraries, lifecycle runtime and Activity Compose support
+    // ---------------Core----------------//
+    implementation(
+        libs.bundles.core
+    ) // ⚠️ This contains core kotlinx libraries, lifecycle runtime and Activity Compose support
     implementation(libs.bundles.coroutines)
 
-//---------------User Interface---------------//
-//Core UI libraries
+    // ---------------User Interface---------------//
+    // Core UI libraries
     api(platform(libs.compose.bom))
 
-//Accompanist libraries
+    // Accompanist libraries
     implementation(libs.bundles.accompanist)
 
-//Compose libraries
+    // Compose libraries
     implementation(libs.bundles.compose)
     implementation(libs.materialKolor)
-//Pagination
+    // Pagination
     implementation(libs.bundles.pagination)
 
-//-------------------Network-------------------//
+    // -------------------Network-------------------//
     implementation(libs.bundles.ktor)
 
-    //---------------Media3---------------//
+    // ---------------Media3---------------//
     implementation(libs.bundles.media3)
     implementation(project(":app:mediaplayer"))
 
-//---------------Dependency Injection---------------//
+    // ---------------Dependency Injection---------------//
     implementation(libs.bundles.koin)
 
-//-------------------Database-------------------//
+    // -------------------Database-------------------//
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
     implementation(libs.room.paging)
     annotationProcessor(libs.room.compiler)
 
-//-------------------Key-value Storage-------------------//
+    // -------------------Key-value Storage-------------------//
     implementation(libs.datastore.preferences)
 
-//-------------------Image Loading-------------------//
+    // -------------------Image Loading-------------------//
     implementation(libs.landscapist.coil)
 
-//-------------------FIREBASE-------------------//
+    // -------------------FIREBASE-------------------//
     "playstoreApi"(platform(libs.firebase.bom))
     "playstoreImplementation"(libs.firebase.analytics)
     "playstoreImplementation"(libs.firebase.crashlytics)
 
-//-------------------Utilities-------------------//
+    // -------------------Utilities-------------------//
     implementation(libs.kotlinx.collections.immutable)
     implementation(libs.profileinstaller)
     implementation(libs.kotlinx.datetime)
     implementation(libs.kotlinx.serialization.json)
-    implementation(libs.taglib)
+    implementation(files("libs/taglib_1.0.2.aar"))
     implementation(libs.scrollbar)
     implementation(libs.sonner)
     implementation(libs.spotify.api.android)
     implementation(project(":crashhandler"))
 
-//-------------------Testing-------------------//
-//Android testing libraries
+    // -------------------Testing-------------------//
+    // Android testing libraries
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.espresso.core)
 
-//Compose testing and tooling libraries
+    // Compose testing and tooling libraries
     androidTestImplementation(platform(libs.compose.bom))
     androidTestImplementation(libs.compose.test.junit4)
     implementation(libs.compose.tooling.preview)

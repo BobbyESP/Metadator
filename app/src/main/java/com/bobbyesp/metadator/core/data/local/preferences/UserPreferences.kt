@@ -9,8 +9,8 @@ import com.bobbyesp.metadator.core.data.local.preferences.PreferencesKey.SONGS_L
 import com.bobbyesp.metadator.core.data.local.preferences.PreferencesKey.SONG_CARD_SIZE
 import com.bobbyesp.metadator.core.data.local.preferences.PreferencesKey.THEME_COLOR
 import com.bobbyesp.metadator.core.data.local.preferences.PreferencesKey.USE_DYNAMIC_COLORING
-import com.bobbyesp.metadator.mediastore.domain.enums.LayoutType
 import com.bobbyesp.metadator.mediastore.domain.enums.CompactCardSize
+import com.bobbyesp.metadator.mediastore.domain.enums.LayoutType
 import com.materialkolor.PaletteStyle
 
 @Stable
@@ -22,7 +22,7 @@ data class UserPreferences(
     val darkThemePreference: DarkThemePreference,
     val useDynamicColoring: Boolean,
     val themeColor: Int,
-    val paletteStyle: PaletteStyle
+    val paletteStyle: PaletteStyle,
 ) {
     companion object {
         fun emptyUserPreferences(): UserPreferences =
@@ -34,7 +34,7 @@ data class UserPreferences(
                 darkThemePreference = DarkThemePreference(),
                 useDynamicColoring = USE_DYNAMIC_COLORING.defaultValue,
                 themeColor = THEME_COLOR.defaultValue,
-                paletteStyle = PaletteStyle.valueOf(PALETTE_STYLE.defaultValue)
+                paletteStyle = PaletteStyle.valueOf(PALETTE_STYLE.defaultValue),
             )
     }
 }

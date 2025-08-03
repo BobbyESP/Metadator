@@ -1,5 +1,6 @@
 package com.bobbyesp.crashhandler.ui
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,99 +13,123 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.BugReport
-import androidx.compose.material.icons.outlined.PermDeviceInformation
+import androidx.compose.material.icons.rounded.BugReport
+import androidx.compose.material.icons.rounded.CancelScheduleSend
+import androidx.compose.material.icons.rounded.Close
+import androidx.compose.material.icons.rounded.PermDeviceInformation
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.bobbyesp.crashhandler.R
 import com.bobbyesp.crashhandler.ui.components.ExpandableElevatedCard
 import com.bobbyesp.crashhandler.ui.components.FilledButtonWithIcon
-import java.net.URLEncoder
+import com.bobbyesp.crashhandler.ui.components.OutlinedButtonWithIcon
 
 @Composable
 fun CrashReportPage(
-    versionReport: String = "VERSION REPORT",
-    errorMessage: String = error_report_fake,
-    onClick: () -> Unit = {}
+    errorMessage: String,
+    versionReport: String,
+    reportUrl: String,
+    onExitPressed: () -> Unit
 ) {
     val uriOpener = LocalUriHandler.current
 
     val clipboardManager = LocalClipboardManager.current
 
-    //cut the error message to 2000 characters
-    val errorMessageCut = if (errorMessage.length > 2000) {
-        errorMessage.substring(0, 2000) + "..."
-    } else {
-        errorMessage
-    }
-
     Scaffold(modifier = Modifier.fillMaxSize(), bottomBar = {
         HorizontalDivider()
         Row(
-            modifier = Modifier.fillMaxWidth().navigationBarsPadding().padding(vertical = 8.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .navigationBarsPadding()
+                .padding(vertical = 8.dp, horizontal = 16.dp),
+            horizontalArrangement = Arrangement.SpaceAround,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            FilledButtonWithIcon(
-                modifier = Modifier.fillMaxWidth().padding(start = 16.dp).weight(1f),
-                onClick = onClick,
-                icon = Icons.Outlined.BugReport,
-                text = stringResource(R.string.copy_and_exit)
+            OutlinedButtonWithIcon(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
+                onClick = {
+                    clipboardManager.setText(AnnotatedString(errorMessage))
+                    uriOpener.openUri(reportUrl)
+                }, icon = Icons.Rounded.CancelScheduleSend, text = stringResource(R.string.report_github)
             )
-            Spacer(modifier = Modifier.width(12.dp))
+            Spacer(modifier = Modifier.width(8.dp))
             FilledButtonWithIcon(
-                modifier = Modifier.fillMaxWidth().padding(end = 16.dp).weight(1f), onClick = {
-                    val title = URLEncoder.encode("[App crash]", "UTF-8")
-                    clipboardManager.setText(AnnotatedString(errorMessageCut))
-                    uriOpener.openUri("https://github.com/BobbyESP/Metadator/issues/new?assignees=&labels=bug&projects=&template=bug_report.yml&title=$title")
-                }, icon = Icons.Outlined.BugReport, text = stringResource(R.string.report_github)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
+                onClick = onExitPressed,
+                icon = Icons.Rounded.Close,
+                text = stringResource(R.string.copy_and_exit)
             )
         }
     }) {
         Column(
-            modifier = Modifier.padding(it).verticalScroll(rememberScrollState()).fillMaxSize()
+            modifier = Modifier
+                .padding(it)
+                .verticalScroll(rememberScrollState())
+                .fillMaxSize(),
         ) {
-            Icon(
-                imageVector = Icons.Outlined.BugReport,
-                contentDescription = "Bug occurred icon",
-                modifier = Modifier.padding(start = 16.dp).padding(top = 16.dp).size(48.dp)
-            )
-            Text(
-                text = stringResource(R.string.unknown_error_title),
-                style = MaterialTheme.typography.displaySmall,
-                modifier = Modifier.padding(top = 16.dp, bottom = 12.dp).padding(horizontal = 16.dp)
-            )
-            ExpandableElevatedCard(
-                modifier = Modifier.padding(16.dp),
-                title = stringResource(id = R.string.device_info),
-                subtitle = stringResource(
-                    id = R.string.device_info_subtitle
-                ),
-                icon = Icons.Outlined.PermDeviceInformation
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Text(
-                    text = versionReport,
-                    style = MaterialTheme.typography.bodyMedium.copy(fontFamily = FontFamily.Monospace),
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp).fillMaxWidth()
+                Icon(
+                    imageVector = Icons.Rounded.BugReport,
+                    contentDescription = "Bug occurred icon",
+                    modifier = Modifier
+                        .size(48.dp)
                 )
+                Text(
+                    text = stringResource(R.string.unknown_error_title),
+                    style = MaterialTheme.typography.displaySmall,
+                    modifier = Modifier
+                )
+                ExpandableElevatedCard(
+                    modifier = Modifier,
+                    title = stringResource(id = R.string.device_info),
+                    subtitle = stringResource(
+                        id = R.string.device_info_subtitle
+                    ),
+                    icon = Icons.Rounded.PermDeviceInformation
+                ) {
+                    Text(
+                        text = versionReport,
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontFamily = FontFamily.Monospace,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .fillMaxWidth()
+                    )
+                }
             }
 
             HorizontalDivider(modifier = Modifier.padding(horizontal = 8.dp))
             Text(
                 text = errorMessage,
-                style = MaterialTheme.typography.bodyMedium.copy(fontFamily = FontFamily.Monospace),
+                style = MaterialTheme.typography.bodyMedium,
+                fontFamily = FontFamily.Monospace,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(16.dp).fillMaxWidth()
+                modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxSize()
             )
         }
     }
@@ -122,3 +147,13 @@ private const val error_report_fake =
 	at kotlinx.coroutines.scheduling.CoroutineSchedulerWorker.executeTask(CoroutineScheduler.kt:793)
 	at kotlinx.coroutines.scheduling.CoroutineSchedulerWorker.runWorker(CoroutineScheduler.kt:697)
 	at kotlinx.coroutines.scheduling.CoroutineSchedulerWorker.run(CoroutineScheduler.kt:684)"""
+
+@Preview
+@Composable
+private fun CrashReportPagePreview() {
+    CrashReportPage(
+        errorMessage = error_report_fake,
+        versionReport = "Version: 1.0.0\nBuild: 1\nDevice: Pixel 4a",
+        reportUrl = ""
+    ) {}
+}

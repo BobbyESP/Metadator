@@ -11,30 +11,24 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun BottomSheetHeader(
-    modifier: Modifier = Modifier,
-    text: String
-) {
+fun BottomSheetHeader(modifier: Modifier = Modifier, text: String) {
     Text(
         text,
         fontSize = 24.sp,
         color = MaterialTheme.colorScheme.onSurface,
         textAlign = TextAlign.Center,
         fontWeight = FontWeight.Medium,
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth(),
     )
 }
 
 @Composable
-fun BottomSheetSubtitle(
-    modifier: Modifier = Modifier,
-    text: AnnotatedString
-) {
+fun BottomSheetSubtitle(modifier: Modifier = Modifier, text: AnnotatedString) {
     Text(
         text,
         fontSize = 16.sp,
         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
         textAlign = TextAlign.Center,
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth(),
     )
 }

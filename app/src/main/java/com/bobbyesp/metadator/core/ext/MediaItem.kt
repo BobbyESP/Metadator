@@ -4,8 +4,7 @@ import androidx.media3.common.MediaItem
 import com.bobbyesp.utilities.mediastore.model.Song
 
 fun MediaItem.toSong(): Song {
-    val mediaMetadata =
-        this.mediaMetadata
+    val mediaMetadata = this.mediaMetadata
     return Song(
         id = mediaId.hashCode().toLong(),
         title = (mediaMetadata.displayTitle ?: "").toString(),
@@ -14,6 +13,6 @@ fun MediaItem.toSong(): Song {
         artworkPath = mediaMetadata.artworkUri,
         duration = 0.0,
         path = this.localConfiguration?.uri.toString(),
-        fileName = (mediaMetadata.title ?: "").toString()
+        fileName = (mediaMetadata.title ?: "").toString(),
     )
 }

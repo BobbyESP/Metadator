@@ -21,36 +21,28 @@ fun <T : SettingOption> SettingOptionsRow(
     title: String,
     options: List<T>,
     modifier: Modifier = Modifier,
-    optionContent: @Composable (T) -> Unit
+    optionContent: @Composable (T) -> Unit,
 ) {
     Column(
-        modifier = modifier
-            .clip(ShapeDefaults.ExtraLarge)
-            .background(color = MaterialTheme.colorScheme.surfaceContainer)
-            .padding(vertical = 16.dp)
+        modifier =
+            modifier
+                .clip(ShapeDefaults.ExtraLarge)
+                .background(color = MaterialTheme.colorScheme.surfaceContainer)
+                .padding(vertical = 16.dp)
     ) {
         Text(
             text = title,
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.padding(start = 20.dp)
+            modifier = Modifier.padding(start = 20.dp),
         )
 
         Spacer(modifier = Modifier.height(8.dp))
 
         LazyRow {
-            item {
-                Spacer(modifier = Modifier.width(8.dp))
-            }
-            items(
-                items = options,
-                key = { it.title }
-            ) { option ->
-                optionContent(option)
-            }
-            item {
-                Spacer(modifier = Modifier.width(8.dp))
-            }
+            item { Spacer(modifier = Modifier.width(8.dp)) }
+            items(items = options, key = { it.title }) { option -> optionContent(option) }
+            item { Spacer(modifier = Modifier.width(8.dp)) }
         }
     }
 }

@@ -29,33 +29,33 @@ fun OnboardingScreenHeader(
     modifier: Modifier = Modifier,
     title: String,
     description: String? = null,
-    icon: ImageVector
+    icon: ImageVector,
 ) {
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         Icon(
             imageVector = icon,
             contentDescription = null,
             tint = MaterialTheme.colorScheme.onSecondary,
-            modifier = Modifier
-                .size(150.dp)
-                .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.secondary)
-                .padding(32.dp)
+            modifier =
+                Modifier.size(150.dp)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.secondary)
+                    .padding(32.dp),
         )
         Column(
             modifier = Modifier,
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Text(
                 text = title.uppercase(),
                 style = MaterialTheme.typography.headlineLarge,
                 fontFamily = FontFamily.Monospace,
-                letterSpacing = 5.sp
+                letterSpacing = 5.sp,
             )
             description?.let {
                 Text(
@@ -63,12 +63,11 @@ fun OnboardingScreenHeader(
                     style = MaterialTheme.typography.bodyMediumEmphasized,
                     fontFamily = FontFamily.Monospace,
                     letterSpacing = 1.sp,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
                 )
             }
         }
     }
-
 }
 
 @Preview
@@ -76,14 +75,13 @@ fun OnboardingScreenHeader(
 private fun Preview() {
     MaterialTheme {
         OnboardingScreenHeader(
-            modifier = Modifier
-                .background(MaterialTheme.colorScheme.background)
-                .padding(16.dp),
+            modifier = Modifier.background(MaterialTheme.colorScheme.background).padding(16.dp),
             title = "Permissions",
-            description = "This is a very large text just to see how this reacts." + " " +
+            description =
+                "This is a very large text just to see how this reacts." +
+                    " " +
                     "Permissions are needed for the app to work properly",
-            icon = Icons.Rounded.Security
+            icon = Icons.Rounded.Security,
         )
     }
-
 }

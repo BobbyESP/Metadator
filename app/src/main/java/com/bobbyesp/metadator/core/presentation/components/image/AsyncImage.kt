@@ -39,11 +39,10 @@ fun AsyncImage(
     placeholder: ImageVector? = null,
     context: Context = LocalContext.current,
     imageLoader: ImageLoader? = LocalCoilImageLoader.current,
-    imageOptions: ImageOptions = ImageOptions(
-        contentDescription = null, contentScale = ContentScale.Crop
-    ),
+    imageOptions: ImageOptions =
+        ImageOptions(contentDescription = null, contentScale = ContentScale.Crop),
     requestListener: (() -> ImageRequest.Listener)? = null,
-    onSuccessData: (CoilImageState.Success) -> Unit = { _ -> }
+    onSuccessData: (CoilImageState.Success) -> Unit = { _ -> },
 ) {
     val imageUrl by remember(imageModel) { mutableStateOf(imageModel) }
 
@@ -62,20 +61,21 @@ fun AsyncImage(
                 modifier = imageModifier.fillMaxSize(),
                 icon = placeholder ?: Icons.Rounded.MusicNote,
                 colorful = false,
-                contentDescription = "Song cover placeholder"
+                contentDescription = "Song cover placeholder",
             )
         },
         failure = { error ->
-            val icon = if (error.reason is FileNotFoundException) {
-                Icons.Rounded.MusicNote
-            } else {
-                Icons.Rounded.ErrorOutline
-            }
+            val icon =
+                if (error.reason is FileNotFoundException) {
+                    Icons.Rounded.MusicNote
+                } else {
+                    Icons.Rounded.ErrorOutline
+                }
             Placeholder(
                 modifier = imageModifier.fillMaxSize(),
                 icon = icon,
                 colorful = false,
-                contentDescription = "Song cover failed to load"
+                contentDescription = "Song cover failed to load",
             )
         },
         imageLoader = { imageLoader ?: ImageLoader(context) },
@@ -89,11 +89,15 @@ fun loadBitmapFromUrl(url: String): Bitmap? {
 
     LaunchedEffect(url) {
         val imageLoader = ImageLoader(context)
-        val request = ImageRequest.Builder(context).data(url).target { drawable ->
-            if (drawable is BitmapDrawable) {
-                bitmap = drawable.bitmap
-            }
-        }.build()
+        val request =
+            ImageRequest.Builder(context)
+                .data(url)
+                .target { drawable ->
+                    if (drawable is BitmapDrawable) {
+                        bitmap = drawable.bitmap
+                    }
+                }
+                .build()
 
         val result = (imageLoader.execute(request) as SuccessResult).drawable
         if (result is BitmapDrawable) {

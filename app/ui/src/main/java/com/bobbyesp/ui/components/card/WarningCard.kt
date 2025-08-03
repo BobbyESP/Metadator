@@ -21,45 +21,34 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun WarningCard(
-    modifier: Modifier = Modifier,
-    title: String,
-    warningText: String,
-) {
+fun WarningCard(modifier: Modifier = Modifier, title: String, warningText: String) {
     OutlinedCard(
         modifier = modifier,
         shape = MaterialTheme.shapes.small,
-        colors = CardDefaults.outlinedCardColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-        )
+        colors =
+            CardDefaults.outlinedCardColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer
+            ),
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
+        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             Icon(
                 modifier = Modifier.weight(0.175f),
                 imageVector = Icons.Default.WarningAmber,
                 tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                contentDescription = "Warning icon"
+                contentDescription = "Warning icon",
             )
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(6.dp)
-                    .weight(1f),
-            ) {
+            Column(modifier = Modifier.fillMaxWidth().padding(6.dp).weight(1f)) {
                 Text(
                     text = title,
                     style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
                 )
                 Text(
                     text = warningText,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.62f),
                     fontWeight = FontWeight.Normal,
-                    textAlign = TextAlign.Justify
+                    textAlign = TextAlign.Justify,
                 )
             }
         }
@@ -70,7 +59,5 @@ fun WarningCard(
 @Preview
 @Composable
 fun WarningCardPreview() {
-    WarningCard(
-        title = "Warning", warningText = "This is a warning"
-    )
+    WarningCard(title = "Warning", warningText = "This is a warning")
 }

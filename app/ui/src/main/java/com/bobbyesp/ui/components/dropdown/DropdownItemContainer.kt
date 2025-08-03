@@ -14,20 +14,21 @@ import androidx.compose.ui.unit.dp
 fun DropdownItemContainer(
     modifier: Modifier = Modifier,
     contentPadding: androidx.compose.ui.unit.Dp = 0.dp,
-    content: @Composable RowScope.() -> Unit
+    content: @Composable RowScope.() -> Unit,
 ) {
     Row(
-        modifier = modifier
-            .fillMaxWidth()
-            // Preferred min and max width used during the intrinsic measurement.
-            .sizeIn(
-                minWidth = DropdownMenuItemDefaultMinWidth,
-                maxWidth = DropdownMenuItemDefaultMaxWidth,
-                minHeight = ListItemContainerHeight
-            )
-            .padding(contentPadding)
-            .padding(horizontal = DropdownMenuItemHorizontalPadding),
-        verticalAlignment = Alignment.CenterVertically
+        modifier =
+            modifier
+                .fillMaxWidth()
+                // Preferred min and max width used during the intrinsic measurement.
+                .sizeIn(
+                    minWidth = DropdownMenuItemDefaultMinWidth,
+                    maxWidth = DropdownMenuItemDefaultMaxWidth,
+                    minHeight = ListItemContainerHeight,
+                )
+                .padding(contentPadding)
+                .padding(horizontal = DropdownMenuItemHorizontalPadding),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         content()
     }

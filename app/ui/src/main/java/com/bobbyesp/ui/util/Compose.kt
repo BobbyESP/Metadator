@@ -19,15 +19,14 @@ import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.debugInspectorInfo
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.delay
 import kotlin.math.min
+import kotlinx.coroutines.delay
 
 /**
  * A [Modifier] that draws a border around elements that are recomposing. The border increases in
  * size and interpolates from red to green as more recompositions occur before a timeout.
  */
-@Stable
-fun Modifier.recomposeHighlighter(): Modifier = this.then(recomposeModifier)
+@Stable fun Modifier.recomposeHighlighter(): Modifier = this.then(recomposeModifier)
 
 // Use a single instance + @Stable to ensure that recompositions can enable skipping optimizations
 // Modifier.composed will still remember unique data per call site.
@@ -77,7 +76,7 @@ private val recomposeModifier =
                             lerp(
                                 Color.Yellow.copy(alpha = 0.8f),
                                 Color.Red.copy(alpha = 0.5f),
-                                min(1f, (numCompositionsSinceTimeout - 1).toFloat() / 100f)
+                                min(1f, (numCompositionsSinceTimeout - 1).toFloat() / 100f),
                             ) to numCompositionsSinceTimeout.toInt().dp.toPx()
                         }
                     }
@@ -95,7 +94,7 @@ private val recomposeModifier =
                     brush = SolidColor(color),
                     topLeft = rectTopLeft,
                     size = size,
-                    style = style
+                    style = style,
                 )
             }
         }

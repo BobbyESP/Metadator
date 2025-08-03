@@ -24,10 +24,7 @@ fun BackButton(onClick: () -> Unit) {
 @Composable
 fun CloseButton(onClick: () -> Unit) {
     IconButton(modifier = Modifier, onClick = onClick) {
-        Icon(
-            imageVector = Icons.Default.Close,
-            contentDescription = stringResource(R.string.back),
-        )
+        Icon(imageVector = Icons.Default.Close, contentDescription = stringResource(R.string.back))
     }
 }
 
@@ -37,7 +34,7 @@ fun DynamicButton(
     icon: @Composable () -> Unit,
     icon2: @Composable () -> Unit,
     isIcon1: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     FilledTonalIconButton(modifier = modifier, onClick = onClick) {
         if (isIcon1) {

@@ -42,9 +42,9 @@ fun ExpandableText(
     var canBeExpanded by remember { mutableStateOf(false) }
 
     Text(
-        modifier = if (canBeExpanded) modifier
-            .clickable { expanded = !expanded }
-            .animateContentSize() else modifier,
+        modifier =
+            if (canBeExpanded) modifier.clickable { expanded = !expanded }.animateContentSize()
+            else modifier,
         text = text,
         color = color,
         fontSize = fontSize,
@@ -63,6 +63,6 @@ fun ExpandableText(
             if (!canBeExpanded) {
                 canBeExpanded = it.hasVisualOverflow
             }
-        }
+        },
     )
 }

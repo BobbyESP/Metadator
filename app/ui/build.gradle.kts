@@ -2,18 +2,17 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.android.kotlin)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.ktfmt.gradle)
 }
 
 android {
     namespace = "com.bobbyesp.ui"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         minSdk = 24
 
-        vectorDrawables {
-            useSupportLibrary = true
-        }
+        vectorDrawables { useSupportLibrary = true }
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -24,42 +23,37 @@ android {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
-            packaging {
-                resources.excludes.add("META-INF/*.kotlin_module")
-            }
+            packaging { resources.excludes.add("META-INF/*.kotlin_module") }
         }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
     }
-    kotlinOptions {
-        jvmTarget = "21"
-    }
-    buildFeatures {
-        compose = true
-    }
-    composeCompiler {
-        reportsDestination = layout.buildDirectory.dir("compose_compiler")
-    }
-    packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
-    }
+    buildFeatures { compose = true }
+    composeCompiler { reportsDestination = layout.buildDirectory.dir("compose_compiler") }
+    packaging { resources { excludes += "/META-INF/{AL2.0,LGPL2.1}" } }
+}
+
+ktfmt {
+    // Google style - 2 space indentation & automatically adds/removes trailing commas
+    // googleStyle()
+
+    // KotlinLang style - 4 space indentation - From
+    // https://kotlinlang.org/docs/coding-conventions.html
+    kotlinLangStyle()
 }
 
 dependencies {
-
     implementation(libs.core.ktx)
     implementation(libs.bundles.compose)
     implementation(libs.compose.tooling.preview)
     implementation(libs.materialKolor)
     implementation(libs.scrollbar)
 
-    //Compose testing and tooling libraries
+    // Compose testing and tooling libraries
     androidTestImplementation(platform(libs.compose.bom))
     androidTestImplementation(libs.compose.test.junit4)
     debugImplementation(libs.compose.tooling)

@@ -25,19 +25,21 @@ class SearchRepositoryImpl : SearchRepository, KoinComponent {
     private val searchService by inject<SpotifySearchService>()
 
     /**
-     * Search for tracks on Spotify. The search does support pagination but this implementation
-     * does not support it. For now, it will only return up to 50 results.
+     * Search for tracks on Spotify. The search does support pagination but this implementation does
+     * not support it. For now, it will only return up to 50 results.
      */
     override suspend fun searchTracks(query: String): Result<List<Track>> {
         try {
-            val searchResult = searchService.search(
-                query,
-                searchTypes = arrayOf(SearchApi.SearchType.Track),
-                filters = emptyList()
-            )
+            val searchResult =
+                searchService.search(
+                    query,
+                    searchTypes = arrayOf(SearchApi.SearchType.Track),
+                    filters = emptyList(),
+                )
 
-            searchResult.tracks?.let { return Result.success(it.items) }
-                ?: return Result.failure(NullPointerException("Search result is null"))
+            searchResult.tracks?.let {
+                return Result.success(it.items)
+            } ?: return Result.failure(NullPointerException("Search result is null"))
         } catch (th: Throwable) {
             return Result.failure(th)
         }

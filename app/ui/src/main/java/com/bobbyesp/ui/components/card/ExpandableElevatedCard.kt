@@ -46,53 +46,43 @@ fun ExpandableElevatedCard(
     ElevatedCard(
         modifier = modifier,
         onClick = { expanded = !expanded },
-        shape = MaterialTheme.shapes.small
+        shape = MaterialTheme.shapes.small,
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 8.dp),
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Icon(
                 modifier = Modifier.weight(0.1f),
                 imageVector = icon,
-                contentDescription = "Device information"
+                contentDescription = "Device information",
             )
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(6.dp)
-                    .weight(1f),
-            ) {
+            Column(modifier = Modifier.fillMaxWidth().padding(6.dp).weight(1f)) {
                 Text(
                     text = title,
                     style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
                 )
                 Text(
                     text = subtitle,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.62f),
-                    fontWeight = FontWeight.Normal
+                    fontWeight = FontWeight.Normal,
                 )
             }
             FilledTonalIconButton(
-                modifier = Modifier
-                    .padding()
-                    .size(24.dp),
-                onClick = { expanded = !expanded }) {
+                modifier = Modifier.padding().size(24.dp),
+                onClick = { expanded = !expanded },
+            ) {
                 Icon(
                     Icons.Outlined.ExpandLess,
                     null,
                     tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                    modifier = Modifier.rotate(animatedDegree.value)
+                    modifier = Modifier.rotate(animatedDegree.value),
                 )
             }
         }
-        AnimatedVisibility(visible = expanded) {
-            content()
-        }
+        AnimatedVisibility(visible = expanded) { content() }
     }
 }
 
@@ -103,9 +93,7 @@ private fun ExpandableElevatedCardPreview() {
     ExpandableElevatedCard(
         title = "Title",
         subtitle = "Subtitle",
-        content = {
-            Text(text = "Content")
-        },
-        icon = Icons.Outlined.PermDeviceInformation
+        content = { Text(text = "Content") },
+        icon = Icons.Outlined.PermDeviceInformation,
     )
 }

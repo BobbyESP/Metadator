@@ -40,50 +40,46 @@ import com.bobbyesp.ui.components.topbar.ColumnWithCollapsibleTopBar
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun SettingsPage(
-    onBackPressed: () -> Unit
-) {
+fun SettingsPage(onBackPressed: () -> Unit) {
     val navController = LocalNavController.current
     var collapseFraction by remember { mutableFloatStateOf(0f) }
 
-    val mainSettingsGroup: List<SettingsItem> = listOf(
-        SettingsItem(
-            title = stringResource(id = R.string.general),
-            supportingText = stringResource(id = R.string.general_description),
-            icon = Icons.Rounded.Settings,
-            onClick = {
-                navController.navigate(Route.SettingsNavigator.Settings.General)
-            }),
-        SettingsItem(
-            title = stringResource(id = R.string.appearance),
-            supportingText = stringResource(id = R.string.appearance_description),
-            icon = Icons.Rounded.Brush,
-            onClick = {
-                navController.navigate(Route.SettingsNavigator.Settings.Appearance)
-            }),
-    )
-
-    val infoSettingsGroup: List<SettingsItem> = listOf(
-        SettingsItem(
-            title = stringResource(id = R.string.about),
-            supportingText = stringResource(id = R.string.about_description),
-            icon = Icons.Rounded.Info,
-            onClick = {
-                navController.navigate(Route.SettingsNavigator.Settings.About)
-            }
+    val mainSettingsGroup: List<SettingsItem> =
+        listOf(
+            SettingsItem(
+                title = stringResource(id = R.string.general),
+                supportingText = stringResource(id = R.string.general_description),
+                icon = Icons.Rounded.Settings,
+                onClick = { navController.navigate(Route.SettingsNavigator.Settings.General) },
+            ),
+            SettingsItem(
+                title = stringResource(id = R.string.appearance),
+                supportingText = stringResource(id = R.string.appearance_description),
+                icon = Icons.Rounded.Brush,
+                onClick = { navController.navigate(Route.SettingsNavigator.Settings.Appearance) },
+            ),
         )
-    )
+
+    val infoSettingsGroup: List<SettingsItem> =
+        listOf(
+            SettingsItem(
+                title = stringResource(id = R.string.about),
+                supportingText = stringResource(id = R.string.about_description),
+                icon = Icons.Rounded.Info,
+                onClick = { navController.navigate(Route.SettingsNavigator.Settings.About) },
+            )
+        )
     ColumnWithCollapsibleTopBar(
         topBarContent = {
             IconButton(
                 onClick = onBackPressed,
-                modifier = Modifier
-                    .align(Alignment.BottomStart)
-                    .padding(horizontal = 12.dp, vertical = 4.dp)
+                modifier =
+                    Modifier.align(Alignment.BottomStart)
+                        .padding(horizontal = 12.dp, vertical = 4.dp),
             ) {
                 Icon(
                     imageVector = Icons.Rounded.ArrowBackIosNew,
-                    contentDescription = stringResource(id = com.bobbyesp.ui.R.string.back)
+                    contentDescription = stringResource(id = com.bobbyesp.ui.R.string.back),
                 )
             }
 
@@ -92,42 +88,30 @@ fun SettingsPage(
                 style = MaterialTheme.typography.displaySmall,
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.Medium,
-                modifier = Modifier
-                    .align(Alignment.Center)
-                    .padding(horizontal = 16.dp)
-                    .graphicsLayer {
+                modifier =
+                    Modifier.align(Alignment.Center).padding(horizontal = 16.dp).graphicsLayer {
                         val scale = lerp(0.7f, 1f, collapseFraction)
                         scaleX = scale
                         scaleY = scale
-                    }
+                    },
             )
         },
-        collapseFraction = {
-            collapseFraction = it
-        },
+        collapseFraction = { collapseFraction = it },
         contentPadding = PaddingValues(horizontal = 32.dp),
         contentHorizontalAlignment = Alignment.CenterHorizontally,
         contentVerticalArrangement = Arrangement.spacedBy(16.dp),
-        modifier = Modifier
-            .fillMaxSize()
-            .safeDrawingPadding()
+        modifier = Modifier.fillMaxSize().safeDrawingPadding(),
     ) {
-        SettingsGroup(
-            modifier = Modifier, items = mainSettingsGroup
-        )
+        SettingsGroup(modifier = Modifier, items = mainSettingsGroup)
 
-        SettingsGroup(
-            modifier = Modifier, items = infoSettingsGroup
-        )
+        SettingsGroup(modifier = Modifier, items = infoSettingsGroup)
 
         Text(
             text = stringResource(id = R.string.made_with_love_by),
-            modifier = Modifier
-                .padding(horizontal = 12.dp)
-                .fillMaxWidth(),
+            modifier = Modifier.padding(horizontal = 12.dp).fillMaxWidth(),
             textAlign = TextAlign.Center,
             fontFamily = FontFamily.Monospace,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
 }

@@ -18,12 +18,12 @@ import androidx.compose.ui.unit.dp
 fun RoundedTag(
     modifier: Modifier = Modifier,
     text: String,
-    shape: Shape = MaterialTheme.shapes.medium
+    shape: Shape = MaterialTheme.shapes.medium,
 ) {
     Surface(
         modifier = modifier,
         color = MaterialTheme.colorScheme.secondaryContainer,
-        shape = shape
+        shape = shape,
     ) {
         Row(
             modifier = Modifier,
@@ -36,7 +36,7 @@ fun RoundedTag(
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f),
                 overflow = TextOverflow.Ellipsis,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
             )
         }
     }

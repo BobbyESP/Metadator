@@ -3,6 +3,7 @@ package com.bobbyesp.utilities.mediastore.model
 import android.net.Uri
 import android.os.Parcelable
 import androidx.compose.runtime.Stable
+import androidx.core.net.toUri
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
@@ -25,7 +26,7 @@ data class Song(
     @Serializable(with = UriSerializer::class) val artworkPath: Uri? = null,
     val duration: Double,
     val path: String,
-    val fileName: String
+    val fileName: String,
 ) : Parcelable {
     companion object {
         val empty = Song(-1, "", "", "", null, 0.0, "", "")
@@ -43,6 +44,6 @@ object UriSerializer : KSerializer<Uri> {
     }
 
     override fun deserialize(decoder: Decoder): Uri {
-        return Uri.parse(decoder.decodeString())
+        return decoder.decodeString().toUri()
     }
 }

@@ -9,10 +9,7 @@ import androidx.compose.ui.Modifier
 
 @Composable
 fun IdlePage() {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Text(text = "Idle Page")
     }
 }

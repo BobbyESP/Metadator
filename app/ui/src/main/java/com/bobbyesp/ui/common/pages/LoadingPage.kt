@@ -16,29 +16,22 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun LoadingPage(
-    modifier: Modifier = Modifier,
-    text: String
-) {
+fun LoadingPage(modifier: Modifier = Modifier, text: String) {
     Box(
-        modifier = modifier
-            .fillMaxSize()
-            .safeDrawingPadding(),
-        contentAlignment = Alignment.Center
+        modifier = modifier.fillMaxSize().safeDrawingPadding(),
+        contentAlignment = Alignment.Center,
     ) {
         Column(
             modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(8.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
                 text = text,
                 style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.SemiBold
+                fontWeight = FontWeight.SemiBold,
             )
-            LinearProgressIndicator(
-                modifier = Modifier.fillMaxWidth(0.7f)
-            )
+            LinearProgressIndicator(modifier = Modifier.fillMaxWidth(0.7f))
         }
     }
 }

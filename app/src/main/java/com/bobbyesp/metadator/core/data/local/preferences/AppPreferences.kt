@@ -5,6 +5,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
+import com.bobbyesp.coreutilities.theming.isDynamicColoringSupported
 import com.bobbyesp.metadator.core.data.local.DarkThemePreference
 import com.bobbyesp.metadator.core.data.local.DarkThemePreference.Companion.DarkThemeValue
 import com.bobbyesp.metadator.core.data.local.preferences.PreferencesKey.DARK_THEME_VALUE
@@ -16,9 +17,8 @@ import com.bobbyesp.metadator.core.data.local.preferences.PreferencesKey.SONGS_L
 import com.bobbyesp.metadator.core.data.local.preferences.PreferencesKey.SONG_CARD_SIZE
 import com.bobbyesp.metadator.core.data.local.preferences.PreferencesKey.THEME_COLOR
 import com.bobbyesp.metadator.core.data.local.preferences.PreferencesKey.USE_DYNAMIC_COLORING
-import com.bobbyesp.metadator.mediastore.domain.enums.LayoutType
 import com.bobbyesp.metadator.mediastore.domain.enums.CompactCardSize
-import com.bobbyesp.metadator.core.presentation.theme.isDynamicColoringSupported
+import com.bobbyesp.metadator.mediastore.domain.enums.LayoutType
 import com.materialkolor.PaletteStyle
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -30,22 +30,23 @@ import kotlinx.io.IOException
 
 class AppPreferences(
     private val dataStore: DataStore<Preferences>,
-    scope: CoroutineScope //May be used in the future
+    scope: CoroutineScope, // May be used in the future
 ) : AppPreferencesController {
 
     override val userPreferencesFlow: Flow<UserPreferences>
-        get() = dataStore.data
-            .catch { exception ->
-                // dataStore.data throws an IOException when an error is encountered when reading data
-                if (exception is IOException) {
-                    Log.e(TAG, "Error reading preferences.", exception)
-                    emit(emptyPreferences())
-                } else {
-                    throw exception
+        get() =
+            dataStore.data
+                .catch { exception ->
+                    // dataStore.data throws an IOException when an error is encountered when
+                    // reading data
+                    if (exception is IOException) {
+                        Log.e(TAG, "Error reading preferences.", exception)
+                        emit(emptyPreferences())
+                    } else {
+                        throw exception
+                    }
                 }
-            }.map { preferences ->
-                mapUserPreferences(preferences)
-            }
+                .map { preferences -> mapUserPreferences(preferences) }
 
     override suspend fun getUserPreferences(): UserPreferences {
         val preferences = dataStore.data.firstOrNull()
@@ -106,9 +107,7 @@ class AppPreferences(
         saveSetting(PALETTE_STYLE, paletteStyle.name)
     }
 
-    private fun mapUserPreferences(
-        preferences: Preferences
-    ): UserPreferences {
+    private fun mapUserPreferences(preferences: Preferences): UserPreferences {
         val desiredLayout: LayoutType =
             LayoutType.valueOf(preferences[SONGS_LAYOUT.key] ?: SONGS_LAYOUT.defaultValue)
         val reduceShadows: Boolean = preferences[REDUCE_SHADOWS.key] ?: REDUCE_SHADOWS.defaultValue
@@ -132,14 +131,15 @@ class AppPreferences(
             darkThemePreference,
             useDynamicColoring,
             themeColor,
-            paletteStyle
+            paletteStyle,
         )
     }
 
     private fun mapDarkThemePreferences(preferences: Preferences): DarkThemePreference {
-        val currentDarkThemeValue: DarkThemeValue = DarkThemeValue.valueOf(
-            preferences[DARK_THEME_VALUE.key] ?: DARK_THEME_VALUE.defaultValue
-        )
+        val currentDarkThemeValue: DarkThemeValue =
+            DarkThemeValue.valueOf(
+                preferences[DARK_THEME_VALUE.key] ?: DARK_THEME_VALUE.defaultValue
+            )
         val highContrast: Boolean = preferences[HIGH_CONTRAST.key] ?: HIGH_CONTRAST.defaultValue
         return DarkThemePreference(currentDarkThemeValue, highContrast)
     }
@@ -153,21 +153,20 @@ class AppPreferences(
                 is String -> preferences[key.key] = value
                 is Boolean -> preferences[key.key] = value
                 is Int -> preferences[key.key] = value
-                else -> throw IllegalArgumentException("Unsupported type: ${value!!::class.simpleName}")
+                else ->
+                    throw IllegalArgumentException("Unsupported type: ${value!!::class.simpleName}")
             }
         }
     }
 
     override fun <T> getSettingFlow(key: PreferencesKey<T>, defaultValue: T?): Flow<T> {
-        return dataStore.data
-            .map { preferences ->
-                preferences[key.key] ?: defaultValue ?: key.defaultValue
-            }
+        return dataStore.data.map { preferences ->
+            preferences[key.key] ?: defaultValue ?: key.defaultValue
+        }
     }
 
     override suspend fun <T> getSetting(key: PreferencesKey<T>, defaultValue: T?): T {
         val preferences = dataStore.data.firstOrNull()
         return preferences?.get(key.key) ?: defaultValue ?: key.defaultValue
     }
-
 }

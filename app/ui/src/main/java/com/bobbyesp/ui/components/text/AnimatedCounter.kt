@@ -20,36 +20,30 @@ import androidx.compose.ui.text.TextStyle
 fun AnimatedCounter(
     count: Int,
     modifier: Modifier = Modifier,
-    style: TextStyle = MaterialTheme.typography.bodySmall
+    style: TextStyle = MaterialTheme.typography.bodySmall,
 ) {
-    var oldCount by remember {
-        mutableIntStateOf(count)
-    }
-    SideEffect {
-        oldCount = count
-    }
+    var oldCount by remember { mutableIntStateOf(count) }
+    SideEffect { oldCount = count }
     Row(modifier = modifier) {
         val countString = count.toString()
         val oldCountString = oldCount.toString()
         countString.indices.forEach { i ->
             val oldChar = oldCountString.getOrNull(i)
             val newChar = countString[i]
-            val char = if (oldChar == newChar) {
-                oldCountString[i]
-            } else {
-                countString[i]
-            }
+            val char =
+                if (oldChar == newChar) {
+                    oldCountString[i]
+                } else {
+                    countString[i]
+                }
             AnimatedContent(
                 targetState = char,
                 transitionSpec = {
                     slideInVertically { it } togetherWith slideOutVertically { -it }
-                }, label = "Animated Counter"
+                },
+                label = "Animated Counter",
             ) { character ->
-                Text(
-                    text = character.toString(),
-                    style = style,
-                    softWrap = false
-                )
+                Text(text = character.toString(), style = style, softWrap = false)
             }
         }
     }

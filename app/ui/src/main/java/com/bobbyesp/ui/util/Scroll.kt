@@ -15,17 +15,19 @@ fun LazyListState.isScrollingUp(): Boolean {
     var previousIndex by remember(this) { mutableIntStateOf(firstVisibleItemIndex) }
     var previousScrollOffset by remember(this) { mutableIntStateOf(firstVisibleItemScrollOffset) }
     return remember(this) {
-        derivedStateOf {
-            if (previousIndex != firstVisibleItemIndex) {
-                previousIndex > firstVisibleItemIndex
-            } else {
-                previousScrollOffset >= firstVisibleItemScrollOffset
-            }.also {
-                previousIndex = firstVisibleItemIndex
-                previousScrollOffset = firstVisibleItemScrollOffset
+            derivedStateOf {
+                if (previousIndex != firstVisibleItemIndex) {
+                        previousIndex > firstVisibleItemIndex
+                    } else {
+                        previousScrollOffset >= firstVisibleItemScrollOffset
+                    }
+                    .also {
+                        previousIndex = firstVisibleItemIndex
+                        previousScrollOffset = firstVisibleItemScrollOffset
+                    }
             }
         }
-    }.value
+        .value
 }
 
 @Composable
@@ -33,29 +35,28 @@ fun LazyGridState.isScrollingUp(): Boolean {
     var previousIndex by remember(this) { mutableIntStateOf(firstVisibleItemIndex) }
     var previousScrollOffset by remember(this) { mutableIntStateOf(firstVisibleItemScrollOffset) }
     return remember(this) {
-        derivedStateOf {
-            if (previousIndex != firstVisibleItemIndex) {
-                previousIndex > firstVisibleItemIndex
-            } else {
-                previousScrollOffset >= firstVisibleItemScrollOffset
-            }.also {
-                previousIndex = firstVisibleItemIndex
-                previousScrollOffset = firstVisibleItemScrollOffset
+            derivedStateOf {
+                if (previousIndex != firstVisibleItemIndex) {
+                        previousIndex > firstVisibleItemIndex
+                    } else {
+                        previousScrollOffset >= firstVisibleItemScrollOffset
+                    }
+                    .also {
+                        previousIndex = firstVisibleItemIndex
+                        previousScrollOffset = firstVisibleItemScrollOffset
+                    }
             }
         }
-    }.value
+        .value
 }
 
 @Composable
 fun ScrollState.isScrollingUp(): Boolean {
     var previousScrollOffset by remember(this) { mutableIntStateOf(value) }
     return remember(this) {
-        derivedStateOf {
-            (previousScrollOffset >= value).also {
-                previousScrollOffset = value
-            }
+            derivedStateOf { (previousScrollOffset >= value).also { previousScrollOffset = value } }
         }
-    }.value
+        .value
 }
 
 @Composable
@@ -63,17 +64,19 @@ fun LazyListState.isScrollingDown(): Boolean {
     var previousIndex by remember(this) { mutableIntStateOf(firstVisibleItemIndex) }
     var previousScrollOffset by remember(this) { mutableIntStateOf(firstVisibleItemScrollOffset) }
     return remember(this) {
-        derivedStateOf {
-            if (previousIndex != firstVisibleItemIndex) {
-                previousIndex < firstVisibleItemIndex
-            } else {
-                previousScrollOffset <= firstVisibleItemScrollOffset
-            }.also {
-                previousIndex = firstVisibleItemIndex
-                previousScrollOffset = firstVisibleItemScrollOffset
+            derivedStateOf {
+                if (previousIndex != firstVisibleItemIndex) {
+                        previousIndex < firstVisibleItemIndex
+                    } else {
+                        previousScrollOffset <= firstVisibleItemScrollOffset
+                    }
+                    .also {
+                        previousIndex = firstVisibleItemIndex
+                        previousScrollOffset = firstVisibleItemScrollOffset
+                    }
             }
         }
-    }.value
+        .value
 }
 
 @Composable
@@ -81,27 +84,26 @@ fun LazyGridState.isScrollingDown(): Boolean {
     var previousIndex by remember(this) { mutableIntStateOf(firstVisibleItemIndex) }
     var previousScrollOffset by remember(this) { mutableIntStateOf(firstVisibleItemScrollOffset) }
     return remember(this) {
-        derivedStateOf {
-            if (previousIndex != firstVisibleItemIndex) {
-                previousIndex < firstVisibleItemIndex
-            } else {
-                previousScrollOffset <= firstVisibleItemScrollOffset
-            }.also {
-                previousIndex = firstVisibleItemIndex
-                previousScrollOffset = firstVisibleItemScrollOffset
+            derivedStateOf {
+                if (previousIndex != firstVisibleItemIndex) {
+                        previousIndex < firstVisibleItemIndex
+                    } else {
+                        previousScrollOffset <= firstVisibleItemScrollOffset
+                    }
+                    .also {
+                        previousIndex = firstVisibleItemIndex
+                        previousScrollOffset = firstVisibleItemScrollOffset
+                    }
             }
         }
-    }.value
+        .value
 }
 
 @Composable
 fun ScrollState.isScrollingDown(): Boolean {
     var previousScrollOffset by remember(this) { mutableIntStateOf(value) }
     return remember(this) {
-        derivedStateOf {
-            (previousScrollOffset <= value).also {
-                previousScrollOffset = value
-            }
+            derivedStateOf { (previousScrollOffset <= value).also { previousScrollOffset = value } }
         }
-    }.value
+        .value
 }

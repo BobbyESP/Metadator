@@ -18,11 +18,12 @@ enum class CompactCardSize(val value: Dp) {
             CompactCardSize.entries.first { it.ordinal == this }
 
         @Composable
-        fun CompactCardSize.toShape(): CornerBasedShape = when (this) {
-            SMALL -> MaterialTheme.shapes.small
-            MEDIUM -> MaterialTheme.shapes.medium
-            LARGE -> MaterialTheme.shapes.large
-            EXTRA_LARGE -> MaterialTheme.shapes.extraLarge
-        }
+        fun CompactCardSize.toShape(): CornerBasedShape =
+            when (this) {
+                SMALL -> MaterialTheme.shapes.small
+                MEDIUM -> MaterialTheme.shapes.medium
+                LARGE -> MaterialTheme.shapes.large
+                EXTRA_LARGE -> MaterialTheme.shapes.extraLarge
+            }
     }
 }

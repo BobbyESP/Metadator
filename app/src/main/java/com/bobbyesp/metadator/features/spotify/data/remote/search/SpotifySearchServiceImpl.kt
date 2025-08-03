@@ -11,14 +11,13 @@ import com.bobbyesp.metadator.features.spotify.domain.services.SpotifyService
 import com.bobbyesp.metadator.features.spotify.domain.services.search.SpotifySearchService
 import org.koin.core.component.KoinComponent
 
-class SpotifySearchServiceImpl(
-    private val spotifyService: SpotifyService
-) : SpotifySearchService, KoinComponent {
+class SpotifySearchServiceImpl(private val spotifyService: SpotifyService) :
+    SpotifySearchService, KoinComponent {
 
     override suspend fun search(
         query: String,
         vararg searchTypes: SearchApi.SearchType,
-        filters: List<SearchFilter>
+        filters: List<SearchFilter>,
     ): SpotifySearchResult {
         val api = spotifyService.getSpotifyApi()
         return api.search.search(query = query, searchTypes = searchTypes, filters = filters)
@@ -26,21 +25,12 @@ class SpotifySearchServiceImpl(
 
     override suspend fun searchPaginatedTracks(
         query: String,
-        filters: List<SearchFilter>
+        filters: List<SearchFilter>,
     ): Pager<Int, Track> {
         val api = spotifyService.getSpotifyApi()
         return Pager(
-            config = PagingConfig(
-                pageSize = 20,
-                enablePlaceholders = false,
-                initialLoadSize = 40,
-            ),
-            pagingSourceFactory = {
-                TracksPagingSource(
-                    spotifyApi = api,
-                    query = query,
-                )
-            }
+            config = PagingConfig(pageSize = 20, enablePlaceholders = false, initialLoadSize = 40),
+            pagingSourceFactory = { TracksPagingSource(spotifyApi = api, query = query) },
         )
     }
 }

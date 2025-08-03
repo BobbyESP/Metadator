@@ -28,37 +28,30 @@ fun GeneralSettingsPage() {
     val (reduceShadows, updateReduceShadows) = rememberPreferenceState(REDUCE_SHADOWS)
 
     val navController = LocalNavController.current
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
-        state = rememberTopAppBarState(),
-        canScroll = { true }
-    )
+    val scrollBehavior =
+        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
+            state = rememberTopAppBarState(),
+            canScroll = { true },
+        )
 
     Scaffold(
-        modifier = Modifier
-            .fillMaxSize()
-            .nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = Modifier.fillMaxSize().nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             MediumTopAppBar(
                 title = {
                     Text(
                         text = stringResource(id = R.string.general),
-                        style = MaterialTheme.typography.titleLarge
+                        style = MaterialTheme.typography.titleLarge,
                     )
                 },
                 scrollBehavior = scrollBehavior,
-                navigationIcon = {
-                    BackButton {
-                        navController.popBackStack()
-                    }
-                }
+                navigationIcon = { BackButton { navController.popBackStack() } },
             )
-        }
+        },
     ) { paddingValues ->
         LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .nestedScroll(scrollBehavior.nestedScrollConnection),
-            contentPadding = paddingValues
+            modifier = Modifier.fillMaxSize().nestedScroll(scrollBehavior.nestedScrollConnection),
+            contentPadding = paddingValues,
         ) {
             item {
                 PreferenceSwitch(
@@ -66,9 +59,7 @@ fun GeneralSettingsPage() {
                     description = stringResource(R.string.marquee_text_description),
                     isChecked = useMarqueeText.value,
                     thumbContent = null,
-                    onClick = {
-                        updateMarqueeText(!useMarqueeText.value)
-                    }
+                    onClick = { updateMarqueeText(!useMarqueeText.value) },
                 )
             }
             item {
@@ -77,9 +68,7 @@ fun GeneralSettingsPage() {
                     description = stringResource(R.string.reduce_shadows_description),
                     isChecked = reduceShadows.value,
                     thumbContent = null,
-                    onClick = {
-                        updateReduceShadows(!reduceShadows.value)
-                    }
+                    onClick = { updateReduceShadows(!reduceShadows.value) },
                 )
             }
         }

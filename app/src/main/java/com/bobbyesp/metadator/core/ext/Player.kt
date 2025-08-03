@@ -19,7 +19,10 @@ fun Player.getQueueWindows(): List<Timeline.Window> {
     var firstMediaItemIndex = currentMediaItemIndex
     var lastMediaItemIndex = currentMediaItemIndex
     val shuffleModeEnabled = shuffleModeEnabled
-    while ((firstMediaItemIndex != C.INDEX_UNSET || lastMediaItemIndex != C.INDEX_UNSET) && queue.size < queueSize) {
+    while (
+        (firstMediaItemIndex != C.INDEX_UNSET || lastMediaItemIndex != C.INDEX_UNSET) &&
+            queue.size < queueSize
+    ) {
         if (lastMediaItemIndex != C.INDEX_UNSET) {
             lastMediaItemIndex =
                 timeline.getNextWindowIndex(lastMediaItemIndex, REPEAT_MODE_OFF, shuffleModeEnabled)
@@ -28,11 +31,12 @@ fun Player.getQueueWindows(): List<Timeline.Window> {
             }
         }
         if (firstMediaItemIndex != C.INDEX_UNSET && queue.size < queueSize) {
-            firstMediaItemIndex = timeline.getPreviousWindowIndex(
-                firstMediaItemIndex,
-                REPEAT_MODE_OFF,
-                shuffleModeEnabled
-            )
+            firstMediaItemIndex =
+                timeline.getPreviousWindowIndex(
+                    firstMediaItemIndex,
+                    REPEAT_MODE_OFF,
+                    shuffleModeEnabled,
+                )
             if (firstMediaItemIndex != C.INDEX_UNSET) {
                 queue.addFirst(timeline.getWindow(firstMediaItemIndex, Timeline.Window()))
             }

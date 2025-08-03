@@ -9,6 +9,10 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
 val appSystemManagers = module {
-    single<ClipboardManager> { androidApplication().getSystemService(CLIPBOARD_SERVICE) as ClipboardManager }
-    single<ConnectivityManager> { androidContext().getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager }
+    single<ClipboardManager> {
+        androidApplication().getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+    }
+    single<ConnectivityManager> {
+        androidContext().getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
+    }
 }

@@ -5,8 +5,8 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.bobbyesp.metadator.core.data.local.DarkThemePreference.Companion.DarkThemeValue
-import com.bobbyesp.metadator.mediastore.domain.enums.LayoutType
 import com.bobbyesp.metadator.mediastore.domain.enums.CompactCardSize
+import com.bobbyesp.metadator.mediastore.domain.enums.LayoutType
 import com.bobbyesp.utilities.ui.DEFAULT_SEED_COLOR
 import com.materialkolor.PaletteStyle
 
@@ -29,10 +29,11 @@ sealed class PreferencesKey<T>(val key: Preferences.Key<T>, val defaultValue: T)
         PreferencesKey<String>(stringPreferencesKey("song_card_size"), CompactCardSize.LARGE.name)
 
     // --> Theming
-    data object DARK_THEME_VALUE : PreferencesKey<String>(
-        stringPreferencesKey("dark_theme_value"),
-        DarkThemeValue.FOLLOW_SYSTEM.name
-    )
+    data object DARK_THEME_VALUE :
+        PreferencesKey<String>(
+            stringPreferencesKey("dark_theme_value"),
+            DarkThemeValue.FOLLOW_SYSTEM.name,
+        )
 
     data object HIGH_CONTRAST :
         PreferencesKey<Boolean>(booleanPreferencesKey("high_contrast"), false)

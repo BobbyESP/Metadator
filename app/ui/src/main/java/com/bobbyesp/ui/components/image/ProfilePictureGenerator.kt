@@ -27,7 +27,7 @@ fun ProfilePicture(
     name: String,
     shape: CornerBasedShape = CircleShape,
     surfaceColor: Color = MaterialTheme.colorScheme.primary,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
 ) {
     val firstLetter = name.first().toString()
     Surface(

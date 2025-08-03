@@ -19,15 +19,9 @@ import androidx.compose.ui.unit.dp
 fun DotWithText(text: String) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Box(
-            modifier = Modifier
-                .size(8.dp)
-                .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.primary)
+            modifier =
+                Modifier.size(8.dp).clip(CircleShape).background(MaterialTheme.colorScheme.primary)
         )
-        Text(
-            text = text,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(start = 8.dp)
-        )
+        Text(text = text, fontWeight = FontWeight.Bold, modifier = Modifier.padding(start = 8.dp))
     }
 }

@@ -18,29 +18,26 @@ import com.bobbyesp.utilities.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SongSyncNeededDialog(
-    modifier: Modifier = Modifier,
-    onDismissRequest: () -> Unit,
-) {
+fun SongSyncNeededDialog(modifier: Modifier = Modifier, onDismissRequest: () -> Unit) {
     val uriLauncher = LocalUriHandler.current
     AlertDialog(
         icon = {
-            Icon(
-                imageVector = Icons.Filled.Lyrics,
-                contentDescription = "SongSync app needed"
-            )
-        }, modifier = modifier, onDismissRequest = onDismissRequest,
-        title = {
-            Text(text = stringResource(id = R.string.song_sync_needed))
-        }, text = {
+            Icon(imageVector = Icons.Filled.Lyrics, contentDescription = "SongSync app icon")
+        },
+        modifier = modifier,
+        onDismissRequest = onDismissRequest,
+        title = { Text(text = stringResource(id = R.string.song_sync_needed)) },
+        text = {
             Text(
-                text = buildAnnotatedString {
-                    append(stringResource(id = R.string.song_sync_needed_desc))
-                    append(" \n")
-                    append(stringResource(id = R.string.song_sync_not_installed))
-                },
+                text =
+                    buildAnnotatedString {
+                        append(stringResource(id = R.string.song_sync_needed_desc))
+                        append(" \n")
+                        append(stringResource(id = R.string.song_sync_not_installed))
+                    }
             )
-        }, confirmButton = {
+        },
+        confirmButton = {
             TextButton(
                 onClick = {
                     uriLauncher.openUri("https://github.com/Lambada10/SongSync/releases/latest")
@@ -48,18 +45,15 @@ fun SongSyncNeededDialog(
             ) {
                 Text(stringResource(id = R.string.download))
             }
-        }, dismissButton = {
-            TextButton(
-                onClick = onDismissRequest
-            ) {
-                Text(stringResource(id = R.string.dismiss))
-            }
-        }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismissRequest) { Text(stringResource(id = R.string.dismiss)) }
+        },
     )
 }
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun SongSyncNeededDialogPreview() {
-    SongSyncNeededDialog(onDismissRequest = { })
+    SongSyncNeededDialog(onDismissRequest = {})
 }

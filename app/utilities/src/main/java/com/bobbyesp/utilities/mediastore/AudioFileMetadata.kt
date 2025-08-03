@@ -22,7 +22,7 @@ data class AudioFileMetadata(
     val conductor: String?,
     val remixer: String?,
     val comment: String?,
-    val lyrics: String?
+    val lyrics: String?,
 ) {
     companion object {
         fun AudioFileMetadata.toPropertyMap(): PropertyMap {
@@ -41,7 +41,7 @@ data class AudioFileMetadata(
                 "PERFORMER" to performer.formatForField(),
                 "REMIXER" to remixer.formatForField(),
                 "COMMENT" to arrayOf(comment ?: ""),
-                "LYRICS" to arrayOf(lyrics ?: "")
+                "LYRICS" to arrayOf(lyrics ?: ""),
             )
         }
 
@@ -61,7 +61,7 @@ data class AudioFileMetadata(
                 conductor = this["CONDUCTOR"],
                 remixer = this["REMIXER"],
                 comment = this["COMMENT"],
-                lyrics = this["LYRICS"]
+                lyrics = this["LYRICS"],
             )
         }
     }

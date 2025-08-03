@@ -1,68 +1,67 @@
 [versions]
 #General, lifecycle and core
-agp = "8.8.0"
-firebaseCrashlyticsGradle = "3.0.2"
-kotlin = "2.1.0"
-appcompat = "1.7.0"
-core-ktx = "1.15.0"
+agp = "8.11.0"
+firebaseCrashlyticsGradle = "3.0.4"
+kotlin = "2.2.0"
+appcompat = "1.7.1"
+core-ktx = "1.16.0"
 legacySupportV4 = "1.0.0"
-lifecycle-runtime-ktx = "2.8.7"
-activity-compose = "1.10.0"
-ksp = "2.1.0-1.0.29"
+lifecycle-runtime-ktx = "2.9.1"
+activity-compose = "1.10.1"
+ksp = "2.2.0-2.0.2"
 splashscreen = "1.0.1"
-media3 = "1.5.1"
-leakcanary = "2.13"
+media3 = "1.7.1"
+leakcanary = "2.14"
 
 #Compose
-compose-bom = "2025.01.00"
-constraintLayout = "1.1.0"
-androidx-compose-material3 = "1.3.1"
-compose-util = "1.7.6"
+compose-bom = "2025.06.02"
+constraintLayout = "1.1.1"
+androidx-compose-material3 = "1.3.2"
+compose-util = "1.8.3"
 accompanist = "0.34.0"
 
 #More UI
-androidx-paging = "3.3.5"
-materialKolor = "1.7.0"
+androidx-paging = "3.3.6"
+materialKolor = "2.1.1"
 palette = "1.0.0"
 
 #Navigation
-androidx-navigation = "2.8.5"
+androidx-navigation = "2.9.1"
 
 #Coroutines
-kotlinx-coroutines = "1.9.0"
+kotlinx-coroutines = "1.10.2"
 
 #Serialization and more related
-kotlinx-datetime = "0.6.1"
-kotlinx-serializationJson = "1.7.3"
-kotlinx-collectionsImmutable = "0.3.7"
+kotlinx-datetime = "0.7.0"
+kotlinx-serializationJson = "1.9.0"
+kotlinx-collectionsImmutable = "0.4.0"
 
 #Image loading
 coil = "2.7.0"
-landscapistCoil = "2.4.4"
+landscapistCoil = "2.5.1"
 
 #Network
-ktor = "3.0.2"
+ktor = "3.2.1"
 
 #Dependency injection
-koin = "4.0.0"
+koin = "4.1.0"
 
 #Database
-room = "2.6.1"
+room = "2.7.2"
 
 #High performance key-value storage
-datastore = "1.1.2"
+datastore = "1.1.7"
 
 #Firebase, GMS...
 gmsPlayServicesAuth = "21.3.0"
-googleServices = "4.4.2"
-firebaseBom = "33.8.0"
+googleServices = "4.4.3"
+firebaseBom = "33.16.0"
 
 #Spotify API
 spotify-apiHandler = "4.1.3"
 
 #Others
-taglib = "1.0.0-alpha25"
-qrcodeKotlinAndroid = "4.2.0"
+qrcodeKotlinAndroid = "4.5.0"
 sonner = "0.3.8"
 
 #Tests
@@ -71,9 +70,10 @@ androidx-test-ext-junit = "1.2.1"
 espresso-core = "3.6.1"
 
 #Others
-androidx-baselineprofile = "1.3.3"
+androidx-baselineprofile = "1.3.4"
 profileinstaller = "1.4.1"
 scrollbar = "2.2.0"
+ktfmt = "0.23.0"
 
 [libraries]
 #Core libraries
@@ -169,9 +169,7 @@ firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashly
 #Others
 qrcode-kotlin-android = { module = "io.github.g0dkar:qrcode-kotlin-android", version.ref = "qrcodeKotlinAndroid" }
 sonner = { module = "io.github.dokar3:sonner", version.ref = "sonner" }
-taglib = { group = "com.github.Kyant0", name = "taglib", version.ref = "taglib" }
 spotify-api-android = { group = "com.adamratzman", name = "spotify-api-kotlin-core", version.ref = "spotify-apiHandler" }
-palette = { group = "androidx.palette", name = "palette-ktx", version.ref = "palette" }
 scrollbar = { group = "com.github.nanihadesuka", name = "LazyColumnScrollbar", version.ref = "scrollbar" }
 
 #Compose tooling and tests
@@ -197,6 +195,7 @@ compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "
 androidTest = { id = "com.android.test", version.ref = "agp" }
 firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlyticsGradle" }
 google-gms = { id = "com.google.gms.google-services", version.ref = "googleServices" }
+ktfmt-gradle = { id = "com.ncorti.ktfmt.gradle", version.ref = "ktfmt" }
 androidx-baselineprofile = { id = "androidx.baselineprofile", version.ref = "androidx-baselineprofile" }
 
 [bundles]

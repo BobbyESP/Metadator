@@ -28,48 +28,42 @@ import com.bobbyesp.metadator.R
 fun PlayPauseAnimatedButton(
     modifier: Modifier = Modifier,
     isPlaying: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed = interactionSource.collectIsPressedAsState()
-    val radius = if (isPlaying || isPressed.value) {
-        40.dp
-    } else {
-        24.dp
-    }
-    val cornerRadius = animateDpAsState(targetValue = radius, label = "Animated button shape")
+    val cornerRadius =
+        animateDpAsState(
+            targetValue = if (isPlaying || isPressed.value) 40.dp else 24.dp,
+            label = "Animated button shape",
+        )
 
     Surface(
         tonalElevation = 10.dp,
-        modifier = modifier
-            .clip(RoundedCornerShape(cornerRadius.value))
+        modifier = modifier.clip(RoundedCornerShape(cornerRadius.value)),
     ) {
         Box(
-            modifier = Modifier
-                .background(MaterialTheme.colorScheme.primaryContainer)
-                .size(72.dp)
-                .clip(RoundedCornerShape(cornerRadius.value))
-                .clickable(
-                    interactionSource = interactionSource,
-                    indication = ripple(bounded = false),
-                ) { onClick() },
-            contentAlignment = Alignment.Center
+            modifier =
+                Modifier.background(MaterialTheme.colorScheme.primaryContainer)
+                    .size(72.dp)
+                    .clip(RoundedCornerShape(cornerRadius.value))
+                    .clickable(
+                        interactionSource = interactionSource,
+                        indication = ripple(bounded = false),
+                        onClick = onClick,
+                    ),
+            contentAlignment = Alignment.Center,
         ) {
-            if (isPlaying) {
-                Icon(
-                    imageVector = Icons.Rounded.Pause,
-                    contentDescription = stringResource(id = R.string.pause),
-                    tint = MaterialTheme.colorScheme.secondary,
-                    modifier = Modifier.size(32.dp)
-                )
-            } else {
-                Icon(
-                    imageVector = Icons.Rounded.PlayArrow,
-                    contentDescription = stringResource(id = R.string.play),
-                    tint = MaterialTheme.colorScheme.secondary,
-                    modifier = Modifier.size(32.dp)
-                )
-            }
+            val icon = if (isPlaying) Icons.Rounded.Pause else Icons.Rounded.PlayArrow
+            val contentDescription =
+                stringResource(id = if (isPlaying) R.string.pause else R.string.play)
+
+            Icon(
+                imageVector = icon,
+                contentDescription = contentDescription,
+                tint = MaterialTheme.colorScheme.secondary,
+                modifier = Modifier.size(32.dp),
+            )
         }
     }
 }

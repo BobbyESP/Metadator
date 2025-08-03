@@ -9,6 +9,6 @@ fun Song.toParcelableSong(): ParcelableSong {
         mainArtist = this.artist,
         localPath = this.path,
         artworkPath = this.artworkPath,
-        filename = this.fileName
+        filename = this.fileName,
     )
 }
