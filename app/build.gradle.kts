@@ -19,12 +19,12 @@ val localProperties = Properties().apply {
 
 android {
     namespace = "com.bobbyesp.metadator"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.bobbyesp.metadator"
         minSdk = 24
-        targetSdk = 35
+        targetSdk = 36
 
         versionCode = rootProject.extra["versionCode"] as Int
         versionName = rootProject.extra["versionName"] as String
