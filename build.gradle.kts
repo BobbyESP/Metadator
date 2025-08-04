@@ -21,6 +21,12 @@ val commitSignature = providers.exec {
     commandLine("git", "rev-parse", "--short", "HEAD")
 }.standardOutput.asText.get().substringBefore("\n")
 
+val currentVersion: Version = Version.Stable(
+    versionMajor = 1,
+    versionMinor = 0,
+    versionPatch = 0,
+)
+
 sealed class Version(
     open val versionMajor: Int,
     val versionMinor: Int,
@@ -28,16 +34,13 @@ sealed class Version(
     val versionBuild: Int = 0,
     val commitId: String = ""
 ) {
+
     abstract fun toVersionName(): String
 
     fun toVersionCode(): Int {
-        val minorExtraDigit = if (versionMinor > 9) {
-            (versionMinor / 10).toString()
-        } else {
-            ""
-        }
-
-        return "$versionMajor$minorExtraDigit$versionPatch$versionBuild".toInt()
+        // 5-digit versionCode: XXYYZ (major, minor, patch)
+        // Example: 1.23.4 -> 12304
+        return versionMajor * 10000 + versionMinor * 100 + versionPatch
     }
 
     class Stable(versionMajor: Int, versionMinor: Int, versionPatch: Int) :
@@ -65,13 +68,6 @@ sealed class Version(
             "${versionMajor}.${versionMinor}.${versionPatch}-alpha.$commitId"
     }
 }
-
-val currentVersion: Version = Version.Beta(
-    versionMajor = 1,
-    versionMinor = 0,
-    versionPatch = 0,
-    versionBuild = 9
-)
 
 val versionCode by extra(currentVersion.toVersionCode())
 val versionName by extra(currentVersion.toVersionName())
