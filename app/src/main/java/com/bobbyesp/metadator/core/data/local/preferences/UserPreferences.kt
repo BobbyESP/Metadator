@@ -11,11 +11,13 @@ import com.bobbyesp.metadator.core.data.local.preferences.PreferencesKey.THEME_C
 import com.bobbyesp.metadator.core.data.local.preferences.PreferencesKey.USE_DYNAMIC_COLORING
 import com.bobbyesp.metadator.mediastore.domain.enums.LayoutType
 import com.bobbyesp.metadator.mediastore.domain.enums.CompactCardSize
+import com.bobbyesp.metadator.mediastore.presentation.pages.home.SortMethod
 import com.materialkolor.PaletteStyle
 
 @Stable
 data class UserPreferences(
     val songsLayout: LayoutType,
+    val sortMethod: SortMethod,
     val songCardSize: CompactCardSize,
     val reduceShadows: Boolean,
     val marqueeTextEnabled: Boolean,
@@ -28,6 +30,7 @@ data class UserPreferences(
         fun emptyUserPreferences(): UserPreferences =
             UserPreferences(
                 songsLayout = LayoutType.valueOf(SONGS_LAYOUT.defaultValue),
+                sortMethod = SortMethod.valueOf(PreferencesKey.SORT_METHOD.defaultValue),
                 reduceShadows = REDUCE_SHADOWS.defaultValue,
                 marqueeTextEnabled = MARQUEE_TEXT_ENABLED.defaultValue,
                 songCardSize = CompactCardSize.valueOf(SONG_CARD_SIZE.defaultValue),

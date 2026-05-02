@@ -11,9 +11,14 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -23,10 +28,13 @@ import com.bobbyesp.metadator.mediastore.presentation.components.card.songs.Hori
 import com.bobbyesp.metadator.mediastore.domain.enums.CompactCardSize
 import com.bobbyesp.metadator.mediastore.presentation.components.card.songs.compact.CompactSongCard
 import com.bobbyesp.metadator.mediastore.presentation.components.others.status.EmptyMediaStoreWarning
+import com.bobbyesp.metadator.mediastore.presentation.pages.home.SortMethod
 import com.bobbyesp.ui.common.pages.ErrorPage
 import com.bobbyesp.ui.common.pages.LoadingPage
 import com.bobbyesp.utilities.mediastore.model.Song
 import com.bobbyesp.utilities.states.ResourceState
+import com.google.common.collect.Multimaps.index
+import io.ktor.client.utils.EmptyContent.contentType
 import my.nanihadesuka.compose.LazyColumnScrollbar
 import my.nanihadesuka.compose.LazyVerticalGridScrollbar
 import my.nanihadesuka.compose.ScrollbarSelectionActionable
@@ -39,6 +47,7 @@ fun MediaStorePage(
     lazyGridState: LazyGridState,
     lazyListState: LazyListState,
     desiredLayout: LayoutType,
+    sortMethod: SortMethod,
     compactCardSize: CompactCardSize,
     onReloadMediaStore: () -> Unit,
     onItemClicked: (Song) -> Unit
@@ -61,6 +70,16 @@ fun MediaStorePage(
 
             is ResourceState.Success -> {
                 val dataSongsList = songsList.data ?: throw IllegalStateException(stringResource(R.string.data_null))
+                val sortedSongList by remember(dataSongsList, sortMethod) {
+                    derivedStateOf {
+                        when (sortMethod) {
+                            SortMethod.Artist -> dataSongsList.sortedBy { it.artist }
+                            SortMethod.Title -> dataSongsList.sortedBy { it.title }
+//                            SortMethod.Date -> dataSongsList.sortedBy { it.duration }
+                            SortMethod.File -> dataSongsList.sortedBy { it.fileName }
+                        }
+                    }
+                }
                 if (dataSongsList.isEmpty()) {
                     EmptyMediaStoreWarning(
                         modifier = Modifier.fillMaxSize()
@@ -86,10 +105,10 @@ fun MediaStorePage(
                                     state = lazyGridState
                                 ) {
                                     items(
-                                        count = dataSongsList.size,
-                                        key = { index -> dataSongsList[index].id },
-                                        contentType = { _ -> "songItem" }) { index ->
-                                        val song = dataSongsList[index]
+                                        items = sortedSongList,
+                                        key = { song -> song.id },
+                                        contentType = { _ -> "songItem" }
+                                    ) { song ->
 
                                         CompactSongCard(
                                             modifier = Modifier
@@ -124,10 +143,9 @@ fun MediaStorePage(
                                     state = lazyListState,
                                 ) {
                                     items(
-                                        count = dataSongsList.size,
-                                        key = { index -> dataSongsList[index].id },
-                                        contentType = { _ -> "songHorizontalItem" }) { index ->
-                                        val song = dataSongsList[index]
+                                        items =sortedSongList,
+                                        key = { it.id },
+                                        contentType = { _ -> "songHorizontalItem" }) { song ->
                                         HorizontalSongCard(
                                             song = song,
                                             modifier = Modifier.animateItem(

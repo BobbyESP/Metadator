@@ -17,6 +17,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Backup
+import androidx.compose.material.icons.filled.FileCopy
+import androidx.compose.material.icons.filled.People
+import androidx.compose.material.icons.filled.Title
 import androidx.compose.material.icons.rounded.KeyboardDoubleArrowUp
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material.icons.rounded.PlayArrow
@@ -43,12 +47,14 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bobbyesp.metadator.R
+import com.bobbyesp.metadator.core.data.local.preferences.PreferencesKey
 import com.bobbyesp.metadator.core.data.local.preferences.PreferencesKey.SONGS_LAYOUT
 import com.bobbyesp.metadator.core.data.local.preferences.UserPreferences
 import com.bobbyesp.metadator.core.data.local.preferences.datastore.rememberPreferenceState
@@ -109,6 +115,10 @@ fun HomePage(
 
     val configuredLayout = preferences.value.songsLayout
     val (_, setConfiguredLayout) = rememberPreferenceState(SONGS_LAYOUT)
+
+    val sortMethod = preferences.value.sortMethod
+    val (_, setSortMethod) = rememberPreferenceState(PreferencesKey.SORT_METHOD)
+
 
     val songCardSize = preferences.value.songCardSize
 
@@ -191,8 +201,12 @@ fun HomePage(
                         }) {
                         DropdownMenuContent(
                             desiredLayout = configuredLayout,
+                            currentSortMethod = sortMethod,
                             onLayoutChanged = {
                                 setConfiguredLayout(it.name)
+                            },
+                            onSortChanged = {
+                                setSortMethod(it.name)
                             }
                         )
                     }
@@ -265,6 +279,7 @@ fun HomePage(
                     lazyGridState = mediaStoreLazyGridState,
                     lazyListState = mediaStoreLazyColumnState,
                     desiredLayout = configuredLayout,
+                    sortMethod = sortMethod,
                     compactCardSize = songCardSize,
                     onReloadMediaStore = {
                         onEvent(MediaStorePageViewModel.Companion.Events.ReloadMediaStore)
@@ -278,12 +293,26 @@ fun HomePage(
     }
 }
 
+
+
+enum class SortMethod(
+    val icon: ImageVector
+) {
+    Artist(Icons.Default.People),
+    Title(Icons.Default.Title),
+//    Date,
+    File(Icons.Default.FileCopy)
+}
+
 @Composable
 private fun DropdownMenuContent(
     desiredLayout: LayoutType,
+    currentSortMethod: SortMethod,
     onLayoutChanged: (LayoutType) -> Unit,
+    onSortChanged: (SortMethod) -> Unit
 ) {
     val availableLayoutType = LayoutType.entries.toImmutableList()
+    val availableSortMethod = SortMethod.entries.toImmutableList()
 
     Column(
         modifier = Modifier,
@@ -299,21 +328,41 @@ private fun DropdownMenuContent(
         DropdownItemContainer(
             modifier = Modifier,
             content = {
-                SingleChoiceSegmentedButtonRow {
-                    availableLayoutType.forEachIndexed { index, listType ->
-                        SegmentedButton(
-                            selected = desiredLayout.ordinal == listType.ordinal,
-                            onClick = {
-                                onLayoutChanged(listType)
-                            },
-                            shape = SegmentedButtonDefaults.itemShape(
-                                index = index, count = availableLayoutType.size
-                            ),
-                        ) {
-                            Icon(
-                                imageVector = listType.icon,
-                                contentDescription = stringResource(id = R.string.list_type)
-                            )
+                Column {
+                    SingleChoiceSegmentedButtonRow {
+                        availableLayoutType.forEachIndexed { index, listType ->
+                            SegmentedButton(
+                                selected = desiredLayout.ordinal == listType.ordinal,
+                                onClick = {
+                                    onLayoutChanged(listType)
+                                },
+                                shape = SegmentedButtonDefaults.itemShape(
+                                    index = index, count = availableLayoutType.size
+                                ),
+                            ) {
+                                Icon(
+                                    imageVector = listType.icon,
+                                    contentDescription = stringResource(id = R.string.list_type)
+                                )
+                            }
+                        }
+                    }
+                    SingleChoiceSegmentedButtonRow {
+                        SortMethod.entries.forEachIndexed { index, sortMethod ->
+                            SegmentedButton(
+                                selected = currentSortMethod.ordinal == sortMethod.ordinal,
+                                onClick = {
+                                    onSortChanged(sortMethod)
+                                },
+                                shape = SegmentedButtonDefaults.itemShape(
+                                    index = index, count = availableSortMethod.size
+                                )
+                            ) {
+                                Icon(
+                                    imageVector = sortMethod.icon,
+                                    contentDescription = null
+                                )
+                            }
                         }
                     }
                 }

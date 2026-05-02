@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import com.bobbyesp.metadator.core.data.local.DarkThemePreference.Companion.DarkThemeValue
 import com.bobbyesp.metadator.mediastore.domain.enums.LayoutType
 import com.bobbyesp.metadator.mediastore.domain.enums.CompactCardSize
+import com.bobbyesp.metadator.mediastore.presentation.pages.home.SortMethod
 import com.bobbyesp.utilities.ui.DEFAULT_SEED_COLOR
 import com.materialkolor.PaletteStyle
 
@@ -18,6 +19,9 @@ sealed class PreferencesKey<T>(val key: Preferences.Key<T>, val defaultValue: T)
     // --> UI
     data object SONGS_LAYOUT :
         PreferencesKey<String>(stringPreferencesKey("songs_layout"), LayoutType.Grid.name)
+
+    data object SORT_METHOD :
+        PreferencesKey<String>(stringPreferencesKey("sort_method"), SortMethod.Title.name)
 
     data object REDUCE_SHADOWS :
         PreferencesKey<Boolean>(booleanPreferencesKey("reduce_shadows"), false)

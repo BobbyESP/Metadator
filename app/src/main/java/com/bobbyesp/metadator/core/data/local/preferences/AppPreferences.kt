@@ -14,11 +14,13 @@ import com.bobbyesp.metadator.core.data.local.preferences.PreferencesKey.PALETTE
 import com.bobbyesp.metadator.core.data.local.preferences.PreferencesKey.REDUCE_SHADOWS
 import com.bobbyesp.metadator.core.data.local.preferences.PreferencesKey.SONGS_LAYOUT
 import com.bobbyesp.metadator.core.data.local.preferences.PreferencesKey.SONG_CARD_SIZE
+import com.bobbyesp.metadator.core.data.local.preferences.PreferencesKey.SORT_METHOD
 import com.bobbyesp.metadator.core.data.local.preferences.PreferencesKey.THEME_COLOR
 import com.bobbyesp.metadator.core.data.local.preferences.PreferencesKey.USE_DYNAMIC_COLORING
 import com.bobbyesp.metadator.mediastore.domain.enums.LayoutType
 import com.bobbyesp.metadator.mediastore.domain.enums.CompactCardSize
 import com.bobbyesp.metadator.core.presentation.theme.isDynamicColoringSupported
+import com.bobbyesp.metadator.mediastore.presentation.pages.home.SortMethod
 import com.materialkolor.PaletteStyle
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -111,6 +113,8 @@ class AppPreferences(
     ): UserPreferences {
         val desiredLayout: LayoutType =
             LayoutType.valueOf(preferences[SONGS_LAYOUT.key] ?: SONGS_LAYOUT.defaultValue)
+        val sortMethod: SortMethod =
+            SortMethod.valueOf(preferences[SORT_METHOD.key] ?: SORT_METHOD.defaultValue)
         val reduceShadows: Boolean = preferences[REDUCE_SHADOWS.key] ?: REDUCE_SHADOWS.defaultValue
         val marqueeTextEnabled: Boolean =
             preferences[MARQUEE_TEXT_ENABLED.key] ?: MARQUEE_TEXT_ENABLED.defaultValue
@@ -126,6 +130,7 @@ class AppPreferences(
 
         return UserPreferences(
             desiredLayout,
+            sortMethod,
             songCardSize,
             reduceShadows,
             marqueeTextEnabled,
