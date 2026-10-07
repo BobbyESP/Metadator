@@ -1,0 +1,156 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
+package com.bobbyesp.metadator.core.designsystem.theme
+
+import android.os.Build
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.blur.BlurRadiusSpec
+import androidx.compose.ui.graphics.luminance
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+import dev.chrisbanes.haze.HazeInput
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.blur.HazeBlurStyle
+import dev.chrisbanes.haze.blur.HazeColorEffect
+import dev.chrisbanes.haze.blur.hazeBlur
+import dev.chrisbanes.haze.blur.material3.Material3
+
+/**
+ * Where Metadator blurs, and how much. Material has no blur tokens, so these stand in for elevation
+ * where a surface floats over content that moves beneath it: frosting what is behind the surface
+ * tells the two apart better than a shadow, and keeps the content's colors in view. The surface
+ * keeps its Material color role, only translucent.
+ *
+ * Two kinds of blur, for two jobs:
+ * - **Frosted surfaces** ([surfaceStyle] and [frosted], on Haze): a bar over content recorded with
+ *   `Modifier.hazeSource`.
+ * - **Content out of focus** ([outOfFocus], on `Modifier.blur`): the screen behind something that
+ *   opens over it.
+ *
+ * Below Android 12 neither blurs: a frosted surface falls back to its container color, nearly
+ * opaque, and content that would go out of focus is dimmed instead.
+ */
+object MetadatorBlurDefaults {
+
+    /**
+     * Behind a frosted surface: enough that text beneath cannot be read, not so much that its
+     * colors turn to mud.
+     */
+    val SurfaceRadius: Dp = 24.dp
+
+    /**
+     * The screen behind what opens over it: out of focus but still recognizable, so it is clear
+     * what was left behind.
+     */
+    val BehindOverlayRadius: Dp = 12.dp
+
+    /** Whether the device can blur at all; where it cannot, a dim does the job. */
+    val isBlurSupported: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+
+    /**
+     * How much of the container color covers the blur. Enough for the content colors on it to keep
+     * their contrast whatever scrolls beneath; a dark container needs more, because light content
+     * shows through it more.
+     */
+    private const val LightContainerOpacity = 0.76f
+    private const val DarkContainerOpacity = 0.82f
+
+    /**
+     * A little grain, which keeps a wide blur of flat colors from banding. Less than Haze's
+     * default: Material surfaces are flat, and more reads as texture.
+     */
+    private const val NoiseFactor = 0.06f
+
+    /**
+     * How dark content out of focus gets. Where it is also blurred a touch is enough; where it
+     * cannot be, the dim is all that sets it back, and has to be Material's scrim.
+     */
+    internal const val BlurredScrimOpacity = 0.16f
+    internal const val SharpScrimOpacity = 0.48f
+
+    /**
+     * A frosted [containerColor]: what is behind the surface, blurred, under the container color at
+     * [LightContainerOpacity] or [DarkContainerOpacity]. Pass the role the surface would have used
+     * as a solid color, so the frosted one sits at the same place in the color scheme.
+     */
+    @Composable
+    @ReadOnlyComposable
+    fun surfaceStyle(containerColor: Color): HazeBlurStyle =
+        HazeBlurStyle.Material3(containerColor) {
+            blurRadius(SurfaceRadius)
+            noiseFactor(NoiseFactor)
+            colorEffects(
+                listOf(
+                    HazeColorEffect.tint(
+                        containerColor.copy(
+                            alpha =
+                                if (containerColor.luminance() >= 0.5f) LightContainerOpacity
+                                else DarkContainerOpacity
+                        )
+                    )
+                )
+            )
+        }
+}
+
+/**
+ * Frosts this surface with [style], blurring what [state] records beneath it. The surface's own
+ * container must then be transparent, and its shadow gone: the frost is what sets it apart.
+ *
+ * The source (`Modifier.hazeSource`) is a sibling of what it frosts, never an ancestor: a surface
+ * inside its own source would blur itself. And the content passes beneath the surface padded, not
+ * inset, or there is nothing there to frost.
+ *
+ * [HazeInput.Sources] rather than the backdrop, because it also reaches across windows. Clipped to
+ * [shape], the surface's own, because the blur is drawn to the rectangle of the layout.
+ */
+fun Modifier.frosted(
+    state: HazeState,
+    style: HazeBlurStyle,
+    shape: Shape = RectangleShape,
+): Modifier = clip(shape).hazeBlur(input = HazeInput.Sources(state), style = style)
+
+/**
+ * Takes this out of focus as something opens over it: blurred and dimmed with [scrim] in step with
+ * [fraction], from 0 (as it is) to 1. Below Android 12 it is only dimmed, and more.
+ *
+ * @param fraction read while drawing, so a gesture can drive it without recomposing anything
+ */
+@Composable
+fun Modifier.outOfFocus(fraction: () -> Float, scrim: Color): Modifier {
+    // Only while there is a blur to draw: it puts everything under it in a layer of its own, which
+    // nothing needs otherwise.
+    val blurring by
+        remember(fraction) {
+            derivedStateOf { MetadatorBlurDefaults.isBlurSupported && fraction() > 0f }
+        }
+    val scrimOpacity =
+        if (MetadatorBlurDefaults.isBlurSupported) MetadatorBlurDefaults.BlurredScrimOpacity
+        else MetadatorBlurDefaults.SharpScrimOpacity
+    val blurred =
+        if (blurring) {
+            blur {
+                radius =
+                    BlurRadiusSpec.uniform(
+                        MetadatorBlurDefaults.BehindOverlayRadius * fraction().coerceIn(0f, 1f)
+                    )
+            }
+        } else this
+    return blurred.drawWithContent {
+        drawContent()
+        val dim = fraction().coerceIn(0f, 1f) * scrimOpacity
+        if (dim > 0f) drawRect(scrim, alpha = dim)
+    }
+}
