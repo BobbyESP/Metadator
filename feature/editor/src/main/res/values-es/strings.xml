@@ -62,8 +62,6 @@
     <string name="add">Añadir</string>
     <string name="cancel">Cancelar</string>
 
-    <string name="file_name">Nombre</string>
-    <string name="file_format">Formato</string>
     <string name="file_size">Tamaño</string>
     <string name="file_duration">Duración</string>
     <string name="file_bitrate">Tasa de bits</string>
@@ -71,6 +69,8 @@
     <string name="file_sample_rate">Frecuencia de muestreo</string>
     <string name="file_sample_rate_value">%1$s kHz</string>
     <string name="file_channels">Canales</string>
+    <string name="file_channels_mono">Mono</string>
+    <string name="file_channels_stereo">Estéreo</string>
     <string name="file_location">Ubicación</string>
 
     <string name="unsaved_title">¿Descartar los cambios?</string>
