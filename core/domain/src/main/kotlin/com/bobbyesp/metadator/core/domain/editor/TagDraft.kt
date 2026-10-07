@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.core.domain.editor
 
 import com.bobbyesp.metadator.tags.api.ArtworkChange
@@ -8,8 +11,8 @@ import com.bobbyesp.metadator.tags.api.TagSnapshot
 import com.bobbyesp.metadator.tags.api.diff
 
 /**
- * The editor's working copy of a file's tags: what was read, and what the user has made of it.
- * The changes to save are always the difference between the two, never the whole form.
+ * The editor's working copy of a file's tags: what was read, and what the user has made of it. The
+ * changes to save are always the difference between the two, never the whole form.
  */
 data class TagDraft(
     val original: TagSnapshot,

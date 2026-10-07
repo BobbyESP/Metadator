@@ -1,10 +1,16 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.lookup.deezer
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-internal data class DeezerSearch(val data: List<DeezerTrack> = emptyList(), val error: DeezerError? = null)
+internal data class DeezerSearch(
+    val data: List<DeezerTrack> = emptyList(),
+    val error: DeezerError? = null,
+)
 
 @Serializable
 internal data class DeezerTrack(
@@ -22,7 +28,8 @@ internal data class DeezerTrack(
     val error: DeezerError? = null,
 )
 
-@Serializable internal data class DeezerArtist(val id: Long? = null, val name: String, val role: String? = null)
+@Serializable
+internal data class DeezerArtist(val id: Long? = null, val name: String, val role: String? = null)
 
 @Serializable
 internal data class DeezerAlbum(
@@ -33,4 +40,9 @@ internal data class DeezerAlbum(
     @SerialName("release_date") val releaseDate: String? = null,
 )
 
-@Serializable internal data class DeezerError(val type: String? = null, val message: String? = null, val code: Int? = null)
+@Serializable
+internal data class DeezerError(
+    val type: String? = null,
+    val message: String? = null,
+    val code: Int? = null,
+)

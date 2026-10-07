@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.feature.editor
 
 import android.content.Context
@@ -35,47 +38,50 @@ class AndroidImageSource(
     override suspend fun read(uri: String): PickedImage? =
         withContext(dispatchers.io) {
             runCatching {
-                    val parsed = Uri.parse(uri)
-                    val resolver = context.contentResolver
-                    val bytes = resolver.openInputStream(parsed)?.use { it.readBytes() } ?: return@runCatching null
-                    if (bytes.size > MAX_BYTES) return@runCatching null
-                    val mime = resolver.getType(parsed) ?: sniff(bytes) ?: return@runCatching null
-                    PickedImage(bytes, mime)
-                }
+                val parsed = Uri.parse(uri)
+                val resolver = context.contentResolver
+                val bytes =
+                    resolver.openInputStream(parsed)?.use { it.readBytes() }
+                        ?: return@runCatching null
+                if (bytes.size > MAX_BYTES) return@runCatching null
+                val mime = resolver.getType(parsed) ?: sniff(bytes) ?: return@runCatching null
+                PickedImage(bytes, mime)
+            }
                 .getOrNull()
         }
 
     override suspend fun inspect(bytes: ByteArray): ImageInfo? =
         withContext(dispatchers.default) {
             runCatching {
-                    val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
-                    BitmapFactory.decodeByteArray(bytes, 0, bytes.size, bounds)
-                    if (bounds.outWidth <= 0) return@runCatching null
-                    // A small copy is plenty to find a color.
-                    val sample =
-                        BitmapFactory.decodeByteArray(
-                            bytes,
-                            0,
-                            bytes.size,
-                            BitmapFactory.Options().apply {
-                                inSampleSize = (maxOf(bounds.outWidth, bounds.outHeight) / 128).coerceAtLeast(1)
-                            },
-                        )
-                    val color =
-                        sample?.let { bitmap ->
-                            val palette = Palette.from(bitmap).generate()
-                            bitmap.recycle()
-                            (palette.vibrantSwatch ?: palette.dominantSwatch)?.rgb
-                        }
-                    ImageInfo(bounds.outWidth, bounds.outHeight, bytes.size, color)
+                val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+                BitmapFactory.decodeByteArray(bytes, 0, bytes.size, bounds)
+                if (bounds.outWidth <= 0) return@runCatching null
+                // A small copy is plenty to find a color.
+                val sample =
+                    BitmapFactory.decodeByteArray(
+                        bytes,
+                        0,
+                        bytes.size,
+                        BitmapFactory.Options().apply {
+                            inSampleSize =
+                                (maxOf(bounds.outWidth, bounds.outHeight) / 128).coerceAtLeast(1)
+                        },
+                    )
+                val color = sample?.let { bitmap ->
+                    val palette = Palette.from(bitmap).generate()
+                    bitmap.recycle()
+                    (palette.vibrantSwatch ?: palette.dominantSwatch)?.rgb
                 }
+                ImageInfo(bounds.outWidth, bounds.outHeight, bytes.size, color)
+            }
                 .getOrNull()
         }
 
     private fun sniff(bytes: ByteArray): String? =
         when {
             bytes.size > 3 && bytes[0] == 0xFF.toByte() && bytes[1] == 0xD8.toByte() -> "image/jpeg"
-            bytes.size > 8 && bytes[0] == 0x89.toByte() && bytes[1] == 'P'.code.toByte() -> "image/png"
+            bytes.size > 8 && bytes[0] == 0x89.toByte() && bytes[1] == 'P'.code.toByte() ->
+                "image/png"
             else -> null
         }
 

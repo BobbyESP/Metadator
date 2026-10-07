@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.core.navigation
 
 import androidx.compose.animation.SharedTransitionLayout
@@ -16,8 +19,8 @@ import com.bobbyesp.metadator.core.navigation.motion.LocalNavSharedTransitionSco
 import com.bobbyesp.metadator.core.navigation.motion.NavigationMotion
 
 /**
- * How every host renders its back stack: the main activity and the external editor. They differ
- * in their destinations and strategies, never in how entries keep state or move.
+ * How every host renders its back stack: the main activity and the external editor. They differ in
+ * their destinations and strategies, never in how entries keep state or move.
  *
  * Saveable state goes before the ViewModel store: the library needs that order for a
  * `SavedStateHandle` to survive process death.

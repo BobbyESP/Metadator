@@ -1,11 +1,14 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.core.common
 
 import java.text.Normalizer
 import java.util.Locale
 
 /**
- * Lower case, without accents or punctuation, with single spaces: the form two titles are
- * compared in. "Beyoncé – Halo (Remastered)" and "beyonce halo remastered" are the same here.
+ * Lower case, without accents or punctuation, with single spaces: the form two titles are compared
+ * in. "Beyoncé – Halo (Remastered)" and "beyonce halo remastered" are the same here.
  */
 fun String.normalizedForComparison(): String =
     Normalizer.normalize(this, Normalizer.Form.NFD)

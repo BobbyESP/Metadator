@@ -1,6 +1,8 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.feature.editor
 
-import com.bobbyesp.metadator.core.ui.R as CoreUiR
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -11,7 +13,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
@@ -68,29 +69,53 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.navigationevent.NavigationEventInfo
+import androidx.navigationevent.compose.NavigationBackHandler
+import androidx.navigationevent.compose.rememberNavigationEventState
 import com.bobbyesp.metadator.core.designsystem.component.LoadingScreen
 import com.bobbyesp.metadator.core.designsystem.component.PlaceholderCard
 import com.bobbyesp.metadator.core.designsystem.component.SectionHeader
 import com.bobbyesp.metadator.core.designsystem.theme.Spacing
 import com.bobbyesp.metadator.core.domain.editor.Position
 import com.bobbyesp.metadator.core.domain.editor.TagDraft
+import com.bobbyesp.metadator.core.ui.R as CoreUiR
+import com.bobbyesp.metadator.core.ui.component.fieldLabel
 import com.bobbyesp.metadator.feature.editor.components.CoverCard
 import com.bobbyesp.metadator.feature.editor.components.FileInfoCard
 import com.bobbyesp.metadator.feature.editor.components.PositionField
 import com.bobbyesp.metadator.feature.editor.components.TagChipsField
 import com.bobbyesp.metadator.feature.editor.components.TagTextField
-import com.bobbyesp.metadator.core.ui.component.fieldLabel
 import com.bobbyesp.metadator.lyrics.api.Lrc
 import com.bobbyesp.metadator.tags.api.FieldKind
 import com.bobbyesp.metadator.tags.api.TagField
-import androidx.navigationevent.NavigationEventInfo
-import androidx.navigationevent.compose.NavigationBackHandler
-import androidx.navigationevent.compose.rememberNavigationEventState
 
 /** The fields of each section, in order. */
-private val MainFields = listOf(TagField.Title, TagField.Artist, TagField.Album, TagField.AlbumArtist, TagField.Date, TagField.Genre)
-private val CreditFields = listOf(TagField.Composer, TagField.Lyricist, TagField.Conductor, TagField.Remixer, TagField.Performer)
-private val MoreFields = listOf(TagField.Comment, TagField.Bpm, TagField.Isrc, TagField.Copyright, TagField.Label, TagField.Grouping)
+private val MainFields =
+    listOf(
+        TagField.Title,
+        TagField.Artist,
+        TagField.Album,
+        TagField.AlbumArtist,
+        TagField.Date,
+        TagField.Genre,
+    )
+private val CreditFields =
+    listOf(
+        TagField.Composer,
+        TagField.Lyricist,
+        TagField.Conductor,
+        TagField.Remixer,
+        TagField.Performer,
+    )
+private val MoreFields =
+    listOf(
+        TagField.Comment,
+        TagField.Bpm,
+        TagField.Isrc,
+        TagField.Copyright,
+        TagField.Label,
+        TagField.Grouping,
+    )
 
 /** Keys with a place of their own; everything else is under "All tags". */
 private val KnownKeys: Set<String> =
@@ -132,7 +157,9 @@ internal fun EditorScreen(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             EditorTopBar(
-                title = if (state.status == EditorStatus.Ready) state.title else stringResource(R.string.edit_tags),
+                title =
+                    if (state.status == EditorStatus.Ready) state.title
+                    else stringResource(R.string.edit_tags),
                 showClose = showClose,
                 canRevert = state.isDirty,
                 onClose = leave,
@@ -146,44 +173,60 @@ internal fun EditorScreen(
         when {
             state.status == EditorStatus.Loading -> LoadingScreen(Modifier.padding(padding))
             state.status != EditorStatus.Ready || draft == null || loaded == null ->
-                EditorProblem(state.status, onRetry = { onIntent(EditorIntent.Reload) }, onClose = onClose, modifier = Modifier.padding(padding))
+                EditorProblem(
+                    state.status,
+                    onRetry = { onIntent(EditorIntent.Reload) },
+                    onClose = onClose,
+                    modifier = Modifier.padding(padding),
+                )
             else ->
-                Box(Modifier.fillMaxSize().padding(top = padding.calculateTopPadding()).imePadding()) {
-                    val cover = @Composable { m: Modifier ->
-                        CoverCard(
-                            title = state.title,
-                            artist = state.artist,
-                            cover = draft.cover?.data,
-                            coverInfo = state.coverInfo,
-                            coverChanged = draft.isCoverChanged,
-                            hasOriginalCover = draft.original.frontCover != null,
-                            loadingCover = state.loadingCover,
-                            warnSmall = state.settings.warnSmallArtwork,
-                            isPlaying = state.isPlayingThis,
-                            onChangeCover = {
-                                pickCover.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-                            },
-                            onFindCover = onFindMetadata,
-                            onRemoveCover = { onIntent(EditorIntent.RemoveCover) },
-                            onRevertCover = { onIntent(EditorIntent.RevertCover) },
-                            onPlay = { onIntent(EditorIntent.Play) },
-                            modifier = m,
-                        )
-                    }
+                Box(
+                    Modifier.fillMaxSize().padding(top = padding.calculateTopPadding()).imePadding()
+                ) {
+                    val cover =
+                        @Composable { m: Modifier ->
+                            CoverCard(
+                                title = state.title,
+                                artist = state.artist,
+                                cover = draft.cover?.data,
+                                coverInfo = state.coverInfo,
+                                coverChanged = draft.isCoverChanged,
+                                hasOriginalCover = draft.original.frontCover != null,
+                                loadingCover = state.loadingCover,
+                                warnSmall = state.settings.warnSmallArtwork,
+                                isPlaying = state.isPlayingThis,
+                                onChangeCover = {
+                                    pickCover.launch(
+                                        PickVisualMediaRequest(
+                                            ActivityResultContracts.PickVisualMedia.ImageOnly
+                                        )
+                                    )
+                                },
+                                onFindCover = onFindMetadata,
+                                onRemoveCover = { onIntent(EditorIntent.RemoveCover) },
+                                onRevertCover = { onIntent(EditorIntent.RevertCover) },
+                                onPlay = { onIntent(EditorIntent.Play) },
+                                modifier = m,
+                            )
+                        }
                     BoxWithConstraints(Modifier.fillMaxSize()) {
                         if (maxWidth >= TwoColumnWidth) {
                             // Wide: the cover and the file stay in view while the fields scroll.
                             Row(Modifier.fillMaxSize().padding(horizontal = Spacing.extraLarge)) {
                                 Column(
-                                    Modifier.width(320.dp).verticalScroll(rememberScrollState()).padding(vertical = Spacing.large),
+                                    Modifier.width(320.dp)
+                                        .verticalScroll(rememberScrollState())
+                                        .padding(vertical = Spacing.large),
                                     verticalArrangement = Arrangement.spacedBy(Spacing.extraLarge),
                                 ) {
                                     cover(Modifier)
                                     FileInfoCard(loaded)
                                 }
                                 LazyColumn(
-                                    modifier = Modifier.weight(1f).padding(start = Spacing.extraLarge),
-                                    contentPadding = PaddingValues(bottom = Spacing.floatingClearance),
+                                    modifier =
+                                        Modifier.weight(1f).padding(start = Spacing.extraLarge),
+                                    contentPadding =
+                                        PaddingValues(bottom = Spacing.floatingClearance),
                                 ) {
                                     fields(state, draft, onIntent)
                                 }
@@ -191,11 +234,20 @@ internal fun EditorScreen(
                         } else {
                             LazyColumn(
                                 modifier = Modifier.fillMaxSize(),
-                                contentPadding = PaddingValues(start = Spacing.screen, end = Spacing.screen, bottom = Spacing.floatingClearance),
+                                contentPadding =
+                                    PaddingValues(
+                                        start = Spacing.screen,
+                                        end = Spacing.screen,
+                                        bottom = Spacing.floatingClearance,
+                                    ),
                             ) {
-                                item(key = "cover") { cover(Modifier.padding(vertical = Spacing.large)) }
+                                item(key = "cover") {
+                                    cover(Modifier.padding(vertical = Spacing.large))
+                                }
                                 fields(state, draft, onIntent)
-                                item(key = "file-header") { SectionHeader(stringResource(R.string.section_file)) }
+                                item(key = "file-header") {
+                                    SectionHeader(stringResource(R.string.section_file))
+                                }
                                 item(key = "file") { FileInfoCard(loaded) }
                             }
                         }
@@ -225,14 +277,20 @@ internal fun EditorScreen(
             title = { Text(stringResource(R.string.unsaved_title)) },
             text = { Text(stringResource(R.string.unsaved_description)) },
             confirmButton = {
-                TextButton(onClick = {
-                    confirmDiscard = false
-                    onIntent(EditorIntent.RevertAll)
-                    onClose()
-                }) { Text(stringResource(R.string.unsaved_discard)) }
+                TextButton(
+                    onClick = {
+                        confirmDiscard = false
+                        onIntent(EditorIntent.RevertAll)
+                        onClose()
+                    }
+                ) {
+                    Text(stringResource(R.string.unsaved_discard))
+                }
             },
             dismissButton = {
-                TextButton(onClick = { confirmDiscard = false }) { Text(stringResource(R.string.unsaved_keep)) }
+                TextButton(onClick = { confirmDiscard = false }) {
+                    Text(stringResource(R.string.unsaved_keep))
+                }
             },
         )
     }
@@ -300,17 +358,29 @@ private fun EditorToolbar(
         modifier = modifier,
         colors = FloatingToolbarDefaults.vibrantFloatingToolbarColors(),
         floatingActionButton = {
-            FloatingToolbarDefaults.VibrantFloatingActionButton(onClick = { if (dirty && !saving) onSave() }) {
+            FloatingToolbarDefaults.VibrantFloatingActionButton(
+                onClick = { if (dirty && !saving) onSave() }
+            ) {
                 if (saving) LoadingIndicator(color = MaterialTheme.colorScheme.onTertiaryContainer)
-                else Icon(Icons.Rounded.Save, contentDescription = stringResource(if (saving) R.string.saving else R.string.save))
+                else
+                    Icon(
+                        Icons.Rounded.Save,
+                        contentDescription =
+                            stringResource(if (saving) R.string.saving else R.string.save),
+                    )
             }
         },
     ) {
         IconButton(onClick = onFindMetadata, shapes = IconButtonDefaults.shapes()) {
             Icon(Icons.Rounded.TravelExplore, stringResource(R.string.lookup_find))
         }
-        IconButton(onClick = onFindLyrics, enabled = !findingLyrics, shapes = IconButtonDefaults.shapes()) {
-            if (findingLyrics) LoadingIndicator() else Icon(Icons.Rounded.Lyrics, stringResource(R.string.lyrics_find))
+        IconButton(
+            onClick = onFindLyrics,
+            enabled = !findingLyrics,
+            shapes = IconButtonDefaults.shapes(),
+        ) {
+            if (findingLyrics) LoadingIndicator()
+            else Icon(Icons.Rounded.Lyrics, stringResource(R.string.lyrics_find))
         }
         IconButton(onClick = onRevertAll, enabled = dirty, shapes = IconButtonDefaults.shapes()) {
             Icon(Icons.AutoMirrored.Rounded.Undo, stringResource(R.string.revert_all))
@@ -319,21 +389,32 @@ private fun EditorToolbar(
 }
 
 /** Every editable section, as items of the editor's list. */
-private fun LazyListScope.fields(state: EditorState, draft: TagDraft, onIntent: (EditorIntent) -> Unit) {
+private fun LazyListScope.fields(
+    state: EditorState,
+    draft: TagDraft,
+    onIntent: (EditorIntent) -> Unit,
+) {
     val separator = state.settings.multiValueSeparator
     item(key = "main-header") { SectionHeader(stringResource(R.string.section_main)) }
-    MainFields.forEach { field -> item(key = field.key) { FieldInput(field, draft, separator, onIntent) } }
+    MainFields.forEach { field ->
+        item(key = field.key) { FieldInput(field, draft, separator, onIntent) }
+    }
 
     item(key = "track-header") { SectionHeader(stringResource(R.string.section_track)) }
     listOf(TagField.TrackNumber, TagField.DiscNumber).forEach { field ->
         item(key = field.key) {
             val position = state.position(field)
-            val keys = listOf(field.key) + if (field == TagField.TrackNumber) TagField.TrackTotalKeys else TagField.DiscTotalKeys
+            val keys =
+                listOf(field.key) +
+                    if (field == TagField.TrackNumber) TagField.TrackTotalKeys
+                    else TagField.DiscTotalKeys
             PositionField(
                 label = fieldLabel(field.key),
                 number = position.number,
                 total = position.total,
-                onChange = { number, total -> onIntent(EditorIntent.SetPosition(field, Position(number, total))) },
+                onChange = { number, total ->
+                    onIntent(EditorIntent.SetPosition(field, Position(number, total)))
+                },
                 changed = keys.any(draft::isChanged),
                 onRevert = { onIntent(EditorIntent.Revert(keys)) },
                 modifier = Modifier.padding(bottom = Spacing.small),
@@ -342,10 +423,14 @@ private fun LazyListScope.fields(state: EditorState, draft: TagDraft, onIntent: 
     }
 
     item(key = "credits-header") { SectionHeader(stringResource(R.string.section_credits)) }
-    CreditFields.forEach { field -> item(key = field.key) { FieldInput(field, draft, separator, onIntent) } }
+    CreditFields.forEach { field ->
+        item(key = field.key) { FieldInput(field, draft, separator, onIntent) }
+    }
 
     item(key = "more-header") { SectionHeader(stringResource(R.string.section_more)) }
-    MoreFields.forEach { field -> item(key = field.key) { FieldInput(field, draft, separator, onIntent) } }
+    MoreFields.forEach { field ->
+        item(key = field.key) { FieldInput(field, draft, separator, onIntent) }
+    }
 
     item(key = "lyrics-header") {
         SectionHeader(
@@ -355,7 +440,9 @@ private fun LazyListScope.fields(state: EditorState, draft: TagDraft, onIntent: 
                     onClick = { onIntent(EditorIntent.FindLyrics) },
                     enabled = !state.findingLyrics,
                     shapes = ButtonDefaults.shapes(),
-                ) { Text(stringResource(R.string.lyrics_find)) }
+                ) {
+                    Text(stringResource(R.string.lyrics_find))
+                }
             },
         )
     }
@@ -363,12 +450,18 @@ private fun LazyListScope.fields(state: EditorState, draft: TagDraft, onIntent: 
         val lyrics = draft.tags.first(TagField.Lyrics.key).orEmpty()
         Column {
             if (Lrc.isSynced(lyrics)) {
-                AssistChip(onClick = {}, label = { Text(stringResource(R.string.lyrics_synced)) }, leadingIcon = { Icon(Icons.Rounded.Lyrics, null) })
+                AssistChip(
+                    onClick = {},
+                    label = { Text(stringResource(R.string.lyrics_synced)) },
+                    leadingIcon = { Icon(Icons.Rounded.Lyrics, null) },
+                )
             }
             TagTextField(
                 label = fieldLabel(TagField.Lyrics.key),
                 value = lyrics,
-                onValueChange = { onIntent(EditorIntent.SetField(TagField.Lyrics.key, listOf(it))) },
+                onValueChange = {
+                    onIntent(EditorIntent.SetField(TagField.Lyrics.key, listOf(it)))
+                },
                 changed = draft.isChanged(TagField.Lyrics.key),
                 onRevert = { onIntent(EditorIntent.Revert(listOf(TagField.Lyrics.key))) },
                 singleLine = false,
@@ -378,7 +471,8 @@ private fun LazyListScope.fields(state: EditorState, draft: TagDraft, onIntent: 
         }
     }
 
-    val otherKeys = (draft.tags.keys + draft.original.tags.keys).filter { it !in KnownKeys }.distinct().sorted()
+    val otherKeys =
+        (draft.tags.keys + draft.original.tags.keys).filter { it !in KnownKeys }.distinct().sorted()
     item(key = "all-header") {
         var adding by rememberSaveable { mutableStateOf(false) }
         SectionHeader(
@@ -404,7 +498,12 @@ private fun LazyListScope.fields(state: EditorState, draft: TagDraft, onIntent: 
             stringResource(R.string.all_tags_description),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(start = Spacing.small, end = Spacing.small, bottom = Spacing.small),
+            modifier =
+                Modifier.padding(
+                    start = Spacing.small,
+                    end = Spacing.small,
+                    bottom = Spacing.small,
+                ),
         )
     }
     otherKeys.forEach { key ->
@@ -423,7 +522,12 @@ private fun LazyListScope.fields(state: EditorState, draft: TagDraft, onIntent: 
 }
 
 @Composable
-private fun FieldInput(field: TagField, draft: TagDraft, separator: String, onIntent: (EditorIntent) -> Unit) {
+private fun FieldInput(
+    field: TagField,
+    draft: TagDraft,
+    separator: String,
+    onIntent: (EditorIntent) -> Unit,
+) {
     val label = fieldLabel(field.key)
     val changed = draft.isChanged(field.key)
     val revert = { onIntent(EditorIntent.Revert(listOf(field.key))) }
@@ -447,10 +551,14 @@ private fun FieldInput(field: TagField, draft: TagDraft, separator: String, onIn
             onRevert = revert,
             singleLine = field.kind != FieldKind.LongText,
             maxLines = if (field.kind == FieldKind.LongText) 6 else 1,
-            placeholder = if (field.kind == FieldKind.Date) stringResource(CoreUiR.string.field_date_hint) else null,
-            keyboardType = if (field.kind == FieldKind.Number) KeyboardType.Number else KeyboardType.Text,
+            placeholder =
+                if (field.kind == FieldKind.Date) stringResource(CoreUiR.string.field_date_hint)
+                else null,
+            keyboardType =
+                if (field.kind == FieldKind.Number) KeyboardType.Number else KeyboardType.Text,
             capitalization =
-                if (field == TagField.Isrc) KeyboardCapitalization.Characters else KeyboardCapitalization.Sentences,
+                if (field == TagField.Isrc) KeyboardCapitalization.Characters
+                else KeyboardCapitalization.Sentences,
             modifier = modifier,
         )
     }
@@ -472,7 +580,8 @@ private fun AddFieldDialog(onAdd: (key: String, value: String) -> Unit, onDismis
                     label = { Text(stringResource(R.string.add_field_name)) },
                     placeholder = { Text(stringResource(R.string.add_field_name_hint)) },
                     singleLine = true,
-                    keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Characters),
+                    keyboardOptions =
+                        KeyboardOptions(capitalization = KeyboardCapitalization.Characters),
                 )
                 OutlinedTextField(
                     value = value,
@@ -486,14 +595,23 @@ private fun AddFieldDialog(onAdd: (key: String, value: String) -> Unit, onDismis
             TextButton(
                 onClick = { onAdd(normalized, value.trim()) },
                 enabled = normalized.isNotEmpty() && value.isNotBlank(),
-            ) { Text(stringResource(R.string.add)) }
+            ) {
+                Text(stringResource(R.string.add))
+            }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.cancel)) } },
+        dismissButton = {
+            TextButton(onClick = onDismiss) { Text(stringResource(R.string.cancel)) }
+        },
     )
 }
 
 @Composable
-private fun EditorProblem(status: EditorStatus, onRetry: () -> Unit, onClose: () -> Unit, modifier: Modifier = Modifier) {
+private fun EditorProblem(
+    status: EditorStatus,
+    onRetry: () -> Unit,
+    onClose: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     Box(modifier.fillMaxSize().padding(Spacing.extraLarge), contentAlignment = Alignment.Center) {
         when (status) {
             EditorStatus.NotFound ->

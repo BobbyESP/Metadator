@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.core.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
@@ -35,7 +38,10 @@ abstract class BaseViewModel<Intent : Any, State : Any, Effect : Any>(initialSta
         get() = _state.value
 
     private val _effects =
-        MutableSharedFlow<Effect>(extraBufferCapacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
+        MutableSharedFlow<Effect>(
+            extraBufferCapacity = 1,
+            onBufferOverflow = BufferOverflow.DROP_OLDEST,
+        )
     val effects: SharedFlow<Effect> = _effects.asSharedFlow()
 
     private val _messages = Channel<UiMessage>(Channel.BUFFERED)
@@ -56,14 +62,16 @@ abstract class BaseViewModel<Intent : Any, State : Any, Effect : Any>(initialSta
     }
 
     /** Launches [block]; a failure goes to [onError] instead of crashing the app. */
-    protected fun launch(onError: (Throwable) -> Unit = {}, block: suspend CoroutineScope.() -> Unit): Job =
-        viewModelScope.launch {
-            try {
-                block()
-            } catch (cancellation: CancellationException) {
-                throw cancellation
-            } catch (error: Throwable) {
-                onError(error)
-            }
+    protected fun launch(
+        onError: (Throwable) -> Unit = {},
+        block: suspend CoroutineScope.() -> Unit,
+    ): Job = viewModelScope.launch {
+        try {
+            block()
+        } catch (cancellation: CancellationException) {
+            throw cancellation
+        } catch (error: Throwable) {
+            onError(error)
         }
+    }
 }

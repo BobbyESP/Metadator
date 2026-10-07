@@ -17,12 +17,12 @@ allprojects {
     apply(plugin = rootProject.libs.plugins.spotless.get().pluginId)
     configure<SpotlessExtension> {
         kotlin {
-            ktfmt().kotlinlangStyle()
+            ktfmt("0.64").kotlinlangStyle()
             target("src/**/*.kt")
             licenseHeaderFile(rootProject.file("spotless/copyright.txt"))
         }
         kotlinGradle {
-            ktfmt().kotlinlangStyle()
+            ktfmt("0.64").kotlinlangStyle()
             target("*.kts")
         }
         format("xml") {

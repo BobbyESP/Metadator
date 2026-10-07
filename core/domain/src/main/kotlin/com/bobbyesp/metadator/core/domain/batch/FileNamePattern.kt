@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.core.domain.batch
 
 import com.bobbyesp.metadator.tags.api.TagField
@@ -6,9 +9,8 @@ import com.bobbyesp.metadator.tags.api.TagMap
 /**
  * A file name pattern such as `{track} - {artist} - {title}`, for reading tags out of file names.
  *
- * Placeholders are matched lazily and the literal text between them exactly, so
- * `{artist} - {title}` reads "AC/DC - Back In Black - Live" as artist "AC/DC" and title
- * "Back In Black - Live".
+ * Placeholders are matched lazily and the literal text between them exactly, so `{artist} -
+ * {title}` reads "AC/DC - Back In Black - Live" as artist "AC/DC" and title "Back In Black - Live".
  */
 class FileNamePattern(val pattern: String) {
 
@@ -78,8 +80,9 @@ class FileNamePattern(val pattern: String) {
         Genre("genre", TagField.Genre.key);
 
         companion object {
-            fun forName(name: String): Placeholder? =
-                entries.firstOrNull { it.token.equals(name.trim(), ignoreCase = true) }
+            fun forName(name: String): Placeholder? = entries.firstOrNull {
+                it.token.equals(name.trim(), ignoreCase = true)
+            }
         }
     }
 

@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.tags.api
 
 /**
@@ -62,7 +65,10 @@ private fun EmbeddedPicture.isFrontCover(all: List<EmbeddedPicture>): Boolean =
 data class AppliedSnapshot(val tags: TagMap, val pictures: List<EmbeddedPicture>?)
 
 fun TagSnapshot.applying(changes: TagChanges): AppliedSnapshot =
-    AppliedSnapshot(tags = tags.applying(changes.fields), pictures = pictures.applying(changes.artwork))
+    AppliedSnapshot(
+        tags = tags.applying(changes.fields),
+        pictures = pictures.applying(changes.artwork),
+    )
 
 /**
  * The changes that turn [original] into [edited]: only the keys whose values differ. Comparing

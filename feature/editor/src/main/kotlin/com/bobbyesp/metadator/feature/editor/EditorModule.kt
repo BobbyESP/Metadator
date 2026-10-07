@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.feature.editor
 
 import com.bobbyesp.metadator.feature.editor.lookup.LookupViewModel

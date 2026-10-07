@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.feature.editor
 
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
@@ -49,7 +52,10 @@ fun EditorDestination(uri: String, onClose: () -> Unit) {
     }
 
     val accent =
-        state.coverInfo?.dominantColor?.takeIf { state.settings.colorEditorFromArtwork }?.let { Color(it) }
+        state.coverInfo
+            ?.dominantColor
+            ?.takeIf { state.settings.colorEditorFromArtwork }
+            ?.let { Color(it) }
 
     MetadatorAccentTheme(accent = accent) {
         EditorScreen(
@@ -60,10 +66,13 @@ fun EditorDestination(uri: String, onClose: () -> Unit) {
                 showLookup = true
                 if (lookupState.title.isEmpty() && lookupState.artist.isEmpty()) {
                     lookup.start(
-                        title = draft.tags.first(TagField.Title.key) ?: state.loaded?.track?.title.orEmpty(),
+                        title =
+                            draft.tags.first(TagField.Title.key)
+                                ?: state.loaded?.track?.title.orEmpty(),
                         artist = draft.tags[TagField.Artist.key].firstOrNull().orEmpty(),
                         album = draft.tags.first(TagField.Album.key).orEmpty(),
-                        durationMs = state.loaded?.audio?.durationMs ?: state.loaded?.track?.durationMs,
+                        durationMs =
+                            state.loaded?.audio?.durationMs ?: state.loaded?.track?.durationMs,
                     )
                 }
             },

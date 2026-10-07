@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.core.domain.editor
 
 import com.bobbyesp.metadator.core.model.MultiValueMode
@@ -28,7 +31,10 @@ class EditorLogicTest {
                 TagField.TrackNumber,
             ),
         )
-        assertEquals(Position("A1", ""), TrackPositions.read(TagMap.of("TRACKNUMBER" to listOf("A1")), TagField.TrackNumber))
+        assertEquals(
+            Position("A1", ""),
+            TrackPositions.read(TagMap.of("TRACKNUMBER" to listOf("A1")), TagField.TrackNumber),
+        )
     }
 
     @Test
@@ -36,7 +42,12 @@ class EditorLogicTest {
         val tags = TagMap.of("TRACKNUMBER" to listOf("1"))
         assertEquals(
             mapOf("TRACKNUMBER" to listOf("3/12")),
-            TrackPositions.write(tags, TagField.TrackNumber, Position("3", "12"), PositionStyle.Combined),
+            TrackPositions.write(
+                tags,
+                TagField.TrackNumber,
+                Position("3", "12"),
+                PositionStyle.Combined,
+            ),
         )
     }
 
@@ -45,7 +56,12 @@ class EditorLogicTest {
         val tags = TagMap.of("TRACKNUMBER" to listOf("1"), "TOTALTRACKS" to listOf("10"))
         assertEquals(
             mapOf("TRACKNUMBER" to listOf("3"), "TOTALTRACKS" to listOf("12")),
-            TrackPositions.write(tags, TagField.TrackNumber, Position("3", "12"), PositionStyle.Separate),
+            TrackPositions.write(
+                tags,
+                TagField.TrackNumber,
+                Position("3", "12"),
+                PositionStyle.Separate,
+            ),
         )
     }
 

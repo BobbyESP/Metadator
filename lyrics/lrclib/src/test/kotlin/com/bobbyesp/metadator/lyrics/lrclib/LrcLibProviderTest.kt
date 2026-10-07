@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.lyrics.lrclib
 
 import com.bobbyesp.metadator.core.network.HttpClientFactory
@@ -19,7 +22,12 @@ class LrcLibProviderTest {
     fun `falls back to search and keeps the closest duration`() = runTest {
         val engine = MockEngine { request ->
             when (request.url.encodedPath) {
-                "/api/get" -> respond("""{"code":404,"name":"TrackNotFound"}""", HttpStatusCode.NotFound, json)
+                "/api/get" ->
+                    respond(
+                        """{"code":404,"name":"TrackNotFound"}""",
+                        HttpStatusCode.NotFound,
+                        json,
+                    )
                 "/api/search" ->
                     respond(
                         """[{"id":1,"duration":300.0,"plainLyrics":"far"},

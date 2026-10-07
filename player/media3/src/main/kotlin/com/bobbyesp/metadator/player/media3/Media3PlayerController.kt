@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.player.media3
 
 import android.content.ComponentName
@@ -24,8 +27,8 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 /**
- * The app's side of [PlaybackService]: a [MediaController] connected on first use. Commands
- * issued before the connection is ready are queued, so the first "play" is never lost.
+ * The app's side of [PlaybackService]: a [MediaController] connected on first use. Commands issued
+ * before the connection is ready are queued, so the first "play" is never lost.
  *
  * Must be called on the main thread, as every Media3 controller.
  */
@@ -79,7 +82,11 @@ class Media3PlayerController(
         if (tracks.isEmpty()) return
         queue = tracks
         withController { player ->
-            player.setMediaItems(tracks.map { it.toMediaItem() }, startIndex.coerceIn(tracks.indices), 0L)
+            player.setMediaItems(
+                tracks.map { it.toMediaItem() },
+                startIndex.coerceIn(tracks.indices),
+                0L,
+            )
             player.shuffleModeEnabled = shuffle
             player.prepare()
             player.play()
@@ -130,8 +137,7 @@ class Media3PlayerController(
                 isPlaying = player.isPlaying,
                 isBuffering = player.playbackState == Player.STATE_BUFFERING,
                 positionMs = player.currentPosition.coerceAtLeast(0),
-                durationMs =
-                    player.duration.takeIf { it > 0 } ?: current?.durationMs ?: 0L,
+                durationMs = player.duration.takeIf { it > 0 } ?: current?.durationMs ?: 0L,
                 shuffle = player.shuffleModeEnabled,
                 repeatMode =
                     when (player.repeatMode) {
@@ -147,16 +153,15 @@ class Media3PlayerController(
     /** The position moves on its own while playing; nothing reports it, so it is polled. */
     private fun updateTicker(playing: Boolean) {
         if (playing && ticker?.isActive != true) {
-            ticker =
-                scope.launch {
-                    while (isActive) {
-                        delay(TICK_MS)
-                        controller?.let { player ->
-                            _state.value =
-                                _state.value.copy(positionMs = player.currentPosition.coerceAtLeast(0))
-                        }
+            ticker = scope.launch {
+                while (isActive) {
+                    delay(TICK_MS)
+                    controller?.let { player ->
+                        _state.value =
+                            _state.value.copy(positionMs = player.currentPosition.coerceAtLeast(0))
                     }
                 }
+            }
         } else if (!playing) {
             ticker?.cancel()
             ticker = null

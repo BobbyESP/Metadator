@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.library.mediastore
 
 import android.app.RecoverableSecurityException
@@ -83,38 +86,41 @@ class ContentResolverFileInfo(
             val uri = Uri.parse(ref.uri)
             val resolver = context.contentResolver
             runCatching {
-                    val projection = buildList {
-                        add(OpenableColumns.DISPLAY_NAME)
-                        add(OpenableColumns.SIZE)
-                        if (isMediaStoreUri(uri)) {
-                            add(MediaStore.MediaColumns.DATE_MODIFIED)
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                                add(MediaStore.MediaColumns.RELATIVE_PATH)
-                            } else add(MediaStoreAudioLibrary.DATA_COLUMN)
-                        }
-                    }
-                    resolver.query(uri, projection.toTypedArray(), null, null, null)?.use { cursor ->
-                        if (!cursor.moveToFirst()) return@use null
-                        fun string(column: String) =
-                            cursor.getColumnIndex(column).takeIf { it >= 0 && !cursor.isNull(it) }
-                                ?.let(cursor::getString)
-                        fun long(column: String) =
-                            cursor.getColumnIndex(column).takeIf { it >= 0 && !cursor.isNull(it) }
-                                ?.let(cursor::getLong)
-                        FileDescription(
-                            displayName =
-                                string(OpenableColumns.DISPLAY_NAME)
-                                    ?: uri.lastPathSegment.orEmpty(),
-                            sizeBytes = long(OpenableColumns.SIZE),
-                            mimeType = resolver.getType(uri),
-                            lastModifiedMillis =
-                                long(MediaStore.MediaColumns.DATE_MODIFIED)?.times(1000),
-                            location =
-                                string(MediaStore.MediaColumns.RELATIVE_PATH)
-                                    ?: string(MediaStoreAudioLibrary.DATA_COLUMN),
-                        )
+                val projection = buildList {
+                    add(OpenableColumns.DISPLAY_NAME)
+                    add(OpenableColumns.SIZE)
+                    if (isMediaStoreUri(uri)) {
+                        add(MediaStore.MediaColumns.DATE_MODIFIED)
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                            add(MediaStore.MediaColumns.RELATIVE_PATH)
+                        } else add(MediaStoreAudioLibrary.DATA_COLUMN)
                     }
                 }
+                resolver.query(uri, projection.toTypedArray(), null, null, null)?.use { cursor ->
+                    if (!cursor.moveToFirst()) return@use null
+                    fun string(column: String) =
+                        cursor
+                            .getColumnIndex(column)
+                            .takeIf { it >= 0 && !cursor.isNull(it) }
+                            ?.let(cursor::getString)
+                    fun long(column: String) =
+                        cursor
+                            .getColumnIndex(column)
+                            .takeIf { it >= 0 && !cursor.isNull(it) }
+                            ?.let(cursor::getLong)
+                    FileDescription(
+                        displayName =
+                            string(OpenableColumns.DISPLAY_NAME) ?: uri.lastPathSegment.orEmpty(),
+                        sizeBytes = long(OpenableColumns.SIZE),
+                        mimeType = resolver.getType(uri),
+                        lastModifiedMillis =
+                            long(MediaStore.MediaColumns.DATE_MODIFIED)?.times(1000),
+                        location =
+                            string(MediaStore.MediaColumns.RELATIVE_PATH)
+                                ?: string(MediaStoreAudioLibrary.DATA_COLUMN),
+                    )
+                }
+            }
                 .getOrNull()
         }
 }

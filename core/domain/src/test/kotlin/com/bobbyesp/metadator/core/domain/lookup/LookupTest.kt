@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.core.domain.lookup
 
 import com.bobbyesp.metadator.core.domain.FakeSettings
@@ -28,13 +31,17 @@ class LookupTest {
         val service =
             LookupService(
                 listOf(
-                    Provider("musicbrainz", LookupResult.Success(listOf(candidate("musicbrainz", "Bohemian Rhapsody")))),
+                    Provider(
+                        "musicbrainz",
+                        LookupResult.Success(listOf(candidate("musicbrainz", "Bohemian Rhapsody"))),
+                    ),
                     Provider("deezer", LookupResult.Failed("boom")),
                 ),
                 FakeSettings(),
             )
 
-        val outcome = service.search(LookupQuery("Bohemian Rhapsody", "Queen")) as LookupOutcome.Results
+        val outcome =
+            service.search(LookupQuery("Bohemian Rhapsody", "Queen")) as LookupOutcome.Results
 
         assertEquals(1, outcome.candidates.size)
         assertEquals(listOf("deezer"), outcome.failedProviders)
@@ -44,7 +51,10 @@ class LookupTest {
     fun `offline everywhere is offline`() = runTest {
         val service =
             LookupService(
-                listOf(Provider("musicbrainz", LookupResult.Offline), Provider("deezer", LookupResult.Offline)),
+                listOf(
+                    Provider("musicbrainz", LookupResult.Offline),
+                    Provider("deezer", LookupResult.Offline),
+                ),
                 FakeSettings(),
             )
         assertEquals(LookupOutcome.Offline, service.search(LookupQuery("x")))
@@ -55,20 +65,21 @@ class LookupTest {
         val current = TagMap.of("TITLE" to listOf("bohemian rhapsody"), "ARTIST" to listOf("Queen"))
         val proposals =
             proposalsFor(
-                LookupCandidate(
-                    providerId = "mb",
-                    providerName = "mb",
-                    id = "1",
-                    title = "Bohemian Rhapsody",
-                    artists = listOf("Queen"),
-                    album = "A Night at the Opera",
-                    trackNumber = 11,
-                    trackTotal = 12,
-                    identifiers = mapOf("MUSICBRAINZ_TRACKID" to "abc"),
-                ),
-                current,
-                PositionStyle.Combined,
-            ).associateBy { it.key }
+                    LookupCandidate(
+                        providerId = "mb",
+                        providerName = "mb",
+                        id = "1",
+                        title = "Bohemian Rhapsody",
+                        artists = listOf("Queen"),
+                        album = "A Night at the Opera",
+                        trackNumber = 11,
+                        trackTotal = 12,
+                        identifiers = mapOf("MUSICBRAINZ_TRACKID" to "abc"),
+                    ),
+                    current,
+                    PositionStyle.Combined,
+                )
+                .associateBy { it.key }
 
         assertTrue(proposals.getValue("TITLE").differs)
         assertTrue(!proposals.getValue("ARTIST").differs)

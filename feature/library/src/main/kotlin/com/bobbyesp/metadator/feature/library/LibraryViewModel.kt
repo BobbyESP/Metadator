@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.feature.library
 
 import androidx.lifecycle.SavedStateHandle
@@ -97,12 +100,16 @@ class LibraryViewModel(
     private val strings: StringProvider,
     private val dispatchers: AppDispatchers,
     private val savedState: SavedStateHandle,
-) : BaseViewModel<LibraryIntent, LibraryState, Nothing>(
-    LibraryState(
-        tab = savedState.get<String>(KEY_TAB)?.let { name -> LibraryTab.entries.firstOrNull { it.name == name } } ?: LibraryTab.Songs,
-        filter = LibraryFilter(search = savedState[KEY_SEARCH] ?: ""),
-    )
-) {
+) :
+    BaseViewModel<LibraryIntent, LibraryState, Nothing>(
+        LibraryState(
+            tab =
+                savedState.get<String>(KEY_TAB)?.let { name ->
+                    LibraryTab.entries.firstOrNull { it.name == name }
+                } ?: LibraryTab.Songs,
+            filter = LibraryFilter(search = savedState[KEY_SEARCH] ?: ""),
+        )
+    ) {
     private val query = MutableStateFlow(Query(currentState.filter, currentState.sort))
     private var observing: Job? = null
 
@@ -111,7 +118,9 @@ class LibraryViewModel(
     init {
         player.state
             .onEach { playback ->
-                setState { copy(playingId = playback.current?.id, playerActive = playback.isActive) }
+                setState {
+                    copy(playingId = playback.current?.id, playerActive = playback.isActive)
+                }
             }
             .launchIn(viewModelScope)
     }
@@ -148,16 +157,22 @@ class LibraryViewModel(
                 updateQuery { copy(filter = LibraryFilter(search = filter.search)) }
             is LibraryIntent.ToggleSelection ->
                 setState {
-                    copy(selection = if (intent.id in selection) selection - intent.id else selection + intent.id)
+                    copy(
+                        selection =
+                            if (intent.id in selection) selection - intent.id
+                            else selection + intent.id
+                    )
                 }
-            LibraryIntent.SelectAll -> setState { copy(selection = tracks.mapTo(mutableSetOf()) { it.id }) }
+            LibraryIntent.SelectAll ->
+                setState { copy(selection = tracks.mapTo(mutableSetOf()) { it.id }) }
             LibraryIntent.ClearSelection -> setState { copy(selection = emptySet()) }
             LibraryIntent.Refresh -> refresh()
             is LibraryIntent.Play -> {
                 val queue = currentState.tracks
                 player.play(queue, startIndex = queue.indexOf(intent.track).coerceAtLeast(0))
             }
-            is LibraryIntent.PlayAll -> player.play(currentState.tracks, 0, shuffle = intent.shuffle)
+            is LibraryIntent.PlayAll ->
+                player.play(currentState.tracks, 0, shuffle = intent.shuffle)
             LibraryIntent.PlaySelection -> {
                 player.play(currentState.selectedTracks)
                 setState { copy(selection = emptySet()) }

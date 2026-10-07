@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.core.network
 
 import com.bobbyesp.metadator.lookup.api.ArtworkDownloader

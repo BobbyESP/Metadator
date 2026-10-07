@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.feature.batch
 
 import androidx.lifecycle.viewModelScope
@@ -62,7 +65,13 @@ data class BatchState(
         get() = FileNamePattern(pattern).takeIf { usePattern && it.isValid }
 
     val edit: BatchEdit
-        get() = BatchEdit(fields = edits, artwork = cover, numbering = numbering, fileNamePattern = fileNamePattern)
+        get() =
+            BatchEdit(
+                fields = edits,
+                artwork = cover,
+                numbering = numbering,
+                fileNamePattern = fileNamePattern,
+            )
 
     /** How the first files would read with the pattern, for a live preview. */
     val patternPreview: List<Pair<String, Map<String, List<String>>?>>
@@ -121,21 +130,34 @@ class BatchViewModel(
     init {
         runner.clear()
         runner.progress.onEach { setState { copy(progress = it) } }.launchIn(viewModelScope)
-        settings.settings.onEach { setState { copy(separator = it.multiValueSeparator) } }.launchIn(viewModelScope)
+        settings.settings
+            .onEach { setState { copy(separator = it.multiValueSeparator) } }
+            .launchIn(viewModelScope)
         load()
     }
 
     override fun handleIntent(intent: BatchIntent) {
         when (intent) {
-            is BatchIntent.SetField -> setState { copy(edits = edits + (intent.key to intent.values)) }
+            is BatchIntent.SetField ->
+                setState { copy(edits = edits + (intent.key to intent.values)) }
             is BatchIntent.ResetField -> setState { copy(edits = edits - intent.key) }
             is BatchIntent.SetCoverFromUri ->
                 launch {
                     val image = images.read(intent.uri)
-                    if (image == null) showMessage(UiMessage(strings.get(R.string.batch_cover_unreadable)))
+                    if (image == null)
+                        showMessage(UiMessage(strings.get(R.string.batch_cover_unreadable)))
                     else
                         setState {
-                            copy(cover = ArtworkChange.Replace(EmbeddedPicture(image.first, image.second, type = PictureType.FrontCover)))
+                            copy(
+                                cover =
+                                    ArtworkChange.Replace(
+                                        EmbeddedPicture(
+                                            image.first,
+                                            image.second,
+                                            type = PictureType.FrontCover,
+                                        )
+                                    )
+                            )
                         }
                 }
             BatchIntent.RemoveCovers -> setState { copy(cover = ArtworkChange.Remove) }
@@ -158,14 +180,24 @@ class BatchViewModel(
             val gate = Semaphore(PARALLEL_READS)
             val files =
                 kotlinx.coroutines.coroutineScope {
-                    refs.map { uri ->
+                    refs
+                        .map { uri ->
                             async {
                                 gate.withPermit {
                                     val ref = ContentRef(uri)
                                     val track = library.findByRef(ref)
-                                    val name = track?.displayName ?: fileInfo.describe(ref)?.displayName ?: uri.substringAfterLast('/')
-                                    val tags = (reader.read(ref, includePictures = false) as? TagReadResult.Success)?.snapshot?.tags
-                                    tags?.let { BatchFile(BatchItem(ref, name), track?.title ?: name, it) }
+                                    val name =
+                                        track?.displayName
+                                            ?: fileInfo.describe(ref)?.displayName
+                                            ?: uri.substringAfterLast('/')
+                                    val tags =
+                                        (reader.read(ref, includePictures = false)
+                                                as? TagReadResult.Success)
+                                            ?.snapshot
+                                            ?.tags
+                                    tags?.let {
+                                        BatchFile(BatchItem(ref, name), track?.title ?: name, it)
+                                    }
                                 }
                             }
                         }

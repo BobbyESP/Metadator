@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.core.model
 
 /** Every user preference, read as one value so a screen never sees half an update. */
@@ -44,8 +47,8 @@ enum class PaletteStyle {
 /**
  * How fields that hold several values (artists, genres…) are written.
  *
- * Players disagree: most read every value, some only the first. [Separate] keeps the values
- * apart, as the formats intend; [Joined] writes one value with a separator, for players that would
+ * Players disagree: most read every value, some only the first. [Separate] keeps the values apart,
+ * as the formats intend; [Joined] writes one value with a separator, for players that would
  * otherwise show only the first artist.
  */
 enum class MultiValueMode {

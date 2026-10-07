@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.di
 
 import com.bobbyesp.metadator.BuildConfig
@@ -64,7 +67,9 @@ val MainScope = named("main")
 private val appModule = module {
     single { AppDispatchers() }
     single<CoroutineScope>(AppScope) { CoroutineScope(SupervisorJob() + Dispatchers.Default) }
-    single<CoroutineScope>(MainScope) { CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate) }
+    single<CoroutineScope>(MainScope) {
+        CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+    }
     single {
         AppInfo(
             versionName = BuildConfig.VERSION_NAME,
@@ -73,7 +78,9 @@ private val appModule = module {
         )
     }
     single<StringProvider> { AndroidStringProvider(androidContext()) }
-    single<SettingsRepository> { DataStoreSettingsRepository(createSettingsDataStore(androidContext())) }
+    single<SettingsRepository> {
+        DataStoreSettingsRepository(createSettingsDataStore(androidContext()))
+    }
 }
 
 /*
@@ -118,4 +125,12 @@ private val domainModule = module {
 }
 
 val appModules =
-    listOf(appModule, engineModule, domainModule, libraryModule, editorModule, batchModule, settingsModule)
+    listOf(
+        appModule,
+        engineModule,
+        domainModule,
+        libraryModule,
+        editorModule,
+        batchModule,
+        settingsModule,
+    )

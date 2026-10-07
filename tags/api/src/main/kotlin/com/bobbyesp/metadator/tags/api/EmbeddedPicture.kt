@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.tags.api
 
 /** A picture stored in the file. Compared by content, not by array identity. */
@@ -57,7 +60,9 @@ enum class PictureType(val label: String) {
     PublisherLogo("Publisher Logo");
 
     companion object {
-        /** Lenient: TagLib's spelling varies by format ("Front Cover", "front cover", "FrontCover"). */
+        /**
+         * Lenient: TagLib's spelling varies by format ("Front Cover", "front cover", "FrontCover").
+         */
         fun parse(value: String?): PictureType {
             val wanted = value.orEmpty().filter { it.isLetter() }.lowercase()
             return entries.firstOrNull { it.label.filter(Char::isLetter).lowercase() == wanted }

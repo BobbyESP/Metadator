@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.core.navigation.motion
 
 import androidx.compose.animation.ContentTransform
@@ -27,7 +30,8 @@ import androidx.navigation3.ui.NavDisplay
  */
 object NavigationMotion {
     private val Emphasized = CubicBezierEasing(0.2f, 0f, 0f, 1f)
-    private val Travel: FiniteAnimationSpec<IntOffset> = tween(durationMillis = 300, easing = Emphasized)
+    private val Travel: FiniteAnimationSpec<IntOffset> =
+        tween(durationMillis = 300, easing = Emphasized)
 
     /** Forward: the new screen slides in from the end, the old one moves a little and fades. */
     fun forward(): ContentTransform =
@@ -61,8 +65,8 @@ object RisingMotion {
             fadeOut(tween(DURATION), targetAlpha = 1f)
 
     private fun sink(): ContentTransform =
-        EnterTransition.None togetherWith slideOutVertically(tween(DURATION, easing = Emphasized)) { it }
-
+        EnterTransition.None togetherWith
+            slideOutVertically(tween(DURATION, easing = Emphasized)) { it }
 }
 
 val LocalNavSharedTransitionScope = staticCompositionLocalOf<SharedTransitionScope?> { null }

@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.tags.api
 
 /**
@@ -67,6 +70,8 @@ class TagMap private constructor(private val entries: Map<String, List<String>>)
         fun normalizeKey(key: String): String = key.trim().uppercase(java.util.Locale.ROOT)
 
         /** Values are kept verbatim, inner spaces and all; only empty ones are dropped. */
-        private fun cleanValues(values: List<String>): List<String> = values.filter { it.isNotEmpty() }
+        private fun cleanValues(values: List<String>): List<String> = values.filter {
+            it.isNotEmpty()
+        }
     }
 }

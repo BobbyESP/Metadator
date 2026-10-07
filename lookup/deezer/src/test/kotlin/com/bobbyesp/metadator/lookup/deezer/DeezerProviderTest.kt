@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.lookup.deezer
 
 import com.bobbyesp.metadator.core.network.HttpClientFactory
@@ -53,8 +56,15 @@ class DeezerProviderTest {
     @Test
     fun `quota errors are rate limiting`() = runTest {
         val engine = MockEngine {
-            respond("""{"error":{"type":"Exception","message":"Quota limit exceeded","code":4}}""", HttpStatusCode.OK, json)
+            respond(
+                """{"error":{"type":"Exception","message":"Quota limit exceeded","code":4}}""",
+                HttpStatusCode.OK,
+                json,
+            )
         }
-        assertEquals(LookupResult.RateLimited, DeezerProvider(HttpClientFactory.create("t", engine)).search(LookupQuery("x")))
+        assertEquals(
+            LookupResult.RateLimited,
+            DeezerProvider(HttpClientFactory.create("t", engine)).search(LookupQuery("x")),
+        )
     }
 }

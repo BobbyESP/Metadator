@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.feature.editor.components
 
 import androidx.compose.foundation.layout.Arrangement
@@ -26,16 +29,32 @@ fun FileInfoCard(loaded: LoadedTrack, modifier: Modifier = Modifier) {
     val rows = buildList {
         add(R.string.file_name to (loaded.track?.displayName ?: loaded.file?.displayName.orEmpty()))
         loaded.fileExtension?.let { add(R.string.file_format to it.uppercase(Locale.ROOT)) }
-        (loaded.track?.sizeBytes ?: loaded.file?.sizeBytes)?.takeIf { it > 0 }?.let {
-            add(R.string.file_size to formatFileSize(it))
-        }
-        (audio?.durationMs ?: loaded.track?.durationMs)?.takeIf { it > 0 }?.let {
-            add(R.string.file_duration to formatDuration(it))
-        }
-        audio?.bitrateKbps?.takeIf { it > 0 }?.let { add(R.string.file_bitrate to stringResource(R.string.file_bitrate_value, it)) }
-        audio?.sampleRateHz?.takeIf { it > 0 }?.let {
-            add(R.string.file_sample_rate to stringResource(R.string.file_sample_rate_value, (it / 1000.0).toString().removeSuffix(".0")))
-        }
+        (loaded.track?.sizeBytes ?: loaded.file?.sizeBytes)
+            ?.takeIf { it > 0 }
+            ?.let {
+                add(R.string.file_size to formatFileSize(it))
+            }
+        (audio?.durationMs ?: loaded.track?.durationMs)
+            ?.takeIf { it > 0 }
+            ?.let {
+                add(R.string.file_duration to formatDuration(it))
+            }
+        audio
+            ?.bitrateKbps
+            ?.takeIf { it > 0 }
+            ?.let { add(R.string.file_bitrate to stringResource(R.string.file_bitrate_value, it)) }
+        audio
+            ?.sampleRateHz
+            ?.takeIf { it > 0 }
+            ?.let {
+                add(
+                    R.string.file_sample_rate to
+                        stringResource(
+                            R.string.file_sample_rate_value,
+                            (it / 1000.0).toString().removeSuffix(".0"),
+                        )
+                )
+            }
         audio?.channels?.takeIf { it > 0 }?.let { add(R.string.file_channels to it.toString()) }
         (loaded.track?.folder ?: loaded.file?.location)?.let { add(R.string.file_location to it) }
     }
@@ -44,7 +63,10 @@ fun FileInfoCard(loaded: LoadedTrack, modifier: Modifier = Modifier) {
         shape = MaterialTheme.shapes.large,
         color = MaterialTheme.colorScheme.surfaceContainerLow,
     ) {
-        Column(Modifier.padding(Spacing.large), verticalArrangement = Arrangement.spacedBy(Spacing.small)) {
+        Column(
+            Modifier.padding(Spacing.large),
+            verticalArrangement = Arrangement.spacedBy(Spacing.small),
+        ) {
             rows.forEach { (label, value) ->
                 Row(horizontalArrangement = Arrangement.spacedBy(Spacing.large)) {
                     Text(

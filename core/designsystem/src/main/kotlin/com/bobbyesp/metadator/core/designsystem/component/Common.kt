@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.core.designsystem.component
 
 import androidx.compose.foundation.layout.Box
@@ -60,7 +63,9 @@ fun SectionHeader(
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun LoadingScreen(modifier: Modifier = Modifier) {
-    Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) { LoadingIndicator() }
+    Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        LoadingIndicator()
+    }
 }
 
 /** Full width on a phone; centered at a readable width on a wide window. */

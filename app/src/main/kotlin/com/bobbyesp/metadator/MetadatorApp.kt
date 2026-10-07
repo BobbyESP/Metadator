@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator
 
 import androidx.compose.foundation.layout.Box
@@ -46,7 +49,8 @@ fun MetadatorApp(onExit: () -> Unit) {
     val navigator = rememberNavigator(backStack, onExit)
     val overlay = rememberOverlaySceneStrategy<NavKey>()
     val listDetail = rememberListDetailSceneStrategy<NavKey>()
-    val strategies = remember(overlay, listDetail) { listOf(overlay, listDetail.sharingTheWindow()) }
+    val strategies =
+        remember(overlay, listDetail) { listOf(overlay, listDetail.sharingTheWindow()) }
     val snackbarHostState = LocalSnackbarHostState.current
 
     // The mini player belongs to browsing; the editor and the full player have their own controls.
@@ -69,7 +73,10 @@ fun MetadatorApp(onExit: () -> Unit) {
                     },
             )
             Column(
-                modifier = Modifier.align(Alignment.BottomCenter).navigationBarsPadding().padding(bottom = Spacing.medium),
+                modifier =
+                    Modifier.align(Alignment.BottomCenter)
+                        .navigationBarsPadding()
+                        .padding(bottom = Spacing.medium),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 SnackbarHost(snackbarHostState, modifier = Modifier.padding(bottom = 8.dp))
@@ -78,4 +85,3 @@ fun MetadatorApp(onExit: () -> Unit) {
         }
     }
 }
-

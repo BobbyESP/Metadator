@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.lookup.api
 
 import com.bobbyesp.metadator.core.common.similarity
@@ -10,9 +13,7 @@ import kotlin.math.abs
  * (album cut, radio edit, live), which share a title and an artist.
  */
 fun rank(query: LookupQuery, candidates: List<LookupCandidate>): List<LookupCandidate> =
-    candidates
-        .map { it.copy(score = score(query, it)) }
-        .sortedByDescending { it.score }
+    candidates.map { it.copy(score = score(query, it)) }.sortedByDescending { it.score }
 
 internal fun score(query: LookupQuery, candidate: LookupCandidate): Double {
     var total = 0.0
@@ -26,8 +27,9 @@ internal fun score(query: LookupQuery, candidate: LookupCandidate): Double {
     if (query.title.isNotBlank()) add(0.5, similarity(query.title, candidate.title))
     if (!query.artist.isNullOrBlank()) {
         val best =
-            (candidate.artists + candidate.artists.joinToString(" "))
-                .maxOfOrNull { similarity(query.artist, it) } ?: 0.0
+            (candidate.artists + candidate.artists.joinToString(" ")).maxOfOrNull {
+                similarity(query.artist, it)
+            } ?: 0.0
         add(0.3, best)
     }
     if (!query.album.isNullOrBlank() && candidate.album != null) {

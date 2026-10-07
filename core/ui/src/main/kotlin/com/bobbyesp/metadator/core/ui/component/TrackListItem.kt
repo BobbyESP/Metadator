@@ -1,13 +1,16 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.core.ui.component
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.CheckCircle
@@ -37,8 +40,8 @@ import com.bobbyesp.metadator.core.model.Track
 import com.bobbyesp.metadator.core.ui.R
 
 /**
- * A song in a list. Tapping edits it, the play button plays it, a long press starts selecting.
- * A song missing essential tags says so under its name, so the library shows what to fix next.
+ * A song in a list. Tapping edits it, the play button plays it, a long press starts selecting. A
+ * song missing essential tags says so under its name, so the library shows what to fix next.
  */
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -108,7 +111,9 @@ fun TrackListItem(
             style = MaterialTheme.typography.bodyLargeEmphasized,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
-            color = if (isPlaying) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
+            color =
+                if (isPlaying) MaterialTheme.colorScheme.primary
+                else MaterialTheme.colorScheme.onSurface,
         )
     }
 }

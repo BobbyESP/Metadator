@@ -1,6 +1,8 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.feature.editor.components
 
-import com.bobbyesp.metadator.core.ui.R as CoreUiR
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -41,13 +43,17 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.bobbyesp.metadator.core.designsystem.theme.Spacing
+import com.bobbyesp.metadator.core.ui.R as CoreUiR
 import com.bobbyesp.metadator.feature.editor.R
 
 /** The trailing "undo this change" button every changed field gets. */
 @Composable
 private fun RevertButton(label: String, onRevert: () -> Unit) {
     IconButton(onClick = onRevert, shapes = IconButtonDefaults.shapes()) {
-        Icon(Icons.AutoMirrored.Rounded.Undo, contentDescription = stringResource(R.string.revert_field, label))
+        Icon(
+            Icons.AutoMirrored.Rounded.Undo,
+            contentDescription = stringResource(R.string.revert_field, label),
+        )
     }
 }
 
@@ -79,8 +85,14 @@ fun TagTextField(
         singleLine = singleLine,
         minLines = minLines,
         maxLines = maxLines,
-        trailingIcon = if (changed) { { RevertButton(label, onRevert) } } else null,
-        supportingText = if (changed) { { Text(stringResource(R.string.changed)) } } else null,
+        trailingIcon =
+            if (changed) {
+                { RevertButton(label, onRevert) }
+            } else null,
+        supportingText =
+            if (changed) {
+                { Text(stringResource(R.string.changed)) }
+            } else null,
         keyboardOptions =
             KeyboardOptions(
                 capitalization = capitalization,
@@ -104,8 +116,8 @@ private fun changedColors(changed: Boolean) =
     } else OutlinedTextFieldDefaults.colors()
 
 /**
- * A field with several values (artists, genres): one chip per value, so "Tyler, The Creator" is
- * one artist and not two. Typing and pressing enter adds a chip; tapping a chip edits it.
+ * A field with several values (artists, genres): one chip per value, so "Tyler, The Creator" is one
+ * artist and not two. Typing and pressing enter adds a chip; tapping a chip edits it.
  */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -141,12 +153,21 @@ fun TagChipsField(
                     },
             ),
     ) {
-        Column(Modifier.padding(start = Spacing.large, end = Spacing.extraSmall, top = Spacing.small, bottom = Spacing.extraSmall)) {
+        Column(
+            Modifier.padding(
+                start = Spacing.large,
+                end = Spacing.extraSmall,
+                top = Spacing.small,
+                bottom = Spacing.extraSmall,
+            )
+        ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     label,
                     style = MaterialTheme.typography.bodySmall,
-                    color = if (focused || changed) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+                    color =
+                        if (focused || changed) MaterialTheme.colorScheme.primary
+                        else MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.weight(1f),
                 )
                 if (changed) RevertButton(label, onRevert)
@@ -168,12 +189,15 @@ fun TagChipsField(
                             label = { Text(value) },
                             trailingIcon = {
                                 IconButton(
-                                    onClick = { onValuesChange(values.filterIndexed { i, _ -> i != index }) },
+                                    onClick = {
+                                        onValuesChange(values.filterIndexed { i, _ -> i != index })
+                                    },
                                     modifier = Modifier.size(InputChipDefaults.AvatarSize),
                                 ) {
                                     Icon(
                                         Icons.Rounded.Close,
-                                        contentDescription = stringResource(R.string.remove_value, value),
+                                        contentDescription =
+                                            stringResource(R.string.remove_value, value),
                                         modifier = Modifier.size(InputChipDefaults.IconSize),
                                     )
                                 }
@@ -201,15 +225,25 @@ fun TagChipsField(
                             focused = it.isFocused
                         },
                 singleLine = true,
-                textStyle = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onSurface),
-                cursorBrush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.primary),
+                textStyle =
+                    MaterialTheme.typography.bodyLarge.copy(
+                        color = MaterialTheme.colorScheme.onSurface
+                    ),
+                cursorBrush =
+                    androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.primary),
                 keyboardOptions =
-                    KeyboardOptions(capitalization = KeyboardCapitalization.Words, imeAction = ImeAction.Done),
+                    KeyboardOptions(
+                        capitalization = KeyboardCapitalization.Words,
+                        imeAction = ImeAction.Done,
+                    ),
                 keyboardActions = KeyboardActions(onDone = { commit() }),
                 decorationBox = { inner ->
                     if (input.isEmpty()) {
                         Text(
-                            stringResource(if (values.isEmpty()) R.string.add_value_hint else R.string.add_value),
+                            stringResource(
+                                if (values.isEmpty()) R.string.add_value_hint
+                                else R.string.add_value
+                            ),
                             style = MaterialTheme.typography.bodyLarge,
                             color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
                         )
@@ -249,7 +283,8 @@ fun PositionField(
             modifier = Modifier.weight(1f),
             label = { Text(label) },
             singleLine = true,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next),
+            keyboardOptions =
+                KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next),
             colors = changedColors(changed),
             shape = MaterialTheme.shapes.large,
         )
@@ -259,10 +294,14 @@ fun PositionField(
             modifier = Modifier.weight(1f),
             label = { Text(stringResource(CoreUiR.string.field_of)) },
             singleLine = true,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next),
+            keyboardOptions =
+                KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next),
             colors = changedColors(changed),
             shape = MaterialTheme.shapes.large,
-            trailingIcon = if (changed) { { RevertButton(label, onRevert) } } else null,
+            trailingIcon =
+                if (changed) {
+                    { RevertButton(label, onRevert) }
+                } else null,
         )
     }
 }

@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.core.domain
 
 import com.bobbyesp.metadator.core.domain.settings.SettingsRepository
@@ -19,8 +22,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 
 /**
- * Files in memory, read and written like TagLib does: a write replaces the whole property map,
- * and a key the format does not support is silently dropped.
+ * Files in memory, read and written like TagLib does: a write replaces the whole property map, and
+ * a key the format does not support is silently dropped.
  */
 class FakeTagFiles(
     initial: Map<ContentRef, TagSnapshot> = emptyMap(),
@@ -45,7 +48,9 @@ class FakeTagFiles(
         tags: TagMap,
         pictures: List<EmbeddedPicture>?,
     ): TagWriteResult {
-        writeResult?.let { return it }
+        writeResult?.let {
+            return it
+        }
         if (failNextWrites > 0) {
             failNextWrites--
             return TagWriteResult.Failed("disk on fire")
@@ -62,7 +67,11 @@ class FakeBackupStore : TagBackupStore {
     val backups = mutableMapOf<BackupId, TagBackup>()
     private var nextId = 1L
 
-    override suspend fun save(ref: ContentRef, snapshot: TagSnapshot, createdAtMillis: Long): BackupId {
+    override suspend fun save(
+        ref: ContentRef,
+        snapshot: TagSnapshot,
+        createdAtMillis: Long,
+    ): BackupId {
         val id = BackupId(nextId++)
         backups[id] = TagBackup(id, ref, snapshot, createdAtMillis)
         return id

@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.feature.library
 
 import androidx.compose.foundation.layout.Arrangement
@@ -67,12 +70,23 @@ internal fun CollectionScreen(
                 title = { Text(title, maxLines = 2, overflow = TextOverflow.Ellipsis) },
                 subtitle =
                     collection?.let {
-                        { Text(pluralStringResource(R.plurals.song_count, it.tracks.size, it.tracks.size)) }
+                        {
+                            Text(
+                                pluralStringResource(
+                                    R.plurals.song_count,
+                                    it.tracks.size,
+                                    it.tracks.size,
+                                )
+                            )
+                        }
                     },
                 navigationIcon = {
                     if (showBack) {
                         IconButton(onClick = onBack, shapes = IconButtonDefaults.shapes()) {
-                            Icon(Icons.AutoMirrored.Rounded.ArrowBack, stringResource(R.string.back))
+                            Icon(
+                                Icons.AutoMirrored.Rounded.ArrowBack,
+                                stringResource(R.string.back),
+                            )
                         }
                     }
                 },
@@ -145,11 +159,17 @@ private fun CollectionHeader(
         ) {
             Button(onClick = onPlay, shapes = ButtonDefaults.shapes()) {
                 Icon(Icons.Rounded.PlayArrow, null, Modifier.size(ButtonDefaults.IconSize))
-                Text(stringResource(R.string.collection_play), Modifier.padding(start = ButtonDefaults.IconSpacing))
+                Text(
+                    stringResource(R.string.collection_play),
+                    Modifier.padding(start = ButtonDefaults.IconSpacing),
+                )
             }
             FilledTonalButton(onClick = onEditAll, shapes = ButtonDefaults.shapes()) {
                 Icon(Icons.Rounded.Edit, null, Modifier.size(ButtonDefaults.IconSize))
-                Text(stringResource(R.string.collection_edit_all), Modifier.padding(start = ButtonDefaults.IconSpacing))
+                Text(
+                    stringResource(R.string.collection_edit_all),
+                    Modifier.padding(start = ButtonDefaults.IconSpacing),
+                )
             }
             OutlinedIconButton(onClick = onShuffle, shapes = IconButtonDefaults.shapes()) {
                 Icon(Icons.Rounded.Shuffle, stringResource(R.string.collection_shuffle))

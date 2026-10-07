@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.core.navigation.pane
 
 import androidx.compose.runtime.Composable
@@ -40,7 +43,9 @@ internal constructor(
     override fun toString(): String = "PaneContext(isSolePane=$isSolePane)"
 }
 
-/** Defaults to filling the window: the single-pane fallback, `ExternalEditorActivity`, a preview. */
+/**
+ * Defaults to filling the window: the single-pane fallback, `ExternalEditorActivity`, a preview.
+ */
 val LocalPaneContext = staticCompositionLocalOf { PaneContext(isSolePane = true) }
 
 /**

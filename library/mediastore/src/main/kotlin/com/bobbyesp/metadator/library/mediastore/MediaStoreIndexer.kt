@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.library.mediastore
 
 import android.content.Context
@@ -39,17 +42,20 @@ class MediaStoreIndexer(
     }
 
     /**
-     * The scanner takes paths. MediaStore still reports them for its own files, and this is the
-     * one use left for them: nothing is opened by path.
+     * The scanner takes paths. MediaStore still reports them for its own files, and this is the one
+     * use left for them: nothing is opened by path.
      */
     private fun pathOf(uri: Uri): String? {
         val mediaId = mediaIdOf(context, uri) ?: return null
-        val mediaUri = MediaStoreAudioLibrary.AudioCollection.buildUpon().appendPath(mediaId.toString()).build()
+        val mediaUri =
+            MediaStoreAudioLibrary.AudioCollection.buildUpon()
+                .appendPath(mediaId.toString())
+                .build()
         return runCatching {
-                context.contentResolver
-                    .query(mediaUri, arrayOf(MediaStoreAudioLibrary.DATA_COLUMN), null, null, null)
-                    ?.use { if (it.moveToFirst()) it.getString(0) else null }
-            }
+            context.contentResolver
+                .query(mediaUri, arrayOf(MediaStoreAudioLibrary.DATA_COLUMN), null, null, null)
+                ?.use { if (it.moveToFirst()) it.getString(0) else null }
+        }
             .getOrNull()
     }
 

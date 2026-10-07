@@ -1,6 +1,8 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.feature.editor.lookup
 
-import com.bobbyesp.metadator.core.ui.R as CoreUiR
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -52,9 +54,10 @@ import com.bobbyesp.metadator.core.common.formatDuration
 import com.bobbyesp.metadator.core.designsystem.theme.GroupShapes
 import com.bobbyesp.metadator.core.designsystem.theme.Spacing
 import com.bobbyesp.metadator.core.domain.lookup.FieldProposal
+import com.bobbyesp.metadator.core.ui.R as CoreUiR
 import com.bobbyesp.metadator.core.ui.component.ArtworkImage
-import com.bobbyesp.metadator.feature.editor.R
 import com.bobbyesp.metadator.core.ui.component.fieldLabel
+import com.bobbyesp.metadator.feature.editor.R
 import com.bobbyesp.metadator.lookup.api.LookupCandidate
 import com.bobbyesp.metadator.lookup.api.MatchConfidence
 
@@ -108,15 +111,28 @@ private fun SearchStage(
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxWidth().heightIn(min = 400.dp),
-        contentPadding = PaddingValues(start = Spacing.screen, end = Spacing.screen, bottom = Spacing.huge),
+        contentPadding =
+            PaddingValues(start = Spacing.screen, end = Spacing.screen, bottom = Spacing.huge),
         verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap),
     ) {
         item {
-            Column(verticalArrangement = Arrangement.spacedBy(Spacing.small), modifier = Modifier.padding(bottom = Spacing.medium)) {
-                Text(stringResource(R.string.lookup_title), style = MaterialTheme.typography.headlineSmall)
-                QueryField(CoreUiR.string.field_title, state.title) { onQueryChange(it, state.artist, state.album) }
-                QueryField(CoreUiR.string.field_artist, state.artist) { onQueryChange(state.title, it, state.album) }
-                QueryField(CoreUiR.string.field_album, state.album, onSearch) { onQueryChange(state.title, state.artist, it) }
+            Column(
+                verticalArrangement = Arrangement.spacedBy(Spacing.small),
+                modifier = Modifier.padding(bottom = Spacing.medium),
+            ) {
+                Text(
+                    stringResource(R.string.lookup_title),
+                    style = MaterialTheme.typography.headlineSmall,
+                )
+                QueryField(CoreUiR.string.field_title, state.title) {
+                    onQueryChange(it, state.artist, state.album)
+                }
+                QueryField(CoreUiR.string.field_artist, state.artist) {
+                    onQueryChange(state.title, it, state.album)
+                }
+                QueryField(CoreUiR.string.field_album, state.album, onSearch) {
+                    onQueryChange(state.title, state.artist, it)
+                }
                 Button(
                     onClick = onSearch,
                     shapes = ButtonDefaults.shapes(),
@@ -124,33 +140,60 @@ private fun SearchStage(
                     enabled = state.status != LookupStatus.Searching,
                 ) {
                     Icon(Icons.Rounded.Search, null, Modifier.size(ButtonDefaults.IconSize))
-                    Text(stringResource(R.string.lookup_search), Modifier.padding(start = ButtonDefaults.IconSpacing))
+                    Text(
+                        stringResource(R.string.lookup_search),
+                        Modifier.padding(start = ButtonDefaults.IconSpacing),
+                    )
                 }
             }
         }
         when (val status = state.status) {
             LookupStatus.Idle -> Unit
             LookupStatus.Searching ->
-                item { Box(Modifier.fillMaxWidth().padding(Spacing.huge), contentAlignment = Alignment.Center) { LoadingIndicator() } }
+                item {
+                    Box(
+                        Modifier.fillMaxWidth().padding(Spacing.huge),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        LoadingIndicator()
+                    }
+                }
             is LookupStatus.Results -> {
                 if (status.failedProviders.isNotEmpty()) {
-                    item { Message(stringResource(R.string.lookup_partial, status.failedProviders.joinToString(", "))) }
+                    item {
+                        Message(
+                            stringResource(
+                                R.string.lookup_partial,
+                                status.failedProviders.joinToString(", "),
+                            )
+                        )
+                    }
                 }
-                if (status.candidates.isEmpty()) item { Message(stringResource(R.string.lookup_no_results)) }
-                itemsIndexed(status.candidates, key = { _, it -> it.providerId + it.id }) { index, candidate ->
+                if (status.candidates.isEmpty())
+                    item { Message(stringResource(R.string.lookup_no_results)) }
+                itemsIndexed(status.candidates, key = { _, it -> it.providerId + it.id }) {
+                    index,
+                    candidate ->
                     CandidateItem(candidate, index, status.candidates.size) { onOpen(candidate) }
                 }
             }
-            LookupStatus.NoProviders -> item { Message(stringResource(R.string.lookup_no_providers)) }
+            LookupStatus.NoProviders ->
+                item { Message(stringResource(R.string.lookup_no_providers)) }
             LookupStatus.Offline -> item { Message(stringResource(R.string.offline)) }
-            LookupStatus.RateLimited -> item { Message(stringResource(R.string.lookup_rate_limited)) }
+            LookupStatus.RateLimited ->
+                item { Message(stringResource(R.string.lookup_rate_limited)) }
             LookupStatus.Failed -> item { Message(stringResource(R.string.lookup_failed)) }
         }
     }
 }
 
 @Composable
-private fun QueryField(label: Int, value: String, onDone: (() -> Unit)? = null, onChange: (String) -> Unit) {
+private fun QueryField(
+    label: Int,
+    value: String,
+    onDone: (() -> Unit)? = null,
+    onChange: (String) -> Unit,
+) {
     OutlinedTextField(
         value = value,
         onValueChange = onChange,
@@ -158,7 +201,8 @@ private fun QueryField(label: Int, value: String, onDone: (() -> Unit)? = null, 
         singleLine = true,
         modifier = Modifier.fillMaxWidth(),
         shape = MaterialTheme.shapes.large,
-        keyboardOptions = KeyboardOptions(imeAction = if (onDone != null) ImeAction.Search else ImeAction.Next),
+        keyboardOptions =
+            KeyboardOptions(imeAction = if (onDone != null) ImeAction.Search else ImeAction.Next),
         keyboardActions = KeyboardActions(onSearch = { onDone?.invoke() }),
     )
 }
@@ -180,7 +224,10 @@ private fun CandidateItem(candidate: LookupCandidate, index: Int, count: Int, on
         onClick = onClick,
         shapes = GroupShapes.listItemShapes(index, count),
         verticalAlignment = Alignment.CenterVertically,
-        colors = ListItemDefaults.segmentedColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh),
+        colors =
+            ListItemDefaults.segmentedColors(
+                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+            ),
         leadingContent = {
             ArtworkImage(
                 model = candidate.artworkThumbnailUrl,
@@ -202,13 +249,21 @@ private fun CandidateItem(candidate: LookupCandidate, index: Int, count: Int, on
                     overflow = TextOverflow.Ellipsis,
                 )
                 Row(horizontalArrangement = Arrangement.spacedBy(Spacing.small)) {
-                    SuggestionChip(onClick = onClick, label = { Text(confidenceLabel(candidate.score)) })
+                    SuggestionChip(
+                        onClick = onClick,
+                        label = { Text(confidenceLabel(candidate.score)) },
+                    )
                     SuggestionChip(onClick = onClick, label = { Text(candidate.providerName) })
                 }
             }
         },
     ) {
-        Text(candidate.title, style = MaterialTheme.typography.bodyLargeEmphasized, maxLines = 1, overflow = TextOverflow.Ellipsis)
+        Text(
+            candidate.title,
+            style = MaterialTheme.typography.bodyLargeEmphasized,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+        )
     }
 }
 
@@ -244,12 +299,21 @@ private fun ComparisonStage(
             verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap),
         ) {
             item {
-                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(bottom = Spacing.small)) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(bottom = Spacing.small),
+                ) {
                     IconButton(onClick = onBack, shapes = IconButtonDefaults.shapes()) {
-                        Icon(Icons.AutoMirrored.Rounded.ArrowBack, stringResource(R.string.lookup_back))
+                        Icon(
+                            Icons.AutoMirrored.Rounded.ArrowBack,
+                            stringResource(R.string.lookup_back),
+                        )
                     }
                     Column(Modifier.weight(1f)) {
-                        Text(stringResource(R.string.lookup_compare_title), style = MaterialTheme.typography.titleLarge)
+                        Text(
+                            stringResource(R.string.lookup_compare_title),
+                            style = MaterialTheme.typography.titleLarge,
+                        )
                         Text(
                             stringResource(R.string.lookup_from, candidate.providerName),
                             style = MaterialTheme.typography.bodyMedium,
@@ -265,11 +329,20 @@ private fun ComparisonStage(
                         onCheckedChange = { onToggleCover() },
                         shapes = GroupShapes.listItemShapes(0, 1),
                         verticalAlignment = Alignment.CenterVertically,
-                        colors = ListItemDefaults.segmentedColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh),
+                        colors =
+                            ListItemDefaults.segmentedColors(
+                                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+                            ),
                         leadingContent = {
-                            ArtworkImage(candidate.artworkThumbnailUrl ?: candidate.artworkUrl, null, Modifier.size(72.dp))
+                            ArtworkImage(
+                                candidate.artworkThumbnailUrl ?: candidate.artworkUrl,
+                                null,
+                                Modifier.size(72.dp),
+                            )
                         },
-                        trailingContent = { Checkbox(checked = comparison.includeCover, onCheckedChange = null) },
+                        trailingContent = {
+                            Checkbox(checked = comparison.includeCover, onCheckedChange = null)
+                        },
                     ) {
                         Text(stringResource(R.string.lookup_use_cover))
                     }
@@ -277,7 +350,9 @@ private fun ComparisonStage(
                 item { Box(Modifier.padding(top = Spacing.small)) }
             }
             itemsIndexed(shown, key = { _, it -> it.key }) { index, proposal ->
-                ProposalItem(proposal, proposal.key in comparison.checked, index, shown.size) { onToggle(proposal.key) }
+                ProposalItem(proposal, proposal.key in comparison.checked, index, shown.size) {
+                    onToggle(proposal.key)
+                }
             }
             if (unchanged.isNotEmpty() && !showUnchanged) {
                 item {
@@ -291,7 +366,10 @@ private fun ComparisonStage(
             onClick = onApply,
             shapes = ButtonDefaults.shapes(),
             enabled = comparison.checked.isNotEmpty() || comparison.includeCover,
-            modifier = Modifier.fillMaxWidth().padding(Spacing.screen).heightIn(min = ButtonDefaults.MediumContainerHeight),
+            modifier =
+                Modifier.fillMaxWidth()
+                    .padding(Spacing.screen)
+                    .heightIn(min = ButtonDefaults.MediumContainerHeight),
         ) {
             Text(stringResource(R.string.lookup_apply))
         }
@@ -300,22 +378,40 @@ private fun ComparisonStage(
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-private fun ProposalItem(proposal: FieldProposal, checked: Boolean, index: Int, count: Int, onToggle: () -> Unit) {
+private fun ProposalItem(
+    proposal: FieldProposal,
+    checked: Boolean,
+    index: Int,
+    count: Int,
+    onToggle: () -> Unit,
+) {
     val empty = stringResource(R.string.lookup_empty_value)
     SegmentedListItem(
         checked = checked,
         onCheckedChange = { onToggle() },
         shapes = GroupShapes.listItemShapes(index, count),
         verticalAlignment = Alignment.CenterVertically,
-        colors = ListItemDefaults.segmentedColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh),
+        colors =
+            ListItemDefaults.segmentedColors(
+                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+            ),
         overlineContent = { Text(fieldLabel(proposal.key)) },
         supportingContent =
             if (proposal.differs) {
-                { Text(stringResource(R.string.lookup_current, proposal.current.joinToString(", ").ifEmpty { empty })) }
+                {
+                    Text(
+                        stringResource(
+                            R.string.lookup_current,
+                            proposal.current.joinToString(", ").ifEmpty { empty },
+                        )
+                    )
+                }
             } else null,
         trailingContent = { Checkbox(checked = checked, onCheckedChange = null) },
     ) {
-        Text(proposal.proposed.joinToString(", "), style = MaterialTheme.typography.bodyLargeEmphasized)
+        Text(
+            proposal.proposed.joinToString(", "),
+            style = MaterialTheme.typography.bodyLargeEmphasized,
+        )
     }
 }
-

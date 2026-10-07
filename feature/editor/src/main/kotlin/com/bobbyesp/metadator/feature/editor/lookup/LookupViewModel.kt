@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.feature.editor.lookup
 
 import androidx.lifecycle.ViewModel
@@ -58,8 +61,8 @@ data class LookupState(
 )
 
 /**
- * The "Find metadata" sheet. It proposes; the editor applies. Nothing here touches a file:
- * applying copies the chosen values into the editor's draft, and only Save writes.
+ * The "Find metadata" sheet. It proposes; the editor applies. Nothing here touches a file: applying
+ * copies the chosen values into the editor's draft, and only Save writes.
  */
 class LookupViewModel(private val service: LookupService) : ViewModel() {
     private val _state = MutableStateFlow(LookupState())
@@ -72,38 +75,42 @@ class LookupViewModel(private val service: LookupService) : ViewModel() {
         search()
     }
 
-    fun setQuery(title: String = _state.value.title, artist: String = _state.value.artist, album: String = _state.value.album) {
+    fun setQuery(
+        title: String = _state.value.title,
+        artist: String = _state.value.artist,
+        album: String = _state.value.album,
+    ) {
         _state.update { it.copy(title = title, artist = artist, album = album) }
     }
 
     fun search() {
         val query = _state.value
         search?.cancel()
-        search =
-            viewModelScope.launch {
-                _state.update { it.copy(status = LookupStatus.Searching, comparison = null) }
-                val outcome =
-                    service.search(
-                        LookupQuery(
-                            title = query.title.trim(),
-                            artist = query.artist.trim().ifEmpty { null },
-                            album = query.album.trim().ifEmpty { null },
-                            durationMs = query.durationMs,
-                        )
+        search = viewModelScope.launch {
+            _state.update { it.copy(status = LookupStatus.Searching, comparison = null) }
+            val outcome =
+                service.search(
+                    LookupQuery(
+                        title = query.title.trim(),
+                        artist = query.artist.trim().ifEmpty { null },
+                        album = query.album.trim().ifEmpty { null },
+                        durationMs = query.durationMs,
                     )
-                _state.update {
-                    it.copy(
-                        status =
-                            when (outcome) {
-                                is LookupOutcome.Results -> LookupStatus.Results(outcome.candidates, outcome.failedProviders)
-                                LookupOutcome.NoProviders -> LookupStatus.NoProviders
-                                LookupOutcome.Offline -> LookupStatus.Offline
-                                LookupOutcome.RateLimited -> LookupStatus.RateLimited
-                                LookupOutcome.Failed -> LookupStatus.Failed
-                            }
-                    )
-                }
+                )
+            _state.update {
+                it.copy(
+                    status =
+                        when (outcome) {
+                            is LookupOutcome.Results ->
+                                LookupStatus.Results(outcome.candidates, outcome.failedProviders)
+                            LookupOutcome.NoProviders -> LookupStatus.NoProviders
+                            LookupOutcome.Offline -> LookupStatus.Offline
+                            LookupOutcome.RateLimited -> LookupStatus.RateLimited
+                            LookupOutcome.Failed -> LookupStatus.Failed
+                        }
+                )
             }
+        }
     }
 
     /** Compares [candidate] with the editor's current tags. Fields that differ start checked. */
@@ -115,29 +122,32 @@ class LookupViewModel(private val service: LookupService) : ViewModel() {
                     Comparison(
                         candidate = candidate,
                         proposals = proposals,
-                        checked = proposals.filter { proposal -> proposal.differs }.mapTo(mutableSetOf()) { p -> p.key },
+                        checked =
+                            proposals
+                                .filter { proposal -> proposal.differs }
+                                .mapTo(mutableSetOf()) { p -> p.key },
                         includeCover = candidate.artworkUrl != null,
                     )
             )
         }
     }
 
-    fun toggle(key: String) =
-        _state.update { state ->
-            val comparison = state.comparison ?: return@update state
-            state.copy(
-                comparison =
-                    comparison.copy(
-                        checked = if (key in comparison.checked) comparison.checked - key else comparison.checked + key
-                    )
-            )
-        }
+    fun toggle(key: String) = _state.update { state ->
+        val comparison = state.comparison ?: return@update state
+        state.copy(
+            comparison =
+                comparison.copy(
+                    checked =
+                        if (key in comparison.checked) comparison.checked - key
+                        else comparison.checked + key
+                )
+        )
+    }
 
-    fun toggleCover() =
-        _state.update { state ->
-            val comparison = state.comparison ?: return@update state
-            state.copy(comparison = comparison.copy(includeCover = !comparison.includeCover))
-        }
+    fun toggleCover() = _state.update { state ->
+        val comparison = state.comparison ?: return@update state
+        state.copy(comparison = comparison.copy(includeCover = !comparison.includeCover))
+    }
 
     fun closeComparison() = _state.update { it.copy(comparison = null) }
 }

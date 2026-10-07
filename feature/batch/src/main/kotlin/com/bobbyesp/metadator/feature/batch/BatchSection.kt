@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.feature.batch
 
 import androidx.compose.runtime.getValue
@@ -22,6 +25,10 @@ fun EntryProviderScope<NavKey>.batchSection(navigator: Navigator) {
                 BatchEffect.Close -> navigator.removeDestination(key)
             }
         }
-        BatchScreen(state = state, onIntent = viewModel::onIntent, onClose = { navigator.removeDestination(key) })
+        BatchScreen(
+            state = state,
+            onIntent = viewModel::onIntent,
+            onClose = { navigator.removeDestination(key) },
+        )
     }
 }

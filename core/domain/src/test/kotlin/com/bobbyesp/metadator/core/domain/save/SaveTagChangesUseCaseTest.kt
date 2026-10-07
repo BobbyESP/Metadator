@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.core.domain.save
 
 import com.bobbyesp.metadator.core.domain.FakeBackupStore
@@ -18,7 +21,8 @@ import org.junit.Test
 
 class SaveTagChangesUseCaseTest {
     private val ref = ContentRef("content://media/external/audio/media/1")
-    private val front = EmbeddedPicture(byteArrayOf(1, 2), "image/jpeg", type = PictureType.FrontCover)
+    private val front =
+        EmbeddedPicture(byteArrayOf(1, 2), "image/jpeg", type = PictureType.FrontCover)
     private val back = EmbeddedPicture(byteArrayOf(3), "image/jpeg", type = PictureType.BackCover)
     private val original =
         TagSnapshot(
@@ -50,7 +54,8 @@ class SaveTagChangesUseCaseTest {
 
     @Test
     fun `the original is backed up and the file rescanned`() = runTest {
-        val outcome = save(ref, TagChanges(fields = mapOf("TITLE" to listOf("x")))) as SaveOutcome.Saved
+        val outcome =
+            save(ref, TagChanges(fields = mapOf("TITLE" to listOf("x")))) as SaveOutcome.Saved
 
         assertEquals(original, backups.backups.getValue(outcome.backupId).snapshot)
         assertEquals(listOf(ref), indexer.rescanned)
@@ -59,7 +64,8 @@ class SaveTagChangesUseCaseTest {
     @Test
     fun `changes apply to the file as it is now, not as the editor read it`() = runTest {
         // Someone else changed the album after the editor opened.
-        files.files[ref] = original.copy(tags = original.tags.with("ALBUM", listOf("I Am... Sasha Fierce")))
+        files.files[ref] =
+            original.copy(tags = original.tags.with("ALBUM", listOf("I Am... Sasha Fierce")))
 
         save(ref, TagChanges(fields = mapOf("TITLE" to listOf("x"))))
 
@@ -92,7 +98,10 @@ class SaveTagChangesUseCaseTest {
     fun `needing access writes nothing and keeps no backup`() = runTest {
         files.writeResult = TagWriteResult.NeedsAccess
 
-        assertEquals(SaveOutcome.NeedsAccess, save(ref, TagChanges(fields = mapOf("TITLE" to listOf("x")))))
+        assertEquals(
+            SaveOutcome.NeedsAccess,
+            save(ref, TagChanges(fields = mapOf("TITLE" to listOf("x")))),
+        )
         assertTrue(backups.backups.isEmpty())
     }
 
@@ -126,7 +135,8 @@ class SaveTagChangesUseCaseTest {
             saveLimited(
                 ref,
                 TagChanges(fields = mapOf("MOOD" to listOf("calm"), "TITLE" to listOf("y"))),
-            ) as SaveOutcome.Saved
+            )
+                as SaveOutcome.Saved
 
         assertEquals(setOf("MOOD"), outcome.notStored)
         assertEquals(listOf("y"), limited.files.getValue(ref).tags["TITLE"])
@@ -134,7 +144,8 @@ class SaveTagChangesUseCaseTest {
 
     @Test
     fun `a missing file is reported, not thrown`() = runTest {
-        val outcome = save(ContentRef("content://gone"), TagChanges(fields = mapOf("TITLE" to listOf("x"))))
+        val outcome =
+            save(ContentRef("content://gone"), TagChanges(fields = mapOf("TITLE" to listOf("x"))))
         assertEquals(SaveOutcome.FileGone, outcome)
     }
 
@@ -147,7 +158,8 @@ class SaveTagChangesUseCaseTest {
                     fields = mapOf("TITLE" to listOf("x"), "REPLAYGAIN_TRACK_GAIN" to emptyList()),
                     artwork = ArtworkChange.Remove,
                 ),
-            ) as SaveOutcome.Saved
+            )
+                as SaveOutcome.Saved
 
         val restore = RestoreBackupUseCase(backups, files, indexer)
         assertEquals(RestoreOutcome.Restored, restore(outcome.backupId))

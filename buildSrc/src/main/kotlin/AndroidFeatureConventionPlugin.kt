@@ -5,9 +5,9 @@ import org.gradle.api.artifacts.ProjectDependency
 import org.gradle.kotlin.dsl.dependencies
 
 /**
- * A feature: UI, ViewModels and its navigation entries. It sees the core modules and the
- * contracts (`*:api`), never an implementation and never another feature, so engines can be
- * swapped in one line of DI and features can be built in parallel.
+ * A feature: UI, ViewModels and its navigation entries. It sees the core modules and the contracts
+ * (`*:api`), never an implementation and never another feature, so engines can be swapped in one
+ * line of DI and features can be built in parallel.
  */
 class AndroidFeatureConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) =

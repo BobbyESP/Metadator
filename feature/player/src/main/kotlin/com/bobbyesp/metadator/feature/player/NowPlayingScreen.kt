@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.feature.player
 
 import androidx.compose.foundation.layout.Arrangement
@@ -101,7 +104,10 @@ private fun NowPlayingScreen(
         }
     ) { padding ->
         if (track == null) {
-            Column(Modifier.fillMaxSize().padding(padding).padding(Spacing.extraLarge), verticalArrangement = Arrangement.Center) {
+            Column(
+                Modifier.fillMaxSize().padding(padding).padding(Spacing.extraLarge),
+                verticalArrangement = Arrangement.Center,
+            ) {
                 PlaceholderCard(
                     title = stringResource(R.string.nothing_playing),
                     description = "",
@@ -112,7 +118,13 @@ private fun NowPlayingScreen(
         }
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(top = padding.calculateTopPadding(), start = Spacing.extraLarge, end = Spacing.extraLarge, bottom = Spacing.huge),
+            contentPadding =
+                PaddingValues(
+                    top = padding.calculateTopPadding(),
+                    start = Spacing.extraLarge,
+                    end = Spacing.extraLarge,
+                    bottom = Spacing.huge,
+                ),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap),
         ) {
@@ -129,9 +141,17 @@ private fun NowPlayingScreen(
                         shape = MaterialTheme.shapes.extraLarge,
                     )
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(track.title, style = MaterialTheme.typography.headlineSmallEmphasized, textAlign = TextAlign.Center, maxLines = 2, overflow = TextOverflow.Ellipsis)
                         Text(
-                            listOfNotNull(track.artist, track.album).joinToString(" · ").ifEmpty { stringResource(R.string.unknown_artist) },
+                            track.title,
+                            style = MaterialTheme.typography.headlineSmallEmphasized,
+                            textAlign = TextAlign.Center,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                        Text(
+                            listOfNotNull(track.artist, track.album).joinToString(" · ").ifEmpty {
+                                stringResource(R.string.unknown_artist)
+                            },
                             style = MaterialTheme.typography.titleMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             textAlign = TextAlign.Center,
@@ -141,9 +161,15 @@ private fun NowPlayingScreen(
                     }
                     SeekBar(playback, onSeek = player::seekTo)
                     Controls(playback, player)
-                    FilledTonalButton(onClick = { onEdit(track.ref.uri) }, shapes = ButtonDefaults.shapes()) {
+                    FilledTonalButton(
+                        onClick = { onEdit(track.ref.uri) },
+                        shapes = ButtonDefaults.shapes(),
+                    ) {
                         Icon(Icons.Rounded.Edit, null, Modifier.size(ButtonDefaults.IconSize))
-                        Text(stringResource(R.string.edit_tags), Modifier.padding(start = ButtonDefaults.IconSpacing))
+                        Text(
+                            stringResource(R.string.edit_tags),
+                            Modifier.padding(start = ButtonDefaults.IconSpacing),
+                        )
                     }
                 }
             }
@@ -153,18 +179,34 @@ private fun NowPlayingScreen(
                     Text(
                         stringResource(R.string.up_next),
                         style = MaterialTheme.typography.titleMedium,
-                        modifier = Modifier.widthIn(max = 480.dp).fillMaxWidth().padding(top = Spacing.extraLarge, bottom = Spacing.small),
+                        modifier =
+                            Modifier.widthIn(max = 480.dp)
+                                .fillMaxWidth()
+                                .padding(top = Spacing.extraLarge, bottom = Spacing.small),
                     )
                 }
-                itemsIndexed(upNext.take(MAX_UP_NEXT), key = { index, it -> "${it.id.value}:$index" }) { index, next ->
+                itemsIndexed(
+                    upNext.take(MAX_UP_NEXT),
+                    key = { index, it -> "${it.id.value}:$index" },
+                ) { index, next ->
                     SegmentedListItem(
                         onClick = { player.skipToQueueItem(playback.currentIndex + 1 + index) },
                         shapes = GroupShapes.listItemShapes(index, minOf(upNext.size, MAX_UP_NEXT)),
                         modifier = Modifier.widthIn(max = 480.dp),
                         verticalAlignment = Alignment.CenterVertically,
-                        colors = ListItemDefaults.segmentedColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),
-                        leadingContent = { ArtworkImage(next.artworkRef?.uri, null, Modifier.size(44.dp)) },
-                        supportingContent = { Text(next.artist ?: stringResource(R.string.unknown_artist), maxLines = 1) },
+                        colors =
+                            ListItemDefaults.segmentedColors(
+                                containerColor = MaterialTheme.colorScheme.surfaceContainerLow
+                            ),
+                        leadingContent = {
+                            ArtworkImage(next.artworkRef?.uri, null, Modifier.size(44.dp))
+                        },
+                        supportingContent = {
+                            Text(
+                                next.artist ?: stringResource(R.string.unknown_artist),
+                                maxLines = 1,
+                            )
+                        },
                     ) {
                         Text(next.title, maxLines = 1, overflow = TextOverflow.Ellipsis)
                     }
@@ -191,7 +233,11 @@ private fun SeekBar(playback: PlaybackState, onSeek: (Long) -> Unit) {
             },
         )
         Row(Modifier.fillMaxWidth()) {
-            Text(formatDuration((fraction * playback.durationMs).toLong()), style = MaterialTheme.typography.labelMedium, modifier = Modifier.weight(1f))
+            Text(
+                formatDuration((fraction * playback.durationMs).toLong()),
+                style = MaterialTheme.typography.labelMedium,
+                modifier = Modifier.weight(1f),
+            )
             Text(formatDuration(playback.durationMs), style = MaterialTheme.typography.labelMedium)
         }
     }
@@ -204,20 +250,41 @@ private fun Controls(playback: PlaybackState, player: PlayerController) {
         horizontalArrangement = Arrangement.spacedBy(Spacing.small),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        IconToggleButton(checked = playback.shuffle, onCheckedChange = player::setShuffle, shapes = IconButtonDefaults.toggleableShapes()) {
+        IconToggleButton(
+            checked = playback.shuffle,
+            onCheckedChange = player::setShuffle,
+            shapes = IconButtonDefaults.toggleableShapes(),
+        ) {
             Icon(Icons.Rounded.Shuffle, stringResource(R.string.shuffle))
         }
-        IconButton(onClick = player::skipToPrevious, shapes = IconButtonDefaults.shapes(), modifier = Modifier.size(56.dp)) {
-            Icon(Icons.Rounded.SkipPrevious, stringResource(R.string.previous), Modifier.size(32.dp))
+        IconButton(
+            onClick = player::skipToPrevious,
+            shapes = IconButtonDefaults.shapes(),
+            modifier = Modifier.size(56.dp),
+        ) {
+            Icon(
+                Icons.Rounded.SkipPrevious,
+                stringResource(R.string.previous),
+                Modifier.size(32.dp),
+            )
         }
-        FilledIconButton(onClick = player::togglePlayPause, shapes = IconButtonDefaults.shapes(), modifier = Modifier.size(80.dp)) {
+        FilledIconButton(
+            onClick = player::togglePlayPause,
+            shapes = IconButtonDefaults.shapes(),
+            modifier = Modifier.size(80.dp),
+        ) {
             Icon(
                 if (playback.isPlaying) Icons.Rounded.Pause else Icons.Rounded.PlayArrow,
                 stringResource(if (playback.isPlaying) R.string.pause else R.string.play),
                 Modifier.size(40.dp),
             )
         }
-        IconButton(onClick = player::skipToNext, enabled = playback.hasNext, shapes = IconButtonDefaults.shapes(), modifier = Modifier.size(56.dp)) {
+        IconButton(
+            onClick = player::skipToNext,
+            enabled = playback.hasNext,
+            shapes = IconButtonDefaults.shapes(),
+            modifier = Modifier.size(56.dp),
+        ) {
             Icon(Icons.Rounded.SkipNext, stringResource(R.string.next), Modifier.size(32.dp))
         }
         IconToggleButton(
@@ -226,7 +293,8 @@ private fun Controls(playback: PlaybackState, player: PlayerController) {
             shapes = IconButtonDefaults.toggleableShapes(),
         ) {
             Icon(
-                if (playback.repeatMode == RepeatMode.One) Icons.Rounded.RepeatOne else Icons.Rounded.Repeat,
+                if (playback.repeatMode == RepeatMode.One) Icons.Rounded.RepeatOne
+                else Icons.Rounded.Repeat,
                 stringResource(
                     when (playback.repeatMode) {
                         RepeatMode.Off -> R.string.repeat_off

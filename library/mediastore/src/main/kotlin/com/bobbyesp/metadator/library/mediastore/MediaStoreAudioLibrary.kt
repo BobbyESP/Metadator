@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.library.mediastore
 
 import android.content.ContentResolver
@@ -40,23 +43,22 @@ class MediaStoreAudioLibrary(
         get() = context.contentResolver
 
     @OptIn(FlowPreview::class)
-    override fun observeTracks(): Flow<List<Track>> =
-        callbackFlow {
-                val observer =
-                    object : ContentObserver(Handler(Looper.getMainLooper())) {
-                        override fun onChange(selfChange: Boolean) {
-                            trySend(Unit)
-                        }
-                    }
-                resolver.registerContentObserver(AudioCollection, true, observer)
-                trySend(Unit)
-                awaitClose { resolver.unregisterContentObserver(observer) }
+    override fun observeTracks(): Flow<List<Track>> = callbackFlow {
+        val observer =
+            object : ContentObserver(Handler(Looper.getMainLooper())) {
+                override fun onChange(selfChange: Boolean) {
+                    trySend(Unit)
+                }
             }
-            // A save or a scan changes many rows at once: one query for the burst is enough.
-            .debounce(DEBOUNCE_MS)
-            .conflate()
-            .map { queryTracks(selection = IS_MUSIC, args = null) }
-            .flowOn(dispatchers.io)
+        resolver.registerContentObserver(AudioCollection, true, observer)
+        trySend(Unit)
+        awaitClose { resolver.unregisterContentObserver(observer) }
+    }
+        // A save or a scan changes many rows at once: one query for the burst is enough.
+        .debounce(DEBOUNCE_MS)
+        .conflate()
+        .map { queryTracks(selection = IS_MUSIC, args = null) }
+        .flowOn(dispatchers.io)
 
     override suspend fun track(id: TrackId): Track? =
         withContext(dispatchers.io) {
@@ -123,12 +125,15 @@ class MediaStoreAudioLibrary(
         val albumId = long(MediaStore.Audio.Media.ALBUM_ID) ?: 0
         // MediaStore packs the disc into the thousands: 2005 is disc 2, track 5.
         val packedTrack = int(MediaStore.Audio.Media.TRACK)
-        val discColumn = string(MediaStore.Audio.Media.DISC_NUMBER)?.substringBefore('/')?.toIntOrNull()
+        val discColumn =
+            string(MediaStore.Audio.Media.DISC_NUMBER)?.substringBefore('/')?.toIntOrNull()
         val displayName = string(MediaStore.Audio.Media.DISPLAY_NAME).orEmpty()
         return Track(
             id = TrackId(id),
             ref = ContentRef(ContentUris.withAppendedId(AudioCollection, id).toString()),
-            title = string(MediaStore.Audio.Media.TITLE)?.ifBlank { null } ?: displayName.substringBeforeLast('.'),
+            title =
+                string(MediaStore.Audio.Media.TITLE)?.ifBlank { null }
+                    ?: displayName.substringBeforeLast('.'),
             artist = string(MediaStore.Audio.Media.ARTIST).known(),
             album = string(MediaStore.Audio.Media.ALBUM).known(),
             albumArtist = string(MediaStore.Audio.Media.ALBUM_ARTIST).known(),
@@ -143,7 +148,7 @@ class MediaStoreAudioLibrary(
             displayName = displayName,
             folder =
                 string(MediaStore.Audio.Media.RELATIVE_PATH)
-                    ?: string(DATA_COLUMN)?.let(::relativeFolder),
+                    ?: string(DATA_COLUMN)?.let { relativeFolder(it) },
             dateAddedEpochSeconds = long(MediaStore.Audio.Media.DATE_ADDED) ?: 0,
             dateModifiedEpochSeconds = long(MediaStore.Audio.Media.DATE_MODIFIED) ?: 0,
             artworkRef =
@@ -154,14 +159,15 @@ class MediaStoreAudioLibrary(
     private fun Cursor.index(column: String): Int? =
         getColumnIndex(column).takeIf { it >= 0 && !isNull(it) }
 
-    private fun Cursor.string(column: String): String? = index(column)?.let(::getString)
+    private fun Cursor.string(column: String): String? = index(column)?.let { getString(it) }
 
-    private fun Cursor.long(column: String): Long? = index(column)?.let(::getLong)
+    private fun Cursor.long(column: String): Long? = index(column)?.let { getLong(it) }
 
-    private fun Cursor.int(column: String): Int? = index(column)?.let(::getInt)
+    private fun Cursor.int(column: String): Int? = index(column)?.let { getInt(it) }
 
     /** MediaStore spells "no value" as `<unknown>`. */
-    private fun String?.known(): String? = this?.takeIf { it.isNotBlank() && it != MediaStore.UNKNOWN_STRING }
+    private fun String?.known(): String? =
+        this?.takeIf { it.isNotBlank() && it != MediaStore.UNKNOWN_STRING }
 
     private fun relativeFolder(path: String): String {
         val root = Environment.getExternalStorageDirectory().absolutePath.trimEnd('/') + "/"
@@ -188,7 +194,8 @@ internal fun mediaIdOf(context: Context, uri: Uri): Long? {
         return runCatching { ContentUris.parseId(uri) }.getOrNull()?.takeIf { it >= 0 }
     }
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-        val mediaUri = runCatching { MediaStore.getMediaUri(context, uri) }.getOrNull() ?: return null
+        val mediaUri =
+            runCatching { MediaStore.getMediaUri(context, uri) }.getOrNull() ?: return null
         return runCatching { ContentUris.parseId(mediaUri) }.getOrNull()
     }
     return null

@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.feature.player
 
 import android.Manifest
@@ -37,11 +40,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.core.content.ContextCompat
 import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bobbyesp.metadator.core.designsystem.theme.Spacing
 import com.bobbyesp.metadator.core.ui.component.ArtworkImage
@@ -49,8 +52,8 @@ import com.bobbyesp.metadator.player.api.PlayerController
 import org.koin.compose.koinInject
 
 /**
- * The player, collapsed: a floating card over the library while something plays. Tapping it
- * opens the full player.
+ * The player, collapsed: a floating card over the library while something plays. Tapping it opens
+ * the full player.
  */
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -96,7 +99,12 @@ fun MiniPlayer(visible: Boolean, onOpen: () -> Unit, modifier: Modifier = Modifi
                         shape = MaterialTheme.shapes.large,
                     )
                     Column(Modifier.weight(1f).padding(horizontal = Spacing.medium)) {
-                        Text(track.title, style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                        Text(
+                            track.title,
+                            style = MaterialTheme.typography.titleSmall,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                        )
                         Text(
                             track.artist ?: stringResource(R.string.unknown_artist),
                             style = MaterialTheme.typography.bodySmall,
@@ -104,19 +112,32 @@ fun MiniPlayer(visible: Boolean, onOpen: () -> Unit, modifier: Modifier = Modifi
                             overflow = TextOverflow.Ellipsis,
                         )
                     }
-                    FilledIconButton(onClick = player::togglePlayPause, shapes = IconButtonDefaults.shapes()) {
+                    FilledIconButton(
+                        onClick = player::togglePlayPause,
+                        shapes = IconButtonDefaults.shapes(),
+                    ) {
                         Icon(
-                            if (playback.isPlaying) Icons.Rounded.Pause else Icons.Rounded.PlayArrow,
-                            stringResource(if (playback.isPlaying) R.string.pause else R.string.play),
+                            if (playback.isPlaying) Icons.Rounded.Pause
+                            else Icons.Rounded.PlayArrow,
+                            stringResource(
+                                if (playback.isPlaying) R.string.pause else R.string.play
+                            ),
                         )
                     }
-                    IconButton(onClick = player::skipToNext, enabled = playback.hasNext, shapes = IconButtonDefaults.shapes()) {
+                    IconButton(
+                        onClick = player::skipToNext,
+                        enabled = playback.hasNext,
+                        shapes = IconButtonDefaults.shapes(),
+                    ) {
                         Icon(Icons.Rounded.SkipNext, stringResource(R.string.next))
                     }
                 }
                 LinearWavyProgressIndicator(
                     progress = { playback.progress },
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = Spacing.large).padding(bottom = Spacing.small),
+                    modifier =
+                        Modifier.fillMaxWidth()
+                            .padding(horizontal = Spacing.large)
+                            .padding(bottom = Spacing.small),
                 )
             }
         }
@@ -124,8 +145,8 @@ fun MiniPlayer(visible: Boolean, onOpen: () -> Unit, modifier: Modifier = Modifi
 }
 
 /**
- * Android 13 needs permission to show the media notification. It is asked the first time
- * something plays, when the user can see why, and never again if refused.
+ * Android 13 needs permission to show the media notification. It is asked the first time something
+ * plays, when the user can see why, and never again if refused.
  */
 @Composable
 private fun RequestNotificationsOnFirstPlay(active: Boolean) {
@@ -143,4 +164,3 @@ private fun RequestNotificationsOnFirstPlay(active: Boolean) {
         }
     }
 }
-

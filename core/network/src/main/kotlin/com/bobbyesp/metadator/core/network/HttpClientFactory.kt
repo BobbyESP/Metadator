@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.core.network
 
 import io.ktor.client.HttpClient
@@ -12,8 +15,8 @@ import kotlinx.serialization.json.Json
 
 object HttpClientFactory {
     /**
-     * Identifies the app to every service, as MusicBrainz requires: anonymous clients get
-     * throttled or blocked.
+     * Identifies the app to every service, as MusicBrainz requires: anonymous clients get throttled
+     * or blocked.
      */
     fun userAgent(versionName: String) =
         "Metadator/$versionName ( https://github.com/BobbyESP/Metadator )"

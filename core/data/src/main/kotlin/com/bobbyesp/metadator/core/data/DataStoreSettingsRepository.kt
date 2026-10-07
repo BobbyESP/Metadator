@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.core.data
 
 import android.content.Context
@@ -24,8 +27,8 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 
 /**
- * Preferences in DataStore. The file name and the theme keys are the ones 1.x used, so an
- * update keeps the user's theme with no migration.
+ * Preferences in DataStore. The file name and the theme keys are the ones 1.x used, so an update
+ * keeps the user's theme with no migration.
  */
 class DataStoreSettingsRepository(private val dataStore: DataStore<Preferences>) :
     SettingsRepository {
@@ -71,7 +74,8 @@ class DataStoreSettingsRepository(private val dataStore: DataStore<Preferences>)
             seedColor = this[Keys.SeedColor] ?: defaults.seedColor,
             paletteStyle = enumOrDefault(this[Keys.PaletteStyle], defaults.paletteStyle),
             pureBlack = this[Keys.PureBlack] ?: defaults.pureBlack,
-            colorEditorFromArtwork = this[Keys.ColorEditorFromArtwork] ?: defaults.colorEditorFromArtwork,
+            colorEditorFromArtwork =
+                this[Keys.ColorEditorFromArtwork] ?: defaults.colorEditorFromArtwork,
             multiValueMode = enumOrDefault(this[Keys.MultiValueMode], defaults.multiValueMode),
             multiValueSeparator = this[Keys.MultiValueSeparator] ?: defaults.multiValueSeparator,
             warnSmallArtwork = this[Keys.WarnSmallArtwork] ?: defaults.warnSmallArtwork,

@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.core.common
 
 import org.junit.Assert.assertEquals
@@ -7,7 +10,10 @@ import org.junit.Test
 class TextTest {
     @Test
     fun `normalization drops accents, case and punctuation`() {
-        assertEquals("beyonce halo remastered", "Beyoncé – Halo (Remastered)".normalizedForComparison())
+        assertEquals(
+            "beyonce halo remastered",
+            "Beyoncé – Halo (Remastered)".normalizedForComparison(),
+        )
     }
 
     @Test

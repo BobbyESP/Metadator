@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.library.mediastore
 
 import android.app.Activity
@@ -19,8 +22,8 @@ import kotlinx.coroutines.withContext
  * dialog, or a permission. Activities lend their launchers by calling [attach] in `onCreate`; the
  * most recently attached one that is still alive shows the prompt.
  *
- * A prompt survives the activity being recreated under it: the registry delivers the result to
- * the new activity's launcher, which completes the same pending request.
+ * A prompt survives the activity being recreated under it: the registry delivers the result to the
+ * new activity's launcher, which completes the same pending request.
  */
 class ActivityResultHost {
     private class Launchers(
@@ -61,25 +64,27 @@ class ActivityResultHost {
     }
 
     /** Shows [sender] and returns whether the user accepted, or null if nothing could show it. */
-    suspend fun launch(sender: IntentSender): Boolean? =
-        prompt { it.intentSender.launch(IntentSenderRequest.Builder(sender).build()) }
+    suspend fun launch(sender: IntentSender): Boolean? = prompt {
+        it.intentSender.launch(IntentSenderRequest.Builder(sender).build())
+    }
 
     /** Asks for [permission] and returns whether it was granted, or null if nothing could ask. */
-    suspend fun requestPermission(permission: String): Boolean? =
-        prompt { it.permission.launch(permission) }
+    suspend fun requestPermission(permission: String): Boolean? = prompt {
+        it.permission.launch(permission)
+    }
 
-    private suspend fun prompt(show: (Launchers) -> Unit): Boolean? =
-        mutex.withLock {
-            withContext(Dispatchers.Main.immediate) {
-                val launchers = attached.lastOrNull { !it.activity.isFinishing } ?: return@withContext null
-                val answer = CompletableDeferred<Boolean>()
-                pending = answer
-                try {
-                    show(launchers)
-                    answer.await()
-                } finally {
-                    pending = null
-                }
+    private suspend fun prompt(show: (Launchers) -> Unit): Boolean? = mutex.withLock {
+        withContext(Dispatchers.Main.immediate) {
+            val launchers =
+                attached.lastOrNull { !it.activity.isFinishing } ?: return@withContext null
+            val answer = CompletableDeferred<Boolean>()
+            pending = answer
+            try {
+                show(launchers)
+                answer.await()
+            } finally {
+                pending = null
             }
         }
+    }
 }

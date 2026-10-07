@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator
 
 import android.content.Intent
@@ -49,7 +52,10 @@ class ExternalEditorActivity : ComponentActivity() {
         resultHost.attach(this)
 
         setContent {
-            val settings by settingsRepository.settings.collectAsStateWithLifecycle(initialValue = UserSettings())
+            val settings by
+                settingsRepository.settings.collectAsStateWithLifecycle(
+                    initialValue = UserSettings()
+                )
             val snackbar = remember { SnackbarHostState() }
             CompositionLocalProvider(LocalSnackbarHostState provides snackbar) {
                 MetadatorTheme(settings) {
@@ -58,7 +64,9 @@ class ExternalEditorActivity : ComponentActivity() {
                             EditorDestination(uri = uri.toString(), onClose = ::finish)
                             SnackbarHost(
                                 snackbar,
-                                Modifier.align(Alignment.BottomCenter).navigationBarsPadding().padding(bottom = 96.dp),
+                                Modifier.align(Alignment.BottomCenter)
+                                    .navigationBarsPadding()
+                                    .padding(bottom = 96.dp),
                             )
                         }
                     }
@@ -73,7 +81,7 @@ class ExternalEditorActivity : ComponentActivity() {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     getParcelableExtra(Intent.EXTRA_STREAM, Uri::class.java)
                 } else {
-                    @Suppress("DEPRECATION") getParcelableExtra(Intent.EXTRA_STREAM)
+                    @Suppress("DEPRECATION") getParcelableExtra<Uri>(Intent.EXTRA_STREAM)
                 }
             else -> data
         }

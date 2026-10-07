@@ -1,8 +1,11 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.tags.api
 
 /**
- * The fields the editor knows by name. Anything else in a file is still read, kept and editable
- * as a raw key under "All tags"; this list only decides what gets a labelled input.
+ * The fields the editor knows by name. Anything else in a file is still read, kept and editable as
+ * a raw key under "All tags"; this list only decides what gets a labelled input.
  */
 enum class TagField(
     val key: String,

@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.core.designsystem.component
 
 import androidx.compose.animation.core.LinearEasing
@@ -38,8 +41,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
 /**
- * What a screen shows instead of content: empty, needs a permission, or failed. The slowly
- * turning cookie shape is the expressive cue that the app is not frozen, only empty.
+ * What a screen shows instead of content: empty, needs a permission, or failed. The slowly turning
+ * cookie shape is the expressive cue that the app is not frozen, only empty.
  */
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -90,7 +93,12 @@ fun PlaceholderCard(
                             .clip(MaterialShapes.Cookie9Sided.toShape())
                             .background(shapeColor)
                 )
-                Icon(icon, contentDescription = null, modifier = Modifier.size(48.dp), tint = onShapeColor)
+                Icon(
+                    icon,
+                    contentDescription = null,
+                    modifier = Modifier.size(48.dp),
+                    tint = onShapeColor,
+                )
             }
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -114,10 +122,15 @@ fun PlaceholderCard(
                     onClick = onAction,
                     modifier = Modifier.padding(top = 8.dp).heightIn(min = height),
                     shapes = ButtonDefaults.shapes(),
-                    contentPadding = ButtonDefaults.contentPaddingFor(height, hasStartIcon = actionIcon != null),
+                    contentPadding =
+                        ButtonDefaults.contentPaddingFor(height, hasStartIcon = actionIcon != null),
                 ) {
                     if (actionIcon != null) {
-                        Icon(actionIcon, contentDescription = null, modifier = Modifier.size(ButtonDefaults.iconSizeFor(height)))
+                        Icon(
+                            actionIcon,
+                            contentDescription = null,
+                            modifier = Modifier.size(ButtonDefaults.iconSizeFor(height)),
+                        )
                         Spacer(Modifier.width(ButtonDefaults.iconSpacingFor(height)))
                     }
                     Text(text = actionText, style = ButtonDefaults.textStyleFor(height))

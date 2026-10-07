@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.feature.library
 
 import androidx.activity.compose.BackHandler
@@ -190,7 +193,12 @@ private fun SearchTopBar(
         modifier =
             Modifier.fillMaxWidth()
                 .statusBarsPadding()
-                .padding(start = Spacing.screen, end = Spacing.extraSmall, top = Spacing.small, bottom = Spacing.small),
+                .padding(
+                    start = Spacing.screen,
+                    end = Spacing.extraSmall,
+                    top = Spacing.small,
+                    bottom = Spacing.small,
+                ),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         TextField(
@@ -199,11 +207,19 @@ private fun SearchTopBar(
             enabled = enabled,
             modifier = Modifier.weight(1f),
             placeholder = {
-                Text(stringResource(R.string.search_library), maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Text(
+                    stringResource(R.string.search_library),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
             },
             leadingIcon = { Icon(Icons.Rounded.Search, contentDescription = null) },
             trailingIcon = {
-                AnimatedVisibility(visible = query.isNotEmpty(), enter = fadeIn(), exit = fadeOut()) {
+                AnimatedVisibility(
+                    visible = query.isNotEmpty(),
+                    enter = fadeIn(),
+                    exit = fadeOut(),
+                ) {
                     IconButton(
                         onClick = {
                             onQueryChange("")
@@ -211,7 +227,10 @@ private fun SearchTopBar(
                         },
                         shapes = IconButtonDefaults.shapes(),
                     ) {
-                        Icon(Icons.Rounded.Clear, contentDescription = stringResource(R.string.clear_search))
+                        Icon(
+                            Icons.Rounded.Clear,
+                            contentDescription = stringResource(R.string.clear_search),
+                        )
                     }
                 }
             },
@@ -232,7 +251,10 @@ private fun SearchTopBar(
         }
         Box {
             IconButton(onClick = { menuOpen = true }, shapes = IconButtonDefaults.shapes()) {
-                Icon(Icons.Rounded.MoreVert, contentDescription = stringResource(R.string.more_options))
+                Icon(
+                    Icons.Rounded.MoreVert,
+                    contentDescription = stringResource(R.string.more_options),
+                )
             }
             DropdownMenu(expanded = menuOpen, onDismissRequest = { menuOpen = false }) {
                 DropdownMenuItem(
@@ -265,12 +287,18 @@ private fun SelectionTopBar(count: Int, onClose: () -> Unit, onSelectAll: () -> 
         title = { Text(pluralStringResource(R.plurals.selected_count, count, count)) },
         navigationIcon = {
             IconButton(onClick = onClose, shapes = IconButtonDefaults.shapes()) {
-                Icon(Icons.Rounded.Close, contentDescription = stringResource(R.string.close_selection))
+                Icon(
+                    Icons.Rounded.Close,
+                    contentDescription = stringResource(R.string.close_selection),
+                )
             }
         },
         actions = {
             IconButton(onClick = onSelectAll, shapes = IconButtonDefaults.shapes()) {
-                Icon(Icons.Rounded.SelectAll, contentDescription = stringResource(R.string.select_all))
+                Icon(
+                    Icons.Rounded.SelectAll,
+                    contentDescription = stringResource(R.string.select_all),
+                )
             }
         },
     )
@@ -283,19 +311,29 @@ private fun SelectionToolbar(onEdit: () -> Unit, onPlay: () -> Unit) {
         expanded = true,
         floatingActionButton = {
             FloatingToolbarDefaults.VibrantFloatingActionButton(onClick = onEdit) {
-                Icon(Icons.Rounded.Edit, contentDescription = stringResource(R.string.edit_together))
+                Icon(
+                    Icons.Rounded.Edit,
+                    contentDescription = stringResource(R.string.edit_together),
+                )
             }
         },
         colors = FloatingToolbarDefaults.vibrantFloatingToolbarColors(),
     ) {
         IconButton(onClick = onPlay, shapes = IconButtonDefaults.shapes()) {
-            Icon(Icons.Rounded.PlayArrow, contentDescription = stringResource(R.string.play_selection))
+            Icon(
+                Icons.Rounded.PlayArrow,
+                contentDescription = stringResource(R.string.play_selection),
+            )
         }
     }
 }
 
 @Composable
-private fun PermissionNeeded(permanentlyDenied: Boolean, onGrant: () -> Unit, onOpenFile: () -> Unit) {
+private fun PermissionNeeded(
+    permanentlyDenied: Boolean,
+    onGrant: () -> Unit,
+    onOpenFile: () -> Unit,
+) {
     Box(Modifier.fillMaxSize().padding(Spacing.extraLarge), contentAlignment = Alignment.Center) {
         PlaceholderCard(
             title = stringResource(R.string.permission_title),
@@ -307,7 +345,8 @@ private fun PermissionNeeded(permanentlyDenied: Boolean, onGrant: () -> Unit, on
             icon = Icons.Rounded.LibraryMusic,
             actionText =
                 stringResource(
-                    if (permanentlyDenied) R.string.permission_open_settings else R.string.permission_grant
+                    if (permanentlyDenied) R.string.permission_open_settings
+                    else R.string.permission_grant
                 ),
             onAction = onGrant,
             secondaryActionText = stringResource(R.string.open_file),
@@ -377,7 +416,11 @@ private fun LibraryContent(
                         LibraryTab.Artists ->
                             CollectionList(state.artists, Icons.Rounded.Person, onOpenCollection)
                         LibraryTab.Folders ->
-                            CollectionList(state.folders, Icons.Rounded.FolderOpen, onOpenCollection)
+                            CollectionList(
+                                state.folders,
+                                Icons.Rounded.FolderOpen,
+                                onOpenCollection,
+                            )
                     }
             }
         }
@@ -414,13 +457,21 @@ private fun FilterRow(state: LibraryState, onIntent: (LibraryIntent) -> Unit) {
                 selected = false,
                 onClick = { sortMenuOpen = true },
                 label = { Text(stringResource(state.sort.sort.label)) },
-                leadingIcon = { Icon(Icons.AutoMirrored.Rounded.Sort, null, Modifier.size(FilterChipDefaults.IconSize)) },
+                leadingIcon = {
+                    Icon(
+                        Icons.AutoMirrored.Rounded.Sort,
+                        null,
+                        Modifier.size(FilterChipDefaults.IconSize),
+                    )
+                },
             )
             DropdownMenu(expanded = sortMenuOpen, onDismissRequest = { sortMenuOpen = false }) {
                 TrackSort.entries.forEach { sort ->
                     DropdownMenuItem(
                         text = { Text(stringResource(sort.label)) },
-                        leadingIcon = { RadioButton(selected = state.sort.sort == sort, onClick = null) },
+                        leadingIcon = {
+                            RadioButton(selected = state.sort.sort == sort, onClick = null)
+                        },
                         onClick = {
                             onIntent(LibraryIntent.Sort(sort))
                             sortMenuOpen = false
@@ -431,7 +482,8 @@ private fun FilterRow(state: LibraryState, onIntent: (LibraryIntent) -> Unit) {
                     text = {
                         Text(
                             stringResource(
-                                if (state.sort.ascending) R.string.sort_descending else R.string.sort_ascending
+                                if (state.sort.ascending) R.string.sort_descending
+                                else R.string.sort_ascending
                             )
                         )
                     },
@@ -446,8 +498,12 @@ private fun FilterRow(state: LibraryState, onIntent: (LibraryIntent) -> Unit) {
             FilterChip(
                 selected = state.filter.needsAttention,
                 onClick = { onIntent(LibraryIntent.ToggleNeedsAttention) },
-                label = { Text(stringResource(R.string.needs_attention_filter, state.needsAttentionCount)) },
-                leadingIcon = { Icon(Icons.Rounded.Warning, null, Modifier.size(FilterChipDefaults.IconSize)) },
+                label = {
+                    Text(stringResource(R.string.needs_attention_filter, state.needsAttentionCount))
+                },
+                leadingIcon = {
+                    Icon(Icons.Rounded.Warning, null, Modifier.size(FilterChipDefaults.IconSize))
+                },
             )
         }
         if (state.formats.size > 1) {
@@ -464,11 +520,19 @@ private fun FilterRow(state: LibraryState, onIntent: (LibraryIntent) -> Unit) {
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalFoundationApi::class)
 @Composable
-private fun SongList(state: LibraryState, onIntent: (LibraryIntent) -> Unit, onOpenTrack: (Track) -> Unit) {
+private fun SongList(
+    state: LibraryState,
+    onIntent: (LibraryIntent) -> Unit,
+    onOpenTrack: (Track) -> Unit,
+) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding =
-            PaddingValues(start = Spacing.screen, end = Spacing.screen, bottom = Spacing.floatingClearance),
+            PaddingValues(
+                start = Spacing.screen,
+                end = Spacing.screen,
+                bottom = Spacing.floatingClearance,
+            ),
         verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap),
     ) {
         item(key = "header", contentType = "header") {
@@ -477,20 +541,40 @@ private fun SongList(state: LibraryState, onIntent: (LibraryIntent) -> Unit, onO
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    pluralStringResource(R.plurals.song_count, state.tracks.size, state.tracks.size),
+                    pluralStringResource(
+                        R.plurals.song_count,
+                        state.tracks.size,
+                        state.tracks.size,
+                    ),
                     style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.weight(1f),
                 )
-                IconButton(onClick = { onIntent(LibraryIntent.PlayAll(shuffle = true)) }, shapes = IconButtonDefaults.shapes()) {
-                    Icon(Icons.Rounded.Shuffle, contentDescription = stringResource(R.string.shuffle_all))
+                IconButton(
+                    onClick = { onIntent(LibraryIntent.PlayAll(shuffle = true)) },
+                    shapes = IconButtonDefaults.shapes(),
+                ) {
+                    Icon(
+                        Icons.Rounded.Shuffle,
+                        contentDescription = stringResource(R.string.shuffle_all),
+                    )
                 }
-                IconButton(onClick = { onIntent(LibraryIntent.PlayAll(shuffle = false)) }, shapes = IconButtonDefaults.shapes()) {
-                    Icon(Icons.Rounded.PlayArrow, contentDescription = stringResource(R.string.play_all))
+                IconButton(
+                    onClick = { onIntent(LibraryIntent.PlayAll(shuffle = false)) },
+                    shapes = IconButtonDefaults.shapes(),
+                ) {
+                    Icon(
+                        Icons.Rounded.PlayArrow,
+                        contentDescription = stringResource(R.string.play_all),
+                    )
                 }
             }
         }
-        itemsIndexed(state.tracks, key = { _, track -> track.id.value }, contentType = { _, _ -> "track" }) { index, track ->
+        itemsIndexed(
+            state.tracks,
+            key = { _, track -> track.id.value },
+            contentType = { _, _ -> "track" },
+        ) { index, track ->
             TrackListItem(
                 track = track,
                 selected = track.id in state.selection,
@@ -498,7 +582,8 @@ private fun SongList(state: LibraryState, onIntent: (LibraryIntent) -> Unit, onO
                 isPlaying = track.id == state.playingId,
                 shapes = GroupShapes.listItemShapes(index, state.tracks.size),
                 onClick = {
-                    if (state.selecting) onIntent(LibraryIntent.ToggleSelection(track.id)) else onOpenTrack(track)
+                    if (state.selecting) onIntent(LibraryIntent.ToggleSelection(track.id))
+                    else onOpenTrack(track)
                 },
                 onLongClick = { onIntent(LibraryIntent.ToggleSelection(track.id)) },
                 onPlay = { onIntent(LibraryIntent.Play(track)) },
@@ -514,14 +599,21 @@ private fun AlbumGrid(albums: List<TrackCollection.Album>, onOpen: (TrackCollect
         columns = GridCells.Adaptive(minSize = 156.dp),
         modifier = Modifier.fillMaxSize(),
         contentPadding =
-            PaddingValues(start = Spacing.screen, end = Spacing.screen, bottom = Spacing.floatingClearance),
+            PaddingValues(
+                start = Spacing.screen,
+                end = Spacing.screen,
+                bottom = Spacing.floatingClearance,
+            ),
         horizontalArrangement = Arrangement.spacedBy(Spacing.medium),
         verticalArrangement = Arrangement.spacedBy(Spacing.medium),
     ) {
         items(albums, key = { it.key }) { album ->
             CollectionCard(
                 title = album.title,
-                subtitle = listOfNotNull(album.artist, album.year?.toString()).joinToString(" · ").ifEmpty { null },
+                subtitle =
+                    listOfNotNull(album.artist, album.year?.toString())
+                        .joinToString(" · ")
+                        .ifEmpty { null },
                 artwork = album.artworkRef?.uri,
                 onClick = { onOpen(album) },
             )
@@ -540,7 +632,11 @@ private fun CollectionList(
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding =
-            PaddingValues(start = Spacing.screen, end = Spacing.screen, bottom = Spacing.floatingClearance),
+            PaddingValues(
+                start = Spacing.screen,
+                end = Spacing.screen,
+                bottom = Spacing.floatingClearance,
+            ),
         verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap),
     ) {
         itemsIndexed(collections, key = { _, it -> it.key }) { index, collection ->
@@ -548,14 +644,19 @@ private fun CollectionList(
                 onClick = { onOpen(collection) },
                 shapes = GroupShapes.listItemShapes(index, collections.size),
                 verticalAlignment = Alignment.CenterVertically,
-                colors = ListItemDefaults.segmentedColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),
+                colors =
+                    ListItemDefaults.segmentedColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceContainerLow
+                    ),
                 leadingContent = {
                     if (collection.artworkRef != null && collection !is TrackCollection.Folder) {
                         ArtworkImage(
                             model = collection.artworkRef?.uri,
                             contentDescription = null,
                             modifier = Modifier.size(52.dp),
-                            shape = if (collection is TrackCollection.Artist) CircleShape else MaterialTheme.shapes.medium,
+                            shape =
+                                if (collection is TrackCollection.Artist) CircleShape
+                                else MaterialTheme.shapes.medium,
                         )
                     } else {
                         Icon(icon, contentDescription = null, modifier = Modifier.size(28.dp))
@@ -563,12 +664,21 @@ private fun CollectionList(
                 },
                 supportingContent = {
                     Text(
-                        pluralStringResource(R.plurals.song_count, collection.tracks.size, collection.tracks.size),
+                        pluralStringResource(
+                            R.plurals.song_count,
+                            collection.tracks.size,
+                            collection.tracks.size,
+                        ),
                         maxLines = 1,
                     )
                 },
             ) {
-                Text(collection.title, style = MaterialTheme.typography.bodyLargeEmphasized, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Text(
+                    collection.title,
+                    style = MaterialTheme.typography.bodyLargeEmphasized,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
             }
         }
     }
@@ -593,4 +703,3 @@ private val TrackSort.label: Int
             TrackSort.DateModified -> R.string.sort_date_modified
             TrackSort.Duration -> R.string.sort_duration
         }
-

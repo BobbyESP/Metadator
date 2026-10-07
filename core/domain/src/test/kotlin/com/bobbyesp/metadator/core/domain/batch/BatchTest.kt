@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.core.domain.batch
 
 import com.bobbyesp.metadator.core.domain.FakeBackupStore
@@ -32,8 +35,16 @@ class BatchTest {
 
     @Test
     fun `patterns format file names from tags`() {
-        val tags = TagMap.of("ARTIST" to listOf("AC/DC"), "TITLE" to listOf("Hells Bells"), "TRACKNUMBER" to listOf("1/10"))
-        assertEquals("1 - AC_DC - Hells Bells", FileNamePattern("{track} - {artist} - {title}").format(tags))
+        val tags =
+            TagMap.of(
+                "ARTIST" to listOf("AC/DC"),
+                "TITLE" to listOf("Hells Bells"),
+                "TRACKNUMBER" to listOf("1/10"),
+            )
+        assertEquals(
+            "1 - AC_DC - Hells Bells",
+            FileNamePattern("{track} - {artist} - {title}").format(tags),
+        )
         assertNull(FileNamePattern("{album} - {title}").format(tags))
     }
 
@@ -50,10 +61,14 @@ class BatchTest {
         val files =
             FakeTagFiles(
                 refs.associateWith {
-                    TagSnapshot(TagMap.of("TITLE" to listOf(it.uri), "BPM" to listOf("120")), emptyList())
+                    TagSnapshot(
+                        TagMap.of("TITLE" to listOf(it.uri), "BPM" to listOf("120")),
+                        emptyList(),
+                    )
                 }
             )
-        val runner = BatchRunner(this, SaveTagChangesUseCase(files, files, FakeBackupStore(), FakeIndexer()))
+        val runner =
+            BatchRunner(this, SaveTagChangesUseCase(files, files, FakeBackupStore(), FakeIndexer()))
 
         runner.start(
             refs.mapIndexed { index, ref -> BatchItem(ref, "song$index.mp3") },

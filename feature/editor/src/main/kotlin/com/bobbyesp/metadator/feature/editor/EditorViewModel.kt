@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.feature.editor
 
 import androidx.lifecycle.SavedStateHandle
@@ -103,7 +106,8 @@ sealed interface EditorIntent {
 
     data object FindLyrics : EditorIntent
 
-    data class ApplyLookup(val fields: Map<String, List<String>>, val coverUrl: String?) : EditorIntent
+    data class ApplyLookup(val fields: Map<String, List<String>>, val coverUrl: String?) :
+        EditorIntent
 
     data object Play : EditorIntent
 }
@@ -118,7 +122,7 @@ class EditorViewModel(
     private val saveChanges: SaveTagChangesUseCase,
     private val restoreBackup: RestoreBackupUseCase,
     private val writeAccess: WriteAccess,
-    private val findLyrics: FindLyricsUseCase,
+    private val findLyricsUseCase: FindLyricsUseCase,
     private val artworkDownloader: ArtworkDownloader,
     private val images: ImageSource,
     private val settingsRepository: SettingsRepository,
@@ -128,10 +132,14 @@ class EditorViewModel(
 ) : BaseViewModel<EditorIntent, EditorState, EditorEffect>(EditorState(ref)) {
 
     init {
-        settingsRepository.settings.onEach { setState { copy(settings = it) } }.launchIn(viewModelScope)
+        settingsRepository.settings
+            .onEach { setState { copy(settings = it) } }
+            .launchIn(viewModelScope)
         player.state
             .onEach { playback ->
-                setState { copy(isPlayingThis = playback.isPlaying && playback.current?.ref == ref) }
+                setState {
+                    copy(isPlayingThis = playback.isPlaying && playback.current?.ref == ref)
+                }
             }
             .launchIn(viewModelScope)
         load(restorePending = true)
@@ -144,12 +152,19 @@ class EditorViewModel(
             is EditorIntent.SetPosition -> {
                 val draft = currentState.draft ?: return
                 val values =
-                    TrackPositions.write(draft.tags, intent.field, intent.position, currentState.positionStyle)
+                    TrackPositions.write(
+                        draft.tags,
+                        intent.field,
+                        intent.position,
+                        currentState.positionStyle,
+                    )
                 editDraft { setAll(values) }
             }
-            is EditorIntent.Revert -> editDraft { intent.keys.fold(this) { draft, key -> draft.revert(key) } }
+            is EditorIntent.Revert ->
+                editDraft { intent.keys.fold(this) { draft, key -> draft.revert(key) } }
             EditorIntent.RevertAll -> editDraft { revertAll() }
-            is EditorIntent.SetCoverFromUri -> setCover { images.read(intent.uri)?.let { it.bytes to it.mimeType } }
+            is EditorIntent.SetCoverFromUri ->
+                setCover { images.read(intent.uri)?.let { it.bytes to it.mimeType } }
             EditorIntent.RemoveCover -> editDraft { removeCover() }
             EditorIntent.RevertCover -> editDraft { revertCover() }
             EditorIntent.Save -> save()
@@ -160,7 +175,9 @@ class EditorViewModel(
     }
 
     private fun load(restorePending: Boolean) =
-        launch(onError = { setState { copy(status = EditorStatus.Failed(it.message.orEmpty())) } }) {
+        launch(
+            onError = { setState { copy(status = EditorStatus.Failed(it.message.orEmpty())) } }
+        ) {
             setState { copy(status = EditorStatus.Loading) }
             when (val result = loadTrack(ref)) {
                 is LoadTrackResult.Loaded -> {
@@ -173,15 +190,20 @@ class EditorViewModel(
                             loaded = loaded,
                             draft = draft,
                             positionStyle =
-                                TrackPositions.detectStyle(loaded.snapshot.tags, loaded.fileExtension),
+                                TrackPositions.detectStyle(
+                                    loaded.snapshot.tags,
+                                    loaded.fileExtension,
+                                ),
                         )
                     }
                     inspectCover()
                 }
                 LoadTrackResult.NotFound -> setState { copy(status = EditorStatus.NotFound) }
-                LoadTrackResult.AccessDenied -> setState { copy(status = EditorStatus.AccessDenied) }
+                LoadTrackResult.AccessDenied ->
+                    setState { copy(status = EditorStatus.AccessDenied) }
                 LoadTrackResult.Unsupported -> setState { copy(status = EditorStatus.Unsupported) }
-                is LoadTrackResult.Failed -> setState { copy(status = EditorStatus.Failed(result.message)) }
+                is LoadTrackResult.Failed ->
+                    setState { copy(status = EditorStatus.Failed(result.message)) }
             }
         }
 
@@ -207,15 +229,14 @@ class EditorViewModel(
             editDraft { replaceCover(EmbeddedPicture(bytes, mime, type = PictureType.FrontCover)) }
         }
 
-    private fun inspectCover() =
-        launch {
-            val cover = currentState.draft?.cover
-            setState { copy(coverInfo = null) }
-            if (cover != null) {
-                val info = images.inspect(cover.data)
-                if (currentState.draft?.cover === cover) setState { copy(coverInfo = info) }
-            }
+    private fun inspectCover() = launch {
+        val cover = currentState.draft?.cover
+        setState { copy(coverInfo = null) }
+        if (cover != null) {
+            val info = images.inspect(cover.data)
+            if (currentState.draft?.cover === cover) setState { copy(coverInfo = info) }
         }
+    }
 
     private fun save() {
         val draft = currentState.draft ?: return
@@ -223,14 +244,23 @@ class EditorViewModel(
         launch(
             onError = {
                 setState { copy(saving = false) }
-                showMessage(UiMessage(strings.get(R.string.save_failed, it.message.orEmpty()), long = true))
+                showMessage(
+                    UiMessage(strings.get(R.string.save_failed, it.message.orEmpty()), long = true)
+                )
             }
         ) {
             setState { copy(saving = true) }
             val settings = settingsRepository.settings.first()
-            val changes = draft.changes.withMultiValueMode(settings.multiValueMode, settings.multiValueSeparator)
+            val changes =
+                draft.changes.withMultiValueMode(
+                    settings.multiValueMode,
+                    settings.multiValueSeparator,
+                )
 
-            if (!writeAccess.canWrite(listOf(ref)) && writeAccess.request(listOf(ref)) != AccessResult.Granted) {
+            if (
+                !writeAccess.canWrite(listOf(ref)) &&
+                    writeAccess.request(listOf(ref)) != AccessResult.Granted
+            ) {
                 setState { copy(saving = false) }
                 showMessage(UiMessage(strings.get(R.string.write_access_denied), long = true))
                 return@launch
@@ -238,7 +268,10 @@ class EditorViewModel(
 
             var outcome = saveChanges(ref, changes)
             // Android 10 only offers its prompt after refusing a write.
-            if (outcome == SaveOutcome.NeedsAccess && writeAccess.request(listOf(ref)) == AccessResult.Granted) {
+            if (
+                outcome == SaveOutcome.NeedsAccess &&
+                    writeAccess.request(listOf(ref)) == AccessResult.Granted
+            ) {
                 outcome = saveChanges(ref, changes)
             }
             handleSaveOutcome(outcome)
@@ -253,7 +286,11 @@ class EditorViewModel(
                 settingsRepository.update { it.copy(successfulSaves = it.successfulSaves + 1) }
                 val text =
                     if (outcome.notStored.isEmpty()) strings.get(R.string.saved)
-                    else strings.get(R.string.saved_some_unsupported, outcome.notStored.joinToString(", "))
+                    else
+                        strings.get(
+                            R.string.saved_some_unsupported,
+                            outcome.notStored.joinToString(", "),
+                        )
                 showMessage(
                     UiMessage(
                         text = text,
@@ -279,7 +316,8 @@ class EditorViewModel(
                 showMessage(
                     UiMessage(
                         strings.get(
-                            if (outcome.restored) R.string.save_failed_restored else R.string.save_failed,
+                            if (outcome.restored) R.string.save_failed_restored
+                            else R.string.save_failed,
                             outcome.message,
                         ),
                         long = true,
@@ -305,21 +343,20 @@ class EditorViewModel(
         inspectCover()
     }
 
-    private fun undo(backupId: BackupId) =
-        launch {
-            val message =
-                when (restoreBackup(backupId)) {
-                    RestoreOutcome.Restored -> {
-                        reloadAfterWrite()
-                        R.string.undone
-                    }
-                    RestoreOutcome.BackupGone -> R.string.undo_unavailable
-                    RestoreOutcome.NeedsAccess -> R.string.write_access_denied
-                    RestoreOutcome.FileGone -> R.string.file_gone_title
-                    is RestoreOutcome.Failed -> R.string.undo_failed
+    private fun undo(backupId: BackupId) = launch {
+        val message =
+            when (restoreBackup(backupId)) {
+                RestoreOutcome.Restored -> {
+                    reloadAfterWrite()
+                    R.string.undone
                 }
-            showMessage(UiMessage(strings.get(message)))
-        }
+                RestoreOutcome.BackupGone -> R.string.undo_unavailable
+                RestoreOutcome.NeedsAccess -> R.string.write_access_denied
+                RestoreOutcome.FileGone -> R.string.file_gone_title
+                is RestoreOutcome.Failed -> R.string.undo_failed
+            }
+        showMessage(UiMessage(strings.get(message)))
+    }
 
     private fun findLyrics() {
         val state = currentState
@@ -333,12 +370,13 @@ class EditorViewModel(
         launch(onError = { setState { copy(findingLyrics = false) } }) {
             setState { copy(findingLyrics = true) }
             val result =
-                findLyrics(
+                findLyricsUseCase(
                     LyricsQuery(
                         title = title,
                         artist = artist,
                         album = draft.tags.first(TagField.Album.key),
-                        durationMs = state.loaded?.audio?.durationMs ?: state.loaded?.track?.durationMs,
+                        durationMs =
+                            state.loaded?.audio?.durationMs ?: state.loaded?.track?.durationMs,
                     )
                 )
             setState { copy(findingLyrics = false) }
@@ -352,18 +390,23 @@ class EditorViewModel(
                         showMessage(
                             UiMessage(
                                 strings.get(
-                                    if (result.lyrics.synced.isNullOrBlank()) R.string.lyrics_found_plain
+                                    if (result.lyrics.synced.isNullOrBlank())
+                                        R.string.lyrics_found_plain
                                     else R.string.lyrics_found_synced
                                 ),
                                 actionLabel = strings.get(R.string.undo),
-                                onAction = { handleIntent(EditorIntent.Revert(listOf(TagField.Lyrics.key))) },
+                                onAction = {
+                                    handleIntent(EditorIntent.Revert(listOf(TagField.Lyrics.key)))
+                                },
                             )
                         )
                     }
                 }
-                LyricsResult.NotFound -> showMessage(UiMessage(strings.get(R.string.lyrics_not_found)))
+                LyricsResult.NotFound ->
+                    showMessage(UiMessage(strings.get(R.string.lyrics_not_found)))
                 LyricsResult.Offline -> showMessage(UiMessage(strings.get(R.string.offline)))
-                is LyricsResult.Failed -> showMessage(UiMessage(strings.get(R.string.lyrics_failed)))
+                is LyricsResult.Failed ->
+                    showMessage(UiMessage(strings.get(R.string.lyrics_failed)))
             }
         }
     }
@@ -391,15 +434,16 @@ class EditorViewModel(
      * A new cover does not; its bytes are too large for saved state.
      */
 
-    private val pendingSerializer = MapSerializer(String.serializer(), ListSerializer(String.serializer()))
-
     private fun persistPendingFields(draft: TagDraft) {
         savedState[KEY_PENDING] =
-            if (draft.changes.fields.isEmpty()) null else Json.encodeToString(pendingSerializer, draft.changes.fields)
+            if (draft.changes.fields.isEmpty()) null
+            else Json.encodeToString(pendingSerializer, draft.changes.fields)
     }
 
     private fun restorePendingFields(): Map<String, List<String>>? =
-        savedState.get<String>(KEY_PENDING)?.let { runCatching { Json.decodeFromString(pendingSerializer, it) }.getOrNull() }
+        savedState.get<String>(KEY_PENDING)?.let {
+            runCatching { Json.decodeFromString(pendingSerializer, it) }.getOrNull()
+        }
 
     private fun clearPendingFields() {
         savedState[KEY_PENDING] = null
@@ -407,5 +451,7 @@ class EditorViewModel(
 
     private companion object {
         const val KEY_PENDING = "pending_fields"
+        val pendingSerializer =
+            MapSerializer(String.serializer(), ListSerializer(String.serializer()))
     }
 }

@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.tags.taglib
 
 import com.bobbyesp.metadator.core.common.AppDispatchers
@@ -24,8 +27,8 @@ import kotlinx.coroutines.withContext
 /**
  * Reads and writes tags with TagLib, through file descriptors the [opener] hands out.
  *
- * Every TagLib call takes a fresh duplicate descriptor, because TagLib closes the one it is
- * given. Calls are blocking native code, so they run on the IO dispatcher.
+ * Every TagLib call takes a fresh duplicate descriptor, because TagLib closes the one it is given.
+ * Calls are blocking native code, so they run on the IO dispatcher.
  */
 class TagLibTagFiles(
     private val opener: AudioFileOpener,
@@ -57,10 +60,14 @@ class TagLibTagFiles(
 
     override suspend fun readAudioProperties(ref: ContentRef): AudioProperties? =
         withContext(dispatchers.io) {
-            val open = opener.open(ref, AccessMode.Read) as? OpenResult.Opened ?: return@withContext null
+            val open =
+                opener.open(ref, AccessMode.Read) as? OpenResult.Opened ?: return@withContext null
             open.file.use { file ->
                 guarded(onError = { null }) {
-                    TagLib.getAudioProperties(file.detachDuplicateFd(), AudioPropertiesReadStyle.Average)
+                    TagLib.getAudioProperties(
+                            file.detachDuplicateFd(),
+                            AudioPropertiesReadStyle.Average,
+                        )
                         ?.let {
                             AudioProperties(
                                 durationMs = it.length.toLong(),

@@ -1,11 +1,14 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.core.model
 
 /** A song in the device's library, as MediaStore indexes it. */
 @JvmInline value class TrackId(val value: Long)
 
 /**
- * What the library knows about a song without opening it. The tags in the file are the truth;
- * this is MediaStore's copy, which can lag behind until the file is rescanned.
+ * What the library knows about a song without opening it. The tags in the file are the truth; this
+ * is MediaStore's copy, which can lag behind until the file is rescanned.
  */
 data class Track(
     val id: TrackId,

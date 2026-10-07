@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.feature.editor.components
 
 import androidx.compose.foundation.layout.Arrangement
@@ -72,7 +75,10 @@ fun CoverCard(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(Spacing.medium),
     ) {
-        Box(Modifier.widthIn(max = 280.dp).fillMaxWidth().aspectRatio(1f), contentAlignment = Alignment.Center) {
+        Box(
+            Modifier.widthIn(max = 280.dp).fillMaxWidth().aspectRatio(1f),
+            contentAlignment = Alignment.Center,
+        ) {
             ArtworkImage(
                 model = cover,
                 contentDescription = stringResource(R.string.cover),
@@ -87,7 +93,8 @@ fun CoverCard(
             ) {
                 Icon(
                     if (isPlaying) Icons.Rounded.Pause else Icons.Rounded.PlayArrow,
-                    contentDescription = stringResource(if (isPlaying) R.string.pause_song else R.string.play_song),
+                    contentDescription =
+                        stringResource(if (isPlaying) R.string.pause_song else R.string.play_song),
                 )
             }
         }
@@ -114,10 +121,16 @@ fun CoverCard(
 
         CoverFacts(cover, coverInfo, coverChanged, warnSmall)
 
-        Row(horizontalArrangement = Arrangement.spacedBy(Spacing.small), verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(Spacing.small),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
             FilledTonalButton(onClick = onChangeCover, shapes = ButtonDefaults.shapes()) {
                 Icon(Icons.Rounded.Image, null, Modifier.size(ButtonDefaults.IconSize))
-                Text(stringResource(R.string.cover_change), Modifier.padding(start = ButtonDefaults.IconSpacing))
+                Text(
+                    stringResource(R.string.cover_change),
+                    Modifier.padding(start = ButtonDefaults.IconSpacing),
+                )
             }
             Box {
                 IconButton(onClick = { menuOpen = true }, shapes = IconButtonDefaults.shapes()) {
@@ -168,11 +181,21 @@ private fun CoverFacts(cover: ByteArray?, info: ImageInfo?, changed: Boolean, wa
     Text(
         parts.joinToString(" · "),
         style = MaterialTheme.typography.labelLarge,
-        color = if (changed) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+        color =
+            if (changed) MaterialTheme.colorScheme.primary
+            else MaterialTheme.colorScheme.onSurfaceVariant,
     )
     if (warnSmall && info?.isSmall == true) {
-        Row(horizontalArrangement = Arrangement.spacedBy(Spacing.extraSmall), verticalAlignment = Alignment.CenterVertically) {
-            Icon(Icons.Rounded.Warning, null, tint = MaterialTheme.colorScheme.error, modifier = Modifier.size(16.dp))
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(Spacing.extraSmall),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Icon(
+                Icons.Rounded.Warning,
+                null,
+                tint = MaterialTheme.colorScheme.error,
+                modifier = Modifier.size(16.dp),
+            )
             Text(
                 stringResource(R.string.cover_small_warning),
                 style = MaterialTheme.typography.bodySmall,

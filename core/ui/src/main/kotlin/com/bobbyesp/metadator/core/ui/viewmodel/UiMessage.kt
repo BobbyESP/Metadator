@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.core.ui.viewmodel
 
 import androidx.compose.material3.SnackbarDuration

@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.core.domain.lookup
 
 import com.bobbyesp.metadator.core.domain.editor.Position
@@ -59,7 +62,10 @@ fun proposalsFor(
             TrackPositions.write(
                 current,
                 TagField.DiscNumber,
-                Position(candidate.discNumber.toString(), candidate.discTotal?.toString().orEmpty()),
+                Position(
+                    candidate.discNumber.toString(),
+                    candidate.discTotal?.toString().orEmpty(),
+                ),
                 positionStyle,
             )
     }

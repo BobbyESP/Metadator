@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.tags.api
 
 import com.bobbyesp.metadator.core.model.ContentRef
@@ -29,7 +32,11 @@ interface TagWriter {
      * is not null, its pictures with [pictures]. Callers pass the original map with the user's
      * changes applied, never a map built from scratch.
      */
-    suspend fun write(ref: ContentRef, tags: TagMap, pictures: List<EmbeddedPicture>?): TagWriteResult
+    suspend fun write(
+        ref: ContentRef,
+        tags: TagMap,
+        pictures: List<EmbeddedPicture>?,
+    ): TagWriteResult
 }
 
 sealed interface TagWriteResult {

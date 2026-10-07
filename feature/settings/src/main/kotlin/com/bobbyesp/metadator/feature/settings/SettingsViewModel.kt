@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.feature.settings
 
 import androidx.lifecycle.ViewModel
@@ -21,9 +24,14 @@ class SettingsViewModel(
     val appInfo: AppInfo,
 ) : ViewModel() {
     val settings: StateFlow<UserSettings> =
-        repository.settings.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), UserSettings())
+        repository.settings.stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5_000),
+            UserSettings(),
+        )
 
-    val providers: List<ProviderInfo> = lookup.availableProviders.map { ProviderInfo(it.id, it.displayName) }
+    val providers: List<ProviderInfo> =
+        lookup.availableProviders.map { ProviderInfo(it.id, it.displayName) }
 
     fun update(transform: (UserSettings) -> UserSettings) {
         viewModelScope.launch { repository.update(transform) }
@@ -32,7 +40,8 @@ class SettingsViewModel(
     fun toggleProvider(id: String) = update { settings ->
         settings.copy(
             enabledProviders =
-                if (id in settings.enabledProviders) settings.enabledProviders - id else settings.enabledProviders + id
+                if (id in settings.enabledProviders) settings.enabledProviders - id
+                else settings.enabledProviders + id
         )
     }
 

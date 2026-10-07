@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.core.domain.editor
 
 import com.bobbyesp.metadator.core.model.MultiValueMode
@@ -6,8 +9,8 @@ import com.bobbyesp.metadator.tags.api.TagField
 
 /**
  * Applies the user's choice for fields with several values just before writing: kept apart, or
- * joined into one for players that only read the first value. Only touches fields the user
- * changed: a file's existing values are never rewritten in another style behind their back.
+ * joined into one for players that only read the first value. Only touches fields the user changed:
+ * a file's existing values are never rewritten in another style behind their back.
  */
 fun TagChanges.withMultiValueMode(mode: MultiValueMode, separator: String): TagChanges {
     if (mode == MultiValueMode.Separate) return this

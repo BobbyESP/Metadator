@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.core.domain.batch
 
 import com.bobbyesp.metadator.core.domain.editor.Position
@@ -46,7 +49,12 @@ data class BatchEdit(
 data class TrackNumbering(val startAt: Int = 1, val writeTotal: Boolean = true)
 
 /** The changes [edit] makes to the file at [index] of [count], given its current tags. */
-fun BatchEdit.changesFor(item: BatchItem, index: Int, count: Int, snapshot: TagSnapshot): TagChanges {
+fun BatchEdit.changesFor(
+    item: BatchItem,
+    index: Int,
+    count: Int,
+    snapshot: TagSnapshot,
+): TagChanges {
     val fields = linkedMapOf<String, List<String>>()
     fileNamePattern?.parse(item.displayName)?.let { fields += it }
     fields += this.fields
@@ -87,18 +95,17 @@ data class BatchProgress(
         get() = results.filter { it.outcome is SaveOutcome.Saved }
 
     val failed: List<BatchItemResult>
-        get() =
-            results.filter {
-                it.outcome !is SaveOutcome.Saved && it.outcome != SaveOutcome.NothingToSave
-            }
+        get() = results.filter {
+            it.outcome !is SaveOutcome.Saved && it.outcome != SaveOutcome.NothingToSave
+        }
 
     val backups: List<BackupId>
         get() = results.mapNotNull { (it.outcome as? SaveOutcome.Saved)?.backupId }
 }
 
 /**
- * Runs batch edits in the application's scope, so leaving the screen does not stop one halfway.
- * One batch at a time; its progress is observable until the next one starts.
+ * Runs batch edits in the application's scope, so leaving the screen does not stop one halfway. One
+ * batch at a time; its progress is observable until the next one starts.
  */
 class BatchRunner(
     private val scope: CoroutineScope,
@@ -120,18 +127,17 @@ class BatchRunner(
     ) {
         if (isRunning) return
         _progress.value = BatchProgress(total = items.size)
-        job =
-            scope.launch {
-                items.forEachIndexed { index, item ->
-                    if (!isActive) return@forEachIndexed
-                    val outcome =
-                        save(item.ref) { snapshot ->
-                            finalize(edit.changesFor(item, index, items.size, snapshot))
-                        }
-                    _progress.update { it?.copy(results = it.results + BatchItemResult(item, outcome)) }
-                }
-                _progress.update { it?.copy(isRunning = false) }
+        job = scope.launch {
+            items.forEachIndexed { index, item ->
+                if (!isActive) return@forEachIndexed
+                val outcome =
+                    save(item.ref) { snapshot ->
+                        finalize(edit.changesFor(item, index, items.size, snapshot))
+                    }
+                _progress.update { it?.copy(results = it.results + BatchItemResult(item, outcome)) }
             }
+            _progress.update { it?.copy(isRunning = false) }
+        }
     }
 
     fun cancel() {

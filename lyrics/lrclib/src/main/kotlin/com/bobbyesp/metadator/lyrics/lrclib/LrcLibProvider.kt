@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.lyrics.lrclib
 
 import com.bobbyesp.metadator.core.network.isOfflineError
@@ -16,8 +19,8 @@ import kotlin.math.abs
 import kotlinx.serialization.Serializable
 
 /**
- * LRCLIB, an open database of synced lyrics. An exact match (title, artist, album, duration)
- * comes first; when that misses, a search, keeping the result closest in duration.
+ * LRCLIB, an open database of synced lyrics. An exact match (title, artist, album, duration) comes
+ * first; when that misses, a search, keeping the result closest in duration.
  */
 class LrcLibProvider(private val client: HttpClient) : LyricsProvider {
 
@@ -30,7 +33,9 @@ class LrcLibProvider(private val client: HttpClient) : LyricsProvider {
                 else LyricsResult.Failed(it.message ?: it::class.simpleName.orEmpty())
             }
         ) {
-            exactMatch(query)?.let { return@networkCall LyricsResult.Found(it) }
+            exactMatch(query)?.let {
+                return@networkCall LyricsResult.Found(it)
+            }
             searchMatch(query)?.let { LyricsResult.Found(it) } ?: LyricsResult.NotFound
         }
 
@@ -59,7 +64,9 @@ class LrcLibProvider(private val client: HttpClient) : LyricsProvider {
             if (target == null) records.firstOrNull()
             else
                 records
-                    .mapNotNull { record -> record.duration?.let { record to abs(it * 1000 - target) } }
+                    .mapNotNull { record ->
+                        record.duration?.let { record to abs(it * 1000 - target) }
+                    }
                     .minByOrNull { (_, gap) -> gap }
                     ?.takeIf { (_, gap) -> gap <= MAX_DURATION_GAP_MS }
                     ?.first ?: records.firstOrNull { it.duration == null }

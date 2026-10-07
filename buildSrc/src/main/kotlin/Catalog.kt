@@ -16,6 +16,9 @@ internal fun VersionCatalog.pluginId(alias: String): String = findPlugin(alias).
 internal val Project.defaultNamespace: String
     get() =
         ProjectConfig.namespace +
-            path.split(':').filter { it.isNotEmpty() }.joinToString(separator = ".", prefix = ".") {
-                it.replace('-', '_')
-            }
+            path
+                .split(':')
+                .filter { it.isNotEmpty() }
+                .joinToString(separator = ".", prefix = ".") {
+                    it.replace('-', '_')
+                }

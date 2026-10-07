@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.lookup.musicbrainz
 
 import com.bobbyesp.metadator.core.network.isOfflineError
@@ -19,8 +22,8 @@ import kotlinx.coroutines.sync.withLock
 
 /**
  * MusicBrainz, the open music encyclopedia, with covers from the Cover Art Archive. No key is
- * needed, which is what lets the FOSS build ship it, but the service allows one request per
- * second per client and blocks clients that do more.
+ * needed, which is what lets the FOSS build ship it, but the service allows one request per second
+ * per client and blocks clients that do more.
  */
 class MusicBrainzProvider(
     private val client: HttpClient,
@@ -42,36 +45,36 @@ class MusicBrainzProvider(
                 else LookupResult.Failed(it.message ?: it::class.simpleName.orEmpty())
             }
         ) {
-            val response =
-                throttled {
-                    client.get("$BASE_URL/recording") {
-                        parameter("query", buildLuceneQuery(query))
-                        parameter("fmt", "json")
-                        parameter("limit", RESULT_LIMIT)
-                    }
+            val response = throttled {
+                client.get("$BASE_URL/recording") {
+                    parameter("query", buildLuceneQuery(query))
+                    parameter("fmt", "json")
+                    parameter("limit", RESULT_LIMIT)
                 }
+            }
             when {
                 response.status == HttpStatusCode.ServiceUnavailable ||
                     response.status == HttpStatusCode.TooManyRequests -> LookupResult.RateLimited
                 !response.status.isSuccess() -> LookupResult.Failed("HTTP ${response.status.value}")
                 else -> {
                     val recordings = response.body<RecordingSearch>().recordings
-                    LookupResult.Success(rank(query, recordings.flatMap { it.toCandidates() }).take(MAX_CANDIDATES))
+                    LookupResult.Success(
+                        rank(query, recordings.flatMap { it.toCandidates() }).take(MAX_CANDIDATES)
+                    )
                 }
             }
         }
     }
 
-    private suspend fun <T> throttled(block: suspend () -> T): T =
-        rateLimit.withLock {
-            val wait = lastRequestAt + MIN_INTERVAL_MS - clock()
-            if (wait > 0) delay(wait)
-            try {
-                block()
-            } finally {
-                lastRequestAt = clock()
-            }
+    private suspend fun <T> throttled(block: suspend () -> T): T = rateLimit.withLock {
+        val wait = lastRequestAt + MIN_INTERVAL_MS - clock()
+        if (wait > 0) delay(wait)
+        try {
+            block()
+        } finally {
+            lastRequestAt = clock()
         }
+    }
 
     companion object {
         const val ID = "musicbrainz"
@@ -84,13 +87,12 @@ class MusicBrainzProvider(
         /** At most this many releases per recording: the rest are reissues of the same thing. */
         private const val RELEASES_PER_RECORDING = 3
 
-        internal fun buildLuceneQuery(query: LookupQuery): String =
-            buildList {
-                    add("recording:${quote(query.title)}")
-                    query.artist?.takeIf { it.isNotBlank() }?.let { add("artist:${quote(it)}") }
-                    query.album?.takeIf { it.isNotBlank() }?.let { add("release:${quote(it)}") }
-                }
-                .joinToString(" AND ")
+        internal fun buildLuceneQuery(query: LookupQuery): String = buildList {
+            add("recording:${quote(query.title)}")
+            query.artist?.takeIf { it.isNotBlank() }?.let { add("artist:${quote(it)}") }
+            query.album?.takeIf { it.isNotBlank() }?.let { add("release:${quote(it)}") }
+        }
+            .joinToString(" AND ")
 
         /** Quotes a phrase for Lucene, escaping what would end it early. */
         private fun quote(value: String): String =

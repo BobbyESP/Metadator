@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.tags.api
 
 import org.junit.Assert.assertEquals
@@ -38,7 +41,8 @@ class TagChangesTest {
 
     @Test
     fun `multi values are kept apart, commas and all`() {
-        val result = original.applying(mapOf("ARTIST" to listOf("Tyler, The Creator", "Kali Uchis")))
+        val result =
+            original.applying(mapOf("ARTIST" to listOf("Tyler, The Creator", "Kali Uchis")))
 
         assertEquals(listOf("Tyler, The Creator", "Kali Uchis"), result["ARTIST"])
     }
@@ -52,7 +56,8 @@ class TagChangesTest {
 
     @Test
     fun `diff lists only keys whose values differ`() {
-        val edited = original.with("TITLE", listOf("Other")).without("BPM").with("MOOD", listOf("calm"))
+        val edited =
+            original.with("TITLE", listOf("Other")).without("BPM").with("MOOD", listOf("calm"))
 
         val changes = diff(original, edited)
 

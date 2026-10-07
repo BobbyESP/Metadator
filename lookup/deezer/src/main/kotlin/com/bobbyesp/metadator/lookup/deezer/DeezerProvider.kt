@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.lookup.deezer
 
 import com.bobbyesp.metadator.core.network.isOfflineError
@@ -17,8 +20,8 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 
 /**
- * Deezer's public catalogue: no key, broad coverage of commercial releases and covers up to
- * 1000 px. Search results are thin, so the best few are completed with their track details.
+ * Deezer's public catalogue: no key, broad coverage of commercial releases and covers up to 1000
+ * px. Search results are thin, so the best few are completed with their track details.
  */
 class DeezerProvider(private val client: HttpClient) : MetadataProvider {
 
@@ -77,13 +80,12 @@ class DeezerProvider(private val client: HttpClient) : MetadataProvider {
         private const val DETAILED_RESULTS = 5
         private const val QUOTA_EXCEEDED = 4
 
-        internal fun buildQuery(query: LookupQuery): String =
-            buildList {
-                    add("track:${quote(query.title)}")
-                    query.artist?.takeIf { it.isNotBlank() }?.let { add("artist:${quote(it)}") }
-                    query.album?.takeIf { it.isNotBlank() }?.let { add("album:${quote(it)}") }
-                }
-                .joinToString(" ")
+        internal fun buildQuery(query: LookupQuery): String = buildList {
+            add("track:${quote(query.title)}")
+            query.artist?.takeIf { it.isNotBlank() }?.let { add("artist:${quote(it)}") }
+            query.album?.takeIf { it.isNotBlank() }?.let { add("album:${quote(it)}") }
+        }
+            .joinToString(" ")
 
         private fun quote(value: String) = "\"" + value.replace("\"", "") + "\""
 

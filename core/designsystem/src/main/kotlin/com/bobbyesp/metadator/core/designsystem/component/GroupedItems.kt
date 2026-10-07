@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.core.designsystem.component
 
 import androidx.compose.foundation.layout.Box
@@ -48,7 +51,8 @@ fun ItemIcon(icon: ImageVector, modifier: Modifier = Modifier, enabled: Boolean 
         modifier = modifier.size(40.dp),
         shape = CircleShape,
         color = if (enabled) colors.primaryContainer else colors.onSurface.copy(alpha = 0.12f),
-        contentColor = if (enabled) colors.onPrimaryContainer else colors.onSurface.copy(alpha = 0.38f),
+        contentColor =
+            if (enabled) colors.onPrimaryContainer else colors.onSurface.copy(alpha = 0.38f),
     ) {
         Box(contentAlignment = Alignment.Center) {
             Icon(icon, contentDescription = null, modifier = Modifier.size(24.dp))

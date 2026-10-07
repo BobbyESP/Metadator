@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.core.navigation.overlay
 
 import androidx.compose.material3.ExperimentalMaterial3Api

@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.feature.settings
 
 import androidx.compose.foundation.BorderStroke
@@ -83,7 +86,16 @@ private const val PLAY_URL = "https://play.google.com/store/apps/details?id=com.
 
 /** Seeds offered when wallpaper colors are off: the 1.x default first. */
 private val SeedColors =
-    listOf(UserSettings.DEFAULT_SEED_COLOR, 0xFF6750A4.toInt(), 0xFF006A6A.toInt(), 0xFF8B5000.toInt(), 0xFFB3261E.toInt(), 0xFF386A20.toInt(), 0xFF984061.toInt(), 0xFF00639B.toInt())
+    listOf(
+        UserSettings.DEFAULT_SEED_COLOR,
+        0xFF6750A4.toInt(),
+        0xFF006A6A.toInt(),
+        0xFF8B5000.toInt(),
+        0xFFB3261E.toInt(),
+        0xFF386A20.toInt(),
+        0xFF984061.toInt(),
+        0xFF00639B.toInt(),
+    )
 
 fun EntryProviderScope<NavKey>.settingsSection(navigator: Navigator) {
     entry<Settings> {
@@ -92,10 +104,26 @@ fun EntryProviderScope<NavKey>.settingsSection(navigator: Navigator) {
                 Column(verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap)) {
                     val pages =
                         listOf(
-                            Triple(R.string.appearance, R.string.appearance_description, Icons.Rounded.Palette) to AppearanceSettings,
-                            Triple(R.string.editor, R.string.editor_description, Icons.Rounded.EditNote) to EditorSettings,
-                            Triple(R.string.lookup, R.string.lookup_description, Icons.Rounded.Public) to LookupSettings,
-                            Triple(R.string.about, R.string.about_description, Icons.Rounded.Info) to About,
+                            Triple(
+                                R.string.appearance,
+                                R.string.appearance_description,
+                                Icons.Rounded.Palette,
+                            ) to AppearanceSettings,
+                            Triple(
+                                R.string.editor,
+                                R.string.editor_description,
+                                Icons.Rounded.EditNote,
+                            ) to EditorSettings,
+                            Triple(
+                                R.string.lookup,
+                                R.string.lookup_description,
+                                Icons.Rounded.Public,
+                            ) to LookupSettings,
+                            Triple(
+                                R.string.about,
+                                R.string.about_description,
+                                Icons.Rounded.Info,
+                            ) to About,
                         )
                     pages.forEachIndexed { index, (labels, key) ->
                         NavigationItem(
@@ -142,7 +170,12 @@ fun EntryProviderScope<NavKey>.settingsSection(navigator: Navigator) {
                     stringResource(R.string.lookup_sources_description),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(start = Spacing.small, end = Spacing.small, bottom = Spacing.medium),
+                    modifier =
+                        Modifier.padding(
+                            start = Spacing.small,
+                            end = Spacing.small,
+                            bottom = Spacing.medium,
+                        ),
                 )
             }
             item {
@@ -153,8 +186,10 @@ fun EntryProviderScope<NavKey>.settingsSection(navigator: Navigator) {
                             supportingText =
                                 stringResource(
                                     when (provider.id) {
-                                        UserSettings.PROVIDER_MUSICBRAINZ -> R.string.provider_musicbrainz_description
-                                        UserSettings.PROVIDER_DEEZER -> R.string.provider_deezer_description
+                                        UserSettings.PROVIDER_MUSICBRAINZ ->
+                                            R.string.provider_musicbrainz_description
+                                        UserSettings.PROVIDER_DEEZER ->
+                                            R.string.provider_deezer_description
                                         else -> R.string.provider_other_description
                                     }
                                 ),
@@ -183,9 +218,25 @@ fun EntryProviderScope<NavKey>.settingsSection(navigator: Navigator) {
             }
             item {
                 val rows = buildList {
-                    add(Triple(R.string.source_code, R.string.source_code_description, Icons.Rounded.Code) to SOURCE_URL)
-                    add(Triple(R.string.report_issue, R.string.report_issue_description, Icons.Rounded.BugReport) to ISSUES_URL)
-                    if (info.isPlayStoreBuild) add(Triple(R.string.rate, R.string.rate_description, Icons.Rounded.Star) to PLAY_URL)
+                    add(
+                        Triple(
+                            R.string.source_code,
+                            R.string.source_code_description,
+                            Icons.Rounded.Code,
+                        ) to SOURCE_URL
+                    )
+                    add(
+                        Triple(
+                            R.string.report_issue,
+                            R.string.report_issue_description,
+                            Icons.Rounded.BugReport,
+                        ) to ISSUES_URL
+                    )
+                    if (info.isPlayStoreBuild)
+                        add(
+                            Triple(R.string.rate, R.string.rate_description, Icons.Rounded.Star) to
+                                PLAY_URL
+                        )
                 }
                 Column(verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap)) {
                     rows.forEachIndexed { index, (labels, url) ->
@@ -210,7 +261,10 @@ fun EntryProviderScope<NavKey>.settingsSection(navigator: Navigator) {
                 )
             }
             item {
-                Box(Modifier.fillMaxWidth().padding(Spacing.huge), contentAlignment = Alignment.Center) {
+                Box(
+                    Modifier.fillMaxWidth().padding(Spacing.huge),
+                    contentAlignment = Alignment.Center,
+                ) {
                     Text(
                         stringResource(R.string.made_by),
                         style = MaterialTheme.typography.labelLarge,
@@ -258,11 +312,22 @@ private fun SettingsPage(title: String, onBack: () -> Unit, content: LazyListSco
     }
 }
 
-private fun LazyListScope.appearance(settings: UserSettings, update: ((UserSettings) -> UserSettings) -> Unit) {
+private fun LazyListScope.appearance(
+    settings: UserSettings,
+    update: ((UserSettings) -> UserSettings) -> Unit,
+) {
     item { SectionHeader(stringResource(R.string.theme), Modifier.readableWidth()) }
     item {
-        val modes = listOf(ThemeMode.FollowSystem to R.string.theme_system, ThemeMode.Light to R.string.theme_light, ThemeMode.Dark to R.string.theme_dark)
-        Column(Modifier.readableWidth(), verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap)) {
+        val modes =
+            listOf(
+                ThemeMode.FollowSystem to R.string.theme_system,
+                ThemeMode.Light to R.string.theme_light,
+                ThemeMode.Dark to R.string.theme_dark,
+            )
+        Column(
+            Modifier.readableWidth(),
+            verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap),
+        ) {
             modes.forEachIndexed { index, (mode, label) ->
                 RadioItem(
                     title = stringResource(label),
@@ -277,7 +342,10 @@ private fun LazyListScope.appearance(settings: UserSettings, update: ((UserSetti
     item { SectionHeader(stringResource(R.string.colors), Modifier.readableWidth()) }
     item {
         val dynamicAvailable = isDynamicColorSupported()
-        Column(Modifier.readableWidth(), verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap)) {
+        Column(
+            Modifier.readableWidth(),
+            verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap),
+        ) {
             SwitchItem(
                 title = stringResource(R.string.dynamic_color),
                 supportingText = stringResource(R.string.dynamic_color_description),
@@ -300,16 +368,24 @@ private fun LazyListScope.appearance(settings: UserSettings, update: ((UserSetti
                 supportingText = stringResource(R.string.color_from_cover_description),
                 icon = Icons.Rounded.Image,
                 checked = settings.colorEditorFromArtwork,
-                onCheckedChange = { checked -> update { it.copy(colorEditorFromArtwork = checked) } },
+                onCheckedChange = { checked ->
+                    update { it.copy(colorEditorFromArtwork = checked) }
+                },
                 shapes = GroupShapes.listItemShapes(2, 3),
             )
         }
     }
     if (!settings.useDynamicColor || !isDynamicColorSupported()) {
         item { SectionHeader(stringResource(R.string.seed_color), Modifier.readableWidth()) }
-        item { SeedColorPicker(settings.seedColor) { color -> update { it.copy(seedColor = color) } } }
+        item {
+            SeedColorPicker(settings.seedColor) { color -> update { it.copy(seedColor = color) } }
+        }
         item { SectionHeader(stringResource(R.string.palette_style), Modifier.readableWidth()) }
-        item { PaletteStylePicker(settings.paletteStyle) { style -> update { it.copy(paletteStyle = style) } } }
+        item {
+            PaletteStylePicker(settings.paletteStyle) { style ->
+                update { it.copy(paletteStyle = style) }
+            }
+        }
     }
 }
 
@@ -327,7 +403,9 @@ private fun SeedColorPicker(selected: Int, onSelect: (Int) -> Unit) {
                 onClick = { onSelect(color) },
                 shape = CircleShape,
                 color = Color(color),
-                border = if (isSelected) BorderStroke(3.dp, MaterialTheme.colorScheme.onSurface) else null,
+                border =
+                    if (isSelected) BorderStroke(3.dp, MaterialTheme.colorScheme.onSurface)
+                    else null,
                 modifier = Modifier.size(52.dp),
             ) {
                 if (isSelected) {
@@ -378,7 +456,10 @@ private fun LazyListScope.editor(
 ) {
     item { SectionHeader(stringResource(R.string.multi_values), Modifier.readableWidth()) }
     item {
-        Column(Modifier.readableWidth(), verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap)) {
+        Column(
+            Modifier.readableWidth(),
+            verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap),
+        ) {
             RadioItem(
                 title = stringResource(R.string.multi_separate),
                 supportingText = stringResource(R.string.multi_separate_description),
@@ -398,7 +479,10 @@ private fun LazyListScope.editor(
     item {
         OutlinedTextField(
             value = settings.multiValueSeparator,
-            onValueChange = { value -> if (value.isNotEmpty() && value.length <= 5) update { it.copy(multiValueSeparator = value) } },
+            onValueChange = { value ->
+                if (value.isNotEmpty() && value.length <= 5)
+                    update { it.copy(multiValueSeparator = value) }
+            },
             label = { Text(stringResource(R.string.separator)) },
             supportingText = { Text(stringResource(R.string.separator_description)) },
             singleLine = true,
@@ -429,4 +513,3 @@ private fun LazyListScope.editor(
         )
     }
 }
-

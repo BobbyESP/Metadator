@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.core.domain.library
 
 import com.bobbyesp.metadator.core.model.ContentRef
@@ -50,19 +53,34 @@ class LibraryQueriesTest {
 
     @Test
     fun `every search term has to match some field`() {
-        assertEquals(listOf(1L), tracks.filtered(LibraryFilter(search = "beatles abbey")).map { it.id.value })
-        assertEquals(listOf(2L), tracks.filtered(LibraryFilter(search = "beyonce")).map { it.id.value })
-        assertEquals(emptyList<Long>(), tracks.filtered(LibraryFilter(search = "beatles queen")).map { it.id.value })
+        assertEquals(
+            listOf(1L),
+            tracks.filtered(LibraryFilter(search = "beatles abbey")).map { it.id.value },
+        )
+        assertEquals(
+            listOf(2L),
+            tracks.filtered(LibraryFilter(search = "beyonce")).map { it.id.value },
+        )
+        assertEquals(
+            emptyList<Long>(),
+            tracks.filtered(LibraryFilter(search = "beatles queen")).map { it.id.value },
+        )
     }
 
     @Test
     fun `needs attention finds songs missing essentials`() {
-        assertEquals(listOf(2L), tracks.filtered(LibraryFilter(needsAttention = true)).map { it.id.value })
+        assertEquals(
+            listOf(2L),
+            tracks.filtered(LibraryFilter(needsAttention = true)).map { it.id.value },
+        )
     }
 
     @Test
     fun `format filter uses the extension`() {
-        assertEquals(listOf(3L), tracks.filtered(LibraryFilter(formats = setOf("flac"))).map { it.id.value })
+        assertEquals(
+            listOf(3L),
+            tracks.filtered(LibraryFilter(formats = setOf("flac"))).map { it.id.value },
+        )
     }
 
     @Test

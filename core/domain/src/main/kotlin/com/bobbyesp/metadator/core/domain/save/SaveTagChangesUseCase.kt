@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.core.domain.save
 
 import com.bobbyesp.metadator.core.model.ContentRef
@@ -32,7 +35,10 @@ class SaveTagChangesUseCase(
         invoke(ref) { changes }
 
     /** For changes that depend on the file's current tags, as batch numbering does. */
-    suspend operator fun invoke(ref: ContentRef, changesFor: (TagSnapshot) -> TagChanges): SaveOutcome {
+    suspend operator fun invoke(
+        ref: ContentRef,
+        changesFor: (TagSnapshot) -> TagChanges,
+    ): SaveOutcome {
         val current =
             when (val read = reader.read(ref, includePictures = true)) {
                 is TagReadResult.Success -> read.snapshot
@@ -45,7 +51,10 @@ class SaveTagChangesUseCase(
         val changes = changesFor(current)
         if (changes.isEmpty) return SaveOutcome.NothingToSave
         val target = current.applying(changes)
-        if (target.tags == current.tags && (target.pictures == null || target.pictures == current.pictures)) {
+        if (
+            target.tags == current.tags &&
+                (target.pictures == null || target.pictures == current.pictures)
+        ) {
             return SaveOutcome.NothingToSave
         }
 
@@ -69,8 +78,7 @@ class SaveTagChangesUseCase(
             }
         }
 
-        val verify =
-            reader.read(ref, includePictures = changes.artwork != ArtworkChange.Unchanged)
+        val verify = reader.read(ref, includePictures = changes.artwork != ArtworkChange.Unchanged)
         val notStored =
             if (verify is TagReadResult.Success) {
                 changes.changedKeys.filterTo(mutableSetOf()) { key ->

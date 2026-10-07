@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.feature.library
 
 import android.Manifest
@@ -45,7 +48,8 @@ internal class AudioPermissionState(
     var status by mutableStateOf(status)
         internal set
 
-    fun request() = if (status == PermissionStatus.PermanentlyDenied) onOpenSettings() else onRequest()
+    fun request() =
+        if (status == PermissionStatus.PermanentlyDenied) onOpenSettings() else onRequest()
 }
 
 /**
@@ -85,10 +89,14 @@ internal fun rememberAudioPermissionState(): AudioPermissionState {
     return state
 }
 
-private fun currentStatus(context: Context, activity: Activity?, askedOnce: Boolean): PermissionStatus =
+private fun currentStatus(
+    context: Context,
+    activity: Activity?,
+    askedOnce: Boolean,
+): PermissionStatus =
     when {
-        ContextCompat.checkSelfPermission(context, AudioPermission) == PackageManager.PERMISSION_GRANTED ->
-            PermissionStatus.Granted
+        ContextCompat.checkSelfPermission(context, AudioPermission) ==
+            PackageManager.PERMISSION_GRANTED -> PermissionStatus.Granted
         // Refused, and the system no longer wants to explain why: it will not ask again.
         askedOnce && activity?.shouldShowRequestPermissionRationale(AudioPermission) == false ->
             PermissionStatus.PermanentlyDenied

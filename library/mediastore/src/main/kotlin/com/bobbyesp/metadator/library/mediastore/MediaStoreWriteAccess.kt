@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.library.mediastore
 
 import android.Manifest
@@ -57,26 +60,25 @@ class MediaStoreWriteAccess(
         }
     }
 
-    private fun missing(refs: List<ContentRef>): List<ContentRef> =
-        refs.filterNot { ref ->
-            val uri = Uri.parse(ref.uri)
-            when {
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.R || !isMediaStoreUri(uri) ->
-                    context.checkUriPermission(
-                        uri,
-                        Process.myPid(),
-                        Process.myUid(),
-                        Intent.FLAG_GRANT_WRITE_URI_PERMISSION,
-                    ) == PackageManager.PERMISSION_GRANTED
-                // Android 10 only says no when writing; until then, assume yes.
-                Build.VERSION.SDK_INT == Build.VERSION_CODES.Q -> true
-                else ->
-                    ContextCompat.checkSelfPermission(
-                        context,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                    ) == PackageManager.PERMISSION_GRANTED
-            }
+    private fun missing(refs: List<ContentRef>): List<ContentRef> = refs.filterNot { ref ->
+        val uri = Uri.parse(ref.uri)
+        when {
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.R || !isMediaStoreUri(uri) ->
+                context.checkUriPermission(
+                    uri,
+                    Process.myPid(),
+                    Process.myUid(),
+                    Intent.FLAG_GRANT_WRITE_URI_PERMISSION,
+                ) == PackageManager.PERMISSION_GRANTED
+            // Android 10 only says no when writing; until then, assume yes.
+            Build.VERSION.SDK_INT == Build.VERSION_CODES.Q -> true
+            else ->
+                ContextCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                ) == PackageManager.PERMISSION_GRANTED
         }
+    }
 
     private fun Boolean?.toAccessResult(): AccessResult =
         when (this) {

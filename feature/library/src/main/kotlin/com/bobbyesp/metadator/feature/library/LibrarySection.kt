@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.feature.library
 
 import android.content.Intent
@@ -41,7 +44,9 @@ import org.koin.compose.koinInject
 /** The library's destinations: the root list and the collections reached from it. */
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 fun EntryProviderScope<NavKey>.librarySection(navigator: Navigator) {
-    entry<Library>(metadata = ListDetailSceneStrategy.listPane(detailPlaceholder = { NoSongOpen() })) {
+    entry<Library>(
+        metadata = ListDetailSceneStrategy.listPane(detailPlaceholder = { NoSongOpen() })
+    ) {
         val viewModel: LibraryViewModel = koinViewModel()
         val state by viewModel.state.collectAsStateWithLifecycle()
         ShowMessages(viewModel.messages)
@@ -60,7 +65,9 @@ fun EntryProviderScope<NavKey>.librarySection(navigator: Navigator) {
         )
     }
 
-    entry<Collection>(metadata = ListDetailSceneStrategy.listPane(detailPlaceholder = { NoSongOpen() })) { key ->
+    entry<Collection>(
+        metadata = ListDetailSceneStrategy.listPane(detailPlaceholder = { NoSongOpen() })
+    ) { key ->
         // The library's ViewModel lives in the Library entry; a collection reads the same data
         // through its own, keyed by what it shows.
         val viewModel: LibraryViewModel = koinViewModel(key = "collection:${key.key}")
@@ -86,7 +93,9 @@ fun EntryProviderScope<NavKey>.librarySection(navigator: Navigator) {
             onBack = navigator::goBack,
             onOpenTrack = { navigator.goTo(Editor(it.ref.uri)) },
             onPlay = { tracks, index, shuffle -> player.play(tracks, index, shuffle) },
-            onEditAll = { tracks: List<Track> -> navigator.goTo(BatchEditor(tracks.map { it.ref.uri })) },
+            onEditAll = { tracks: List<Track> ->
+                navigator.goTo(BatchEditor(tracks.map { it.ref.uri }))
+            },
         )
     }
 }
@@ -111,14 +120,17 @@ private fun rememberOpenFileLauncher(onPicked: (Uri) -> Unit) =
             val resolver = context.contentResolver
             // Read and write when the provider grants both, read alone when it only grants that.
             runCatching {
-                    resolver.takePersistableUriPermission(
-                        uri,
-                        Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION,
-                    )
-                }
+                resolver.takePersistableUriPermission(
+                    uri,
+                    Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION,
+                )
+            }
                 .onFailure {
                     runCatching {
-                        resolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                        resolver.takePersistableUriPermission(
+                            uri,
+                            Intent.FLAG_GRANT_READ_URI_PERMISSION,
+                        )
                     }
                 }
             onPicked(uri)
@@ -136,4 +148,3 @@ private fun NoSongOpen() {
         )
     }
 }
-

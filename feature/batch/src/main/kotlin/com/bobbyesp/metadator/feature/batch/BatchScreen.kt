@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.feature.batch
 
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -75,7 +78,15 @@ internal fun BatchScreen(state: BatchState, onIntent: (BatchIntent) -> Unit, onC
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(pluralStringResource(R.plurals.batch_title, state.files.size, state.files.size)) },
+                title = {
+                    Text(
+                        pluralStringResource(
+                            R.plurals.batch_title,
+                            state.files.size,
+                            state.files.size,
+                        )
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = onClose, shapes = IconButtonDefaults.shapes()) {
                         Icon(Icons.Rounded.Close, stringResource(R.string.close))
@@ -89,9 +100,14 @@ internal fun BatchScreen(state: BatchState, onIntent: (BatchIntent) -> Unit, onC
                     onClick = { onIntent(BatchIntent.Apply) },
                     enabled = state.canApply,
                     shapes = ButtonDefaults.shapes(),
-                    modifier = Modifier.readableWidth().heightIn(min = ButtonDefaults.MediumContainerHeight),
+                    modifier =
+                        Modifier.readableWidth()
+                            .heightIn(min = ButtonDefaults.MediumContainerHeight),
                 ) {
-                    Text(stringResource(R.string.batch_apply), style = ButtonDefaults.textStyleFor(ButtonDefaults.MediumContainerHeight))
+                    Text(
+                        stringResource(R.string.batch_apply),
+                        style = ButtonDefaults.textStyleFor(ButtonDefaults.MediumContainerHeight),
+                    )
                 }
             }
         },
@@ -122,7 +138,13 @@ internal fun BatchScreen(state: BatchState, onIntent: (BatchIntent) -> Unit, onC
             item {
                 CoverChoice(
                     cover = state.cover,
-                    onPick = { pickCover.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) },
+                    onPick = {
+                        pickCover.launch(
+                            PickVisualMediaRequest(
+                                ActivityResultContracts.PickVisualMedia.ImageOnly
+                            )
+                        )
+                    },
                     onRemove = { onIntent(BatchIntent.RemoveCovers) },
                     onKeep = { onIntent(BatchIntent.KeepCovers) },
                 )
@@ -161,7 +183,8 @@ private fun BatchField(field: TagField, state: BatchState, onIntent: (BatchInten
         value = shown,
         onValueChange = { text ->
             val values =
-                if (field.multiValue) text.split(state.separator.trim()).map { it.trim() }.filter { it.isNotEmpty() }
+                if (field.multiValue)
+                    text.split(state.separator.trim()).map { it.trim() }.filter { it.isNotEmpty() }
                 else listOf(text)
             onIntent(BatchIntent.SetField(field.key, values))
         },
@@ -173,8 +196,14 @@ private fun BatchField(field: TagField, state: BatchState, onIntent: (BatchInten
         trailingIcon =
             if (edited != null) {
                 {
-                    IconButton(onClick = { onIntent(BatchIntent.ResetField(field.key)) }, shapes = IconButtonDefaults.shapes()) {
-                        Icon(Icons.AutoMirrored.Rounded.Undo, stringResource(R.string.batch_reset_field, label))
+                    IconButton(
+                        onClick = { onIntent(BatchIntent.ResetField(field.key)) },
+                        shapes = IconButtonDefaults.shapes(),
+                    ) {
+                        Icon(
+                            Icons.AutoMirrored.Rounded.Undo,
+                            stringResource(R.string.batch_reset_field, label),
+                        )
                     }
                 }
             } else null,
@@ -186,22 +215,40 @@ private fun BatchField(field: TagField, state: BatchState, onIntent: (BatchInten
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun CoverChoice(cover: ArtworkChange, onPick: () -> Unit, onRemove: () -> Unit, onKeep: () -> Unit) {
+private fun CoverChoice(
+    cover: ArtworkChange,
+    onPick: () -> Unit,
+    onRemove: () -> Unit,
+    onKeep: () -> Unit,
+) {
     Column(Modifier.readableWidth(), verticalArrangement = Arrangement.spacedBy(Spacing.small)) {
         when (cover) {
             is ArtworkChange.Replace ->
-                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(Spacing.medium)) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(Spacing.medium),
+                ) {
                     ArtworkImage(cover.picture.data, null, Modifier.size(72.dp))
                     Text(stringResource(R.string.batch_cover_will_replace), Modifier.weight(1f))
                 }
-            ArtworkChange.Remove -> Text(stringResource(R.string.batch_cover_will_remove), color = MaterialTheme.colorScheme.error)
+            ArtworkChange.Remove ->
+                Text(
+                    stringResource(R.string.batch_cover_will_remove),
+                    color = MaterialTheme.colorScheme.error,
+                )
             ArtworkChange.Unchanged -> Unit
         }
         FlowRow(horizontalArrangement = Arrangement.spacedBy(Spacing.small)) {
-            OutlinedButton(onClick = onPick, shapes = ButtonDefaults.shapes()) { Text(stringResource(R.string.batch_cover_set)) }
-            OutlinedButton(onClick = onRemove, shapes = ButtonDefaults.shapes()) { Text(stringResource(R.string.batch_cover_remove)) }
+            OutlinedButton(onClick = onPick, shapes = ButtonDefaults.shapes()) {
+                Text(stringResource(R.string.batch_cover_set))
+            }
+            OutlinedButton(onClick = onRemove, shapes = ButtonDefaults.shapes()) {
+                Text(stringResource(R.string.batch_cover_remove))
+            }
             if (cover != ArtworkChange.Unchanged) {
-                TextButton(onClick = onKeep, shapes = ButtonDefaults.shapes()) { Text(stringResource(R.string.batch_cover_keep)) }
+                TextButton(onClick = onKeep, shapes = ButtonDefaults.shapes()) {
+                    Text(stringResource(R.string.batch_cover_keep))
+                }
             }
         }
     }
@@ -216,13 +263,18 @@ private fun Tools(state: BatchState, onIntent: (BatchIntent) -> Unit) {
             supportingText = stringResource(R.string.batch_numbering_description, state.files.size),
             icon = Icons.Rounded.FormatListNumbered,
             checked = state.numbering != null,
-            onCheckedChange = { onIntent(BatchIntent.SetNumbering(if (it) TrackNumbering() else null)) },
+            onCheckedChange = {
+                onIntent(BatchIntent.SetNumbering(if (it) TrackNumbering() else null))
+            },
         )
         state.numbering?.let { numbering ->
             OutlinedTextField(
                 value = numbering.startAt.toString(),
                 onValueChange = { text ->
-                    text.toIntOrNull()?.takeIf { it in 0..999 }?.let { onIntent(BatchIntent.SetNumbering(numbering.copy(startAt = it))) }
+                    text
+                        .toIntOrNull()
+                        ?.takeIf { it in 0..999 }
+                        ?.let { onIntent(BatchIntent.SetNumbering(numbering.copy(startAt = it))) }
                 },
                 label = { Text(stringResource(R.string.batch_numbering_start)) },
                 singleLine = true,
@@ -245,7 +297,10 @@ private fun Tools(state: BatchState, onIntent: (BatchIntent) -> Unit) {
                 onValueChange = { onIntent(BatchIntent.SetPattern(it)) },
                 label = { Text(stringResource(R.string.batch_pattern_field)) },
                 isError = !valid,
-                supportingText = if (!valid) { { Text(stringResource(R.string.batch_pattern_invalid)) } } else null,
+                supportingText =
+                    if (!valid) {
+                        { Text(stringResource(R.string.batch_pattern_invalid)) }
+                    } else null,
                 singleLine = true,
                 shape = MaterialTheme.shapes.large,
                 modifier = Modifier.fillMaxWidth(),
@@ -260,13 +315,25 @@ private fun Tools(state: BatchState, onIntent: (BatchIntent) -> Unit) {
                 }
             }
             state.patternPreview.forEach { (name, parsed) ->
+                // Labels first: a composable cannot be called from joinToString's lambda.
+                val described =
+                    parsed?.entries?.map { (key, values) ->
+                        fieldLabel(key) to values.joinToString()
+                    }
                 Column(Modifier.padding(vertical = Spacing.extraSmall)) {
-                    Text(name, style = MaterialTheme.typography.labelLarge, maxLines = 1, overflow = TextOverflow.Ellipsis)
                     Text(
-                        parsed?.entries?.joinToString(" · ") { (key, values) -> "${fieldLabel(key)}: ${values.joinToString()}" }
+                        name,
+                        style = MaterialTheme.typography.labelLarge,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                    Text(
+                        described?.joinToString(" · ") { (label, value) -> "$label: $value" }
                             ?: stringResource(R.string.batch_pattern_no_match),
                         style = MaterialTheme.typography.bodySmall,
-                        color = if (parsed == null) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant,
+                        color =
+                            if (parsed == null) MaterialTheme.colorScheme.error
+                            else MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
             }
@@ -276,26 +343,46 @@ private fun Tools(state: BatchState, onIntent: (BatchIntent) -> Unit) {
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-private fun ProgressDialog(progress: com.bobbyesp.metadator.core.domain.batch.BatchProgress, onIntent: (BatchIntent) -> Unit) {
+private fun ProgressDialog(
+    progress: com.bobbyesp.metadator.core.domain.batch.BatchProgress,
+    onIntent: (BatchIntent) -> Unit,
+) {
     AlertDialog(
         onDismissRequest = {},
-        icon = if (!progress.isRunning) { { Icon(Icons.Rounded.CheckCircle, null) } } else null,
+        icon =
+            if (!progress.isRunning) {
+                { Icon(Icons.Rounded.CheckCircle, null) }
+            } else null,
         title = {
             Text(
-                if (progress.isRunning) stringResource(R.string.batch_running, progress.done + 1, progress.total)
+                if (progress.isRunning)
+                    stringResource(R.string.batch_running, progress.done + 1, progress.total)
                 else stringResource(R.string.batch_done_title)
             )
         },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(Spacing.medium)) {
                 if (progress.isRunning) {
-                    LinearWavyProgressIndicator(progress = { progress.fraction }, modifier = Modifier.fillMaxWidth())
+                    LinearWavyProgressIndicator(
+                        progress = { progress.fraction },
+                        modifier = Modifier.fillMaxWidth(),
+                    )
                 } else {
-                    Text(pluralStringResource(R.plurals.batch_saved, progress.saved.size, progress.saved.size))
+                    Text(
+                        pluralStringResource(
+                            R.plurals.batch_saved,
+                            progress.saved.size,
+                            progress.saved.size,
+                        )
+                    )
                     if (progress.wasCancelled) Text(stringResource(R.string.batch_cancelled))
                     if (progress.failed.isNotEmpty()) {
                         Text(
-                            pluralStringResource(R.plurals.batch_failed, progress.failed.size, progress.failed.size),
+                            pluralStringResource(
+                                R.plurals.batch_failed,
+                                progress.failed.size,
+                                progress.failed.size,
+                            ),
                             color = MaterialTheme.colorScheme.error,
                         )
                         progress.failed.take(5).forEach { result ->
@@ -312,14 +399,22 @@ private fun ProgressDialog(progress: com.bobbyesp.metadator.core.domain.batch.Ba
         },
         confirmButton = {
             if (progress.isRunning) {
-                TextButton(onClick = { onIntent(BatchIntent.Cancel) }) { Text(stringResource(R.string.batch_cancel)) }
+                TextButton(onClick = { onIntent(BatchIntent.Cancel) }) {
+                    Text(stringResource(R.string.batch_cancel))
+                }
             } else {
-                TextButton(onClick = { onIntent(BatchIntent.Dismiss) }) { Text(stringResource(R.string.batch_finish)) }
+                TextButton(onClick = { onIntent(BatchIntent.Dismiss) }) {
+                    Text(stringResource(R.string.batch_finish))
+                }
             }
         },
         dismissButton =
             if (!progress.isRunning && progress.backups.isNotEmpty()) {
-                { TextButton(onClick = { onIntent(BatchIntent.UndoAll) }) { Text(stringResource(R.string.batch_undo_all)) } }
+                {
+                    TextButton(onClick = { onIntent(BatchIntent.UndoAll) }) {
+                        Text(stringResource(R.string.batch_undo_all))
+                    }
+                }
             } else null,
     )
 }
@@ -331,4 +426,3 @@ private fun reason(outcome: SaveOutcome): Int =
         SaveOutcome.Unsupported -> R.string.batch_reason_unsupported
         else -> R.string.batch_reason_failed
     }
-

@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
+ */
 package com.bobbyesp.metadator.core.database
 
 import com.bobbyesp.metadator.core.common.AppDispatchers
@@ -39,7 +42,11 @@ class RoomTagBackupStore(
 
     private val json = Json { ignoreUnknownKeys = true }
 
-    override suspend fun save(ref: ContentRef, snapshot: TagSnapshot, createdAtMillis: Long): BackupId =
+    override suspend fun save(
+        ref: ContentRef,
+        snapshot: TagSnapshot,
+        createdAtMillis: Long,
+    ): BackupId =
         withContext(dispatchers.io) {
             val pictures =
                 snapshot.pictures.mapIndexed { index, picture ->
@@ -104,17 +111,18 @@ class RoomTagBackupStore(
         val tags = json.decodeFromString<Map<String, List<String>>>(tagsJson)
         val stored = json.decodeFromString<List<StoredPicture>>(picturesJson)
         val directory = files.directory(id)
-        val pictures =
-            stored.map { picture ->
-                val file = File(directory, picture.file)
-                if (!file.exists()) return null
-                EmbeddedPicture(
-                    data = file.readBytes(),
-                    mimeType = picture.mimeType,
-                    description = picture.description,
-                    type = runCatching { PictureType.valueOf(picture.type) }.getOrDefault(PictureType.Other),
-                )
-            }
+        val pictures = stored.map { picture ->
+            val file = File(directory, picture.file)
+            if (!file.exists()) return null
+            EmbeddedPicture(
+                data = file.readBytes(),
+                mimeType = picture.mimeType,
+                description = picture.description,
+                type =
+                    runCatching { PictureType.valueOf(picture.type) }
+                        .getOrDefault(PictureType.Other),
+            )
+        }
         return TagBackup(
             id = BackupId(id),
             ref = ContentRef(uri),
