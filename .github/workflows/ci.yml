@@ -1,0 +1,129 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [master, v2]
+  merge_group:
+  workflow_dispatch:
+  # The release workflow runs these checks before it builds.
+  workflow_call:
+
+permissions:
+  contents: read
+
+# A new push to a pull request replaces its run. Runs on a branch are left to finish, so every
+# commit of master and v2 has a result.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  # Only the long-lived branches write the Gradle cache: a pull request reads the cache of its
+  # base branch and cannot fill the repository's quota, or the cache others read, with its own.
+  GRADLE_CACHE_READ_ONLY: ${{ github.event_name != 'push' }}
+
+jobs:
+  format:
+    name: Format
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: ./.github/actions/setup-build
+        with:
+          cache-read-only: ${{ env.GRADLE_CACHE_READ_ONLY }}
+
+      - name: Check formatting
+        run: ./gradlew spotlessCheck
+
+  test:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: ./.github/actions/setup-build
+        with:
+          cache-read-only: ${{ env.GRADLE_CACHE_READ_ONLY }}
+
+      # --continue: one module's failure does not hide another's.
+      - name: Unit tests
+        run: ./gradlew test --continue
+
+      - name: Upload the test reports
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: test-reports
+          path: |
+            **/build/reports/tests/
+            **/build/test-results/
+          retention-days: 7
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: ./.github/actions/setup-build
+        with:
+          cache-read-only: ${{ env.GRADLE_CACHE_READ_ONLY }}
+
+      - name: Lint
+        run: ./gradlew lint --continue
+
+      - name: Upload the lint reports
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: lint-reports
+          path: '**/build/reports/lint-results-*'
+          retention-days: 7
+
+  build:
+    name: Debug build
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: ./.github/actions/setup-build
+        with:
+          cache-read-only: ${{ env.GRADLE_CACHE_READ_ONLY }}
+
+      # Both flavors: playstore has code and dependencies that foss does not.
+      - name: Build the debug APKs
+        run: ./gradlew :app:assembleFossDebug :app:assemblePlaystoreDebug
+
+      - name: Upload the FOSS debug APK
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: metadator-foss-debug
+          path: app/build/outputs/apk/foss/debug/*.apk
+          if-no-files-found: error
+          retention-days: 14
+
+  # The one check to require in branch protection: it stays the same when jobs are added or
+  # renamed, and it fails when a job it waits for failed, was cancelled or was skipped.
+  ci:
+    name: CI
+    if: ${{ always() }}
+    needs: [format, test, lint, build]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check that every job passed
+        env:
+          RESULTS: ${{ join(needs.*.result, ' ') }}
+        run: |
+          echo "Results: $RESULTS"
+          for result in $RESULTS; do
+            if [ "$result" != "success" ]; then
+              exit 1
+            fi
+          done

@@ -1,0 +1,27 @@
+version: 2
+
+updates:
+  # The workflows pin every action to a commit; this keeps those pins current.
+  - package-ecosystem: github-actions
+    directories:
+      - /
+      - /.github/actions/setup-build
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: ci
+    groups:
+      actions:
+        patterns: ['*']
+
+  # The version catalog and the Gradle wrapper. Majors come one by one: they need a reading.
+  - package-ecosystem: gradle
+    directory: /
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: build
+    open-pull-requests-limit: 5
+    groups:
+      gradle-minor-and-patch:
+        update-types: [minor, patch]
