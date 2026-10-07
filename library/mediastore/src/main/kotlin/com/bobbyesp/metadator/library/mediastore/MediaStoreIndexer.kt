@@ -13,6 +13,8 @@ import kotlin.coroutines.resume
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
+import kotlin.time.Duration.Companion.milliseconds
+import androidx.core.net.toUri
 
 /**
  * Asks MediaStore to read written files again. Without it the library, and every music player,
@@ -26,11 +28,11 @@ class MediaStoreIndexer(
     override suspend fun rescan(refs: List<ContentRef>) {
         val paths =
             withContext(dispatchers.io) {
-                refs.mapNotNull { ref -> pathOf(Uri.parse(ref.uri)) }
+                refs.mapNotNull { ref -> pathOf(ref.uri.toUri()) }
             }
-        refs.forEach { context.contentResolver.notifyChange(Uri.parse(it.uri), null) }
+        refs.forEach { context.contentResolver.notifyChange(it.uri.toUri(), null) }
         if (paths.isEmpty()) return
-        withTimeoutOrNull(SCAN_TIMEOUT_MS) {
+        withTimeoutOrNull(SCAN_TIMEOUT_MS.milliseconds) {
             suspendCancellableCoroutine { continuation ->
                 var pending = paths.size
                 MediaScannerConnection.scanFile(context, paths.toTypedArray(), null) { _, _ ->

@@ -19,6 +19,7 @@ import io.ktor.http.isSuccess
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * MusicBrainz, the open music encyclopedia, with covers from the Cover Art Archive. No key is
@@ -68,7 +69,7 @@ class MusicBrainzProvider(
 
     private suspend fun <T> throttled(block: suspend () -> T): T = rateLimit.withLock {
         val wait = lastRequestAt + MIN_INTERVAL_MS - clock()
-        if (wait > 0) delay(wait)
+        if (wait > 0) delay(wait.milliseconds)
         try {
             block()
         } finally {

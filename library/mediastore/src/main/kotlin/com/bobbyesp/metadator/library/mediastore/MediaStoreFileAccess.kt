@@ -5,7 +5,6 @@ package com.bobbyesp.metadator.library.mediastore
 
 import android.app.RecoverableSecurityException
 import android.content.Context
-import android.net.Uri
 import android.os.Build
 import android.os.ParcelFileDescriptor
 import android.provider.MediaStore
@@ -21,6 +20,7 @@ import com.bobbyesp.metadator.library.api.OpenedAudioFile
 import java.io.FileNotFoundException
 import java.util.concurrent.ConcurrentHashMap
 import kotlinx.coroutines.withContext
+import androidx.core.net.toUri
 
 /**
  * The prompts Android 10 hands out when a write is refused, kept until [MediaStoreWriteAccess]
@@ -42,7 +42,7 @@ class ContentResolverFileOpener(
 ) : AudioFileOpener {
 
     override fun open(ref: ContentRef, mode: AccessMode): OpenResult {
-        val uri = Uri.parse(ref.uri)
+        val uri = ref.uri.toUri()
         return try {
             val pfd =
                 context.contentResolver.openFileDescriptor(
@@ -50,7 +50,7 @@ class ContentResolverFileOpener(
                     if (mode == AccessMode.Read) "r" else "rw",
                 ) ?: return OpenResult.NotFound
             OpenResult.Opened(ParcelAudioFile(pfd))
-        } catch (notFound: FileNotFoundException) {
+        } catch (_: FileNotFoundException) {
             OpenResult.NotFound
         } catch (security: SecurityException) {
             if (
@@ -83,7 +83,7 @@ class ContentResolverFileInfo(
 
     override suspend fun describe(ref: ContentRef): FileDescription? =
         withContext(dispatchers.io) {
-            val uri = Uri.parse(ref.uri)
+            val uri = ref.uri.toUri()
             val resolver = context.contentResolver
             runCatching {
                 val projection = buildList {

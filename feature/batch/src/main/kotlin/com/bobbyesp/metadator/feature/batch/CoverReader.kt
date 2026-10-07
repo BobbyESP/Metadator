@@ -7,6 +7,7 @@ import android.content.Context
 import android.net.Uri
 import com.bobbyesp.metadator.core.common.AppDispatchers
 import kotlinx.coroutines.withContext
+import androidx.core.net.toUri
 
 /** Reads a picked image into bytes and a MIME type. */
 interface CoverReader {
@@ -18,7 +19,7 @@ class AndroidCoverReader(private val context: Context, private val dispatchers: 
     override suspend fun read(uri: String): Pair<ByteArray, String>? =
         withContext(dispatchers.io) {
             runCatching {
-                val parsed = Uri.parse(uri)
+                val parsed = uri.toUri()
                 val bytes =
                     context.contentResolver.openInputStream(parsed)?.use { it.readBytes() }
                         ?: return@runCatching null

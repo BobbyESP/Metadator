@@ -16,6 +16,7 @@ import androidx.core.content.ContextCompat
 import com.bobbyesp.metadator.core.model.ContentRef
 import com.bobbyesp.metadator.library.api.AccessResult
 import com.bobbyesp.metadator.library.api.WriteAccess
+import androidx.core.net.toUri
 
 /**
  * Write access to other apps' files, the way each Android version asks for it:
@@ -40,7 +41,7 @@ class MediaStoreWriteAccess(
 
         return when {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> {
-                val mediaUris = missing.map { Uri.parse(it.uri) }.filter(::isMediaStoreUri)
+                val mediaUris = missing.map { it.uri.toUri() }.filter(::isMediaStoreUri)
                 if (mediaUris.size < missing.size) return AccessResult.Denied
                 val request = MediaStore.createWriteRequest(context.contentResolver, mediaUris)
                 host.launch(request.intentSender).toAccessResult()
@@ -61,7 +62,7 @@ class MediaStoreWriteAccess(
     }
 
     private fun missing(refs: List<ContentRef>): List<ContentRef> = refs.filterNot { ref ->
-        val uri = Uri.parse(ref.uri)
+        val uri = ref.uri.toUri()
         when {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.R || !isMediaStoreUri(uri) ->
                 context.checkUriPermission(

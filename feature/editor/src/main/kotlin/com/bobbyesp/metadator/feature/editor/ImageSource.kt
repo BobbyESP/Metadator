@@ -9,6 +9,7 @@ import android.net.Uri
 import androidx.palette.graphics.Palette
 import com.bobbyesp.metadator.core.common.AppDispatchers
 import kotlinx.coroutines.withContext
+import androidx.core.net.toUri
 
 /** Facts about a picture, for the editor to show and warn about. */
 data class ImageInfo(val width: Int, val height: Int, val sizeBytes: Int, val dominantColor: Int?) {
@@ -38,7 +39,7 @@ class AndroidImageSource(
     override suspend fun read(uri: String): PickedImage? =
         withContext(dispatchers.io) {
             runCatching {
-                val parsed = Uri.parse(uri)
+                val parsed = uri.toUri()
                 val resolver = context.contentResolver
                 val bytes =
                     resolver.openInputStream(parsed)?.use { it.readBytes() }

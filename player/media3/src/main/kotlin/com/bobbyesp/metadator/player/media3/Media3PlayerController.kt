@@ -25,6 +25,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
+import androidx.core.net.toUri
 
 /**
  * The app's side of [PlaybackService]: a [MediaController] connected on first use. Commands issued
@@ -155,7 +157,7 @@ class Media3PlayerController(
         if (playing && ticker?.isActive != true) {
             ticker = scope.launch {
                 while (isActive) {
-                    delay(TICK_MS)
+                    delay(TICK_MS.milliseconds)
                     controller?.let { player ->
                         _state.value =
                             _state.value.copy(positionMs = player.currentPosition.coerceAtLeast(0))
@@ -171,14 +173,14 @@ class Media3PlayerController(
     private fun Track.toMediaItem(): MediaItem =
         MediaItem.Builder()
             .setMediaId(id.value.toString())
-            .setUri(Uri.parse(ref.uri))
+            .setUri(ref.uri.toUri())
             .setMediaMetadata(
                 MediaMetadata.Builder()
                     .setTitle(title)
                     .setArtist(artist)
                     .setAlbumTitle(album)
                     .setAlbumArtist(albumArtist)
-                    .setArtworkUri(artworkRef?.let { Uri.parse(it.uri) })
+                    .setArtworkUri(artworkRef?.uri?.toUri())
                     .build()
             )
             .build()

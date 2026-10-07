@@ -32,6 +32,8 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
+import kotlin.time.Duration.Companion.milliseconds
+import androidx.core.net.toUri
 
 /** The device's songs, from MediaStore. */
 class MediaStoreAudioLibrary(
@@ -55,7 +57,7 @@ class MediaStoreAudioLibrary(
         awaitClose { resolver.unregisterContentObserver(observer) }
     }
         // A save or a scan changes many rows at once: one query for the burst is enough.
-        .debounce(DEBOUNCE_MS)
+        .debounce(DEBOUNCE_MS.milliseconds)
         .conflate()
         .map { queryTracks(selection = IS_MUSIC, args = null) }
         .flowOn(dispatchers.io)
@@ -68,7 +70,7 @@ class MediaStoreAudioLibrary(
 
     override suspend fun findByRef(ref: ContentRef): Track? =
         withContext(dispatchers.io) {
-            val id = mediaIdOf(context, Uri.parse(ref.uri)) ?: return@withContext null
+            val id = mediaIdOf(context, ref.uri.toUri()) ?: return@withContext null
             track(TrackId(id))
         }
 
@@ -77,7 +79,7 @@ class MediaStoreAudioLibrary(
             listOf(Environment.DIRECTORY_MUSIC, Environment.DIRECTORY_DOWNLOADS)
                 .map { Environment.getExternalStoragePublicDirectory(it).absolutePath }
                 .toTypedArray()
-        withTimeoutOrNull(SCAN_TIMEOUT_MS) {
+        withTimeoutOrNull(SCAN_TIMEOUT_MS.milliseconds) {
             suspendCancellableCoroutine { continuation ->
                 var pending = folders.size
                 MediaScannerConnection.scanFile(context, folders, null) { _, _ ->
@@ -176,7 +178,7 @@ class MediaStoreAudioLibrary(
 
     companion object {
         val AudioCollection: Uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
-        private val AlbumArtCollection: Uri = Uri.parse("content://media/external/audio/albumart")
+        private val AlbumArtCollection: Uri = "content://media/external/audio/albumart".toUri()
         /** The file path column: deprecated, and only read where nothing replaces it (API < 29). */
         internal const val DATA_COLUMN = "_data"
         private const val IS_MUSIC = "${MediaStore.Audio.Media.IS_MUSIC} != 0"
