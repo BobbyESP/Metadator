@@ -25,6 +25,10 @@ added or renamed, and a job that was skipped or cancelled does not count as pass
 - **No Android SDK step.** The runner image ships the SDK with its licenses accepted, and the
   Android Gradle Plugin downloads the platform and build tools the build asks for. A setup action
   that drives `sdkmanager` itself is one more thing that breaks when the SDK's packages change.
+- **The runner image is pinned** (`ubuntu-24.04`, not `ubuntu-latest`), because the build relies on
+  the SDK that image ships. Moving to a newer image is a pull request that shows whether it works,
+  not something that happens to every branch on a day GitHub picks. Nothing updates this pin:
+  change it by hand in both workflows.
 - **Actions are pinned to a commit**, with the version in a comment. A tag can be moved to other
   code; a commit cannot. Dependabot (`.github/dependabot.yml`) opens the pull requests that move
   the pins, and one a week for the Gradle dependencies.
