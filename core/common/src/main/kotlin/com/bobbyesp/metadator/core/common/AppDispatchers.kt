@@ -8,3 +8,6 @@ data class AppDispatchers(
     val io: CoroutineDispatcher = Dispatchers.IO,
     val default: CoroutineDispatcher = Dispatchers.Default,
 )
+
+/** What the app knows about its own build, for the About page. */
+data class AppInfo(val versionName: String, val versionCode: Long, val isPlayStoreBuild: Boolean)

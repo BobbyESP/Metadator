@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="batch_title">
+        <item quantity="one">Edit %1$d song</item>
+        <item quantity="other">Edit %1$d songs</item>
+    </plurals>
+    <string name="close">Close</string>
+    <string name="batch_files">Songs</string>
+    <string name="batch_and_more">and %1$d more</string>
+    <string name="batch_fields">Set on every song</string>
+    <string name="batch_fields_description">Leave a field as it is to keep each song\'s own value.</string>
+    <string name="batch_multiple_values">Multiple values</string>
+    <string name="batch_reset_field">Keep each song\'s %1$s</string>
+    <string name="batch_cover">Cover</string>
+    <string name="batch_cover_set">Use one cover for all</string>
+    <string name="batch_cover_remove">Remove all covers</string>
+    <string name="batch_cover_keep">Keep each song\'s cover</string>
+    <string name="batch_cover_unreadable">Couldn\'t read that image</string>
+    <string name="batch_cover_will_replace">Every song will get this cover</string>
+    <string name="batch_cover_will_remove">Every song\'s cover will be removed</string>
+    <string name="batch_tools">Tools</string>
+    <string name="batch_numbering">Number the tracks</string>
+    <string name="batch_numbering_description">In the order shown, as track N of %1$d</string>
+    <string name="batch_numbering_start">Start at</string>
+    <string name="batch_pattern">Read tags from file names</string>
+    <string name="batch_pattern_description">Use {title}, {artist}, {album}, {albumartist}, {track}, {disc}, {year} and {genre}</string>
+    <string name="batch_pattern_field">Pattern</string>
+    <string name="batch_pattern_invalid">Use each placeholder once, and at least one</string>
+    <string name="batch_pattern_no_match">Doesn\'t match</string>
+    <string name="batch_apply">Apply to all</string>
+    <string name="batch_access_denied">Metadator wasn\'t allowed to change these files</string>
+    <string name="batch_running">Saving %1$d of %2$d</string>
+    <string name="batch_cancel">Stop</string>
+    <string name="batch_done_title">Done</string>
+    <plurals name="batch_saved">
+        <item quantity="one">%1$d song saved</item>
+        <item quantity="other">%1$d songs saved</item>
+    </plurals>
+    <plurals name="batch_failed">
+        <item quantity="one">%1$d song couldn\'t be saved</item>
+        <item quantity="other">%1$d songs couldn\'t be saved</item>
+    </plurals>
+    <plurals name="batch_undone">
+        <item quantity="one">%1$d song restored</item>
+        <item quantity="other">%1$d songs restored</item>
+    </plurals>
+    <string name="batch_cancelled">Stopped. The songs saved so far keep their changes.</string>
+    <string name="batch_undo_all">Undo all</string>
+    <string name="batch_finish">Finish</string>
+    <string name="batch_reason_access">not allowed</string>
+    <string name="batch_reason_gone">file is gone</string>
+    <string name="batch_reason_unsupported">format not supported</string>
+    <string name="batch_reason_failed">write failed</string>
+</resources>

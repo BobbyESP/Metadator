@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="cover_of">Portada de %1$s</string>
+    <string name="play">Reproducir</string>
+    <string name="pause">Pausar</string>
+    <string name="needs_attention">Faltan etiquetas</string>
+    <string name="selected">Seleccionada</string>
+    <string name="select">Seleccionar</string>
+    <string name="unknown_artist">Artista desconocido</string>
+    <string name="unknown_album">Álbum desconocido</string>
+    <string name="now_playing">Sonando ahora</string>
+    <string name="field_title">Título</string>
+    <string name="field_artist">Artistas</string>
+    <string name="field_album">Álbum</string>
+    <string name="field_album_artist">Artistas del álbum</string>
+    <string name="field_date">Año o fecha</string>
+    <string name="field_date_hint">2019 o 2019-05-17</string>
+    <string name="field_genre">Géneros</string>
+    <string name="field_track">Pista</string>
+    <string name="field_disc">Disco</string>
+    <string name="field_of">de</string>
+    <string name="field_composer">Compositores</string>
+    <string name="field_lyricist">Letristas</string>
+    <string name="field_conductor">Director</string>
+    <string name="field_remixer">Remezcla</string>
+    <string name="field_performer">Intérpretes</string>
+    <string name="field_comment">Comentario</string>
+    <string name="field_bpm">BPM</string>
+    <string name="field_isrc">ISRC</string>
+    <string name="field_copyright">Copyright</string>
+    <string name="field_label">Sello</string>
+    <string name="field_grouping">Agrupación</string>
+    <string name="field_lyrics">Letra</string>
+</resources>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="cover_of">Cover of %1$s</string>
+    <string name="play">Play</string>
+    <string name="pause">Pause</string>
+    <string name="needs_attention">Missing tags</string>
+    <string name="selected">Selected</string>
+    <string name="select">Select</string>
+    <string name="unknown_artist">Unknown artist</string>
+    <string name="unknown_album">Unknown album</string>
+    <string name="now_playing">Now playing</string>
+    <string name="field_title">Title</string>
+    <string name="field_artist">Artists</string>
+    <string name="field_album">Album</string>
+    <string name="field_album_artist">Album artists</string>
+    <string name="field_date">Year or date</string>
+    <string name="field_date_hint">2019 or 2019-05-17</string>
+    <string name="field_genre">Genres</string>
+    <string name="field_track">Track</string>
+    <string name="field_disc">Disc</string>
+    <string name="field_of">of</string>
+    <string name="field_composer">Composers</string>
+    <string name="field_lyricist">Lyricists</string>
+    <string name="field_conductor">Conductor</string>
+    <string name="field_remixer">Remixers</string>
+    <string name="field_performer">Performers</string>
+    <string name="field_comment">Comment</string>
+    <string name="field_bpm">BPM</string>
+    <string name="field_isrc">ISRC</string>
+    <string name="field_copyright">Copyright</string>
+    <string name="field_label">Label</string>
+    <string name="field_grouping">Grouping</string>
+    <string name="field_lyrics">Lyrics</string>
+</resources>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="now_playing">Sonando ahora</string>
+    <string name="open_player">Abrir el reproductor</string>
+    <string name="play">Reproducir</string>
+    <string name="pause">Pausar</string>
+    <string name="next">Siguiente</string>
+    <string name="previous">Anterior</string>
+    <string name="shuffle">Aleatorio</string>
+    <string name="repeat_off">Repetición desactivada</string>
+    <string name="repeat_all">Repetir todo</string>
+    <string name="repeat_one">Repetir una</string>
+    <string name="edit_tags">Editar etiquetas</string>
+    <string name="up_next">A continuación</string>
+    <string name="close">Cerrar</string>
+    <string name="stop">Detener</string>
+    <string name="nothing_playing">No suena nada</string>
+    <string name="unknown_artist">Artista desconocido</string>
+</resources>

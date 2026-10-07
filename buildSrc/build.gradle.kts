@@ -18,6 +18,10 @@ gradlePlugin {
             id = "metadator.jvm.library"
             implementationClass = "JvmLibraryConventionPlugin"
         }
+        register("androidApplication") {
+            id = "metadator.android.application"
+            implementationClass = "AndroidApplicationConventionPlugin"
+        }
         register("androidLibrary") {
             id = "metadator.android.library"
             implementationClass = "AndroidLibraryConventionPlugin"

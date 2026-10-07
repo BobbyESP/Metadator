@@ -51,7 +51,6 @@ include(":player:media3")
 // Features: what the user sees
 include(":feature:library")
 include(":feature:editor")
-include(":feature:lookup")
 include(":feature:batch")
 include(":feature:player")
 include(":feature:settings")
