@@ -17,14 +17,18 @@ import com.bobbyesp.metadator.core.domain.batch.BatchRunner
 import com.bobbyesp.metadator.core.domain.editor.LoadTrackUseCase
 import com.bobbyesp.metadator.core.domain.lookup.LookupService
 import com.bobbyesp.metadator.core.domain.lyrics.FindLyricsUseCase
+import com.bobbyesp.metadator.core.domain.lyrics.LoadLyricsUseCase
 import com.bobbyesp.metadator.core.domain.save.RestoreBackupUseCase
 import com.bobbyesp.metadator.core.domain.save.SaveTagChangesUseCase
 import com.bobbyesp.metadator.core.domain.settings.SettingsRepository
 import com.bobbyesp.metadator.core.network.HttpClientFactory
 import com.bobbyesp.metadator.core.network.KtorArtworkDownloader
+import com.bobbyesp.metadator.core.ui.artwork.AndroidArtworkAccentSource
+import com.bobbyesp.metadator.core.ui.artwork.ArtworkAccentSource
 import com.bobbyesp.metadator.feature.batch.batchModule
 import com.bobbyesp.metadator.feature.editor.editorModule
 import com.bobbyesp.metadator.feature.library.libraryModule
+import com.bobbyesp.metadator.feature.player.playerModule
 import com.bobbyesp.metadator.feature.settings.settingsModule
 import com.bobbyesp.metadator.library.api.AudioFileInfo
 import com.bobbyesp.metadator.library.api.AudioFileOpener
@@ -78,6 +82,7 @@ private val appModule = module {
         )
     }
     single<StringProvider> { AndroidStringProvider(androidContext()) }
+    single<ArtworkAccentSource> { AndroidArtworkAccentSource(androidContext(), get()) }
     single<SettingsRepository> {
         DataStoreSettingsRepository(createSettingsDataStore(androidContext()))
     }
@@ -120,6 +125,7 @@ private val domainModule = module {
     factory { SaveTagChangesUseCase(get(), get(), get(), get()) }
     factory { RestoreBackupUseCase(get(), get(), get()) }
     factory { FindLyricsUseCase(get()) }
+    factory { LoadLyricsUseCase(get(), get()) }
     single { LookupService(listOf(get<MusicBrainzProvider>(), get<DeezerProvider>()), get()) }
     single { BatchRunner(get(AppScope), get()) }
 }
@@ -132,5 +138,6 @@ val appModules =
         libraryModule,
         editorModule,
         batchModule,
+        playerModule,
         settingsModule,
     )

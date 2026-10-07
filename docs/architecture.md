@@ -62,8 +62,9 @@ closing it returns to the app that opened the file.
 
 `MetadatorTheme` is `MaterialExpressiveTheme` with `MotionScheme.expressive()` (one instance:
 Material keys running shape morphs by their spec) and a color scheme from the wallpaper or a seed
-(MaterialKolor). Schemes are cached and built off the main thread. The editor nests
-`MetadatorAccentTheme`, seeded from the cover's dominant color and harmonized with the app's.
+(MaterialKolor). Schemes are cached and built off the main thread. The editor and the player nest
+`MetadatorAccentTheme`, seeded from the cover's dominant color and harmonized with the app's. That
+color comes from `ArtworkAccentSource` (`:core:ui`), which keeps bitmaps out of ViewModels.
 
 Settings keep the 1.x DataStore file name and theme keys, so an update keeps the user's theme.
 
@@ -84,6 +85,31 @@ same everywhere:
 Animations use the theme's motion scheme (`MaterialTheme.motionScheme`): spatial specs for what
 moves or changes size, effects specs for fades. They are kept for changes of state the user caused
 or should notice: a selection, a song starting or pausing, a tab switching.
+
+### Blur
+
+Material has no blur tokens; `MetadatorBlurDefaults` (`:core:designsystem`) is where the app decides
+where it blurs, and by how much. There are two kinds of blur, for two jobs.
+
+**A surface floating over content that moves beneath it is frosted, not shadowed.** What is behind
+it shows through, blurred, under its Material container color made translucent. It is
+[Haze](https://github.com/chrisbanes/haze): the content is recorded with `Modifier.hazeSource`, and
+the surface applies `Modifier.frosted` with `MetadatorBlurDefaults.surfaceStyle(containerRole)`.
+The surface's own container becomes transparent and loses its shadow. So far that is the wide
+player's floating controls.
+
+- **The source is a sibling of what frosts it, never an ancestor.** A surface inside its own source
+  would blur itself.
+- **Content passes beneath the surface padded, not inset**, or there is nothing there to frost.
+- **Not while a shared element transition runs.** What travels is drawn in the transition's
+  overlay, where a frosted surface flickers: it is its solid color until the transition settles.
+
+**What something opens over goes out of focus** (`Modifier.outOfFocus`): blurred with
+`Modifier.blur` and dimmed, by a fraction read while drawing so a gesture can drive it. The shell
+does it to everything behind the player as it opens.
+
+Below Android 12 neither blurs: a frosted surface falls back to its container color, nearly opaque,
+and what would go out of focus is only dimmed, and more.
 
 ## The player
 
@@ -130,3 +156,54 @@ screen while its corners straighten. Pulling the full player down, or back, clos
   fades in over it.
 - The full player's list shares its gesture through nested scroll: at its top, pulling further
   down pulls the player down. The back gesture previews the collapse through `NavigationEvent`.
+- The whole sheet, bar included, is inside one `MetadatorAccentTheme` seeded from the cover. It is
+  one surface: a color that differed between its two sizes would change halfway through.
+- `PlayerSheetExpansion` tells the shell how far open the sheet is, which is what takes everything
+  behind it out of focus (see Blur). Once the sheet covers the screen the shell stops: the sheet is
+  opaque, and what is behind it would be blurred on every frame for nobody to see.
+
+### Layouts
+
+The full player has three layouts (`PlayerLayout`). It is not a destination, so nothing tells it
+how much room it has: the shell measures the window and passes the layout that fits.
+
+- `Stacked`: one column with the cover, the controls and the queue (`NowPlayingContent`).
+- `SideBySide`, when the window is at least 600 dp wide and wider than tall: the song and its
+  controls on the left, and on the right the lyrics or the queue, chosen with `ConnectedChoices`
+  (`NowPlayingWideContent`).
+- `SideBySideCompact`, the same under 600 dp of height (a phone on its side): there is no room for
+  the controls under the cover, so they float over the lyrics in a frosted bar.
+
+Each modifier the sheet ties the bar's pieces with (cover, name, play button, drag handle) goes on
+exactly one element in every layout. The wide layouts are drawn over the cover, blurred, under a
+veil of the surface color. It is blurred small and stretched, which looks the same and costs a
+fraction on every frame the lyrics move. Below Android 12 the theme's colors take its place.
+
+### Lyrics
+
+The player shows the lyrics a file has in its `LYRICS` tag and nothing else: `LoadLyricsUseCase`
+reads them, and nothing is looked up online from the player. Looking them up is the editor's.
+
+- `SongLyrics.parse` (`:lyrics:api`) reads three things into one model: TTML (`Ttml`), LRC and its
+  enhanced form with a mark per word (`Lrc`), and plain text. In `SongLyrics.Synced` every line and
+  word has an end: its own, or where the next one starts. A timed line with no text is not shown
+  but ends the one before it, which is how files mark an instrumental break.
+- TTML is XML from a tag, so it is parsed with document types and external entities refused.
+- `NowPlayingViewModel` loads the lyrics and the cover's color on every new song, and again each
+  time the player is opened: the tags may have been edited in between.
+- `PlaybackClock`: the player reports the position twice a second, too coarse to follow a word.
+  The clock counts frames between reports and blends each report in rather than jumping to it. It
+  is read only while drawing, and only by the line being sung, so nothing recomposes per frame;
+  which line is being sung is a `derivedStateOf` that changes once per line.
+- `LyricsPane`: the line being sung comes forward (opacity, scale and the primary color, with an
+  effects spec) and the list scrolls it to a third of the way down, also with an effects spec so it
+  never bounces. Scrolling by hand stops that until the user asks to go back or leaves the list
+  alone for a while. Tapping a line plays from it.
+- Where words are timed, the line is drawn by hand from its `TextLayoutResult`, a word at a time:
+  in the primary color up to the word being sung and through it in step with it, with a soft edge.
+  Each word rises a little as it is sung and stays up, and glows while it is sung and shortly
+  after, more on a note that is held: the line shines only where the voice is. Words move apart
+  from each other, so each row is split between its words and each part is the whole layout,
+  clipped and moved. The glow is the word drawn again with a blurred shadow, which falls behind its
+  letters, from a layout of its own: a shadow on the whole line would light every word at once,
+  and one cut to a word shows the cut. Left to right is assumed.

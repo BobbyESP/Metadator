@@ -39,6 +39,7 @@ coil = "3.6.3"
 # Third-party
 taglib = "1.0.6"
 materialKolor = "5.0.1"
+haze = "2.0.0"
 
 # Google Play services (playstore flavor only)
 firebaseBom = "34.19.0"
@@ -131,6 +132,9 @@ coil-network-okhttp = { group = "io.coil-kt.coil3", name = "coil-network-okhttp"
 # Third-party
 taglib = { group = "io.github.kyant0", name = "taglib", version.ref = "taglib" }
 material-kolor = { group = "com.materialkolor", name = "material-kolor", version.ref = "materialKolor" }
+haze = { group = "dev.chrisbanes.haze", name = "haze", version.ref = "haze" }
+haze-blur = { group = "dev.chrisbanes.haze", name = "haze-blur", version.ref = "haze" }
+haze-blur-material3 = { group = "dev.chrisbanes.haze", name = "haze-blur-material3", version.ref = "haze" }
 
 # Google Play services (playstore flavor only)
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
@@ -186,3 +190,4 @@ lifecycle = [
 koin-android = ["koin-android", "koin-androidx-compose"]
 coroutines = ["kotlinx-coroutines-core", "kotlinx-coroutines-android"]
 ktor = ["ktor-client-core", "ktor-client-okhttp", "ktor-client-content-negotiation", "ktor-serialization-kotlinx-json"]
+haze = ["haze", "haze-blur", "haze-blur-material3"]

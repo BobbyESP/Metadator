@@ -9,7 +9,7 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 
 val editorModule = module {
-    single { AndroidImageSource(get(), get()) } bind ImageSource::class
+    single { AndroidImageSource(get(), get(), get()) } bind ImageSource::class
     viewModelOf(::EditorViewModel)
     viewModelOf(::LookupViewModel)
 }

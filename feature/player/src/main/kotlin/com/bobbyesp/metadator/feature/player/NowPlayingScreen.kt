@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Edit
@@ -150,8 +151,7 @@ internal fun NowPlayingContent(
                     SecondaryControls(playback, player, onEdit = { onEdit(track.ref.uri) })
                 }
             }
-            val upNext = playback.queue.drop(playback.currentIndex + 1)
-            if (upNext.isNotEmpty()) {
+            if (playback.hasUpNext) {
                 item(key = "up-next") {
                     Text(
                         stringResource(R.string.up_next),
@@ -162,32 +162,7 @@ internal fun NowPlayingContent(
                                 .padding(top = Spacing.extraLarge, bottom = Spacing.small),
                     )
                 }
-                itemsIndexed(
-                    upNext.take(MAX_UP_NEXT),
-                    key = { index, it -> "${it.id.value}:$index" },
-                ) { index, next ->
-                    SegmentedListItem(
-                        onClick = { player.skipToQueueItem(playback.currentIndex + 1 + index) },
-                        shapes = GroupShapes.listItemShapes(index, minOf(upNext.size, MAX_UP_NEXT)),
-                        modifier = Modifier.widthIn(max = 480.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        colors =
-                            ListItemDefaults.segmentedColors(
-                                containerColor = MaterialTheme.colorScheme.surfaceContainerLow
-                            ),
-                        leadingContent = {
-                            ArtworkImage(next.artworkRef?.uri, null, Modifier.size(44.dp))
-                        },
-                        supportingContent = {
-                            Text(
-                                next.artist ?: stringResource(R.string.unknown_artist),
-                                maxLines = 1,
-                            )
-                        },
-                    ) {
-                        Text(next.title, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                    }
-                }
+                upNextItems(playback, player, Modifier.widthIn(max = 480.dp))
             }
         }
     }
@@ -195,9 +170,51 @@ internal fun NowPlayingContent(
 
 private const val MAX_UP_NEXT = 30
 
-/** The cover steps back while the music is paused and comes forward again when it plays. */
+internal val PlaybackState.hasUpNext: Boolean
+    get() = currentIndex < queue.lastIndex
+
+/** What plays after the current song, as one group of rows; tapping one jumps to it. */
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+internal fun LazyListScope.upNextItems(
+    playback: PlaybackState,
+    player: PlayerController,
+    itemModifier: Modifier = Modifier,
+) {
+    val upNext = playback.queue.drop(playback.currentIndex + 1).take(MAX_UP_NEXT)
+    itemsIndexed(upNext, key = { index, it -> "${it.id.value}:$index" }) { index, next ->
+        SegmentedListItem(
+            onClick = { player.skipToQueueItem(playback.currentIndex + 1 + index) },
+            shapes = GroupShapes.listItemShapes(index, upNext.size),
+            modifier = itemModifier,
+            verticalAlignment = Alignment.CenterVertically,
+            colors =
+                ListItemDefaults.segmentedColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerLow
+                ),
+            leadingContent = { ArtworkImage(next.artworkRef?.uri, null, Modifier.size(44.dp)) },
+            supportingContent = {
+                Text(next.artist ?: stringResource(R.string.unknown_artist), maxLines = 1)
+            },
+        ) {
+            Text(next.title, maxLines = 1, overflow = TextOverflow.Ellipsis)
+        }
+    }
+}
+
+/**
+ * The cover steps back while the music is paused and comes forward again when it plays.
+ *
+ * @param sharedModifier what ties it to the bar's cover, applied once it has its size
+ * @param modifier how it takes its size, which is what differs between layouts
+ */
 @Composable
-private fun Cover(track: Track, isPlaying: Boolean, shape: Shape, modifier: Modifier) {
+internal fun Cover(
+    track: Track,
+    isPlaying: Boolean,
+    shape: Shape,
+    sharedModifier: Modifier,
+    modifier: Modifier = Modifier.fillMaxWidth().aspectRatio(1f),
+) {
     val scale by
         animateFloatAsState(
             targetValue = if (isPlaying) 1f else 0.86f,
@@ -208,7 +225,7 @@ private fun Cover(track: Track, isPlaying: Boolean, shape: Shape, modifier: Modi
         model = track.artworkRef?.uri,
         contentDescription = null,
         modifier =
-            Modifier.fillMaxWidth().aspectRatio(1f).then(modifier).graphicsLayer {
+            modifier.then(sharedModifier).graphicsLayer {
                 scaleX = scale
                 scaleY = scale
             },
@@ -218,7 +235,7 @@ private fun Cover(track: Track, isPlaying: Boolean, shape: Shape, modifier: Modi
 }
 
 @Composable
-private fun TrackTitle(track: Track, modifier: Modifier) {
+internal fun TrackTitle(track: Track, modifier: Modifier) {
     val motion = MaterialTheme.motionScheme
     // Centered by this box rather than by the text's alignment: the bounds the name travels to
     // are then the text's own, and the same text at another size scales into them exactly.
@@ -264,7 +281,12 @@ private fun TrackTitle(track: Track, modifier: Modifier) {
  */
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-private fun SeekBar(playback: PlaybackState, onSeek: (Long) -> Unit) {
+internal fun SeekBar(
+    playback: PlaybackState,
+    onSeek: (Long) -> Unit,
+    modifier: Modifier = Modifier.fillMaxWidth(),
+    showTimes: Boolean = true,
+) {
     val state = rememberSliderState()
     // Where the user let go, until the player reports it: without this the thumb jumps back to the
     // old position for the moment the seek takes.
@@ -282,7 +304,7 @@ private fun SeekBar(playback: PlaybackState, onSeek: (Long) -> Unit) {
     }
 
     val waving = playback.isPlaying && !state.isDragging
-    Column(Modifier.fillMaxWidth()) {
+    Column(modifier) {
         Slider(
             state = state,
             onValueChange = { state.value = it },
@@ -299,19 +321,20 @@ private fun SeekBar(playback: PlaybackState, onSeek: (Long) -> Unit) {
                 )
             },
         )
-        Row(Modifier.fillMaxWidth()) {
-            Text(
-                formatDuration((state.value * playback.durationMs).toLong()),
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.weight(1f),
-            )
-            Text(
-                formatDuration(playback.durationMs),
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-        }
+        if (showTimes)
+            Row(Modifier.fillMaxWidth()) {
+                Text(
+                    formatDuration((state.value * playback.durationMs).toLong()),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.weight(1f),
+                )
+                Text(
+                    formatDuration(playback.durationMs),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
     }
 }
 
@@ -324,7 +347,7 @@ private const val SEEK_TIMEOUT_MS = 1_500L
  */
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-private fun TransportControls(
+internal fun TransportControls(
     playback: PlaybackState,
     player: PlayerController,
     playButtonModifier: Modifier,
@@ -399,7 +422,7 @@ private val TransportIconSize = 32.dp
 /** What changes how the queue plays, and the way out to the editor. */
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-private fun SecondaryControls(
+internal fun SecondaryControls(
     playback: PlaybackState,
     player: PlayerController,
     onEdit: () -> Unit,
@@ -409,13 +432,7 @@ private fun SecondaryControls(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        FilledTonalIconToggleButton(
-            checked = playback.shuffle,
-            onCheckedChange = player::setShuffle,
-            shapes = IconButtonDefaults.toggleableShapes(),
-        ) {
-            Icon(Icons.Rounded.Shuffle, stringResource(R.string.shuffle))
-        }
+        ShuffleButton(playback, player)
         FilledTonalButton(onClick = onEdit, shapes = ButtonDefaults.shapes()) {
             Icon(Icons.Rounded.Edit, null, Modifier.size(ButtonDefaults.IconSize))
             Text(
@@ -423,22 +440,40 @@ private fun SecondaryControls(
                 Modifier.padding(start = ButtonDefaults.IconSpacing),
             )
         }
-        FilledTonalIconToggleButton(
-            checked = playback.repeatMode != RepeatMode.Off,
-            onCheckedChange = { player.setRepeatMode(playback.repeatMode.next()) },
-            shapes = IconButtonDefaults.toggleableShapes(),
-        ) {
-            Icon(
-                if (playback.repeatMode == RepeatMode.One) Icons.Rounded.RepeatOne
-                else Icons.Rounded.Repeat,
-                stringResource(
-                    when (playback.repeatMode) {
-                        RepeatMode.Off -> R.string.repeat_off
-                        RepeatMode.All -> R.string.repeat_all
-                        RepeatMode.One -> R.string.repeat_one
-                    }
-                ),
-            )
-        }
+        RepeatButton(playback, player)
+    }
+}
+
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+internal fun ShuffleButton(playback: PlaybackState, player: PlayerController) {
+    FilledTonalIconToggleButton(
+        checked = playback.shuffle,
+        onCheckedChange = player::setShuffle,
+        shapes = IconButtonDefaults.toggleableShapes(),
+    ) {
+        Icon(Icons.Rounded.Shuffle, stringResource(R.string.shuffle))
+    }
+}
+
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+internal fun RepeatButton(playback: PlaybackState, player: PlayerController) {
+    FilledTonalIconToggleButton(
+        checked = playback.repeatMode != RepeatMode.Off,
+        onCheckedChange = { player.setRepeatMode(playback.repeatMode.next()) },
+        shapes = IconButtonDefaults.toggleableShapes(),
+    ) {
+        Icon(
+            if (playback.repeatMode == RepeatMode.One) Icons.Rounded.RepeatOne
+            else Icons.Rounded.Repeat,
+            stringResource(
+                when (playback.repeatMode) {
+                    RepeatMode.Off -> R.string.repeat_off
+                    RepeatMode.All -> R.string.repeat_all
+                    RepeatMode.One -> R.string.repeat_one
+                }
+            ),
+        )
     }
 }

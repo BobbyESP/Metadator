@@ -8,15 +8,14 @@ import android.app.RecoverableSecurityException
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Build
 import android.os.Process
 import android.provider.MediaStore
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import com.bobbyesp.metadator.core.model.ContentRef
 import com.bobbyesp.metadator.library.api.AccessResult
 import com.bobbyesp.metadator.library.api.WriteAccess
-import androidx.core.net.toUri
 
 /**
  * Write access to other apps' files, the way each Android version asks for it:

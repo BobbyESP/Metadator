@@ -68,6 +68,16 @@ internal class PlayerSheetState(
             transition.currentState == PlayerSheetValue.Expanded ||
                 progress.targetValue == PlayerSheetValue.Expanded.progress
 
+    /** How far open the sheet is, from 0 (the bar) to 1 (the screen). Read it while drawing. */
+    val fraction: Float
+        get() = progress.value.coerceIn(0f, 1f)
+
+    /** Whether the full player is on screen and at rest: not arriving, leaving or being dragged. */
+    val isSettledExpanded: Boolean
+        get() =
+            transition.currentState == PlayerSheetValue.Expanded &&
+                transition.targetState == PlayerSheetValue.Expanded
+
     /**
      * How far the spring is past where it is going: positive beyond the full screen, negative
      * beyond the bar, zero the rest of the time. Read it while drawing.

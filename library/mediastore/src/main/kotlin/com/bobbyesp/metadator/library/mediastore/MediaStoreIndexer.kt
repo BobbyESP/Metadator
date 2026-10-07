@@ -6,15 +6,15 @@ package com.bobbyesp.metadator.library.mediastore
 import android.content.Context
 import android.media.MediaScannerConnection
 import android.net.Uri
+import androidx.core.net.toUri
 import com.bobbyesp.metadator.core.common.AppDispatchers
 import com.bobbyesp.metadator.core.model.ContentRef
 import com.bobbyesp.metadator.library.api.MediaIndexer
 import kotlin.coroutines.resume
+import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
-import kotlin.time.Duration.Companion.milliseconds
-import androidx.core.net.toUri
 
 /**
  * Asks MediaStore to read written files again. Without it the library, and every music player,
