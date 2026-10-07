@@ -17,6 +17,7 @@ import androidx.compose.animation.core.FiniteAnimationSpec
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.rememberTransition
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
@@ -30,13 +31,16 @@ import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -59,8 +63,11 @@ import androidx.navigationevent.NavigationEventTransitionState
 import androidx.navigationevent.compose.NavigationBackHandler
 import androidx.navigationevent.compose.rememberNavigationEventState
 import com.bobbyesp.metadator.core.designsystem.theme.MetadatorAccentTheme
+import com.bobbyesp.metadator.core.designsystem.theme.MetadatorBlurDefaults
 import com.bobbyesp.metadator.core.designsystem.theme.Spacing
+import com.bobbyesp.metadator.core.designsystem.theme.blurHalo
 import com.bobbyesp.metadator.player.api.PlayerController
+import dev.chrisbanes.haze.HazeState
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 
@@ -94,6 +101,8 @@ object PlayerSheetDefaults {
  * @param onEdit asked to open the editor for the playing song, by its URI
  * @param layout how the full player is laid out, which the shell decides from the window
  * @param expansion told how far open the sheet is, for the shell to step back what is behind it
+ * @param backdrop what is recorded of the screens under the player, which the bar is lifted off
+ *   with a blur halo; without it, or where the device cannot draw one, with a shadow
  */
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
@@ -103,6 +112,7 @@ fun PlayerSheet(
     modifier: Modifier = Modifier,
     layout: PlayerLayout = PlayerLayout.Stacked,
     expansion: PlayerSheetExpansion? = null,
+    backdrop: HazeState? = null,
 ) {
     val player: PlayerController = koinInject()
     val playback by player.state.collectAsStateWithLifecycle()
@@ -128,6 +138,16 @@ fun PlayerSheet(
     }
 
     val motion = MaterialTheme.motionScheme
+    // The halo is the bar's alone: it goes as soon as the bar starts to open, since nothing blurs
+    // while the shared elements travel, and comes back once the bar is at rest again.
+    val haloed = backdrop != null && MetadatorBlurDefaults.isHaloSupported
+    val barAtRest by remember(sheet) { derivedStateOf { sheet.fraction == 0f } }
+    val haloStrength by
+        animateFloatAsState(
+            targetValue = if (available && barAtRest) 1f else 0f,
+            animationSpec = motion.defaultEffectsSpec(),
+            label = "MiniPlayerHalo",
+        )
     val dragState = rememberDraggableState { delta -> sheet.dragBy(delta) }
     val dragToMove =
         Modifier.draggable(
@@ -269,37 +289,55 @@ fun PlayerSheet(
                 when (value) {
                     PlayerSheetValue.Collapsed ->
                         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
-                            AnimatedVisibility(
-                                visible = available,
-                                // A spring, so the bar lands with a little bounce.
-                                enter =
-                                    slideInVertically(motion.defaultSpatialSpec()) { it * 2 } +
-                                        fadeIn(motion.defaultEffectsSpec()),
-                                exit =
-                                    slideOutVertically(motion.fastSpatialSpec()) { it * 2 } +
-                                        fadeOut(motion.fastEffectsSpec()),
-                                modifier =
-                                    Modifier.navigationBarsPadding()
-                                        .padding(bottom = Spacing.medium),
-                            ) {
-                                if (track != null) {
-                                    MiniPlayerBar(
-                                        track = track,
-                                        playback = playback,
-                                        player = player,
-                                        onOpen = sheet::expand,
-                                        shape = shape,
-                                        artworkShape = RoundedCornerShape(artworkCorner),
-                                        modifier = container.then(dragToMove),
-                                        // Laid out as a bar throughout, at the top of the surface
-                                        // as
-                                        // it grows.
-                                        contentModifier = Modifier.skipToLookaheadSize(),
-                                        artworkModifier = artwork,
-                                        titleModifier = title,
-                                        playButtonModifier = playButton,
-                                        contentAlpha = { barContentAlpha },
+                            // The bar's place, which the halo is drawn around: outside the bar's
+                            // own way in and out, which would slide and fade the halo with it.
+                            Box(
+                                Modifier.navigationBarsPadding()
+                                    .padding(bottom = Spacing.medium)
+                                    .widthIn(max = BarMaxWidth)
+                                    .fillMaxWidth()
+                                    .padding(horizontal = Spacing.medium)
+                                    .then(
+                                        // Only while there is a halo to draw: the screens are
+                                        // recorded for as long as something blurs them.
+                                        if (backdrop != null && (available || haloStrength > 0f)) {
+                                            Modifier.blurHalo(
+                                                state = backdrop,
+                                                shape = RoundedCornerShape(BarCorner),
+                                                strength = haloStrength,
+                                            )
+                                        } else Modifier
                                     )
+                            ) {
+                                AnimatedVisibility(
+                                    visible = available,
+                                    // A spring, so the bar lands with a little bounce.
+                                    enter =
+                                        slideInVertically(motion.defaultSpatialSpec()) { it * 2 } +
+                                            fadeIn(motion.defaultEffectsSpec()),
+                                    exit =
+                                        slideOutVertically(motion.fastSpatialSpec()) { it * 2 } +
+                                            fadeOut(motion.fastEffectsSpec()),
+                                ) {
+                                    if (track != null) {
+                                        MiniPlayerBar(
+                                            track = track,
+                                            playback = playback,
+                                            player = player,
+                                            onOpen = sheet::expand,
+                                            shape = shape,
+                                            artworkShape = RoundedCornerShape(artworkCorner),
+                                            shadowElevation = if (haloed) 0.dp else BarShadow,
+                                            modifier = container.then(dragToMove),
+                                            // Laid out as a bar throughout, at the top of the
+                                            // surface as it grows.
+                                            contentModifier = Modifier.skipToLookaheadSize(),
+                                            artworkModifier = artwork,
+                                            titleModifier = title,
+                                            playButtonModifier = playButton,
+                                            contentAlpha = { barContentAlpha },
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -433,6 +471,10 @@ private const val EXPANDED_SWELL = 0.35f
 private const val COLLAPSED_DIP = 0.12f
 
 private val BarCorner = 28.dp
+private val BarMaxWidth = 560.dp
+
+/** The bar's shadow where no halo lifts it. */
+private val BarShadow = 6.dp
 private val BarArtworkCorner = 16.dp
 private val ScreenArtworkCorner = 28.dp
 private val FlingThreshold = 125.dp

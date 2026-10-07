@@ -42,7 +42,6 @@ import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material.icons.rounded.Wallpaper
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -50,7 +49,6 @@ import androidx.compose.material3.LargeFlexibleTopAppBar
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -82,6 +80,8 @@ import com.bobbyesp.metadator.core.designsystem.component.RadioItem
 import com.bobbyesp.metadator.core.designsystem.component.SectionHeader
 import com.bobbyesp.metadator.core.designsystem.component.ShapedIcon
 import com.bobbyesp.metadator.core.designsystem.component.SwitchItem
+import com.bobbyesp.metadator.core.designsystem.component.ToggleChip
+import com.bobbyesp.metadator.core.designsystem.component.TonalTextField
 import com.bobbyesp.metadator.core.designsystem.component.readableWidth
 import com.bobbyesp.metadator.core.designsystem.theme.GroupShapes
 import com.bobbyesp.metadator.core.designsystem.theme.Spacing
@@ -491,10 +491,10 @@ private fun PaletteStylePicker(selected: PaletteStyle, onSelect: (PaletteStyle) 
         horizontalArrangement = Arrangement.spacedBy(Spacing.small),
     ) {
         PaletteStyle.entries.forEach { style ->
-            FilterChip(
+            ToggleChip(
                 selected = style == selected,
                 onClick = { onSelect(style) },
-                label = { Text(stringResource(style.label)) },
+                label = stringResource(style.label),
             )
         }
     }
@@ -542,16 +542,14 @@ private fun LazyListScope.editor(
         }
     }
     item {
-        OutlinedTextField(
+        TonalTextField(
             value = settings.multiValueSeparator,
             onValueChange = { value ->
                 if (value.isNotEmpty() && value.length <= 5)
                     update { it.copy(multiValueSeparator = value) }
             },
-            label = { Text(stringResource(R.string.separator)) },
-            supportingText = { Text(stringResource(R.string.separator_description)) },
-            singleLine = true,
-            shape = MaterialTheme.shapes.large,
+            label = stringResource(R.string.separator),
+            supportingText = stringResource(R.string.separator_description),
             modifier = Modifier.readableWidth().padding(top = Spacing.medium),
         )
     }

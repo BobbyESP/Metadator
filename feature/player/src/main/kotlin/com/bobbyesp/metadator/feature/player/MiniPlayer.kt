@@ -20,7 +20,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.SkipNext
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -46,6 +45,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import com.bobbyesp.metadator.core.designsystem.theme.Spacing
@@ -59,7 +59,8 @@ import com.bobbyesp.metadator.player.api.PlayerController
  * [PlayerSheet], which owns how it appears, opens and is dragged; the modifiers are how the sheet
  * ties the pieces it shares with the full player.
  *
- * @param modifier applied to the bar's surface, inside its margins
+ * @param shadowElevation the bar's shadow; none where the sheet lifts it with a blur halo
+ * @param modifier applied to the bar's surface
  * @param contentModifier applied to what is on the surface, as a whole
  * @param artworkShape the cover's shape, which the sheet changes on the way to the full player
  * @param contentAlpha how visible what only the bar has is (next, the progress), read while drawing
@@ -74,6 +75,7 @@ internal fun MiniPlayerBar(
     onOpen: () -> Unit,
     shape: Shape,
     artworkShape: Shape,
+    shadowElevation: Dp,
     modifier: Modifier = Modifier,
     contentModifier: Modifier = Modifier,
     artworkModifier: Modifier = Modifier,
@@ -87,18 +89,14 @@ internal fun MiniPlayerBar(
         onClick = onOpen,
         shape = shape,
         color = MaterialTheme.colorScheme.secondaryContainer,
-        shadowElevation = 6.dp,
+        shadowElevation = shadowElevation,
         modifier =
-            Modifier.widthIn(max = 560.dp)
-                .fillMaxWidth()
-                .padding(horizontal = Spacing.medium)
-                .then(modifier)
-                .semantics {
-                    onClick(label = openLabel) {
-                        onOpen()
-                        true
-                    }
-                },
+            Modifier.fillMaxWidth().then(modifier).semantics {
+                onClick(label = openLabel) {
+                    onOpen()
+                    true
+                }
+            },
     ) {
         Column(contentModifier) {
             // The cover's corners are the bar's, less this padding: the two curves stay parallel.

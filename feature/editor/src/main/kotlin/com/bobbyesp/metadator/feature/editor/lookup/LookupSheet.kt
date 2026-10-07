@@ -33,7 +33,6 @@ import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SegmentedListItem
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.SuggestionChip
@@ -52,6 +51,8 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.bobbyesp.metadator.core.common.formatDuration
+import com.bobbyesp.metadator.core.designsystem.component.TonalFieldDefaults
+import com.bobbyesp.metadator.core.designsystem.component.TonalTextField
 import com.bobbyesp.metadator.core.designsystem.theme.GroupShapes
 import com.bobbyesp.metadator.core.designsystem.theme.Spacing
 import com.bobbyesp.metadator.core.domain.lookup.FieldProposal
@@ -200,16 +201,15 @@ private fun QueryField(
     onDone: (() -> Unit)? = null,
     onChange: (String) -> Unit,
 ) {
-    OutlinedTextField(
+    TonalTextField(
         value = value,
         onValueChange = onChange,
-        label = { Text(stringResource(label)) },
-        singleLine = true,
+        label = stringResource(label),
         modifier = Modifier.fillMaxWidth(),
-        shape = MaterialTheme.shapes.large,
         keyboardOptions =
             KeyboardOptions(imeAction = if (onDone != null) ImeAction.Search else ImeAction.Next),
         keyboardActions = KeyboardActions(onSearch = { onDone?.invoke() }),
+        colors = TonalFieldDefaults.sheetColors(),
     )
 }
 

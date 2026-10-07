@@ -40,14 +40,11 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FilledTonalButton
-import androidx.compose.material3.FloatingToolbarDefaults
-import androidx.compose.material3.HorizontalFloatingToolbar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -64,6 +61,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
@@ -72,11 +72,16 @@ import androidx.navigationevent.NavigationEventInfo
 import androidx.navigationevent.compose.NavigationBackHandler
 import androidx.navigationevent.compose.rememberNavigationEventState
 import com.bobbyesp.metadator.core.designsystem.component.ActionMenu
+import com.bobbyesp.metadator.core.designsystem.component.FloatingActionToolbar
+import com.bobbyesp.metadator.core.designsystem.component.FloatingActionToolbarDefaults
 import com.bobbyesp.metadator.core.designsystem.component.LoadingScreen
 import com.bobbyesp.metadator.core.designsystem.component.MenuAction
 import com.bobbyesp.metadator.core.designsystem.component.PlaceholderCard
 import com.bobbyesp.metadator.core.designsystem.component.SectionHeader
+import com.bobbyesp.metadator.core.designsystem.component.TonalFieldDefaults
+import com.bobbyesp.metadator.core.designsystem.component.TonalTextField
 import com.bobbyesp.metadator.core.designsystem.theme.Spacing
+import com.bobbyesp.metadator.core.designsystem.theme.blurHalo
 import com.bobbyesp.metadator.core.domain.editor.Position
 import com.bobbyesp.metadator.core.domain.editor.TagDraft
 import com.bobbyesp.metadator.core.ui.R as CoreUiR
@@ -89,6 +94,8 @@ import com.bobbyesp.metadator.feature.editor.components.TagTextField
 import com.bobbyesp.metadator.lyrics.api.Lrc
 import com.bobbyesp.metadator.tags.api.FieldKind
 import com.bobbyesp.metadator.tags.api.TagField
+import dev.chrisbanes.haze.hazeSource
+import dev.chrisbanes.haze.rememberHazeState
 
 /** The fields of each section, in order. */
 private val MainFields =
@@ -153,6 +160,7 @@ internal fun EditorScreen(
             if (uri != null) onIntent(EditorIntent.SetCoverFromUri(uri.toString()))
         }
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+    val haze = rememberHazeState()
 
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -210,7 +218,8 @@ internal fun EditorScreen(
                                 modifier = m,
                             )
                         }
-                    BoxWithConstraints(Modifier.fillMaxSize()) {
+                    // The fields, recorded for the toolbar floating over them: its sibling.
+                    BoxWithConstraints(Modifier.fillMaxSize().hazeSource(haze)) {
                         if (maxWidth >= TwoColumnWidth) {
                             // Wide: the cover and the file stay in view while the fields scroll.
                             Row(Modifier.fillMaxSize().padding(horizontal = Spacing.extraLarge)) {
@@ -265,7 +274,8 @@ internal fun EditorScreen(
                         modifier =
                             Modifier.align(Alignment.BottomCenter)
                                 .navigationBarsPadding()
-                                .padding(bottom = Spacing.large),
+                                .padding(bottom = Spacing.large)
+                                .blurHalo(haze, FloatingActionToolbarDefaults.HaloShape),
                     )
                 }
         }
@@ -356,23 +366,20 @@ private fun EditorToolbar(
     onRevertAll: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    HorizontalFloatingToolbar(
-        expanded = true,
-        modifier = modifier,
-        colors = FloatingToolbarDefaults.vibrantFloatingToolbarColors(),
-        floatingActionButton = {
-            FloatingToolbarDefaults.VibrantFloatingActionButton(
-                onClick = { if (dirty && !saving) onSave() }
-            ) {
-                if (saving) LoadingIndicator(color = MaterialTheme.colorScheme.onTertiaryContainer)
-                else
-                    Icon(
-                        Icons.Rounded.Save,
-                        contentDescription =
-                            stringResource(if (saving) R.string.saving else R.string.save),
-                    )
+    val savingLabel = stringResource(R.string.saving)
+    FloatingActionToolbar(
+        onPrimaryAction = { if (dirty && !saving) onSave() },
+        primaryAction = {
+            if (saving) {
+                LoadingIndicator(
+                    modifier = Modifier.semantics { contentDescription = savingLabel },
+                    color = MaterialTheme.colorScheme.onTertiaryContainer,
+                )
+            } else {
+                Icon(Icons.Rounded.Save, contentDescription = stringResource(R.string.save))
             }
         },
+        modifier = modifier,
     ) {
         IconButton(onClick = onFindMetadata, shapes = IconButtonDefaults.shapes()) {
             Icon(Icons.Rounded.TravelExplore, stringResource(R.string.lookup_find))
@@ -577,20 +584,23 @@ private fun AddFieldDialog(onAdd: (key: String, value: String) -> Unit, onDismis
         title = { Text(stringResource(R.string.add_field)) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(Spacing.small)) {
-                OutlinedTextField(
+                TonalTextField(
                     value = key,
                     onValueChange = { key = it },
-                    label = { Text(stringResource(R.string.add_field_name)) },
-                    placeholder = { Text(stringResource(R.string.add_field_name_hint)) },
-                    singleLine = true,
+                    label = stringResource(R.string.add_field_name),
+                    placeholder = stringResource(R.string.add_field_name_hint),
                     keyboardOptions =
-                        KeyboardOptions(capitalization = KeyboardCapitalization.Characters),
+                        KeyboardOptions(
+                            capitalization = KeyboardCapitalization.Characters,
+                            imeAction = ImeAction.Next,
+                        ),
+                    colors = TonalFieldDefaults.dialogColors(),
                 )
-                OutlinedTextField(
+                TonalTextField(
                     value = value,
                     onValueChange = { value = it },
-                    label = { Text(stringResource(R.string.add_field_value)) },
-                    singleLine = true,
+                    label = stringResource(R.string.add_field_value),
+                    colors = TonalFieldDefaults.dialogColors(),
                 )
             }
         },

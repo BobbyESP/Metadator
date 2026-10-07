@@ -34,14 +34,12 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.LinearWavyProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -57,6 +55,8 @@ import androidx.compose.ui.unit.dp
 import com.bobbyesp.metadator.core.designsystem.component.LoadingScreen
 import com.bobbyesp.metadator.core.designsystem.component.SectionHeader
 import com.bobbyesp.metadator.core.designsystem.component.SwitchItem
+import com.bobbyesp.metadator.core.designsystem.component.ToggleChip
+import com.bobbyesp.metadator.core.designsystem.component.TonalTextField
 import com.bobbyesp.metadator.core.designsystem.component.readableWidth
 import com.bobbyesp.metadator.core.designsystem.theme.Spacing
 import com.bobbyesp.metadator.core.domain.batch.FileNamePattern
@@ -179,7 +179,7 @@ private fun BatchField(field: TagField, state: BatchState, onIntent: (BatchInten
     val shown =
         edited?.joinToString(state.separator)
             ?: (common as? CommonValue.Same)?.values?.joinToString(state.separator).orEmpty()
-    OutlinedTextField(
+    TonalTextField(
         value = shown,
         onValueChange = { text ->
             val values =
@@ -188,11 +188,12 @@ private fun BatchField(field: TagField, state: BatchState, onIntent: (BatchInten
                 else listOf(text)
             onIntent(BatchIntent.SetField(field.key, values))
         },
-        label = { Text(label) },
+        label = label,
         placeholder =
-            if (common == CommonValue.Mixed && edited == null) {
-                { Text(stringResource(R.string.batch_multiple_values)) }
-            } else null,
+            if (common == CommonValue.Mixed && edited == null)
+                stringResource(R.string.batch_multiple_values)
+            else null,
+        emphasized = edited != null,
         trailingIcon =
             if (edited != null) {
                 {
@@ -208,7 +209,6 @@ private fun BatchField(field: TagField, state: BatchState, onIntent: (BatchInten
                 }
             } else null,
         singleLine = field != TagField.Comment,
-        shape = MaterialTheme.shapes.large,
         modifier = Modifier.readableWidth().padding(bottom = Spacing.small),
     )
 }
@@ -268,7 +268,7 @@ private fun Tools(state: BatchState, onIntent: (BatchIntent) -> Unit) {
             },
         )
         state.numbering?.let { numbering ->
-            OutlinedTextField(
+            TonalTextField(
                 value = numbering.startAt.toString(),
                 onValueChange = { text ->
                     text
@@ -276,10 +276,8 @@ private fun Tools(state: BatchState, onIntent: (BatchIntent) -> Unit) {
                         ?.takeIf { it in 0..999 }
                         ?.let { onIntent(BatchIntent.SetNumbering(numbering.copy(startAt = it))) }
                 },
-                label = { Text(stringResource(R.string.batch_numbering_start)) },
-                singleLine = true,
+                label = stringResource(R.string.batch_numbering_start),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                shape = MaterialTheme.shapes.large,
                 modifier = Modifier.width(160.dp),
             )
         }
@@ -292,25 +290,21 @@ private fun Tools(state: BatchState, onIntent: (BatchIntent) -> Unit) {
         )
         if (state.usePattern) {
             val valid = FileNamePattern(state.pattern).isValid
-            OutlinedTextField(
+            TonalTextField(
                 value = state.pattern,
                 onValueChange = { onIntent(BatchIntent.SetPattern(it)) },
-                label = { Text(stringResource(R.string.batch_pattern_field)) },
+                label = stringResource(R.string.batch_pattern_field),
                 isError = !valid,
                 supportingText =
-                    if (!valid) {
-                        { Text(stringResource(R.string.batch_pattern_invalid)) }
-                    } else null,
-                singleLine = true,
-                shape = MaterialTheme.shapes.large,
+                    if (!valid) stringResource(R.string.batch_pattern_invalid) else null,
                 modifier = Modifier.fillMaxWidth(),
             )
             FlowRow(horizontalArrangement = Arrangement.spacedBy(Spacing.small)) {
                 FileNamePattern.Suggestions.forEach { suggestion ->
-                    FilterChip(
+                    ToggleChip(
                         selected = suggestion == state.pattern,
                         onClick = { onIntent(BatchIntent.SetPattern(suggestion)) },
-                        label = { Text(suggestion) },
+                        label = suggestion,
                     )
                 }
             }

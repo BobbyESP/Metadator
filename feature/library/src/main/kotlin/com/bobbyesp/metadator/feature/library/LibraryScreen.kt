@@ -6,8 +6,11 @@ package com.bobbyesp.metadator.feature.library
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
@@ -28,6 +31,7 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
@@ -36,6 +40,8 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.Sort
 import androidx.compose.material.icons.rounded.Album
@@ -65,10 +71,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.FilledTonalButton
-import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FilterChipDefaults
-import androidx.compose.material3.FloatingToolbarDefaults
-import androidx.compose.material3.HorizontalFloatingToolbar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -96,26 +98,34 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import com.bobbyesp.metadator.core.designsystem.component.ActionChip
 import com.bobbyesp.metadator.core.designsystem.component.ActionMenu
 import com.bobbyesp.metadator.core.designsystem.component.Choice
 import com.bobbyesp.metadator.core.designsystem.component.ConnectedChoices
+import com.bobbyesp.metadator.core.designsystem.component.FloatingActionToolbar
+import com.bobbyesp.metadator.core.designsystem.component.FloatingActionToolbarDefaults
 import com.bobbyesp.metadator.core.designsystem.component.ItemIcon
 import com.bobbyesp.metadator.core.designsystem.component.LoadingScreen
 import com.bobbyesp.metadator.core.designsystem.component.MenuAction
 import com.bobbyesp.metadator.core.designsystem.component.PlaceholderCard
 import com.bobbyesp.metadator.core.designsystem.component.PopupMenu
 import com.bobbyesp.metadator.core.designsystem.component.PopupMenuGroup
+import com.bobbyesp.metadator.core.designsystem.component.ToggleChip
 import com.bobbyesp.metadator.core.designsystem.theme.GroupShapes
 import com.bobbyesp.metadator.core.designsystem.theme.Spacing
+import com.bobbyesp.metadator.core.designsystem.theme.blurHalo
 import com.bobbyesp.metadator.core.model.Track
 import com.bobbyesp.metadator.core.model.TrackCollection
 import com.bobbyesp.metadator.core.model.TrackSort
 import com.bobbyesp.metadator.core.ui.component.ArtworkImage
 import com.bobbyesp.metadator.core.ui.component.CollectionCard
 import com.bobbyesp.metadator.core.ui.component.TrackListItem
+import dev.chrisbanes.haze.hazeSource
+import dev.chrisbanes.haze.rememberHazeState
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -134,6 +144,15 @@ internal fun LibraryScreen(
         if (permission.status == PermissionStatus.Granted) onIntent(LibraryIntent.Start)
     }
     BackHandler(enabled = state.selecting) { onIntent(LibraryIntent.ClearSelection) }
+
+    // The lists, recorded for the selection toolbar that floats over them.
+    val haze = rememberHazeState()
+    val toolbarHalo by
+        animateFloatAsState(
+            targetValue = if (state.selecting) 1f else 0f,
+            animationSpec = MaterialTheme.motionScheme.defaultEffectsSpec(),
+            label = "SelectionToolbarHalo",
+        )
 
     Scaffold(
         modifier = modifier,
@@ -159,21 +178,25 @@ internal fun LibraryScreen(
         },
     ) { padding ->
         Box(Modifier.fillMaxSize().padding(padding)) {
-            when {
-                permission.status != PermissionStatus.Granted ->
-                    PermissionNeeded(
-                        permanentlyDenied = permission.status == PermissionStatus.PermanentlyDenied,
-                        onGrant = permission::request,
-                        onOpenFile = onOpenFile,
-                    )
-                state.loading -> LoadingScreen()
-                else ->
-                    LibraryContent(
-                        state = state,
-                        onIntent = onIntent,
-                        onOpenTrack = onOpenTrack,
-                        onOpenCollection = onOpenCollection,
-                    )
+            // A sibling of the toolbar, never around it: it would blur itself.
+            Box(Modifier.fillMaxSize().hazeSource(haze)) {
+                when {
+                    permission.status != PermissionStatus.Granted ->
+                        PermissionNeeded(
+                            permanentlyDenied =
+                                permission.status == PermissionStatus.PermanentlyDenied,
+                            onGrant = permission::request,
+                            onOpenFile = onOpenFile,
+                        )
+                    state.loading -> LoadingScreen()
+                    else ->
+                        LibraryContent(
+                            state = state,
+                            onIntent = onIntent,
+                            onOpenTrack = onOpenTrack,
+                            onOpenCollection = onOpenCollection,
+                        )
+                }
             }
 
             AnimatedVisibility(
@@ -184,7 +207,19 @@ internal fun LibraryScreen(
                     Modifier.align(Alignment.BottomCenter)
                         .navigationBarsPadding()
                         // Above the mini player when one is showing.
-                        .padding(bottom = if (state.playerActive) 104.dp else Spacing.large),
+                        .padding(bottom = if (state.playerActive) 104.dp else Spacing.large)
+                        // On the visibility, not inside it: its slide and fade would move and
+                        // clip the halo with the toolbar. And only while there is one to draw:
+                        // the lists are recorded for as long as something blurs them.
+                        .then(
+                            if (state.selecting || toolbarHalo > 0f) {
+                                Modifier.blurHalo(
+                                    state = haze,
+                                    shape = FloatingActionToolbarDefaults.HaloShape,
+                                    strength = toolbarHalo,
+                                )
+                            } else Modifier
+                        ),
             ) {
                 SelectionToolbar(
                     onEdit = { onEditTracks(state.selectedTracks) },
@@ -195,7 +230,13 @@ internal fun LibraryScreen(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+/**
+ * The search bar, and in it the way to everything that is not a song: one pill, so that in the
+ * narrow pane the library gets beside the editor all of its width is the field's.
+ *
+ * No wider than Material lets a search bar get: across a tablet's whole window it is a stripe, not
+ * a field. It starts where the tabs and the filters under it do.
+ */
 @Composable
 private fun SearchTopBar(
     query: String,
@@ -207,23 +248,17 @@ private fun SearchTopBar(
 ) {
     val focusManager = LocalFocusManager.current
     var menuOpen by remember { mutableStateOf(false) }
-    Row(
+    Box(
         modifier =
             Modifier.fillMaxWidth()
                 .statusBarsPadding()
-                .padding(
-                    start = Spacing.screen,
-                    end = Spacing.extraSmall,
-                    top = Spacing.small,
-                    bottom = Spacing.small,
-                ),
-        verticalAlignment = Alignment.CenterVertically,
+                .padding(horizontal = Spacing.screen, vertical = Spacing.small)
     ) {
         TextField(
             value = query,
             onValueChange = onQueryChange,
             enabled = enabled,
-            modifier = Modifier.weight(1f),
+            modifier = Modifier.widthIn(max = SearchBarMaxWidth).fillMaxWidth(),
             placeholder = {
                 Text(
                     stringResource(R.string.search_library),
@@ -233,26 +268,64 @@ private fun SearchTopBar(
             },
             leadingIcon = { Icon(Icons.Rounded.Search, contentDescription = null) },
             trailingIcon = {
-                AnimatedVisibility(
-                    visible = query.isNotEmpty(),
-                    enter = fadeIn(),
-                    exit = fadeOut(),
-                ) {
-                    IconButton(
-                        onClick = {
-                            onQueryChange("")
-                            focusManager.clearFocus()
-                        },
-                        shapes = IconButtonDefaults.shapes(),
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    AnimatedVisibility(
+                        visible = query.isNotEmpty(),
+                        enter = fadeIn() + scaleIn(),
+                        exit = fadeOut() + scaleOut(),
                     ) {
-                        Icon(
-                            Icons.Rounded.Clear,
-                            contentDescription = stringResource(R.string.clear_search),
+                        IconButton(
+                            onClick = {
+                                onQueryChange("")
+                                focusManager.clearFocus()
+                            },
+                            shapes = IconButtonDefaults.shapes(),
+                        ) {
+                            Icon(
+                                Icons.Rounded.Clear,
+                                contentDescription = stringResource(R.string.clear_search),
+                            )
+                        }
+                    }
+                    Box {
+                        IconButton(
+                            onClick = { menuOpen = true },
+                            shapes = IconButtonDefaults.shapes(),
+                        ) {
+                            Icon(
+                                Icons.Rounded.MoreVert,
+                                contentDescription = stringResource(R.string.more_options),
+                            )
+                        }
+                        ActionMenu(
+                            expanded = menuOpen,
+                            onDismissRequest = { menuOpen = false },
+                            actions =
+                                listOfNotNull(
+                                    MenuAction(
+                                        stringResource(R.string.open_file),
+                                        Icons.Rounded.AudioFile,
+                                        onClick = onOpenFile,
+                                    ),
+                                    MenuAction(
+                                            stringResource(R.string.rescan_library),
+                                            Icons.Rounded.Refresh,
+                                            onClick = onRescan,
+                                        )
+                                        .takeIf { enabled },
+                                    MenuAction(
+                                        stringResource(R.string.settings),
+                                        Icons.Rounded.Settings,
+                                        onClick = onOpenSettings,
+                                    ),
+                                ),
                         )
                     }
                 }
             },
             singleLine = true,
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+            keyboardActions = KeyboardActions(onSearch = { focusManager.clearFocus() }),
             shape = CircleShape,
             colors =
                 TextFieldDefaults.colors(
@@ -262,39 +335,15 @@ private fun SearchTopBar(
                     focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
                     unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
                     disabledContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                    // The menu works without the library: a file can still be opened.
+                    disabledTrailingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
                 ),
         )
-        IconButton(onClick = onOpenSettings, shapes = IconButtonDefaults.shapes()) {
-            Icon(Icons.Rounded.Settings, contentDescription = stringResource(R.string.settings))
-        }
-        Box {
-            IconButton(onClick = { menuOpen = true }, shapes = IconButtonDefaults.shapes()) {
-                Icon(
-                    Icons.Rounded.MoreVert,
-                    contentDescription = stringResource(R.string.more_options),
-                )
-            }
-            ActionMenu(
-                expanded = menuOpen,
-                onDismissRequest = { menuOpen = false },
-                actions =
-                    listOfNotNull(
-                        MenuAction(
-                            stringResource(R.string.open_file),
-                            Icons.Rounded.AudioFile,
-                            onClick = onOpenFile,
-                        ),
-                        MenuAction(
-                                stringResource(R.string.rescan_library),
-                                Icons.Rounded.Refresh,
-                                onClick = onRescan,
-                            )
-                            .takeIf { enabled },
-                    ),
-            )
-        }
     }
 }
+
+/** Material's widest search bar. */
+private val SearchBarMaxWidth = 720.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -323,17 +372,11 @@ private fun SelectionTopBar(count: Int, onClose: () -> Unit, onSelectAll: () -> 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun SelectionToolbar(onEdit: () -> Unit, onPlay: () -> Unit) {
-    HorizontalFloatingToolbar(
-        expanded = true,
-        floatingActionButton = {
-            FloatingToolbarDefaults.VibrantFloatingActionButton(onClick = onEdit) {
-                Icon(
-                    Icons.Rounded.Edit,
-                    contentDescription = stringResource(R.string.edit_together),
-                )
-            }
+    FloatingActionToolbar(
+        onPrimaryAction = onEdit,
+        primaryAction = {
+            Icon(Icons.Rounded.Edit, contentDescription = stringResource(R.string.edit_together))
         },
-        colors = FloatingToolbarDefaults.vibrantFloatingToolbarColors(),
     ) {
         IconButton(onClick = onPlay, shapes = IconButtonDefaults.shapes()) {
             Icon(
@@ -485,17 +528,12 @@ private fun FilterRow(state: LibraryState, onIntent: (LibraryIntent) -> Unit) {
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Box {
-            FilterChip(
-                selected = false,
+            // An action, not a filter: it is never "on".
+            ActionChip(
                 onClick = { sortMenuOpen = true },
-                label = { Text(stringResource(state.sort.sort.label)) },
-                leadingIcon = {
-                    Icon(
-                        Icons.AutoMirrored.Rounded.Sort,
-                        null,
-                        Modifier.size(FilterChipDefaults.IconSize),
-                    )
-                },
+                label = stringResource(state.sort.sort.label),
+                icon = Icons.AutoMirrored.Rounded.Sort,
+                opensMenu = true,
             )
             PopupMenu(expanded = sortMenuOpen, onDismissRequest = { sortMenuOpen = false }) {
                 PopupMenuGroup(index = 0, count = 2) {
@@ -540,23 +578,19 @@ private fun FilterRow(state: LibraryState, onIntent: (LibraryIntent) -> Unit) {
             }
         }
         if (state.needsAttentionCount > 0 || state.filter.needsAttention) {
-            FilterChip(
+            ToggleChip(
                 selected = state.filter.needsAttention,
                 onClick = { onIntent(LibraryIntent.ToggleNeedsAttention) },
-                label = {
-                    Text(stringResource(R.string.needs_attention_filter, state.needsAttentionCount))
-                },
-                leadingIcon = {
-                    Icon(Icons.Rounded.Warning, null, Modifier.size(FilterChipDefaults.IconSize))
-                },
+                label = stringResource(R.string.needs_attention_filter, state.needsAttentionCount),
+                icon = Icons.Rounded.Warning,
             )
         }
         if (state.formats.size > 1) {
             state.formats.forEach { format ->
-                FilterChip(
+                ToggleChip(
                     selected = format in state.filter.formats,
                     onClick = { onIntent(LibraryIntent.ToggleFormat(format)) },
-                    label = { Text(format.uppercase()) },
+                    label = format.uppercase(),
                 )
             }
         }
