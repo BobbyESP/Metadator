@@ -5,8 +5,8 @@ package com.bobbyesp.metadator.feature.library
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -56,6 +56,7 @@ internal fun CollectionScreen(
     title: String,
     collection: TrackCollection?,
     playingTrack: Track?,
+    isPlaybackRunning: Boolean,
     showBack: Boolean,
     onBack: () -> Unit,
     onOpenTrack: (Track) -> Unit,
@@ -125,6 +126,7 @@ internal fun CollectionScreen(
                     onLongClick = { onOpenTrack(track) },
                     onPlay = { onPlay(tracks, index, false) },
                     isPlaying = track.id == playingTrack?.id,
+                    isPlaybackRunning = isPlaybackRunning,
                     shapes = GroupShapes.listItemShapes(index, tracks.size),
                 )
             }
@@ -149,13 +151,16 @@ private fun CollectionHeader(
             ArtworkImage(
                 model = collection.artworkRef?.uri,
                 contentDescription = null,
-                modifier = Modifier.size(200.dp),
+                modifier = Modifier.size(220.dp),
                 shape = MaterialTheme.shapes.extraLarge,
             )
         }
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(Spacing.small),
-            verticalAlignment = Alignment.CenterVertically,
+        // Wraps instead of squeezing: the labels are longer in other languages.
+        FlowRow(
+            horizontalArrangement =
+                Arrangement.spacedBy(Spacing.small, Alignment.CenterHorizontally),
+            verticalArrangement = Arrangement.spacedBy(Spacing.small),
+            itemVerticalAlignment = Alignment.CenterVertically,
         ) {
             Button(onClick = onPlay, shapes = ButtonDefaults.shapes()) {
                 Icon(Icons.Rounded.PlayArrow, null, Modifier.size(ButtonDefaults.IconSize))

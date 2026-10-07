@@ -8,9 +8,13 @@ import android.content.pm.PackageManager
 import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,11 +22,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Pause
-import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material.icons.rounded.SkipNext
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -63,10 +64,16 @@ fun MiniPlayer(visible: Boolean, onOpen: () -> Unit, modifier: Modifier = Modifi
     val track = playback.current
     RequestNotificationsOnFirstPlay(active = playback.isActive)
 
+    val motion = MaterialTheme.motionScheme
     AnimatedVisibility(
         visible = visible && track != null,
-        enter = slideInVertically { it * 2 },
-        exit = slideOutVertically { it * 2 },
+        // A spring, so the card lands with a little bounce instead of sliding to a stop.
+        enter =
+            slideInVertically(motion.defaultSpatialSpec()) { it * 2 } +
+                fadeIn(motion.defaultEffectsSpec()),
+        exit =
+            slideOutVertically(motion.fastSpatialSpec()) { it * 2 } +
+                fadeOut(motion.fastEffectsSpec()),
         modifier = modifier,
     ) {
         if (track == null) return@AnimatedVisibility
@@ -98,32 +105,39 @@ fun MiniPlayer(visible: Boolean, onOpen: () -> Unit, modifier: Modifier = Modifi
                         modifier = Modifier.size(48.dp),
                         shape = MaterialTheme.shapes.large,
                     )
-                    Column(Modifier.weight(1f).padding(horizontal = Spacing.medium)) {
-                        Text(
-                            track.title,
-                            style = MaterialTheme.typography.titleSmall,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                        )
-                        Text(
-                            track.artist ?: stringResource(R.string.unknown_artist),
-                            style = MaterialTheme.typography.bodySmall,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                        )
+                    // A new song pushes the old one's name up and out.
+                    AnimatedContent(
+                        targetState = track,
+                        transitionSpec = {
+                            (slideInVertically(motion.defaultSpatialSpec()) { it } +
+                                fadeIn(motion.defaultEffectsSpec())) togetherWith
+                                (slideOutVertically(motion.fastSpatialSpec()) { -it } +
+                                    fadeOut(motion.fastEffectsSpec()))
+                        },
+                        contentKey = { it.id },
+                        modifier = Modifier.weight(1f).padding(horizontal = Spacing.medium),
+                        label = "MiniPlayerTrack",
+                    ) { shown ->
+                        Column {
+                            Text(
+                                shown.title,
+                                style = MaterialTheme.typography.titleSmall,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                            )
+                            Text(
+                                shown.artist ?: stringResource(R.string.unknown_artist),
+                                style = MaterialTheme.typography.bodySmall,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                            )
+                        }
                     }
-                    FilledIconButton(
-                        onClick = player::togglePlayPause,
-                        shapes = IconButtonDefaults.shapes(),
-                    ) {
-                        Icon(
-                            if (playback.isPlaying) Icons.Rounded.Pause
-                            else Icons.Rounded.PlayArrow,
-                            stringResource(
-                                if (playback.isPlaying) R.string.pause else R.string.play
-                            ),
-                        )
-                    }
+                    PlayPauseButton(
+                        isPlaying = playback.isPlaying,
+                        onToggle = player::togglePlayPause,
+                        iconSize = IconButtonDefaults.smallIconSize,
+                    )
                     IconButton(
                         onClick = player::skipToNext,
                         enabled = playback.hasNext,
@@ -132,12 +146,14 @@ fun MiniPlayer(visible: Boolean, onOpen: () -> Unit, modifier: Modifier = Modifi
                         Icon(Icons.Rounded.SkipNext, stringResource(R.string.next))
                     }
                 }
+                val isPlaying = playback.isPlaying
                 LinearWavyProgressIndicator(
                     progress = { playback.progress },
                     modifier =
                         Modifier.fillMaxWidth()
                             .padding(horizontal = Spacing.large)
                             .padding(bottom = Spacing.small),
+                    amplitude = { if (isPlaying) 1f else 0f },
                 )
             }
         }

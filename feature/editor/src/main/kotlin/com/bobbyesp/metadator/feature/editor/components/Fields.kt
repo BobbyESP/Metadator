@@ -3,9 +3,7 @@
  */
 package com.bobbyesp.metadator.feature.editor.components
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -14,8 +12,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.input.TextFieldLineLimits
+import androidx.compose.foundation.text.input.clearText
+import androidx.compose.foundation.text.input.rememberTextFieldState
+import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.Undo
 import androidx.compose.material.icons.rounded.Close
@@ -30,13 +32,17 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -130,13 +136,23 @@ fun TagChipsField(
     separator: String,
     modifier: Modifier = Modifier,
 ) {
-    var input by rememberSaveable(label) { mutableStateOf("") }
+    val input = rememberTextFieldState()
     var focused by rememberSaveable(label) { mutableStateOf(false) }
 
-    fun commit() {
-        val added = splitTyped(input, separator)
+    val commit = {
+        val added = splitTyped(input.text.toString(), separator)
         if (added.isNotEmpty()) onValuesChange(values + added)
-        input = ""
+        input.clearText()
+    }
+    // Typing the separator ends a value, as a comma ends an email address.
+    val latestCommit by rememberUpdatedState(commit)
+    LaunchedEffect(input, separator) {
+        val end = separator.trim()
+        if (end.isEmpty()) return@LaunchedEffect
+        snapshotFlow { input.text.toString() }
+            .collect { typed ->
+                if (typed.endsWith(end)) latestCommit()
+            }
     }
 
     Surface(
@@ -144,7 +160,7 @@ fun TagChipsField(
         shape = MaterialTheme.shapes.large,
         color = MaterialTheme.colorScheme.surface,
         border =
-            androidx.compose.foundation.BorderStroke(
+            BorderStroke(
                 width = if (focused || changed) 2.dp else 1.dp,
                 color =
                     when {
@@ -183,7 +199,7 @@ fun TagChipsField(
                             onClick = {
                                 // Editing a chip moves it back into the input.
                                 commit()
-                                input = value
+                                input.setTextAndPlaceCursorAtEnd(value)
                                 onValuesChange(values.filterIndexed { i, _ -> i != index })
                             },
                             label = { Text(value) },
@@ -206,17 +222,8 @@ fun TagChipsField(
                     }
                 }
             }
-            androidx.compose.foundation.text.BasicTextField(
-                value = input,
-                onValueChange = { typed ->
-                    // Typing the separator ends a value, as a comma ends an email address.
-                    if (separator.isNotBlank() && typed.endsWith(separator.trim())) {
-                        input = typed.removeSuffix(separator.trim())
-                        commit()
-                    } else {
-                        input = typed
-                    }
-                },
+            BasicTextField(
+                state = input,
                 modifier =
                     Modifier.fillMaxWidth()
                         .padding(end = Spacing.medium, top = Spacing.small, bottom = Spacing.medium)
@@ -224,21 +231,20 @@ fun TagChipsField(
                             if (focused && !it.isFocused) commit()
                             focused = it.isFocused
                         },
-                singleLine = true,
+                lineLimits = TextFieldLineLimits.SingleLine,
                 textStyle =
                     MaterialTheme.typography.bodyLarge.copy(
                         color = MaterialTheme.colorScheme.onSurface
                     ),
-                cursorBrush =
-                    androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.primary),
+                cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
                 keyboardOptions =
                     KeyboardOptions(
                         capitalization = KeyboardCapitalization.Words,
                         imeAction = ImeAction.Done,
                     ),
-                keyboardActions = KeyboardActions(onDone = { commit() }),
-                decorationBox = { inner ->
-                    if (input.isEmpty()) {
+                onKeyboardAction = { commit() },
+                decorator = { inner ->
+                    if (input.text.isEmpty()) {
                         Text(
                             stringResource(
                                 if (values.isEmpty()) R.string.add_value_hint
@@ -304,10 +310,4 @@ fun PositionField(
                 } else null,
         )
     }
-}
-
-/** Fades an element in and out with its condition. */
-@Composable
-fun Appearing(visible: Boolean, content: @Composable () -> Unit) {
-    AnimatedVisibility(visible = visible, enter = fadeIn(), exit = fadeOut()) { content() }
 }

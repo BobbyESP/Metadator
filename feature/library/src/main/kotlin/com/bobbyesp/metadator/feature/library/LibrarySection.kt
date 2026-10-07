@@ -89,6 +89,7 @@ fun EntryProviderScope<NavKey>.librarySection(navigator: Navigator) {
             title = key.title,
             collection = collection.takeUnless { state.loading },
             playingTrack = playback.current,
+            isPlaybackRunning = playback.isPlaying,
             showBack = true,
             onBack = navigator::goBack,
             onOpenTrack = { navigator.goTo(Editor(it.ref.uri)) },

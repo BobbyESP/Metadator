@@ -3,15 +3,7 @@
  */
 package com.bobbyesp.metadator.core.designsystem.component
 
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -24,26 +16,18 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
-/**
- * What a screen shows instead of content: empty, needs a permission, or failed. The slowly turning
- * cookie shape is the expressive cue that the app is not frozen, only empty.
- */
+/** What a screen shows instead of content: empty, needs a permission, or failed. */
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun PlaceholderCard(
@@ -62,19 +46,6 @@ fun PlaceholderCard(
     val shapeColor = if (isError) colors.errorContainer else colors.primaryContainer
     val onShapeColor = if (isError) colors.onErrorContainer else colors.onPrimaryContainer
 
-    val rotation by
-        rememberInfiniteTransition(label = "PlaceholderRotation")
-            .animateFloat(
-                initialValue = 0f,
-                targetValue = 360f,
-                animationSpec =
-                    infiniteRepeatable(
-                        tween(if (isError) 20_000 else 12_000, easing = LinearEasing),
-                        RepeatMode.Restart,
-                    ),
-                label = "Rotation",
-            )
-
     Surface(
         modifier = modifier.widthIn(max = 480.dp).fillMaxWidth(),
         shape = MaterialTheme.shapes.largeIncreased,
@@ -85,21 +56,12 @@ fun PlaceholderCard(
             verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Box(modifier = Modifier.size(112.dp), contentAlignment = Alignment.Center) {
-                Box(
-                    modifier =
-                        Modifier.matchParentSize()
-                            .graphicsLayer { rotationZ = rotation }
-                            .clip(MaterialShapes.Cookie9Sided.toShape())
-                            .background(shapeColor)
-                )
-                Icon(
-                    icon,
-                    contentDescription = null,
-                    modifier = Modifier.size(48.dp),
-                    tint = onShapeColor,
-                )
-            }
+            ShapedIcon(
+                icon = icon,
+                containerColor = shapeColor,
+                contentColor = onShapeColor,
+                turnMillis = if (isError) 20_000 else 12_000,
+            )
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(8.dp),

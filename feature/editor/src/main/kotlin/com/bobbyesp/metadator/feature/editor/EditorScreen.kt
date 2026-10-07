@@ -37,8 +37,6 @@ import androidx.compose.material.icons.rounded.Warning
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FilledTonalButton
@@ -55,6 +53,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -72,7 +71,9 @@ import androidx.compose.ui.unit.dp
 import androidx.navigationevent.NavigationEventInfo
 import androidx.navigationevent.compose.NavigationBackHandler
 import androidx.navigationevent.compose.rememberNavigationEventState
+import com.bobbyesp.metadator.core.designsystem.component.ActionMenu
 import com.bobbyesp.metadator.core.designsystem.component.LoadingScreen
+import com.bobbyesp.metadator.core.designsystem.component.MenuAction
 import com.bobbyesp.metadator.core.designsystem.component.PlaceholderCard
 import com.bobbyesp.metadator.core.designsystem.component.SectionHeader
 import com.bobbyesp.metadator.core.designsystem.theme.Spacing
@@ -306,7 +307,7 @@ private fun EditorTopBar(
     canRevert: Boolean,
     onClose: () -> Unit,
     onRevertAll: () -> Unit,
-    scrollBehavior: androidx.compose.material3.TopAppBarScrollBehavior,
+    scrollBehavior: TopAppBarScrollBehavior,
 ) {
     var menuOpen by remember { mutableStateOf(false) }
     TopAppBar(
@@ -324,17 +325,19 @@ private fun EditorTopBar(
                 IconButton(onClick = { menuOpen = true }, shapes = IconButtonDefaults.shapes()) {
                     Icon(Icons.Rounded.MoreVert, stringResource(R.string.more_options))
                 }
-                DropdownMenu(expanded = menuOpen, onDismissRequest = { menuOpen = false }) {
-                    DropdownMenuItem(
-                        text = { Text(stringResource(R.string.revert_all)) },
-                        leadingIcon = { Icon(Icons.AutoMirrored.Rounded.Undo, null) },
-                        enabled = canRevert,
-                        onClick = {
-                            menuOpen = false
-                            onRevertAll()
-                        },
-                    )
-                }
+                ActionMenu(
+                    expanded = menuOpen,
+                    onDismissRequest = { menuOpen = false },
+                    actions =
+                        listOf(
+                            MenuAction(
+                                stringResource(R.string.revert_all),
+                                Icons.AutoMirrored.Rounded.Undo,
+                                enabled = canRevert,
+                                onClick = onRevertAll,
+                            )
+                        ),
+                )
             }
         },
         scrollBehavior = scrollBehavior,

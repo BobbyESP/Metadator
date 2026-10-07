@@ -8,8 +8,11 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -35,13 +38,18 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.Sort
+import androidx.compose.material.icons.rounded.Album
+import androidx.compose.material.icons.rounded.ArrowDownward
+import androidx.compose.material.icons.rounded.ArrowUpward
 import androidx.compose.material.icons.rounded.AudioFile
+import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.FolderOpen
 import androidx.compose.material.icons.rounded.LibraryMusic
 import androidx.compose.material.icons.rounded.MoreVert
+import androidx.compose.material.icons.rounded.MusicNote
 import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material.icons.rounded.Refresh
@@ -51,10 +59,12 @@ import androidx.compose.material.icons.rounded.SelectAll
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material.icons.rounded.Shuffle
 import androidx.compose.material.icons.rounded.Warning
-import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.FilledIconButton
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.FloatingToolbarDefaults
@@ -64,10 +74,10 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.PrimaryScrollableTabRow
-import androidx.compose.material3.RadioButton
+import androidx.compose.material3.MenuDefaults
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Tab
+import androidx.compose.material3.SegmentedListItem
+import androidx.compose.material3.SelectableDropdownMenuItem
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -87,9 +97,17 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import com.bobbyesp.metadator.core.designsystem.component.ActionMenu
+import com.bobbyesp.metadator.core.designsystem.component.Choice
+import com.bobbyesp.metadator.core.designsystem.component.ConnectedChoices
+import com.bobbyesp.metadator.core.designsystem.component.ItemIcon
 import com.bobbyesp.metadator.core.designsystem.component.LoadingScreen
+import com.bobbyesp.metadator.core.designsystem.component.MenuAction
 import com.bobbyesp.metadator.core.designsystem.component.PlaceholderCard
+import com.bobbyesp.metadator.core.designsystem.component.PopupMenu
+import com.bobbyesp.metadator.core.designsystem.component.PopupMenuGroup
 import com.bobbyesp.metadator.core.designsystem.theme.GroupShapes
 import com.bobbyesp.metadator.core.designsystem.theme.Spacing
 import com.bobbyesp.metadator.core.model.Track
@@ -256,26 +274,24 @@ private fun SearchTopBar(
                     contentDescription = stringResource(R.string.more_options),
                 )
             }
-            DropdownMenu(expanded = menuOpen, onDismissRequest = { menuOpen = false }) {
-                DropdownMenuItem(
-                    text = { Text(stringResource(R.string.open_file)) },
-                    leadingIcon = { Icon(Icons.Rounded.AudioFile, null) },
-                    onClick = {
-                        menuOpen = false
-                        onOpenFile()
-                    },
-                )
-                if (enabled) {
-                    DropdownMenuItem(
-                        text = { Text(stringResource(R.string.rescan_library)) },
-                        leadingIcon = { Icon(Icons.Rounded.Refresh, null) },
-                        onClick = {
-                            menuOpen = false
-                            onRescan()
-                        },
-                    )
-                }
-            }
+            ActionMenu(
+                expanded = menuOpen,
+                onDismissRequest = { menuOpen = false },
+                actions =
+                    listOfNotNull(
+                        MenuAction(
+                            stringResource(R.string.open_file),
+                            Icons.Rounded.AudioFile,
+                            onClick = onOpenFile,
+                        ),
+                        MenuAction(
+                                stringResource(R.string.rescan_library),
+                                Icons.Rounded.Refresh,
+                                onClick = onRescan,
+                            )
+                            .takeIf { enabled },
+                    ),
+            )
         }
     }
 }
@@ -363,20 +379,18 @@ private fun LibraryContent(
     onOpenTrack: (Track) -> Unit,
     onOpenCollection: (TrackCollection) -> Unit,
 ) {
+    val spatial = MaterialTheme.motionScheme.defaultSpatialSpec<IntOffset>()
+    val effects = MaterialTheme.motionScheme.defaultEffectsSpec<Float>()
     Column(Modifier.fillMaxSize()) {
-        PrimaryScrollableTabRow(
-            selectedTabIndex = state.tab.ordinal,
-            edgePadding = Spacing.screen,
-            containerColor = MaterialTheme.colorScheme.surface,
-        ) {
-            LibraryTab.entries.forEach { tab ->
-                Tab(
-                    selected = state.tab == tab,
-                    onClick = { onIntent(LibraryIntent.SelectTab(tab)) },
-                    text = { Text(stringResource(tab.label)) },
-                )
-            }
-        }
+        ConnectedChoices(
+            choices = LibraryTab.entries.map { Choice(it, stringResource(it.label), it.icon) },
+            selected = state.tab,
+            onSelect = { onIntent(LibraryIntent.SelectTab(it)) },
+            modifier =
+                Modifier.fillMaxWidth()
+                    .horizontalScroll(rememberScrollState())
+                    .padding(horizontal = Spacing.screen),
+        )
         FilterRow(state, onIntent)
 
         PullToRefreshBox(
@@ -410,17 +424,35 @@ private fun LibraryContent(
                         )
                     }
                 else ->
-                    when (state.tab) {
-                        LibraryTab.Songs -> SongList(state, onIntent, onOpenTrack)
-                        LibraryTab.Albums -> AlbumGrid(state.albums, onOpenCollection)
-                        LibraryTab.Artists ->
-                            CollectionList(state.artists, Icons.Rounded.Person, onOpenCollection)
-                        LibraryTab.Folders ->
-                            CollectionList(
-                                state.folders,
-                                Icons.Rounded.FolderOpen,
-                                onOpenCollection,
-                            )
+                    AnimatedContent(
+                        targetState = state.tab,
+                        transitionSpec = {
+                            // The new tab comes from the side its button is on.
+                            val travel = if (targetState.ordinal > initialState.ordinal) 1 else -1
+                            (slideInHorizontally(spatial) { travel * it / 6 } + fadeIn(effects))
+                                .togetherWith(
+                                    slideOutHorizontally(spatial) { -travel * it / 6 } +
+                                        fadeOut(effects)
+                                )
+                        },
+                        label = "LibraryTab",
+                    ) { tab ->
+                        when (tab) {
+                            LibraryTab.Songs -> SongList(state, onIntent, onOpenTrack)
+                            LibraryTab.Albums -> AlbumGrid(state.albums, onOpenCollection)
+                            LibraryTab.Artists ->
+                                CollectionList(
+                                    state.artists,
+                                    Icons.Rounded.Person,
+                                    onOpenCollection,
+                                )
+                            LibraryTab.Folders ->
+                                CollectionList(
+                                    state.folders,
+                                    Icons.Rounded.FolderOpen,
+                                    onOpenCollection,
+                                )
+                        }
                     }
             }
         }
@@ -465,33 +497,46 @@ private fun FilterRow(state: LibraryState, onIntent: (LibraryIntent) -> Unit) {
                     )
                 },
             )
-            DropdownMenu(expanded = sortMenuOpen, onDismissRequest = { sortMenuOpen = false }) {
-                TrackSort.entries.forEach { sort ->
+            PopupMenu(expanded = sortMenuOpen, onDismissRequest = { sortMenuOpen = false }) {
+                PopupMenuGroup(index = 0, count = 2) {
+                    TrackSort.entries.forEachIndexed { index, sort ->
+                        SelectableDropdownMenuItem(
+                            selected = state.sort.sort == sort,
+                            onClick = {
+                                onIntent(LibraryIntent.Sort(sort))
+                                sortMenuOpen = false
+                            },
+                            text = { Text(stringResource(sort.label)) },
+                            shapes = MenuDefaults.itemShape(index, TrackSort.entries.size),
+                            selectedLeadingIcon = { Icon(Icons.Rounded.Check, null) },
+                        )
+                    }
+                }
+                Spacer(Modifier.height(MenuDefaults.GroupSpacing))
+                PopupMenuGroup(index = 1, count = 2) {
                     DropdownMenuItem(
-                        text = { Text(stringResource(sort.label)) },
-                        leadingIcon = {
-                            RadioButton(selected = state.sort.sort == sort, onClick = null)
-                        },
                         onClick = {
-                            onIntent(LibraryIntent.Sort(sort))
+                            onIntent(LibraryIntent.ToggleSortDirection)
                             sortMenuOpen = false
+                        },
+                        text = {
+                            Text(
+                                stringResource(
+                                    if (state.sort.ascending) R.string.sort_descending
+                                    else R.string.sort_ascending
+                                )
+                            )
+                        },
+                        shape = MenuDefaults.itemShape(0, 1).shape,
+                        leadingIcon = {
+                            Icon(
+                                if (state.sort.ascending) Icons.Rounded.ArrowDownward
+                                else Icons.Rounded.ArrowUpward,
+                                null,
+                            )
                         },
                     )
                 }
-                DropdownMenuItem(
-                    text = {
-                        Text(
-                            stringResource(
-                                if (state.sort.ascending) R.string.sort_descending
-                                else R.string.sort_ascending
-                            )
-                        )
-                    },
-                    onClick = {
-                        onIntent(LibraryIntent.ToggleSortDirection)
-                        sortMenuOpen = false
-                    },
-                )
             }
         }
         if (state.needsAttentionCount > 0 || state.filter.needsAttention) {
@@ -550,18 +595,20 @@ private fun SongList(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.weight(1f),
                 )
-                IconButton(
+                FilledTonalButton(
                     onClick = { onIntent(LibraryIntent.PlayAll(shuffle = true)) },
-                    shapes = IconButtonDefaults.shapes(),
+                    shapes = ButtonDefaults.shapes(),
                 ) {
-                    Icon(
-                        Icons.Rounded.Shuffle,
-                        contentDescription = stringResource(R.string.shuffle_all),
+                    Icon(Icons.Rounded.Shuffle, null, Modifier.size(ButtonDefaults.IconSize))
+                    Text(
+                        stringResource(R.string.shuffle_all),
+                        Modifier.padding(start = ButtonDefaults.IconSpacing),
                     )
                 }
-                IconButton(
+                FilledIconButton(
                     onClick = { onIntent(LibraryIntent.PlayAll(shuffle = false)) },
                     shapes = IconButtonDefaults.shapes(),
+                    modifier = Modifier.padding(start = Spacing.small),
                 ) {
                     Icon(
                         Icons.Rounded.PlayArrow,
@@ -580,6 +627,7 @@ private fun SongList(
                 selected = track.id in state.selection,
                 selecting = state.selecting,
                 isPlaying = track.id == state.playingId,
+                isPlaybackRunning = state.playbackRunning,
                 shapes = GroupShapes.listItemShapes(index, state.tracks.size),
                 onClick = {
                     if (state.selecting) onIntent(LibraryIntent.ToggleSelection(track.id))
@@ -616,6 +664,7 @@ private fun AlbumGrid(albums: List<TrackCollection.Album>, onOpen: (TrackCollect
                         .ifEmpty { null },
                 artwork = album.artworkRef?.uri,
                 onClick = { onOpen(album) },
+                modifier = Modifier.animateItem(),
             )
         }
         item(span = { GridItemSpan(maxLineSpan) }) { Spacer(Modifier.height(Spacing.small)) }
@@ -640,8 +689,9 @@ private fun CollectionList(
         verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap),
     ) {
         itemsIndexed(collections, key = { _, it -> it.key }) { index, collection ->
-            androidx.compose.material3.SegmentedListItem(
+            SegmentedListItem(
                 onClick = { onOpen(collection) },
+                modifier = Modifier.animateItem(),
                 shapes = GroupShapes.listItemShapes(index, collections.size),
                 verticalAlignment = Alignment.CenterVertically,
                 colors =
@@ -659,7 +709,7 @@ private fun CollectionList(
                                 else MaterialTheme.shapes.medium,
                         )
                     } else {
-                        Icon(icon, contentDescription = null, modifier = Modifier.size(28.dp))
+                        ItemIcon(icon, Modifier.size(52.dp))
                     }
                 },
                 supportingContent = {
@@ -691,6 +741,15 @@ private val LibraryTab.label: Int
             LibraryTab.Albums -> R.string.tab_albums
             LibraryTab.Artists -> R.string.tab_artists
             LibraryTab.Folders -> R.string.tab_folders
+        }
+
+private val LibraryTab.icon: ImageVector
+    get() =
+        when (this) {
+            LibraryTab.Songs -> Icons.Rounded.MusicNote
+            LibraryTab.Albums -> Icons.Rounded.Album
+            LibraryTab.Artists -> Icons.Rounded.Person
+            LibraryTab.Folders -> Icons.Rounded.FolderOpen
         }
 
 private val TrackSort.label: Int

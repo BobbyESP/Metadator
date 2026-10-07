@@ -22,10 +22,8 @@ import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material.icons.rounded.TravelExplore
 import androidx.compose.material.icons.rounded.Warning
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.FilledIconButton
+import androidx.compose.material3.FilledIconToggleButton
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -44,6 +42,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.bobbyesp.metadator.core.designsystem.component.ActionMenu
+import com.bobbyesp.metadator.core.designsystem.component.MenuAction
 import com.bobbyesp.metadator.core.designsystem.theme.Spacing
 import com.bobbyesp.metadator.core.ui.component.ArtworkImage
 import com.bobbyesp.metadator.feature.editor.ImageInfo
@@ -86,9 +86,15 @@ fun CoverCard(
                 shape = MaterialTheme.shapes.extraLarge,
             )
             if (loadingCover) LoadingIndicator()
-            FilledIconButton(
-                onClick = onPlay,
-                shapes = IconButtonDefaults.shapes(),
+            FilledIconToggleButton(
+                checked = isPlaying,
+                onCheckedChange = { onPlay() },
+                shapes = IconButtonDefaults.toggleableShapes(),
+                colors =
+                    IconButtonDefaults.filledIconToggleButtonColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary,
+                    ),
                 modifier = Modifier.align(Alignment.BottomEnd).padding(Spacing.medium).size(56.dp),
             ) {
                 Icon(
@@ -136,36 +142,30 @@ fun CoverCard(
                 IconButton(onClick = { menuOpen = true }, shapes = IconButtonDefaults.shapes()) {
                     Icon(Icons.Rounded.MoreVert, stringResource(R.string.more_options))
                 }
-                DropdownMenu(expanded = menuOpen, onDismissRequest = { menuOpen = false }) {
-                    DropdownMenuItem(
-                        text = { Text(stringResource(R.string.cover_find_online)) },
-                        leadingIcon = { Icon(Icons.Rounded.TravelExplore, null) },
-                        onClick = {
-                            menuOpen = false
-                            onFindCover()
-                        },
-                    )
-                    if (cover != null) {
-                        DropdownMenuItem(
-                            text = { Text(stringResource(R.string.cover_remove)) },
-                            leadingIcon = { Icon(Icons.Rounded.Delete, null) },
-                            onClick = {
-                                menuOpen = false
-                                onRemoveCover()
-                            },
-                        )
-                    }
-                    if (coverChanged && hasOriginalCover) {
-                        DropdownMenuItem(
-                            text = { Text(stringResource(R.string.cover_revert)) },
-                            leadingIcon = { Icon(Icons.AutoMirrored.Rounded.Undo, null) },
-                            onClick = {
-                                menuOpen = false
-                                onRevertCover()
-                            },
-                        )
-                    }
-                }
+                ActionMenu(
+                    expanded = menuOpen,
+                    onDismissRequest = { menuOpen = false },
+                    actions =
+                        listOfNotNull(
+                            MenuAction(
+                                stringResource(R.string.cover_find_online),
+                                Icons.Rounded.TravelExplore,
+                                onClick = onFindCover,
+                            ),
+                            MenuAction(
+                                    stringResource(R.string.cover_remove),
+                                    Icons.Rounded.Delete,
+                                    onClick = onRemoveCover,
+                                )
+                                .takeIf { cover != null },
+                            MenuAction(
+                                    stringResource(R.string.cover_revert),
+                                    Icons.AutoMirrored.Rounded.Undo,
+                                    onClick = onRevertCover,
+                                )
+                                .takeIf { coverChanged && hasOriginalCover },
+                        ),
+                )
             }
         }
     }

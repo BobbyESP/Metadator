@@ -54,6 +54,7 @@ data class LibraryState(
     val refreshing: Boolean = false,
     val playingId: TrackId? = null,
     val playerActive: Boolean = false,
+    val playbackRunning: Boolean = false,
 ) {
     val selecting: Boolean
         get() = selection.isNotEmpty()
@@ -119,7 +120,11 @@ class LibraryViewModel(
         player.state
             .onEach { playback ->
                 setState {
-                    copy(playingId = playback.current?.id, playerActive = playback.isActive)
+                    copy(
+                        playingId = playback.current?.id,
+                        playerActive = playback.isActive,
+                        playbackRunning = playback.isPlaying,
+                    )
                 }
             }
             .launchIn(viewModelScope)

@@ -3,7 +3,12 @@
  */
 package com.bobbyesp.metadator.feature.settings
 
-import androidx.compose.foundation.BorderStroke
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,14 +24,18 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material.icons.rounded.BrightnessAuto
 import androidx.compose.material.icons.rounded.BugReport
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.Code
 import androidx.compose.material.icons.rounded.Contrast
+import androidx.compose.material.icons.rounded.DarkMode
 import androidx.compose.material.icons.rounded.DeleteSweep
 import androidx.compose.material.icons.rounded.EditNote
 import androidx.compose.material.icons.rounded.Image
 import androidx.compose.material.icons.rounded.Info
+import androidx.compose.material.icons.rounded.LightMode
+import androidx.compose.material.icons.rounded.MusicNote
 import androidx.compose.material.icons.rounded.Palette
 import androidx.compose.material.icons.rounded.Public
 import androidx.compose.material.icons.rounded.Star
@@ -39,28 +48,39 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.LargeFlexibleTopAppBar
 import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
+import com.bobbyesp.metadator.core.designsystem.component.Choice
+import com.bobbyesp.metadator.core.designsystem.component.ConnectedChoices
 import com.bobbyesp.metadator.core.designsystem.component.NavigationItem
 import com.bobbyesp.metadator.core.designsystem.component.RadioItem
 import com.bobbyesp.metadator.core.designsystem.component.SectionHeader
+import com.bobbyesp.metadator.core.designsystem.component.ShapedIcon
 import com.bobbyesp.metadator.core.designsystem.component.SwitchItem
 import com.bobbyesp.metadator.core.designsystem.component.readableWidth
 import com.bobbyesp.metadator.core.designsystem.theme.GroupShapes
@@ -80,6 +100,7 @@ import com.bobbyesp.metadator.core.ui.viewmodel.LocalSnackbarHostState
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
+private const val APP_NAME = "Metadator"
 private const val SOURCE_URL = "https://github.com/BobbyESP/Metadator"
 private const val ISSUES_URL = "https://github.com/BobbyESP/Metadator/issues"
 private const val PLAY_URL = "https://play.google.com/store/apps/details?id=com.bobbyesp.metadator"
@@ -97,6 +118,7 @@ private val SeedColors =
         0xFF00639B.toInt(),
     )
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 fun EntryProviderScope<NavKey>.settingsSection(navigator: Navigator) {
     entry<Settings> {
         SettingsPage(stringResource(R.string.settings), onBack = navigator::goBack) {
@@ -210,11 +232,24 @@ fun EntryProviderScope<NavKey>.settingsSection(navigator: Navigator) {
         val info = viewModel.appInfo
         SettingsPage(stringResource(R.string.about), onBack = navigator::goBack) {
             item {
-                Text(
-                    stringResource(R.string.version, info.versionName),
-                    style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.padding(Spacing.small),
-                )
+                Column(
+                    modifier = Modifier.readableWidth().padding(vertical = Spacing.large),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(Spacing.small),
+                ) {
+                    ShapedIcon(
+                        icon = Icons.Rounded.MusicNote,
+                        size = 120.dp,
+                        polygon = MaterialShapes.Cookie12Sided,
+                        modifier = Modifier.padding(bottom = Spacing.small),
+                    )
+                    Text(APP_NAME, style = MaterialTheme.typography.headlineMediumEmphasized)
+                    Text(
+                        stringResource(R.string.version, info.versionName),
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
             }
             item {
                 val rows = buildList {
@@ -318,26 +353,30 @@ private fun LazyListScope.appearance(
 ) {
     item { SectionHeader(stringResource(R.string.theme), Modifier.readableWidth()) }
     item {
-        val modes =
-            listOf(
-                ThemeMode.FollowSystem to R.string.theme_system,
-                ThemeMode.Light to R.string.theme_light,
-                ThemeMode.Dark to R.string.theme_dark,
-            )
-        Column(
-            Modifier.readableWidth(),
-            verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap),
-        ) {
-            modes.forEachIndexed { index, (mode, label) ->
-                RadioItem(
-                    title = stringResource(label),
-                    supportingText = null,
-                    selected = settings.themeMode == mode,
-                    onClick = { update { it.copy(themeMode = mode) } },
-                    shapes = GroupShapes.listItemShapes(index, modes.size),
-                )
-            }
-        }
+        ConnectedChoices(
+            choices =
+                listOf(
+                    Choice(
+                        ThemeMode.FollowSystem,
+                        stringResource(R.string.theme_system),
+                        Icons.Rounded.BrightnessAuto,
+                    ),
+                    Choice(
+                        ThemeMode.Light,
+                        stringResource(R.string.theme_light),
+                        Icons.Rounded.LightMode,
+                    ),
+                    Choice(
+                        ThemeMode.Dark,
+                        stringResource(R.string.theme_dark),
+                        Icons.Rounded.DarkMode,
+                    ),
+                ),
+            selected = settings.themeMode,
+            onSelect = { mode -> update { it.copy(themeMode = mode) } },
+            fill = true,
+            modifier = Modifier.readableWidth(),
+        )
     }
     item { SectionHeader(stringResource(R.string.colors), Modifier.readableWidth()) }
     item {
@@ -397,22 +436,48 @@ private fun SeedColorPicker(selected: Int, onSelect: (Int) -> Unit) {
         horizontalArrangement = Arrangement.spacedBy(Spacing.medium),
         verticalArrangement = Arrangement.spacedBy(Spacing.medium),
     ) {
-        SeedColors.forEach { color ->
-            val isSelected = color == selected
-            Surface(
-                onClick = { onSelect(color) },
-                shape = CircleShape,
-                color = Color(color),
-                border =
-                    if (isSelected) BorderStroke(3.dp, MaterialTheme.colorScheme.onSurface)
-                    else null,
-                modifier = Modifier.size(52.dp),
-            ) {
-                if (isSelected) {
-                    Box(contentAlignment = Alignment.Center) {
-                        Icon(Icons.Rounded.Check, contentDescription = null, tint = Color.White)
-                    }
+        SeedColors.forEach { color -> SeedColor(color, color == selected) { onSelect(color) } }
+    }
+}
+
+/** A color to pick. The chosen one stops being a circle, so it is found by shape, not by a ring. */
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+private fun SeedColor(color: Int, selected: Boolean, onClick: () -> Unit) {
+    val motion = MaterialTheme.motionScheme
+    val swatch = Color(color)
+    val scale by
+        animateFloatAsState(
+            targetValue = if (selected) 1.15f else 1f,
+            animationSpec = motion.fastSpatialSpec(),
+            label = "SeedScale",
+        )
+    Surface(
+        onClick = onClick,
+        shape = if (selected) MaterialShapes.Cookie9Sided.toShape() else CircleShape,
+        color = swatch,
+        modifier =
+            Modifier.size(52.dp)
+                .graphicsLayer {
+                    scaleX = scale
+                    scaleY = scale
                 }
+                .semantics {
+                    role = Role.RadioButton
+                    this.selected = selected
+                },
+    ) {
+        Box(contentAlignment = Alignment.Center) {
+            AnimatedVisibility(
+                visible = selected,
+                enter = scaleIn(motion.fastSpatialSpec()) + fadeIn(motion.fastEffectsSpec()),
+                exit = scaleOut(motion.fastEffectsSpec()) + fadeOut(motion.fastEffectsSpec()),
+            ) {
+                Icon(
+                    Icons.Rounded.Check,
+                    contentDescription = null,
+                    tint = if (swatch.luminance() > 0.5f) Color.Black else Color.White,
+                )
             }
         }
     }

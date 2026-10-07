@@ -67,9 +67,28 @@ Material keys running shape morphs by their spec) and a color scheme from the wa
 
 Settings keep the 1.x DataStore file name and theme keys, so an update keeps the user's theme.
 
+### Shared components
+
+`:core:designsystem` holds what more than one screen uses, so the expressive vocabulary is the
+same everywhere:
+
+- `ConnectedChoices`: a few exclusive options as a connected button group (the library's tabs, the
+  theme mode). Used instead of a tab row or a short radio list.
+- `ActionMenu`, `PopupMenu`, `PopupMenuGroup`: menus as floating groups. `ActionMenu` takes a list
+  of `MenuAction`s and closes itself before running one.
+- `ShapedIcon`: an icon on a slowly turning Material shape, for empty states and the About page.
+- `PlayingBars`: the three bars on the row of the song that is playing; still while paused.
+- `SectionHeader`, `NavigationItem`, `SwitchItem`, `RadioItem`, `PlaceholderCard`: grouped lists
+  and what a screen shows instead of content.
+
+Animations use the theme's motion scheme (`MaterialTheme.motionScheme`): spatial specs for what
+moves or changes size, effects specs for fades. They are kept for changes of state the user caused
+or should notice: a selection, a song starting or pausing, a tab switching.
+
 ## The player
 
 `PlaybackService` is a Media3 `MediaSessionService` with ExoPlayer: background playback, the
 system's media notification and lock-screen controls. `Media3PlayerController` connects to it on
 first use and exposes a `StateFlow<PlaybackState>`. It is driven from the main thread, as Media3
-requires. The mini player floats over the library; the full player is a destination.
+requires. The mini player floats over the library; the full player is a destination. Both show
+the position as a wave that lies flat while paused; in the full player it is the slider's track.

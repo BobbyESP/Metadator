@@ -3,6 +3,14 @@
  */
 package com.bobbyesp.metadator.feature.player
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -10,6 +18,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
@@ -18,7 +27,6 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.KeyboardArrowDown
-import androidx.compose.material.icons.rounded.Pause
 import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material.icons.rounded.Repeat
 import androidx.compose.material.icons.rounded.RepeatOne
@@ -26,14 +34,16 @@ import androidx.compose.material.icons.rounded.Shuffle
 import androidx.compose.material.icons.rounded.SkipNext
 import androidx.compose.material.icons.rounded.SkipPrevious
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ButtonGroup
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.FilledTonalIconButton
+import androidx.compose.material3.FilledTonalIconToggleButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.IconToggleButton
+import androidx.compose.material3.LinearWavyProgressIndicator
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -41,13 +51,16 @@ import androidx.compose.material3.SegmentedListItem
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.rememberSliderState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -59,6 +72,7 @@ import com.bobbyesp.metadator.core.common.formatDuration
 import com.bobbyesp.metadator.core.designsystem.component.PlaceholderCard
 import com.bobbyesp.metadator.core.designsystem.theme.GroupShapes
 import com.bobbyesp.metadator.core.designsystem.theme.Spacing
+import com.bobbyesp.metadator.core.model.Track
 import com.bobbyesp.metadator.core.navigation.Editor
 import com.bobbyesp.metadator.core.navigation.Navigator
 import com.bobbyesp.metadator.core.navigation.NowPlaying
@@ -67,6 +81,8 @@ import com.bobbyesp.metadator.core.ui.component.ArtworkImage
 import com.bobbyesp.metadator.player.api.PlaybackState
 import com.bobbyesp.metadator.player.api.PlayerController
 import com.bobbyesp.metadator.player.api.RepeatMode
+import kotlin.math.abs
+import kotlinx.coroutines.delay
 import org.koin.compose.koinInject
 
 fun EntryProviderScope<NavKey>.playerSection(navigator: Navigator) {
@@ -134,43 +150,11 @@ private fun NowPlayingScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(Spacing.large),
                 ) {
-                    ArtworkImage(
-                        model = track.artworkRef?.uri,
-                        contentDescription = null,
-                        modifier = Modifier.fillMaxWidth().aspectRatio(1f),
-                        shape = MaterialTheme.shapes.extraLarge,
-                    )
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(
-                            track.title,
-                            style = MaterialTheme.typography.headlineSmallEmphasized,
-                            textAlign = TextAlign.Center,
-                            maxLines = 2,
-                            overflow = TextOverflow.Ellipsis,
-                        )
-                        Text(
-                            listOfNotNull(track.artist, track.album).joinToString(" · ").ifEmpty {
-                                stringResource(R.string.unknown_artist)
-                            },
-                            style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            textAlign = TextAlign.Center,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                        )
-                    }
+                    Cover(track, playback.isPlaying)
+                    TrackTitle(track)
                     SeekBar(playback, onSeek = player::seekTo)
-                    Controls(playback, player)
-                    FilledTonalButton(
-                        onClick = { onEdit(track.ref.uri) },
-                        shapes = ButtonDefaults.shapes(),
-                    ) {
-                        Icon(Icons.Rounded.Edit, null, Modifier.size(ButtonDefaults.IconSize))
-                        Text(
-                            stringResource(R.string.edit_tags),
-                            Modifier.padding(start = ButtonDefaults.IconSpacing),
-                        )
-                    }
+                    TransportControls(playback, player)
+                    SecondaryControls(playback, player, onEdit = { onEdit(track.ref.uri) })
                 }
             }
             val upNext = playback.queue.drop(playback.currentIndex + 1)
@@ -218,76 +202,222 @@ private fun NowPlayingScreen(
 
 private const val MAX_UP_NEXT = 30
 
+/** The cover steps back while the music is paused and comes forward again when it plays. */
 @Composable
-private fun SeekBar(playback: PlaybackState, onSeek: (Long) -> Unit) {
-    // While dragging, the thumb follows the finger, not the playback.
-    var dragging by remember { mutableStateOf<Float?>(null) }
-    val fraction = dragging ?: playback.progress
-    Column(Modifier.fillMaxWidth()) {
-        Slider(
-            value = fraction,
-            onValueChange = { dragging = it },
-            onValueChangeFinished = {
-                dragging?.let { onSeek((it * playback.durationMs).toLong()) }
-                dragging = null
-            },
+private fun Cover(track: Track, isPlaying: Boolean) {
+    val scale by
+        animateFloatAsState(
+            targetValue = if (isPlaying) 1f else 0.86f,
+            animationSpec = MaterialTheme.motionScheme.slowSpatialSpec(),
+            label = "CoverScale",
         )
-        Row(Modifier.fillMaxWidth()) {
+    ArtworkImage(
+        model = track.artworkRef?.uri,
+        contentDescription = null,
+        modifier =
+            Modifier.fillMaxWidth().aspectRatio(1f).graphicsLayer {
+                scaleX = scale
+                scaleY = scale
+            },
+        shape = MaterialTheme.shapes.extraLarge,
+    )
+}
+
+@Composable
+private fun TrackTitle(track: Track) {
+    val motion = MaterialTheme.motionScheme
+    AnimatedContent(
+        targetState = track,
+        transitionSpec = {
+            (slideInVertically(motion.defaultSpatialSpec()) { it / 2 } +
+                fadeIn(motion.defaultEffectsSpec())) togetherWith
+                (slideOutVertically(motion.fastSpatialSpec()) { -it / 2 } +
+                    fadeOut(motion.fastEffectsSpec()))
+        },
+        contentKey = { it.id },
+        label = "TrackTitle",
+    ) { shown ->
+        Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
-                formatDuration((fraction * playback.durationMs).toLong()),
-                style = MaterialTheme.typography.labelMedium,
-                modifier = Modifier.weight(1f),
+                shown.title,
+                style = MaterialTheme.typography.headlineSmallEmphasized,
+                textAlign = TextAlign.Center,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
             )
-            Text(formatDuration(playback.durationMs), style = MaterialTheme.typography.labelMedium)
+            Text(
+                listOfNotNull(shown.artist, shown.album).joinToString(" · ").ifEmpty {
+                    stringResource(R.string.unknown_artist)
+                },
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
         }
     }
 }
 
+/**
+ * The position in the song, as a wave that moves while it plays and lies flat while it is paused or
+ * being dragged.
+ */
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-private fun Controls(playback: PlaybackState, player: PlayerController) {
-    Row(
-        horizontalArrangement = Arrangement.spacedBy(Spacing.small),
+private fun SeekBar(playback: PlaybackState, onSeek: (Long) -> Unit) {
+    val state = rememberSliderState()
+    // Where the user let go, until the player reports it: without this the thumb jumps back to the
+    // old position for the moment the seek takes.
+    var sought by remember { mutableStateOf<Float?>(null) }
+    LaunchedEffect(playback.progress, state.isDragging, sought) {
+        val target = sought
+        if (target != null && abs(playback.progress - target) < SEEK_TOLERANCE) sought = null
+        if (!state.isDragging && sought == null) state.value = playback.progress
+    }
+    LaunchedEffect(sought) {
+        if (sought != null) {
+            delay(SEEK_TIMEOUT_MS)
+            sought = null
+        }
+    }
+
+    val waving = playback.isPlaying && !state.isDragging
+    Column(Modifier.fillMaxWidth()) {
+        Slider(
+            state = state,
+            onValueChange = { state.value = it },
+            onValueChangeFinished = {
+                sought = state.value
+                onSeek((state.value * playback.durationMs).toLong())
+            },
+            enabled = playback.durationMs > 0,
+            track = { slider ->
+                LinearWavyProgressIndicator(
+                    progress = { slider.coercedValueAsFraction },
+                    modifier = Modifier.fillMaxWidth(),
+                    amplitude = { if (waving) 1f else 0f },
+                )
+            },
+        )
+        Row(Modifier.fillMaxWidth()) {
+            Text(
+                formatDuration((state.value * playback.durationMs).toLong()),
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.weight(1f),
+            )
+            Text(
+                formatDuration(playback.durationMs),
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+    }
+}
+
+private const val SEEK_TOLERANCE = 0.02f
+private const val SEEK_TIMEOUT_MS = 1_500L
+
+/**
+ * Previous, play and next as one button group: pressing one squeezes its neighbours, which is the
+ * whole point of putting them in a group.
+ */
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+private fun TransportControls(playback: PlaybackState, player: PlayerController) {
+    ButtonGroup(
+        overflowIndicator = {},
+        modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        IconToggleButton(
+        customItem(
+            buttonGroupContent = {
+                val interactions = remember { MutableInteractionSource() }
+                FilledTonalIconButton(
+                    onClick = player::skipToPrevious,
+                    shapes = IconButtonDefaults.shapes(),
+                    interactionSource = interactions,
+                    modifier =
+                        Modifier.weight(1f).height(TransportHeight).animateWidth(interactions),
+                ) {
+                    Icon(
+                        Icons.Rounded.SkipPrevious,
+                        stringResource(R.string.previous),
+                        Modifier.size(TransportIconSize),
+                    )
+                }
+            },
+            menuContent = {},
+        )
+        customItem(
+            buttonGroupContent = {
+                val interactions = remember { MutableInteractionSource() }
+                PlayPauseButton(
+                    isPlaying = playback.isPlaying,
+                    onToggle = player::togglePlayPause,
+                    iconSize = 40.dp,
+                    interactionSource = interactions,
+                    modifier =
+                        Modifier.weight(1.5f).height(TransportHeight).animateWidth(interactions),
+                )
+            },
+            menuContent = {},
+        )
+        customItem(
+            buttonGroupContent = {
+                val interactions = remember { MutableInteractionSource() }
+                FilledTonalIconButton(
+                    onClick = player::skipToNext,
+                    enabled = playback.hasNext,
+                    shapes = IconButtonDefaults.shapes(),
+                    interactionSource = interactions,
+                    modifier =
+                        Modifier.weight(1f).height(TransportHeight).animateWidth(interactions),
+                ) {
+                    Icon(
+                        Icons.Rounded.SkipNext,
+                        stringResource(R.string.next),
+                        Modifier.size(TransportIconSize),
+                    )
+                }
+            },
+            menuContent = {},
+        )
+    }
+}
+
+private val TransportHeight = 80.dp
+private val TransportIconSize = 32.dp
+
+/** What changes how the queue plays, and the way out to the editor. */
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+private fun SecondaryControls(
+    playback: PlaybackState,
+    player: PlayerController,
+    onEdit: () -> Unit,
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        FilledTonalIconToggleButton(
             checked = playback.shuffle,
             onCheckedChange = player::setShuffle,
             shapes = IconButtonDefaults.toggleableShapes(),
         ) {
             Icon(Icons.Rounded.Shuffle, stringResource(R.string.shuffle))
         }
-        IconButton(
-            onClick = player::skipToPrevious,
-            shapes = IconButtonDefaults.shapes(),
-            modifier = Modifier.size(56.dp),
-        ) {
-            Icon(
-                Icons.Rounded.SkipPrevious,
-                stringResource(R.string.previous),
-                Modifier.size(32.dp),
+        FilledTonalButton(onClick = onEdit, shapes = ButtonDefaults.shapes()) {
+            Icon(Icons.Rounded.Edit, null, Modifier.size(ButtonDefaults.IconSize))
+            Text(
+                stringResource(R.string.edit_tags),
+                Modifier.padding(start = ButtonDefaults.IconSpacing),
             )
         }
-        FilledIconButton(
-            onClick = player::togglePlayPause,
-            shapes = IconButtonDefaults.shapes(),
-            modifier = Modifier.size(80.dp),
-        ) {
-            Icon(
-                if (playback.isPlaying) Icons.Rounded.Pause else Icons.Rounded.PlayArrow,
-                stringResource(if (playback.isPlaying) R.string.pause else R.string.play),
-                Modifier.size(40.dp),
-            )
-        }
-        IconButton(
-            onClick = player::skipToNext,
-            enabled = playback.hasNext,
-            shapes = IconButtonDefaults.shapes(),
-            modifier = Modifier.size(56.dp),
-        ) {
-            Icon(Icons.Rounded.SkipNext, stringResource(R.string.next), Modifier.size(32.dp))
-        }
-        IconToggleButton(
+        FilledTonalIconToggleButton(
             checked = playback.repeatMode != RepeatMode.Off,
             onCheckedChange = { player.setRepeatMode(playback.repeatMode.next()) },
             shapes = IconButtonDefaults.toggleableShapes(),

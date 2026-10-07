@@ -12,7 +12,7 @@
     <string name="about_description">Version, source code and licenses</string>
 
     <string name="theme">Theme</string>
-    <string name="theme_system">Follow the system</string>
+    <string name="theme_system">System</string>
     <string name="theme_light">Light</string>
     <string name="theme_dark">Dark</string>
     <string name="colors">Colors</string>

@@ -31,7 +31,7 @@ This file is the map and the rules. How each part works, and why, is in [`docs/`
 
 Build setup: `buildSrc` holds the convention plugins (`metadator.jvm.library`,
 `metadator.android.library`, `metadator.android.compose`, `metadator.android.feature`,
-`metadator.android.application`) and `ProjectConfig` (minSdk 26, compile and target 37, Java 17).
+`metadator.android.application`) and `ProjectConfig` (minSdk 26, compile 37.1, target 37, Java 17).
 Versions are in `gradle/libs.versions.toml`; the app's version in the root `build.gradle.kts`.
 
 ## 2. Rules
@@ -84,7 +84,12 @@ Versions are in `gradle/libs.versions.toml`; the app's version in the root `buil
   app's lifetime. Color schemes are built off the main thread and cached.
 - A destination with its own color nests `MetadatorAccentTheme` (the editor, from the cover).
 - Use Material components through the design system; don't restyle them per screen. Spacing comes
-  from `Spacing`, grouped-list shapes from `GroupShapes`.
+  from `Spacing`, grouped-list shapes from `GroupShapes`. Menus are `ActionMenu`/`PopupMenu`,
+  exclusive options are `ConnectedChoices`.
+- No deprecated API: the build has no deprecation warnings, keep it so. Animate with the theme's
+  `motionScheme`, not hand-written tweens.
+- Regular expressions run on Android's engine (ICU), stricter than the JVM's the tests use: escape
+  every literal `}` and `]`.
 
 ## 3. Build, test, verify
 
