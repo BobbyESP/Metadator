@@ -17,6 +17,7 @@ import com.bobbyesp.metadator.core.domain.batch.BatchRunner
 import com.bobbyesp.metadator.core.domain.editor.LoadTrackUseCase
 import com.bobbyesp.metadator.core.domain.lookup.LookupService
 import com.bobbyesp.metadator.core.domain.lyrics.FindLyricsUseCase
+import com.bobbyesp.metadator.core.domain.lyrics.LoadLyricsUseCase
 import com.bobbyesp.metadator.core.domain.save.RestoreBackupUseCase
 import com.bobbyesp.metadator.core.domain.save.SaveTagChangesUseCase
 import com.bobbyesp.metadator.core.domain.settings.SettingsRepository
@@ -120,6 +121,7 @@ private val domainModule = module {
     factory { SaveTagChangesUseCase(get(), get(), get(), get()) }
     factory { RestoreBackupUseCase(get(), get(), get()) }
     factory { FindLyricsUseCase(get()) }
+    factory { LoadLyricsUseCase(get(), get()) }
     single { LookupService(listOf(get<MusicBrainzProvider>(), get<DeezerProvider>()), get()) }
     single { BatchRunner(get(AppScope), get()) }
 }
