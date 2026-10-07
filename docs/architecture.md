@@ -88,6 +88,9 @@ same everywhere:
   once chosen; the second never looks selected, so it is not read as a filter that is on.
 - `FloatingActionToolbar`: the vibrant toolbar with the screen's main action beside it (the editor,
   the library's selection).
+- `ActionButtonGroup`: what to do with everything a screen shows, as an expressive button group of
+  medium buttons across the width (an album, an artist, a folder: play, edit all, shuffle). The
+  primary action keeps its label; the others fall back to their icon where the row is narrow.
 - `ShapedIcon`: an icon on a slowly turning Material shape, for empty states and the About page.
 - `PlayingBars`: the three bars on the row of the song that is playing; still while paused.
 - `SectionHeader`, `NavigationItem`, `SwitchItem`, `RadioItem`, `PlaceholderCard`: grouped lists
