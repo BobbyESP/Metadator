@@ -57,6 +57,7 @@ import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.clipRect
+import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.res.stringResource
@@ -349,16 +350,17 @@ private fun LyricLine(
 
 /**
  * Draws a line as far as it has been sung: in the [lit] color up to the word being sung, and
- * through that word in step with it, with a soft edge. The rest waits, dimmer, in the [waiting]
- * color.
+ * through that word in step with it, with a soft edge. The rest waits, dimmer, in [waiting].
  *
- * Each word also glows while it is sung and for a moment after, then the glow fades: a line is lit
- * along its length, but shines only where the voice is. The glow is the word drawn again over
- * itself with a blurred shadow, from a layout of its own. A shadow on the whole line would light
- * every word at once, and one cut to a word would show the cut.
+ * Each word also rises a little as it is sung and stays up, and glows while it is sung and for a
+ * moment after: a line is colored along its length, but shines only where the voice is, and more on
+ * a note that is held. The glow is the word drawn again with a blurred shadow, which falls behind
+ * its letters, from a layout of its own. A shadow on the whole line would light every word at once,
+ * and one cut to a word would show the cut.
  *
- * The text is drawn one visual line at a time, each clipped to itself, since a line that wraps is
- * sung through its first row before its second. Left to right is assumed.
+ * Words move apart from each other, so the line is drawn a word at a time: each row of the text is
+ * split between its words, halfway through the space between two, and each part is the whole layout
+ * clipped to it and moved. Left to right is assumed.
  *
  * @param wordLayouts each of [words] measured alone, in the line's style
  * @param focus how far into focus the line is, which is how strong all of this is
@@ -374,78 +376,98 @@ private fun DrawScope.drawSweep(
 ) {
     val lastChar = layout.layoutInput.text.length - 1
     if (lastChar < 0) return
+    val count = words.size
+    // Where each word is: its row, and its left and right edges on it. A word broken over two
+    // rows counts as far as the end of the first.
+    val rows = IntArray(count)
+    val lefts = FloatArray(count)
+    val rights = FloatArray(count)
+    for (i in 0 until count) {
+        val first = words[i].start.coerceIn(0, lastChar)
+        val last = (words[i].end - 1).coerceIn(first, lastChar)
+        rows[i] = layout.getLineForOffset(first)
+        lefts[i] = layout.getBoundingBox(first).left
+        rights[i] =
+            if (layout.getLineForOffset(last) == rows[i]) layout.getBoundingBox(last).right
+            else layout.getLineRight(rows[i])
+    }
+
     val index = words.indexOfLast { it.startMs <= positionMs }
-    val word = words[index.coerceAtLeast(0)]
-    val first = word.start.coerceIn(0, lastChar)
-    val last = (word.end - 1).coerceIn(first, lastChar)
-    val sweepLine = layout.getLineForOffset(first)
-    val from = layout.getBoundingBox(first).left
-    // A word broken over two rows is swept to the end of the first.
-    val to =
-        if (layout.getLineForOffset(last) == sweepLine) layout.getBoundingBox(last).right
-        else layout.getLineRight(sweepLine)
     val sung =
         when {
             index < 0 -> 0f
-            word.endMs <= word.startMs -> 1f
+            words[index].endMs <= words[index].startMs -> 1f
             else ->
-                ((positionMs - word.startMs).toFloat() / (word.endMs - word.startMs)).coerceIn(
-                    0f,
-                    1f,
-                )
+                ((positionMs - words[index].startMs).toFloat() /
+                        (words[index].endMs - words[index].startMs))
+                    .coerceIn(0f, 1f)
         }
-    val sweepX = lerp(from, to, sung)
+    val sweepX = if (index < 0) 0f else lerp(lefts[index], rights[index], sung)
+    val sweepRow = if (index < 0) -1 else rows[index]
 
     val unsung = waiting.copy(alpha = waiting.alpha * lerp(1f, WAITING_ALPHA, focus))
     val feather = SweepFeather.toPx()
+    val rise = WordRise.toPx() * focus
 
     for (row in 0 until layout.lineCount) {
         val rowTop = layout.getLineTop(row)
         val rowBottom = layout.getLineBottom(row)
-        when {
-            row < sweepLine ->
-                clipRect(top = rowTop, bottom = rowBottom) { drawText(layout, color = lit) }
-            row > sweepLine ->
-                clipRect(top = rowTop, bottom = rowBottom) { drawText(layout, color = unsung) }
-            else -> {
-                clipRect(top = rowTop, right = sweepX, bottom = rowBottom) {
-                    // The edge of the color is soft: it fades into the waiting one just before
-                    // where it has got to.
-                    drawText(
-                        layout,
-                        brush =
-                            Brush.horizontalGradient(
-                                0f to lit,
-                                1f to unsung,
-                                startX = sweepX - feather,
-                                endX = sweepX,
-                            ),
-                    )
+        var previous = -1
+        for (i in 0 until count) {
+            if (rows[i] != row) continue
+            var next = i + 1
+            while (next < count && rows[next] != row) next++
+            // Text that is in no word, before the first of a row or after the last, goes with it.
+            val partLeft = if (previous < 0) 0f else (rights[previous] + lefts[i]) / 2f
+            val partRight = if (next >= count) size.width else (rights[i] + lefts[next]) / 2f
+            translate(top = -rise * words[i].riseAt(positionMs)) {
+                clipRect(partLeft, rowTop, partRight, rowBottom) {
+                    when {
+                        i > index -> drawText(layout, color = unsung)
+                        i < index || sung >= 1f -> drawText(layout, color = lit)
+                        else -> {
+                            clipRect(right = sweepX) {
+                                // The edge of the color is soft: it fades into the waiting
+                                // one just before where it has got to.
+                                drawText(
+                                    layout,
+                                    brush =
+                                        Brush.horizontalGradient(
+                                            0f to lit,
+                                            1f to unsung,
+                                            startX = sweepX - feather,
+                                            endX = sweepX,
+                                        ),
+                                )
+                            }
+                            clipRect(left = sweepX) { drawText(layout, color = unsung) }
+                        }
+                    }
                 }
-                clipRect(left = sweepX, top = rowTop, bottom = rowBottom) {
-                    drawText(layout, color = unsung)
-                }
+            }
+            previous = i
+        }
+        // A row with no word of its own: the tail of one broken over two rows.
+        if (previous < 0) {
+            clipRect(top = rowTop, bottom = rowBottom) {
+                drawText(layout, color = if (row <= sweepRow) lit else unsung)
             }
         }
     }
 
     val blur = GlowBlur.toPx()
-    words.forEachIndexed { wordIndex, glowing ->
-        val strength = glowing.glowAt(positionMs) * focus
-        if (strength <= 0f) return@forEachIndexed
-        val start = glowing.start.coerceIn(0, lastChar)
+    for (i in 0 until count) {
+        val strength = words[i].glowAt(positionMs) * focus
+        if (strength <= 0f) continue
         val origin =
-            Offset(
-                layout.getBoundingBox(start).left,
-                layout.getLineTop(layout.getLineForOffset(start)),
-            )
+            Offset(lefts[i], layout.getLineTop(rows[i]) - rise * words[i].riseAt(positionMs))
         val shadow = Shadow(lit.copy(alpha = GLOW_ALPHA * strength), Offset.Zero, blur)
-        if (wordIndex == index && sung < 1f) {
+        if (i == index && sung < 1f) {
             // The word being sung glows as far as it has been sung, and a little ahead. Its
             // fill stops with the color underneath, or it would light the rest of the word.
             clipRect(-blur, -blur, sweepX + blur, size.height + blur) {
                 drawText(
-                    wordLayouts[wordIndex],
+                    wordLayouts[i],
                     brush =
                         Brush.horizontalGradient(
                             0f to lit,
@@ -458,23 +480,50 @@ private fun DrawScope.drawSweep(
                 )
             }
         } else {
-            drawText(wordLayouts[wordIndex], color = lit, topLeft = origin, shadow = shadow)
+            drawText(wordLayouts[i], color = lit, topLeft = origin, shadow = shadow)
         }
     }
 }
 
 /**
- * How much a word glows at [positionMs], from 0 to 1: it comes up quickly as the word starts, holds
- * while it is sung and fades once it is over, slowly at the end. A word too short to come up all
- * the way fades from where it got to.
+ * For how long a word is sung, as far as its glow and its rise go. The last word of a line with no
+ * end of its own lasts until the next line, which can be a whole instrumental break away, and
+ * nobody holds a note that long.
+ */
+private val TimedWord.heldMs: Float
+    get() = (endMs - startMs).toFloat().coerceIn(0f, LONGEST_NOTE_MS)
+
+/**
+ * How much a word glows at [positionMs], from 0 to 1. It comes up as the word starts, quickly for a
+ * short one and through the first half of a held note, so that a long note swells. It fades once
+ * the word is over, slowly at the end. A held note also glows more than a passing word: it is where
+ * the voice stays.
  */
 private fun TimedWord.glowAt(positionMs: Long): Float {
     if (positionMs < startMs) return 0f
-    val sungFor = (minOf(positionMs, endMs) - startMs).toFloat()
-    val reached = (sungFor / GLOW_RISE_MS).coerceIn(MIN_GLOW, 1f)
-    if (positionMs <= endMs) return reached
-    val left = 1f - (positionMs - endMs) / GLOW_FADE_MS
+    val held = heldMs
+    val weight =
+        lerp(
+            PASSING_WORD_GLOW,
+            1f,
+            ((held - PASSING_WORD_MS) / (HELD_NOTE_MS - PASSING_WORD_MS)).coerceIn(0f, 1f),
+        )
+    val sungFor = (positionMs - startMs).toFloat().coerceAtMost(held)
+    val reached = (sungFor / maxOf(GLOW_RISE_MS, held / 2f)).coerceIn(MIN_GLOW, 1f) * weight
+    val over = positionMs - startMs - held
+    if (over <= 0f) return reached
+    val left = 1f - over / GLOW_FADE_MS
     return if (left <= 0f) 0f else reached * left * left
+}
+
+/**
+ * How far up a word has risen at [positionMs], from 0 to 1: it goes up while it is sung, easing in
+ * and out, and stays there for as long as the line is the one being sung.
+ */
+private fun TimedWord.riseAt(positionMs: Long): Float {
+    if (positionMs <= startMs) return 0f
+    val through = ((positionMs - startMs) / maxOf(heldMs, SHORTEST_RISE_MS)).coerceIn(0f, 1f)
+    return through * through * (3f - 2f * through)
 }
 
 /** The line being sung at [positionMs]: the last one that has started, or -1 before the first. */
@@ -519,14 +568,32 @@ private const val REST_SCALE = 0.94f
 private const val WAITING_ALPHA = 0.4f
 
 /**
- * A word's glow. Subtle: it is there to show where the voice is, not to be looked at. It takes
- * [GLOW_RISE_MS] to come up and [GLOW_FADE_MS] to go, and even the shortest word shows [MIN_GLOW].
+ * A word's glow. Subtle: it is there to show where the voice is, not to be looked at. It takes at
+ * least [GLOW_RISE_MS] to come up and [GLOW_FADE_MS] to go, and even the shortest word shows
+ * [MIN_GLOW] of what it would reach.
  */
-private const val GLOW_ALPHA = 0.6f
+private const val GLOW_ALPHA = 0.7f
 private const val GLOW_RISE_MS = 160f
 private const val GLOW_FADE_MS = 900f
 private const val MIN_GLOW = 0.35f
+
+/**
+ * A word sung in passing glows [PASSING_WORD_GLOW] of what a held note does; in between, in
+ * proportion. Nothing counts as held for longer than [LONGEST_NOTE_MS].
+ */
+private const val PASSING_WORD_MS = 250f
+private const val HELD_NOTE_MS = 1_200f
+private const val PASSING_WORD_GLOW = 0.5f
+private const val LONGEST_NOTE_MS = 2_500f
+
+/** A word does not rise faster than this, however short: it would twitch. */
+private const val SHORTEST_RISE_MS = 220f
+
+/** How much of the pane, at its top and at its bottom, what scrolls fades out over. */
 private const val EDGE_FADE = 0.1f
 
 private val GlowBlur = 12.dp
+
+/** How far a word rises as it is sung. Barely: enough to be felt, not to be seen moving. */
+private val WordRise = 3.dp
 private val SweepFeather = 24.dp

@@ -199,9 +199,11 @@ reads them, and nothing is looked up online from the player. Looking them up is 
   effects spec) and the list scrolls it to a third of the way down, also with an effects spec so it
   never bounces. Scrolling by hand stops that until the user asks to go back or leaves the list
   alone for a while. Tapping a line plays from it.
-- Where words are timed, the line is drawn by hand from its `TextLayoutResult`, one visual row at
-  a time: in the primary color up to the word being sung and through it in step with it, with a
-  soft edge. Each word also glows while it is sung and fades shortly after, so the line shines only
-  where the voice is. The glow is the word drawn again over itself with a blurred shadow, from a
-  layout of its own: a shadow on the whole line would light every word at once, and one cut to a
-  word shows the cut. Left to right is assumed.
+- Where words are timed, the line is drawn by hand from its `TextLayoutResult`, a word at a time:
+  in the primary color up to the word being sung and through it in step with it, with a soft edge.
+  Each word rises a little as it is sung and stays up, and glows while it is sung and shortly
+  after, more on a note that is held: the line shines only where the voice is. Words move apart
+  from each other, so each row is split between its words and each part is the whole layout,
+  clipped and moved. The glow is the word drawn again with a blurred shadow, which falls behind its
+  letters, from a layout of its own: a shadow on the whole line would light every word at once,
+  and one cut to a word shows the cut. Left to right is assumed.
