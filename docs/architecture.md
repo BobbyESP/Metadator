@@ -195,11 +195,13 @@ reads them, and nothing is looked up online from the player. Looking them up is 
   The clock counts frames between reports and blends each report in rather than jumping to it. It
   is read only while drawing, and only by the line being sung, so nothing recomposes per frame;
   which line is being sung is a `derivedStateOf` that changes once per line.
-- `LyricsPane`: the line being sung comes forward (opacity and scale, an effects spec) and the
-  list scrolls it to a third of the way down, also with an effects spec so it never bounces.
-  Scrolling by hand stops that until the user asks to go back or leaves the list alone for a
-  while. Tapping a line plays from it.
+- `LyricsPane`: the line being sung comes forward (opacity, scale and the primary color, with an
+  effects spec) and the list scrolls it to a third of the way down, also with an effects spec so it
+  never bounces. Scrolling by hand stops that until the user asks to go back or leaves the list
+  alone for a while. Tapping a line plays from it.
 - Where words are timed, the line is drawn by hand from its `TextLayoutResult`, one visual row at
-  a time: lit up to the word being sung and through it in step with it, with a soft edge and a
-  halo where the light has got to. The halo is drawn behind the text rather than as a shadow on
-  it, which would have to be cut to its row. Left to right is assumed.
+  a time: in the primary color up to the word being sung and through it in step with it, with a
+  soft edge. Each word also glows while it is sung and fades shortly after, so the line shines only
+  where the voice is. The glow is the word drawn again over itself with a blurred shadow, from a
+  layout of its own: a shadow on the whole line would light every word at once, and one cut to a
+  word shows the cut. Left to right is assumed.

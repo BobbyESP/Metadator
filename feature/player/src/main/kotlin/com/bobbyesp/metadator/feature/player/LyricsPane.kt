@@ -53,19 +53,21 @@ import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.CompositingStrategy
+import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
+import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import com.bobbyesp.metadator.core.designsystem.component.PlaceholderCard
-import com.bobbyesp.metadator.core.designsystem.theme.LocalDarkTheme
 import com.bobbyesp.metadator.core.designsystem.theme.Spacing
 import com.bobbyesp.metadator.core.domain.lyrics.TrackLyrics
 import com.bobbyesp.metadator.lyrics.api.SongLyrics
@@ -265,8 +267,9 @@ private fun SyncedLyrics(
 }
 
 /**
- * One line. The one being sung comes forward, opaque and at full size, and the rest step back.
- * Where its words are timed, the light also moves across it with the song: see [drawSweep].
+ * One line. The one being sung comes forward, opaque, at full size and in the primary color, and
+ * the rest step back. Where its words are timed, the color also moves across it with the song and
+ * each word glows as it is sung: see [drawSweep].
  */
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -284,12 +287,21 @@ private fun LyricLine(
             label = "LyricFocus",
         )
     val text = MaterialTheme.colorScheme.onSurface
-    // A glow is light. On a dark theme the primary color is; on a light one it would read as a
-    // stain under the words, and the lightest surface is what shines there.
-    val glow =
-        if (LocalDarkTheme.current) MaterialTheme.colorScheme.primary
-        else MaterialTheme.colorScheme.surfaceContainerLowest
+    val primary = MaterialTheme.colorScheme.primary
     var layout by remember(line) { mutableStateOf<TextLayoutResult?>(null) }
+    // Each word measured on its own, to be drawn again over itself with its glow. Only when the
+    // line first needs them: most lines are never the one being sung while they are on screen.
+    val measurer = rememberTextMeasurer()
+    val wordLayouts =
+        remember(line, style, measurer) {
+            lazy(LazyThreadSafetyMode.NONE) {
+                line.words.map { word ->
+                    val from = word.start.coerceIn(0, line.text.length)
+                    val to = word.end.coerceIn(from, line.text.length)
+                    measurer.measure(line.text.substring(from, to), style, softWrap = false)
+                }
+            }
+        }
     Text(
         line.text,
         style = style,
@@ -312,36 +324,53 @@ private fun LyricLine(
                 .padding(horizontal = Spacing.medium, vertical = Spacing.small)
                 .drawWithContent {
                     val measured = layout
-                    // The clock is read only here and only by the line in focus: nothing else
-                    // is drawn again on every frame.
-                    if (measured == null || line.words.isEmpty() || focus <= 0f) {
-                        drawContent()
-                    } else {
-                        drawSweep(measured, line.words, clock.positionMs, focus, text, glow)
+                    // The color arrives with the focus, so it is drawn here rather than given
+                    // to the text, which would recompose on every frame of the change.
+                    val lit = lerp(text, primary, focus)
+                    when {
+                        measured == null || focus <= 0f -> drawContent()
+                        line.words.isEmpty() -> drawText(measured, color = lit)
+                        // The clock is read only here and only by the line in focus: nothing
+                        // else is drawn again on every frame.
+                        else ->
+                            drawSweep(
+                                layout = measured,
+                                words = line.words,
+                                wordLayouts = wordLayouts.value,
+                                positionMs = clock.positionMs,
+                                focus = focus,
+                                lit = lit,
+                                waiting = text,
+                            )
                     }
                 },
     )
 }
 
 /**
- * Draws a line as far as it has been sung: lit up to the word being sung, and through that word in
- * step with it, with a soft glow where the light has got to. The rest waits, dimmer.
+ * Draws a line as far as it has been sung: in the [lit] color up to the word being sung, and
+ * through that word in step with it, with a soft edge. The rest waits, dimmer, in the [waiting]
+ * color.
  *
- * The glow is a halo behind the text and not a shadow on it: a shadow would have to be cut to the
- * row it belongs to, and the cut shows.
+ * Each word also glows while it is sung and for a moment after, then the glow fades: a line is lit
+ * along its length, but shines only where the voice is. The glow is the word drawn again over
+ * itself with a blurred shadow, from a layout of its own. A shadow on the whole line would light
+ * every word at once, and one cut to a word would show the cut.
  *
  * The text is drawn one visual line at a time, each clipped to itself, since a line that wraps is
  * sung through its first row before its second. Left to right is assumed.
  *
+ * @param wordLayouts each of [words] measured alone, in the line's style
  * @param focus how far into focus the line is, which is how strong all of this is
  */
 private fun DrawScope.drawSweep(
     layout: TextLayoutResult,
     words: List<TimedWord>,
+    wordLayouts: List<TextLayoutResult>,
     positionMs: Long,
     focus: Float,
-    text: Color,
-    glow: Color,
+    lit: Color,
+    waiting: Color,
 ) {
     val lastChar = layout.layoutInput.text.length - 1
     if (lastChar < 0) return
@@ -367,52 +396,85 @@ private fun DrawScope.drawSweep(
         }
     val sweepX = lerp(from, to, sung)
 
-    val waiting = text.copy(alpha = text.alpha * lerp(1f, WAITING_ALPHA, focus))
+    val unsung = waiting.copy(alpha = waiting.alpha * lerp(1f, WAITING_ALPHA, focus))
     val feather = SweepFeather.toPx()
-
-    val top = layout.getLineTop(sweepLine)
-    val bottom = layout.getLineBottom(sweepLine)
-    val center = Offset(sweepX, (top + bottom) / 2f)
-    val radius = (bottom - top) * HALO_HEIGHTS
-    drawCircle(
-        Brush.radialGradient(
-            listOf(glow.copy(alpha = HALO_ALPHA * focus), Color.Transparent),
-            center,
-            radius,
-        ),
-        radius,
-        center,
-    )
 
     for (row in 0 until layout.lineCount) {
         val rowTop = layout.getLineTop(row)
         val rowBottom = layout.getLineBottom(row)
         when {
             row < sweepLine ->
-                clipRect(top = rowTop, bottom = rowBottom) { drawText(layout, color = text) }
+                clipRect(top = rowTop, bottom = rowBottom) { drawText(layout, color = lit) }
             row > sweepLine ->
-                clipRect(top = rowTop, bottom = rowBottom) { drawText(layout, color = waiting) }
+                clipRect(top = rowTop, bottom = rowBottom) { drawText(layout, color = unsung) }
             else -> {
                 clipRect(top = rowTop, right = sweepX, bottom = rowBottom) {
-                    // The edge of the light is soft: it fades into the waiting color just
-                    // before where it has got to.
+                    // The edge of the color is soft: it fades into the waiting one just before
+                    // where it has got to.
                     drawText(
                         layout,
                         brush =
                             Brush.horizontalGradient(
-                                0f to text,
-                                1f to waiting,
+                                0f to lit,
+                                1f to unsung,
                                 startX = sweepX - feather,
                                 endX = sweepX,
                             ),
                     )
                 }
                 clipRect(left = sweepX, top = rowTop, bottom = rowBottom) {
-                    drawText(layout, color = waiting)
+                    drawText(layout, color = unsung)
                 }
             }
         }
     }
+
+    val blur = GlowBlur.toPx()
+    words.forEachIndexed { wordIndex, glowing ->
+        val strength = glowing.glowAt(positionMs) * focus
+        if (strength <= 0f) return@forEachIndexed
+        val start = glowing.start.coerceIn(0, lastChar)
+        val origin =
+            Offset(
+                layout.getBoundingBox(start).left,
+                layout.getLineTop(layout.getLineForOffset(start)),
+            )
+        val shadow = Shadow(lit.copy(alpha = GLOW_ALPHA * strength), Offset.Zero, blur)
+        if (wordIndex == index && sung < 1f) {
+            // The word being sung glows as far as it has been sung, and a little ahead. Its
+            // fill stops with the color underneath, or it would light the rest of the word.
+            clipRect(-blur, -blur, sweepX + blur, size.height + blur) {
+                drawText(
+                    wordLayouts[wordIndex],
+                    brush =
+                        Brush.horizontalGradient(
+                            0f to lit,
+                            1f to lit.copy(alpha = 0f),
+                            startX = sweepX - feather - origin.x,
+                            endX = sweepX - origin.x,
+                        ),
+                    topLeft = origin,
+                    shadow = shadow,
+                )
+            }
+        } else {
+            drawText(wordLayouts[wordIndex], color = lit, topLeft = origin, shadow = shadow)
+        }
+    }
+}
+
+/**
+ * How much a word glows at [positionMs], from 0 to 1: it comes up quickly as the word starts, holds
+ * while it is sung and fades once it is over, slowly at the end. A word too short to come up all
+ * the way fades from where it got to.
+ */
+private fun TimedWord.glowAt(positionMs: Long): Float {
+    if (positionMs < startMs) return 0f
+    val sungFor = (minOf(positionMs, endMs) - startMs).toFloat()
+    val reached = (sungFor / GLOW_RISE_MS).coerceIn(MIN_GLOW, 1f)
+    if (positionMs <= endMs) return reached
+    val left = 1f - (positionMs - endMs) / GLOW_FADE_MS
+    return if (left <= 0f) 0f else reached * left * left
 }
 
 /** The line being sung at [positionMs]: the last one that has started, or -1 before the first. */
@@ -456,9 +518,15 @@ private const val REST_SCALE = 0.94f
 /** The part of the line in focus that has not been sung yet. */
 private const val WAITING_ALPHA = 0.4f
 
-/** The glow: how strong at its center, and how wide in heights of a row of text. */
-private const val HALO_ALPHA = 0.45f
-private const val HALO_HEIGHTS = 1.1f
+/**
+ * A word's glow. Subtle: it is there to show where the voice is, not to be looked at. It takes
+ * [GLOW_RISE_MS] to come up and [GLOW_FADE_MS] to go, and even the shortest word shows [MIN_GLOW].
+ */
+private const val GLOW_ALPHA = 0.6f
+private const val GLOW_RISE_MS = 160f
+private const val GLOW_FADE_MS = 900f
+private const val MIN_GLOW = 0.35f
 private const val EDGE_FADE = 0.1f
 
+private val GlowBlur = 12.dp
 private val SweepFeather = 24.dp
