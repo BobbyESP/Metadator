@@ -53,6 +53,17 @@ APKs as the `metadator-release` artifact.
 | `SIGNING_KEY_PASSWORD` | The key's password |
 | `GOOGLE_SERVICES_JSON_BASE64` | Optional. `app/google-services.json`, base64-encoded |
 
+`scripts/set-release-secrets.ps1` sets them all from the keystore and its password, with the GitHub
+CLI. It checks the password with `keytool` first and reads the alias from the keystore:
+
+```powershell
+./scripts/set-release-secrets.ps1 C:\keys\metadator_keystore.jks 'the password'
+```
+
+`-GoogleServicesJson app\google-services.json` adds the optional secret, `-KeyPassword` is for a
+key whose password is not the keystore's, and `-PrintOnly` prints the values instead of setting
+them.
+
 The workflow stops before building when a signing secret is missing, and fails when an APK comes
 out unsigned: without a keystore Gradle builds unsigned APKs and reports success. Without
 `GOOGLE_SERVICES_JSON_BASE64` it warns and builds the playstore APK without Crashlytics, as a fork
