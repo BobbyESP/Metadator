@@ -14,7 +14,12 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
 
             extensions.configure<LibraryExtension> {
                 namespace = defaultNamespace
-                compileSdk = ProjectConfig.compileSdk
+                compileSdk {
+                    version =
+                        release(ProjectConfig.compileSdk) {
+                            minorApiLevel = ProjectConfig.compileSdkMinor
+                        }
+                }
 
                 defaultConfig {
                     minSdk = ProjectConfig.minSdk

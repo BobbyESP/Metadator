@@ -40,6 +40,8 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
             configurations
                 .flatMap { it.dependencies.withType(ProjectDependency::class.java) }
                 .map { it.path }
+                // AGP makes a module's test configurations depend on the module itself.
+                .filter { it != this.path }
                 .filter { path ->
                     path.startsWith(":feature:") ||
                         path == ":app" ||

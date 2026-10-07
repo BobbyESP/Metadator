@@ -9,7 +9,8 @@ ksp { arg("room.schemaLocation", "$projectDir/schemas") }
 dependencies {
     implementation(project(":tags:api"))
     implementation(project(":core:common"))
-    implementation(libs.room.runtime)
+    // MetadatorDatabase is a RoomDatabase, so whoever builds it sees the type.
+    api(libs.room.runtime)
     implementation(libs.room.ktx)
     ksp(libs.room.compiler)
     implementation(libs.kotlinx.serialization.json)

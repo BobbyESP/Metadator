@@ -12,7 +12,12 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
             pluginManager.apply(libs.pluginId("android-application"))
 
             extensions.configure<ApplicationExtension> {
-                compileSdk = ProjectConfig.compileSdk
+                compileSdk {
+                    version =
+                        release(ProjectConfig.compileSdk) {
+                            minorApiLevel = ProjectConfig.compileSdkMinor
+                        }
+                }
                 defaultConfig {
                     minSdk = ProjectConfig.minSdk
                     targetSdk = ProjectConfig.targetSdk

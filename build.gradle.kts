@@ -7,7 +7,7 @@ plugins {
     alias(libs.plugins.kotlin.serialization) apply false
     id(libs.plugins.kotlin.parcelize.get().pluginId) apply false
     alias(libs.plugins.kotlin.ksp) apply false
-    alias(libs.plugins.compose.compiler) apply false
+    id(libs.plugins.compose.compiler.get().pluginId) apply false
     alias(libs.plugins.google.gms) apply false
     alias(libs.plugins.firebase.crashlytics) apply false
     alias(libs.plugins.spotless) apply false

@@ -13,6 +13,9 @@ object ProjectConfig {
 
     const val compileSdk = 37
 
+    /** The Compose alphas are built against the 37.1 minor release. */
+    const val compileSdkMinor = 1
+
     const val targetSdk = 37
 
     val javaVersion = JavaVersion.VERSION_17
