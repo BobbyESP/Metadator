@@ -15,17 +15,17 @@ This file is the map and the rules. How each part works, and why, is in [`docs/`
 | `:app` | Composition root: `App`, `MainActivity`, `ExternalEditorActivity`, the navigation shell, DI wiring, flavors. | The only module that names implementations. |
 | `:core:model` | `Track`, `ContentRef`, `UserSettings`… | Plain Kotlin. |
 | `:core:common` | Dispatchers, `StringProvider`, text helpers. | Plain Kotlin. |
-| `:core:domain` | Use cases: load, save, undo, lookup, batch, library queries. | Plain Kotlin. Tested on the JVM with fakes. |
+| `:core:domain` | Use cases: load, save, undo, lookup, lyrics, batch, library queries. | Plain Kotlin. Tested on the JVM with fakes. |
 | `:core:data` | DataStore settings, Android strings. | |
 | `:core:database` | Room: tag backups for undo. | |
 | `:core:network` | Ktor client, cover downloads. | Plain Kotlin. |
-| `:core:designsystem` | Theme, tokens, shared components over Material 3 Expressive. | No feature knowledge. |
-| `:core:ui` | `BaseViewModel`, messages, artwork, track rows, field labels. | |
+| `:core:designsystem` | Theme, tokens, blur, shared components over Material 3 Expressive. | No feature knowledge. |
+| `:core:ui` | `BaseViewModel`, messages, artwork and its accent color, track rows, field labels. | |
 | `:core:navigation` | Keys, `Navigator`, scenes, motion. | Every `NavKey` lives here. |
 | `:tags:api` / `:tags:taglib` | Reading and writing tags. | TagLib is an `implementation` dependency: no TagLib type leaves `:tags:taglib`. |
 | `:library:api` / `:library:mediastore` | The device's songs, file access, write permission, rescans. | |
 | `:lookup:api` / `:lookup:musicbrainz` / `:lookup:deezer` | Online metadata. | Plain Kotlin. No API keys. |
-| `:lyrics:api` / `:lyrics:lrclib` | Lyrics and the LRC format. | Plain Kotlin. |
+| `:lyrics:api` / `:lyrics:lrclib` | Lyrics: finding them, and reading LRC and TTML. | Plain Kotlin. |
 | `:player:api` / `:player:media3` | The music player. | |
 | `:feature:*` | `library`, `editor`, `batch`, `player`, `settings`. | Depend on `:core:*` and `*:api` only, never on an implementation or another feature. The `metadator.android.feature` convention fails the build otherwise. |
 
@@ -65,7 +65,7 @@ Versions are in `gradle/libs.versions.toml`; the app's version in the root `buil
 - MVI on `BaseViewModel<Intent, State, Effect>`: one immutable `state`; `effects` for whoever is
   on screen now (dropped if nobody listens); `messages` for snackbars (buffered until shown).
 - A ViewModel never holds a `Context`. Text comes from `StringProvider`; Android work goes through
-  a port (`ImageSource`, `WriteAccess`).
+  a port (`ImageSource`, `ArtworkAccentSource`, `WriteAccess`).
 - What must survive process death goes in the `SavedStateHandle` (the editor's unsaved text
   changes, the library's tab and search).
 
@@ -76,6 +76,7 @@ Versions are in `gradle/libs.versions.toml`; the app's version in the root `buil
 - Features get a `Navigator`; they never touch the stack.
 - On wide windows, list-detail puts the editor beside the library. A destination is told whether it
   shares the window (`LocalPaneContext`); it never measures the window itself.
+- The player is not a destination: the shell measures the window and passes it a `PlayerLayout`.
 - Transitions live in `core/navigation/.../motion/NavigationMotion.kt`.
 
 ### Theme
@@ -86,6 +87,9 @@ Versions are in `gradle/libs.versions.toml`; the app's version in the root `buil
 - Use Material components through the design system; don't restyle them per screen. Spacing comes
   from `Spacing`, grouped-list shapes from `GroupShapes`. Menus are `ActionMenu`/`PopupMenu`,
   exclusive options are `ConnectedChoices`.
+- Blur comes from `MetadatorBlurDefaults`: `Modifier.frosted` (Haze) for a surface floating over
+  content, `Modifier.outOfFocus` for what something opens over. A `hazeSource` is a sibling of what
+  it frosts, never an ancestor, and nothing is frosted while a shared element transition runs.
 - No deprecated API: the build has no deprecation warnings, keep it so. Animate with the theme's
   `motionScheme`, not hand-written tweens. The player sheet is the exception, and says why.
 - Regular expressions run on Android's engine (ICU), stricter than the JVM's the tests use: escape

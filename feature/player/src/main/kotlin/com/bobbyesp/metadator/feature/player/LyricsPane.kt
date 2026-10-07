@@ -53,7 +53,6 @@ import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.CompositingStrategy
-import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.clipRect
@@ -66,6 +65,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import com.bobbyesp.metadator.core.designsystem.component.PlaceholderCard
+import com.bobbyesp.metadator.core.designsystem.theme.LocalDarkTheme
 import com.bobbyesp.metadator.core.designsystem.theme.Spacing
 import com.bobbyesp.metadator.core.domain.lyrics.TrackLyrics
 import com.bobbyesp.metadator.lyrics.api.SongLyrics
@@ -284,7 +284,11 @@ private fun LyricLine(
             label = "LyricFocus",
         )
     val text = MaterialTheme.colorScheme.onSurface
-    val glow = MaterialTheme.colorScheme.primary
+    // A glow is light. On a dark theme the primary color is; on a light one it would read as a
+    // stain under the words, and the lightest surface is what shines there.
+    val glow =
+        if (LocalDarkTheme.current) MaterialTheme.colorScheme.primary
+        else MaterialTheme.colorScheme.surfaceContainerLowest
     var layout by remember(line) { mutableStateOf<TextLayoutResult?>(null) }
     Text(
         line.text,
@@ -322,6 +326,9 @@ private fun LyricLine(
 /**
  * Draws a line as far as it has been sung: lit up to the word being sung, and through that word in
  * step with it, with a soft glow where the light has got to. The rest waits, dimmer.
+ *
+ * The glow is a halo behind the text and not a shadow on it: a shadow would have to be cut to the
+ * row it belongs to, and the cut shows.
  *
  * The text is drawn one visual line at a time, each clipped to itself, since a line that wraps is
  * sung through its first row before its second. Left to right is assumed.
@@ -361,8 +368,6 @@ private fun DrawScope.drawSweep(
     val sweepX = lerp(from, to, sung)
 
     val waiting = text.copy(alpha = text.alpha * lerp(1f, WAITING_ALPHA, focus))
-    val bleed = GlowBlur.toPx()
-    val shadow = Shadow(glow.copy(alpha = GLOW_ALPHA * focus), Offset.Zero, bleed)
     val feather = SweepFeather.toPx()
 
     val top = layout.getLineTop(sweepLine)
@@ -384,15 +389,11 @@ private fun DrawScope.drawSweep(
         val rowBottom = layout.getLineBottom(row)
         when {
             row < sweepLine ->
-                clipRect(-bleed, rowTop, size.width + bleed, rowBottom) {
-                    drawText(layout, color = text, shadow = shadow)
-                }
+                clipRect(top = rowTop, bottom = rowBottom) { drawText(layout, color = text) }
             row > sweepLine ->
-                clipRect(-bleed, rowTop, size.width + bleed, rowBottom) {
-                    drawText(layout, color = waiting)
-                }
+                clipRect(top = rowTop, bottom = rowBottom) { drawText(layout, color = waiting) }
             else -> {
-                clipRect(-bleed, rowTop, sweepX, rowBottom) {
+                clipRect(top = rowTop, right = sweepX, bottom = rowBottom) {
                     // The edge of the light is soft: it fades into the waiting color just
                     // before where it has got to.
                     drawText(
@@ -404,10 +405,9 @@ private fun DrawScope.drawSweep(
                                 startX = sweepX - feather,
                                 endX = sweepX,
                             ),
-                        shadow = shadow,
                     )
                 }
-                clipRect(sweepX, rowTop, size.width + bleed, rowBottom) {
+                clipRect(left = sweepX, top = rowTop, bottom = rowBottom) {
                     drawText(layout, color = waiting)
                 }
             }
@@ -456,10 +456,9 @@ private const val REST_SCALE = 0.94f
 /** The part of the line in focus that has not been sung yet. */
 private const val WAITING_ALPHA = 0.4f
 
-private const val GLOW_ALPHA = 0.55f
-private const val HALO_ALPHA = 0.22f
-private const val HALO_HEIGHTS = 0.9f
+/** The glow: how strong at its center, and how wide in heights of a row of text. */
+private const val HALO_ALPHA = 0.45f
+private const val HALO_HEIGHTS = 1.1f
 private const val EDGE_FADE = 0.1f
 
-private val GlowBlur = 14.dp
 private val SweepFeather = 24.dp
