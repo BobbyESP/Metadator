@@ -8,7 +8,7 @@ data class LrcLine(val timeMs: Long, val text: String)
 
 /** Reads and writes the LRC format: `[mm:ss.xx] text`, metadata tags ignored. */
 object Lrc {
-    private val TIMESTAMP = Regex("""\[(\d{1,3}):(\d{2})(?:[.:](\d{1,3}))?]""")
+    private val TIMESTAMP = Regex("""\[(\d{1,3}):(\d{2})(?:[.:](\d{1,3}))?\]""")
 
     /** Whether [text] has at least one timed line, i.e. is synced. */
     fun isSynced(text: String): Boolean = text.lineSequence().any { TIMESTAMP.containsMatchIn(it) }

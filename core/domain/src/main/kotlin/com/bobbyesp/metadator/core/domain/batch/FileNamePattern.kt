@@ -87,7 +87,9 @@ class FileNamePattern(val pattern: String) {
     }
 
     companion object {
-        private val PLACEHOLDER = Regex("""\{([^{}]+)}""")
+        // Both braces escaped: Android's regex engine (ICU) rejects a bare closing one, which
+        // the JVM the tests run on accepts.
+        private val PLACEHOLDER = Regex("""\{([^{}]+)\}""")
         private val ILLEGAL_FILE_NAME_CHARS = Regex("""[\\/:*?"<>|]""")
 
         val Suggestions =
