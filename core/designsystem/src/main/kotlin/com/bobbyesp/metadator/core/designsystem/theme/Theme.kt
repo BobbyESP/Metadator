@@ -139,7 +139,11 @@ private val LocalThemeColors = staticCompositionLocalOf<ThemeColors?> { null }
 
 private fun ColorSchemeSource.build(context: Context): ColorScheme =
     if (useWallpaperColors && isDynamicColorSupported()) {
-        if (isDark) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+        when {
+            !isDark -> dynamicLightColorScheme(context)
+            pureBlack -> dynamicDarkColorScheme(context).pureBlack()
+            else -> dynamicDarkColorScheme(context)
+        }
     } else {
         dynamicColorScheme(
             seedColor = Color(seedColor),
@@ -149,6 +153,20 @@ private fun ColorSchemeSource.build(context: Context): ColorScheme =
             style = paletteStyle.toKolor(),
         )
     }
+
+/**
+ * The system's dark scheme on black. The platform has no pure black of its own, so it is made here,
+ * of the same roles MaterialKolor turns black for a seeded scheme: the two choices of color must
+ * not differ in what "pure black" means. The containers keep their tones, or nothing would stand
+ * out from the screen.
+ */
+private fun ColorScheme.pureBlack(): ColorScheme =
+    copy(
+        background = Color.Black,
+        onBackground = Color.White,
+        surface = Color.Black,
+        onSurface = Color.White,
+    )
 
 private fun PaletteStyle.toKolor(): KolorPaletteStyle =
     when (this) {
