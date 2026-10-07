@@ -5,6 +5,7 @@ package com.bobbyesp.metadator.feature.player
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -517,13 +518,14 @@ private fun TimedWord.glowAt(positionMs: Long): Float {
 }
 
 /**
- * How far up a word has risen at [positionMs], from 0 to 1: it goes up while it is sung, easing in
- * and out, and stays there for as long as the line is the one being sung.
+ * How far up a word has risen at [positionMs]: 0 before it is sung and 1 once it is up, where it
+ * stays for as long as the line is the one being sung. On the way it goes a little past 1 and comes
+ * back ([RiseEasing]), which is what makes it a hop rather than a slide.
  */
 private fun TimedWord.riseAt(positionMs: Long): Float {
     if (positionMs <= startMs) return 0f
-    val through = ((positionMs - startMs) / maxOf(heldMs, SHORTEST_RISE_MS)).coerceIn(0f, 1f)
-    return through * through * (3f - 2f * through)
+    val riseMs = heldMs.coerceIn(SHORTEST_RISE_MS, LONGEST_RISE_MS)
+    return RiseEasing.transform(((positionMs - startMs) / riseMs).coerceIn(0f, 1f))
 }
 
 /** The line being sung at [positionMs]: the last one that has started, or -1 before the first. */
@@ -586,8 +588,19 @@ private const val HELD_NOTE_MS = 1_200f
 private const val PASSING_WORD_GLOW = 0.5f
 private const val LONGEST_NOTE_MS = 2_500f
 
-/** A word does not rise faster than this, however short: it would twitch. */
-private const val SHORTEST_RISE_MS = 220f
+/**
+ * A word takes as long to rise as it takes to sing, within these: any faster it would twitch, and
+ * any slower a held note would drift up instead of hopping.
+ */
+private const val SHORTEST_RISE_MS = 260f
+private const val LONGEST_RISE_MS = 420f
+
+/**
+ * Quick off the mark, a little too far, then back: a "back out" curve. An easing and not one of the
+ * motion scheme's springs, because this is not an animation that runs: where a word is depends only
+ * on where the song is, so that seeking, pausing and playing draw the same frame.
+ */
+private val RiseEasing = CubicBezierEasing(0.34f, 1.56f, 0.64f, 1f)
 
 /** How much of the pane, at its top and at its bottom, what scrolls fades out over. */
 private const val EDGE_FADE = 0.1f
