@@ -9,6 +9,7 @@ import android.os.Build
 import android.os.ParcelFileDescriptor
 import android.provider.MediaStore
 import android.provider.OpenableColumns
+import androidx.core.net.toUri
 import com.bobbyesp.metadator.core.common.AppDispatchers
 import com.bobbyesp.metadator.core.model.ContentRef
 import com.bobbyesp.metadator.library.api.AccessMode
@@ -20,7 +21,6 @@ import com.bobbyesp.metadator.library.api.OpenedAudioFile
 import java.io.FileNotFoundException
 import java.util.concurrent.ConcurrentHashMap
 import kotlinx.coroutines.withContext
-import androidx.core.net.toUri
 
 /**
  * The prompts Android 10 hands out when a write is refused, kept until [MediaStoreWriteAccess]

@@ -5,11 +5,10 @@ package com.bobbyesp.metadator.feature.editor
 
 import android.content.Context
 import android.graphics.BitmapFactory
-import android.net.Uri
+import androidx.core.net.toUri
 import androidx.palette.graphics.Palette
 import com.bobbyesp.metadator.core.common.AppDispatchers
 import kotlinx.coroutines.withContext
-import androidx.core.net.toUri
 
 /** Facts about a picture, for the editor to show and warn about. */
 data class ImageInfo(val width: Int, val height: Int, val sizeBytes: Int, val dominantColor: Int?) {

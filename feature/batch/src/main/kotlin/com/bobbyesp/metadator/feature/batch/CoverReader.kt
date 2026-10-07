@@ -4,10 +4,9 @@
 package com.bobbyesp.metadator.feature.batch
 
 import android.content.Context
-import android.net.Uri
+import androidx.core.net.toUri
 import com.bobbyesp.metadator.core.common.AppDispatchers
 import kotlinx.coroutines.withContext
-import androidx.core.net.toUri
 
 /** Reads a picked image into bytes and a MIME type. */
 interface CoverReader {
