@@ -23,9 +23,12 @@ import com.bobbyesp.metadator.core.domain.save.SaveTagChangesUseCase
 import com.bobbyesp.metadator.core.domain.settings.SettingsRepository
 import com.bobbyesp.metadator.core.network.HttpClientFactory
 import com.bobbyesp.metadator.core.network.KtorArtworkDownloader
+import com.bobbyesp.metadator.core.ui.artwork.AndroidArtworkAccentSource
+import com.bobbyesp.metadator.core.ui.artwork.ArtworkAccentSource
 import com.bobbyesp.metadator.feature.batch.batchModule
 import com.bobbyesp.metadator.feature.editor.editorModule
 import com.bobbyesp.metadator.feature.library.libraryModule
+import com.bobbyesp.metadator.feature.player.playerModule
 import com.bobbyesp.metadator.feature.settings.settingsModule
 import com.bobbyesp.metadator.library.api.AudioFileInfo
 import com.bobbyesp.metadator.library.api.AudioFileOpener
@@ -79,6 +82,7 @@ private val appModule = module {
         )
     }
     single<StringProvider> { AndroidStringProvider(androidContext()) }
+    single<ArtworkAccentSource> { AndroidArtworkAccentSource(androidContext(), get()) }
     single<SettingsRepository> {
         DataStoreSettingsRepository(createSettingsDataStore(androidContext()))
     }
@@ -134,5 +138,6 @@ val appModules =
         libraryModule,
         editorModule,
         batchModule,
+        playerModule,
         settingsModule,
     )

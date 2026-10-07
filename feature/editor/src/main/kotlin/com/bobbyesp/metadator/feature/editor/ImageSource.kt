@@ -6,8 +6,8 @@ package com.bobbyesp.metadator.feature.editor
 import android.content.Context
 import android.graphics.BitmapFactory
 import androidx.core.net.toUri
-import androidx.palette.graphics.Palette
 import com.bobbyesp.metadator.core.common.AppDispatchers
+import com.bobbyesp.metadator.core.ui.artwork.ArtworkAccentSource
 import kotlinx.coroutines.withContext
 
 /** Facts about a picture, for the editor to show and warn about. */
@@ -33,6 +33,7 @@ interface ImageSource {
 class AndroidImageSource(
     private val context: Context,
     private val dispatchers: AppDispatchers,
+    private val accents: ArtworkAccentSource,
 ) : ImageSource {
 
     override suspend fun read(uri: String): PickedImage? =
@@ -50,32 +51,17 @@ class AndroidImageSource(
                 .getOrNull()
         }
 
-    override suspend fun inspect(bytes: ByteArray): ImageInfo? =
-        withContext(dispatchers.default) {
-            runCatching {
-                val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
-                BitmapFactory.decodeByteArray(bytes, 0, bytes.size, bounds)
-                if (bounds.outWidth <= 0) return@runCatching null
-                // A small copy is plenty to find a color.
-                val sample =
-                    BitmapFactory.decodeByteArray(
-                        bytes,
-                        0,
-                        bytes.size,
-                        BitmapFactory.Options().apply {
-                            inSampleSize =
-                                (maxOf(bounds.outWidth, bounds.outHeight) / 128).coerceAtLeast(1)
-                        },
-                    )
-                val color = sample?.let { bitmap ->
-                    val palette = Palette.from(bitmap).generate()
-                    bitmap.recycle()
-                    (palette.vibrantSwatch ?: palette.dominantSwatch)?.rgb
+    override suspend fun inspect(bytes: ByteArray): ImageInfo? {
+        val bounds =
+            withContext(dispatchers.default) {
+                BitmapFactory.Options().apply {
+                    inJustDecodeBounds = true
+                    BitmapFactory.decodeByteArray(bytes, 0, bytes.size, this)
                 }
-                ImageInfo(bounds.outWidth, bounds.outHeight, bytes.size, color)
             }
-                .getOrNull()
-        }
+        if (bounds.outWidth <= 0) return null
+        return ImageInfo(bounds.outWidth, bounds.outHeight, bytes.size, accents.fromBytes(bytes))
+    }
 
     private fun sniff(bytes: ByteArray): String? =
         when {

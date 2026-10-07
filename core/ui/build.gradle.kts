@@ -10,6 +10,8 @@ dependencies {
     implementation(project(":core:common"))
     api(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.palette)
     api(libs.bundles.lifecycle)
     implementation(libs.kotlinx.coroutines.android)
 }
