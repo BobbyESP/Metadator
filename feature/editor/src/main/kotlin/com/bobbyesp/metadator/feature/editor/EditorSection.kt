@@ -77,7 +77,7 @@ fun EditorDestination(uri: String, onClose: () -> Unit) {
                 }
             },
             onClose = onClose,
-            showClose = LocalPaneContext.current.isSolePane,
+            showClose = !LocalPaneContext.current.isSolePane,
         )
 
         if (showLookup) {

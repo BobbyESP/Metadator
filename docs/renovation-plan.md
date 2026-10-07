@@ -13,6 +13,18 @@ everything else around three goals:
 
 All code, documentation, commits and UI copy are in English. Spanish stays as a translation.
 
+> **Decisions taken (October 2026).** The questions in [section 13](#13-decisions-to-confirm-before-starting)
+> were settled as follows, and 2.0 is built on the `v2` branch:
+> - **Player:** kept, as a simple one (queue, background playback, media notification, mini player
+>   and a full screen), instead of an inline preview only.
+> - **Spotify:** removed. MusicBrainz with the Cover Art Archive and Deezer are the sources; neither
+>   needs a key.
+> - **minSdk:** 26.
+> - **No 1.0.1 hotfix:** 1.x has been unmaintained for over a year, so the fixes ship in 2.0.
+> - **TagLib:** Kyant0's binding moved from JitPack to Maven Central (`io.github.kyant0:taglib`).
+>
+> The current state of each area is in [README.md](README.md#status-of-20).
+
 ---
 
 ## Contents
