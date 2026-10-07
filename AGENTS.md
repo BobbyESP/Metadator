@@ -105,6 +105,9 @@ Versions are in `gradle/libs.versions.toml`; the app's version in the root `buil
 
 - Spotless formats Kotlin with ktfmt 0.64 (kotlinlang style) and adds the license header from
   `spotless/copyright.txt`. Run it before every commit.
+- CI (`.github/workflows/ci.yml`) runs `spotlessCheck`, `test`, `lint` and the debug build of both
+  flavors on every pull request and on every push to `master` and `v2`. `release.yml` is started by
+  hand and builds the signed release APKs. See [docs/ci.md](docs/ci.md).
 - The `playstore` flavor adds Firebase Crashlytics and Play in-app review. Firebase is only applied
   when `app/google-services.json` exists, so forks and the FOSS flavor build without it.
 
