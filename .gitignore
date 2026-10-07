@@ -19,3 +19,6 @@ metadator_keystore.jks
 /.idea/other.xml
 /buildSrc/.gradle
 /buildSrc/build
+
+build/
+.kotlin/
