@@ -30,8 +30,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
@@ -84,6 +84,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -251,7 +252,9 @@ private fun SearchTopBar(
     Box(
         modifier =
             Modifier.fillMaxWidth()
-                .statusBarsPadding()
+                // An app bar's insets, since this is one: the status bar above, and at the sides
+                // the camera's cutout when the phone is held sideways.
+                .windowInsetsPadding(TopAppBarDefaults.windowInsets)
                 .padding(horizontal = Spacing.screen, vertical = Spacing.small)
     ) {
         TextField(

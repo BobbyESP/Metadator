@@ -80,6 +80,7 @@ import com.bobbyesp.metadator.core.designsystem.component.PlaceholderCard
 import com.bobbyesp.metadator.core.designsystem.component.SectionHeader
 import com.bobbyesp.metadator.core.designsystem.component.TonalFieldDefaults
 import com.bobbyesp.metadator.core.designsystem.component.TonalTextField
+import com.bobbyesp.metadator.core.designsystem.component.sidesOf
 import com.bobbyesp.metadator.core.designsystem.theme.Spacing
 import com.bobbyesp.metadator.core.designsystem.theme.blurHalo
 import com.bobbyesp.metadator.core.domain.editor.Position
@@ -190,7 +191,10 @@ internal fun EditorScreen(
                 )
             else ->
                 Box(
-                    Modifier.fillMaxSize().padding(top = padding.calculateTopPadding()).imePadding()
+                    Modifier.fillMaxSize()
+                        .padding(top = padding.calculateTopPadding())
+                        .sidesOf(padding)
+                        .imePadding()
                 ) {
                     val cover =
                         @Composable { m: Modifier ->

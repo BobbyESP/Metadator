@@ -83,6 +83,7 @@ import com.bobbyesp.metadator.core.designsystem.component.SwitchItem
 import com.bobbyesp.metadator.core.designsystem.component.ToggleChip
 import com.bobbyesp.metadator.core.designsystem.component.TonalTextField
 import com.bobbyesp.metadator.core.designsystem.component.readableWidth
+import com.bobbyesp.metadator.core.designsystem.component.sidesOf
 import com.bobbyesp.metadator.core.designsystem.theme.GroupShapes
 import com.bobbyesp.metadator.core.designsystem.theme.Spacing
 import com.bobbyesp.metadator.core.designsystem.theme.isDynamicColorSupported
@@ -331,7 +332,7 @@ private fun SettingsPage(title: String, onBack: () -> Unit, content: LazyListSco
         },
     ) { padding ->
         LazyColumn(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize().sidesOf(padding),
             contentPadding =
                 PaddingValues(
                     top = padding.calculateTopPadding(),

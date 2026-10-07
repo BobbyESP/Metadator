@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import com.bobbyesp.metadator.core.designsystem.component.ActionButtonGroup
 import com.bobbyesp.metadator.core.designsystem.component.GroupAction
 import com.bobbyesp.metadator.core.designsystem.component.LoadingScreen
+import com.bobbyesp.metadator.core.designsystem.component.sidesOf
 import com.bobbyesp.metadator.core.designsystem.theme.GroupShapes
 import com.bobbyesp.metadator.core.designsystem.theme.Spacing
 import com.bobbyesp.metadator.core.model.Track
@@ -99,7 +100,7 @@ internal fun CollectionScreen(
         }
         val tracks = collection.tracks
         LazyColumn(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize().sidesOf(padding),
             contentPadding =
                 PaddingValues(
                     top = padding.calculateTopPadding(),
