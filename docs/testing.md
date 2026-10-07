@@ -10,7 +10,7 @@
 | JVM unit | MusicBrainz, Deezer and LRCLIB parsing and error mapping, with Ktor's `MockEngine` | `lookup/*`, `lyrics/lrclib` |
 | JVM unit | Ranking, LRC parsing, text normalization | `lookup/api`, `lyrics/api`, `core/common` |
 
-Run them all with `./gradlew test`.
+Run them all with `./gradlew test`. CI runs them on every pull request (see [ci.md](ci.md)).
 
 ## Conventions
 
