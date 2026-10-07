@@ -26,9 +26,6 @@ data class Collection(val type: CollectionType, val key: String, val title: Stri
 /** Editing several files at once. */
 @Serializable data class BatchEditor(val uris: List<String>) : NavKey
 
-/** The full player. */
-@Serializable data object NowPlaying : NavKey
-
 @Serializable data object Settings : NavKey
 
 @Serializable data object AppearanceSettings : NavKey

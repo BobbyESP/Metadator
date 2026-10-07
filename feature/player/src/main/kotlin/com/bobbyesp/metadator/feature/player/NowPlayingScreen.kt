@@ -12,6 +12,7 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -60,56 +61,48 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation3.runtime.EntryProviderScope
-import androidx.navigation3.runtime.NavKey
 import com.bobbyesp.metadator.core.common.formatDuration
 import com.bobbyesp.metadator.core.designsystem.component.PlaceholderCard
 import com.bobbyesp.metadator.core.designsystem.theme.GroupShapes
 import com.bobbyesp.metadator.core.designsystem.theme.Spacing
 import com.bobbyesp.metadator.core.model.Track
-import com.bobbyesp.metadator.core.navigation.Editor
-import com.bobbyesp.metadator.core.navigation.Navigator
-import com.bobbyesp.metadator.core.navigation.NowPlaying
-import com.bobbyesp.metadator.core.navigation.motion.RisingMotion
 import com.bobbyesp.metadator.core.ui.component.ArtworkImage
 import com.bobbyesp.metadator.player.api.PlaybackState
 import com.bobbyesp.metadator.player.api.PlayerController
 import com.bobbyesp.metadator.player.api.RepeatMode
 import kotlin.math.abs
 import kotlinx.coroutines.delay
-import org.koin.compose.koinInject
 
-fun EntryProviderScope<NavKey>.playerSection(navigator: Navigator) {
-    entry<NowPlaying>(metadata = RisingMotion.metadata()) {
-        val player: PlayerController = koinInject()
-        val playback by player.state.collectAsStateWithLifecycle()
-        NowPlayingScreen(
-            playback = playback,
-            player = player,
-            onClose = navigator::goBack,
-            onEdit = { uri -> navigator.goTo(Editor(uri)) },
-        )
-    }
-}
-
+/**
+ * The player, full screen. It is the expanded content of [PlayerSheet], which owns how it gets on
+ * and off the screen; the modifiers are how the sheet ties the pieces it shares with the bar.
+ */
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-private fun NowPlayingScreen(
+internal fun NowPlayingContent(
     playback: PlaybackState,
     player: PlayerController,
     onClose: () -> Unit,
     onEdit: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    topBarModifier: Modifier = Modifier,
+    artworkShape: Shape = MaterialTheme.shapes.extraLarge,
+    artworkModifier: Modifier = Modifier,
+    titleModifier: Modifier = Modifier,
+    playButtonModifier: Modifier = Modifier,
 ) {
     val track = playback.current
     Scaffold(
+        modifier = modifier,
         topBar = {
             TopAppBar(
+                modifier = topBarModifier,
                 title = { Text(stringResource(R.string.now_playing)) },
                 navigationIcon = {
                     IconButton(onClick = onClose, shapes = IconButtonDefaults.shapes()) {
@@ -117,7 +110,7 @@ private fun NowPlayingScreen(
                     }
                 },
             )
-        }
+        },
     ) { padding ->
         if (track == null) {
             Column(
@@ -150,10 +143,10 @@ private fun NowPlayingScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(Spacing.large),
                 ) {
-                    Cover(track, playback.isPlaying)
-                    TrackTitle(track)
+                    Cover(track, playback.isPlaying, artworkShape, artworkModifier)
+                    TrackTitle(track, titleModifier)
                     SeekBar(playback, onSeek = player::seekTo)
-                    TransportControls(playback, player)
+                    TransportControls(playback, player, playButtonModifier)
                     SecondaryControls(playback, player, onEdit = { onEdit(track.ref.uri) })
                 }
             }
@@ -204,7 +197,7 @@ private const val MAX_UP_NEXT = 30
 
 /** The cover steps back while the music is paused and comes forward again when it plays. */
 @Composable
-private fun Cover(track: Track, isPlaying: Boolean) {
+private fun Cover(track: Track, isPlaying: Boolean, shape: Shape, modifier: Modifier) {
     val scale by
         animateFloatAsState(
             targetValue = if (isPlaying) 1f else 0.86f,
@@ -215,46 +208,52 @@ private fun Cover(track: Track, isPlaying: Boolean) {
         model = track.artworkRef?.uri,
         contentDescription = null,
         modifier =
-            Modifier.fillMaxWidth().aspectRatio(1f).graphicsLayer {
+            Modifier.fillMaxWidth().aspectRatio(1f).then(modifier).graphicsLayer {
                 scaleX = scale
                 scaleY = scale
             },
-        shape = MaterialTheme.shapes.extraLarge,
+        shape = shape,
+        cacheKey = track.artworkCacheKey,
     )
 }
 
 @Composable
-private fun TrackTitle(track: Track) {
+private fun TrackTitle(track: Track, modifier: Modifier) {
     val motion = MaterialTheme.motionScheme
-    AnimatedContent(
-        targetState = track,
-        transitionSpec = {
-            (slideInVertically(motion.defaultSpatialSpec()) { it / 2 } +
-                fadeIn(motion.defaultEffectsSpec())) togetherWith
-                (slideOutVertically(motion.fastSpatialSpec()) { -it / 2 } +
-                    fadeOut(motion.fastEffectsSpec()))
-        },
-        contentKey = { it.id },
-        label = "TrackTitle",
-    ) { shown ->
-        Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(
-                shown.title,
-                style = MaterialTheme.typography.headlineSmallEmphasized,
-                textAlign = TextAlign.Center,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
-            )
-            Text(
-                listOfNotNull(shown.artist, shown.album).joinToString(" · ").ifEmpty {
-                    stringResource(R.string.unknown_artist)
-                },
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = TextAlign.Center,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
+    // Centered by this box rather than by the text's alignment: the bounds the name travels to
+    // are then the text's own, and the same text at another size scales into them exactly.
+    Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+        AnimatedContent(
+            targetState = track,
+            transitionSpec = {
+                (slideInVertically(motion.defaultSpatialSpec()) { it / 2 } +
+                    fadeIn(motion.defaultEffectsSpec())) togetherWith
+                    (slideOutVertically(motion.fastSpatialSpec()) { -it / 2 } +
+                        fadeOut(motion.fastEffectsSpec()))
+            },
+            contentKey = { it.id },
+            modifier = modifier,
+            label = "TrackTitle",
+        ) { shown ->
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    shown.title,
+                    style = MaterialTheme.typography.headlineSmallEmphasized,
+                    textAlign = TextAlign.Center,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                )
+                Text(
+                    listOfNotNull(shown.artist, shown.album).joinToString(" · ").ifEmpty {
+                        stringResource(R.string.unknown_artist)
+                    },
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
         }
     }
 }
@@ -325,7 +324,11 @@ private const val SEEK_TIMEOUT_MS = 1_500L
  */
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-private fun TransportControls(playback: PlaybackState, player: PlayerController) {
+private fun TransportControls(
+    playback: PlaybackState,
+    player: PlayerController,
+    playButtonModifier: Modifier,
+) {
     ButtonGroup(
         overflowIndicator = {},
         modifier = Modifier.fillMaxWidth(),
@@ -359,7 +362,10 @@ private fun TransportControls(playback: PlaybackState, player: PlayerController)
                     iconSize = 40.dp,
                     interactionSource = interactions,
                     modifier =
-                        Modifier.weight(1.5f).height(TransportHeight).animateWidth(interactions),
+                        Modifier.weight(1.5f)
+                            .height(TransportHeight)
+                            .animateWidth(interactions)
+                            .then(playButtonModifier),
                 )
             },
             menuContent = {},

@@ -28,6 +28,10 @@ import coil3.request.crossfade
 /**
  * A cover: an embedded picture's bytes, a `content://` URI or a URL. While there is none, or it
  * fails, a note on a tonal surface takes its place, the same size, so lists never jump.
+ *
+ * @param cacheKey a key shared by the places that show this same picture at different sizes. One
+ *   that appears while another is on screen (a shared element) then starts from the picture already
+ *   loaded instead of from nothing.
  */
 @Composable
 fun ArtworkImage(
@@ -36,6 +40,7 @@ fun ArtworkImage(
     modifier: Modifier = Modifier,
     shape: Shape = MaterialTheme.shapes.medium,
     placeholderIconFraction: Float = 0.45f,
+    cacheKey: String? = null,
 ) {
     var failed by remember(model) { mutableStateOf(false) }
     Box(
@@ -54,7 +59,12 @@ fun ArtworkImage(
         if (model != null && !failed) {
             AsyncImage(
                 model =
-                    ImageRequest.Builder(LocalContext.current).data(model).crossfade(true).build(),
+                    ImageRequest.Builder(LocalContext.current)
+                        .data(model)
+                        .crossfade(true)
+                        .memoryCacheKey(cacheKey)
+                        .placeholderMemoryCacheKey(cacheKey)
+                        .build(),
                 contentDescription = contentDescription,
                 contentScale = ContentScale.Crop,
                 onError = { failed = true },

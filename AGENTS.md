@@ -87,7 +87,7 @@ Versions are in `gradle/libs.versions.toml`; the app's version in the root `buil
   from `Spacing`, grouped-list shapes from `GroupShapes`. Menus are `ActionMenu`/`PopupMenu`,
   exclusive options are `ConnectedChoices`.
 - No deprecated API: the build has no deprecation warnings, keep it so. Animate with the theme's
-  `motionScheme`, not hand-written tweens.
+  `motionScheme`, not hand-written tweens. The player sheet is the exception, and says why.
 - Regular expressions run on Android's engine (ICU), stricter than the JVM's the tests use: escape
   every literal `}` and `]`.
 

@@ -184,7 +184,7 @@ internal fun LibraryScreen(
                     Modifier.align(Alignment.BottomCenter)
                         .navigationBarsPadding()
                         // Above the mini player when one is showing.
-                        .padding(bottom = if (state.playerActive) 88.dp else Spacing.large),
+                        .padding(bottom = if (state.playerActive) 104.dp else Spacing.large),
             ) {
                 SelectionToolbar(
                     onEdit = { onEditTracks(state.selectedTracks) },
