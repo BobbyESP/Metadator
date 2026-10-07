@@ -171,9 +171,16 @@ screen while its corners straighten. Pulling the full player down, or back, clos
 - The cover is a `sharedElement`: the same picture in both, so only the arriving one is drawn.
   Both ask Coil for it under one cache key (`ArtworkImage`'s `cacheKey`), so the one arriving
   starts from the picture already loaded.
-- The song's name and the play button are `sharedBounds` in the default scale mode: they differ
-  between the two, and one hands over to the other halfway. The name's bounds are the text's own
-  (centered by its parent, not by `TextAlign`), so it scales without wrapping again.
+- The song's name and the play button are `sharedBounds`, and there is never a moment with neither
+  version of them on screen. The name is scaled (its bounds are the text's own, centered by its
+  parent and not by `TextAlign`, so it scales without wrapping again) and one version dissolves
+  into the other, both fading at once. The button is laid out again in the changing bounds
+  (`RemeasureToBounds`), which makes the bar's round button and the screen's wide one the same
+  shape at every step: the one arriving fades in over the one leaving, which only goes once it is
+  covered, so it reads as one button growing.
+- Both travel on an arc (`ArcAnimationSpec`), not a straight line: sideways first and up late on
+  the way to the screen. That way round because the container's top edge rises at a steady pace
+  and clips what gets ahead of it.
 - Shapes are not animated by shared elements. The container's corner and the cover's are values
   of the same transition (`animateDp`), given to the shape and to the container's overlay clip,
   which shared elements inside inherit.

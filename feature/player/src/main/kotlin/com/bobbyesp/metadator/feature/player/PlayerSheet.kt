@@ -11,8 +11,11 @@ import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.animation.core.ArcAnimationSpec
+import androidx.compose.animation.core.ArcMode
 import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.Easing
+import androidx.compose.animation.core.ExperimentalAnimationSpecApi
 import androidx.compose.animation.core.FiniteAnimationSpec
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateDp
@@ -50,6 +53,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -89,7 +93,7 @@ object PlayerSheetDefaults {
  *   that are changing, and the shared elements in it start by jumping.
  * - The cover is a `sharedElement`: the same picture in both, so only one of them is drawn.
  * - The song's name and the play button are `sharedBounds`: they differ between the two, and one
- *   fades into the other while scaling.
+ *   turns into the other on the way, along an arc, with never a moment when neither is there.
  *
  * The transition is seekable, which is what lets a drag hold it halfway; [PlayerSheetState] is what
  * moves it.
@@ -265,25 +269,33 @@ fun PlayerSheet(
                         boundsTransform = { _, _ -> traveller() },
                         zIndexInOverlay = ABOVE_CONTAINER,
                     )
-                // Different in each: shared bounds, scaled rather than laid out again (text would
-                // wrap differently at every width), one handing over to the other halfway.
+                // The name differs in each (its size, what follows it): shared bounds, scaled
+                // rather
+                // than laid out again, since text would wrap differently at every width. One
+                // dissolves into the other on the way, so there is always a name to read.
                 val title =
                     Modifier.sharedBounds(
                         sharedContentState = rememberSharedContentState(SharedKey.Title),
                         animatedVisibilityScope = scope,
-                        enter = handOverIn(),
-                        exit = handOverOut(),
-                        boundsTransform = { _, _ -> traveller() },
+                        enter = dissolveIn(),
+                        exit = dissolveOut(),
+                        boundsTransform = { _, _ -> arcTraveller() },
                         zIndexInOverlay = ABOVE_CONTAINER,
                     )
+                // The button is the same thing at two sizes, so it is one button that grows: both
+                // are laid out again in the bounds as they change, which makes them the same shape
+                // at every step, and the one arriving covers the one leaving before that one
+                // goes. Scaled instead, a round button and a wide one never matched, and one had to
+                // be gone before the other showed.
                 val playButton =
                     Modifier.sharedBounds(
                         sharedContentState = rememberSharedContentState(SharedKey.PlayButton),
                         animatedVisibilityScope = scope,
-                        enter = handOverIn(),
-                        exit = handOverOut(),
-                        boundsTransform = { _, _ -> traveller() },
-                        zIndexInOverlay = ABOVE_CONTAINER,
+                        enter = coverIn(),
+                        exit = coveredOut(),
+                        boundsTransform = { _, _ -> arcTraveller() },
+                        resizeMode = SharedTransitionScope.ResizeMode.RemeasureToBounds,
+                        zIndexInOverlay = if (arriving) ABOVE_LEAVING else ABOVE_CONTAINER,
                     )
 
                 when (value) {
@@ -441,11 +453,44 @@ private fun <T> timeline(): FiniteAnimationSpec<T> = tween(TIMELINE_MS, easing =
 /** The pace of what the container carries: slow to leave, slow to arrive. */
 private fun <T> traveller(): FiniteAnimationSpec<T> = tween(TIMELINE_MS, easing = Carried)
 
-/** Two different things in the same bounds: one leaves in the first half, the other comes after. */
-private fun handOverOut(): ExitTransition = fadeOut(tween(TIMELINE_MS / 2, easing = LinearEasing))
+/**
+ * The pace of what the container carries, on a curve instead of a straight line: sideways first and
+ * up late on the way to the screen, down first and sideways late on the way back, which is the same
+ * path walked the other way.
+ *
+ * That way round and not the other because of the container: its top edge rises at a steady pace,
+ * and what rose ahead of it would be cut by it. An arc that keeps low stays behind the edge.
+ */
+@OptIn(ExperimentalAnimationSpecApi::class)
+private fun arcTraveller(): FiniteAnimationSpec<Rect> =
+    ArcAnimationSpec(mode = ArcMode.ArcBelow, durationMillis = TIMELINE_MS, easing = Carried)
 
-private fun handOverIn(): EnterTransition =
-    fadeIn(tween(TIMELINE_MS / 2, delayMillis = TIMELINE_MS / 2, easing = LinearEasing))
+/**
+ * Two versions of the same text in the same bounds: one dissolves into the other around the middle
+ * of the way, both fading at once so that together they are always a whole name.
+ */
+private fun dissolveIn(): EnterTransition =
+    fadeIn(tween(DISSOLVE_MS, delayMillis = DISSOLVE_START_MS, easing = LinearEasing))
+
+private fun dissolveOut(): ExitTransition =
+    fadeOut(tween(DISSOLVE_MS, delayMillis = DISSOLVE_START_MS, easing = LinearEasing))
+
+/**
+ * The same solid thing at two sizes, one drawn over the other: the one arriving fades in on top
+ * while the one leaving stays whole beneath it, and only goes once it is covered. Nothing shows
+ * through it at any point.
+ */
+private fun coverIn(): EnterTransition =
+    fadeIn(tween(DISSOLVE_MS, delayMillis = DISSOLVE_START_MS, easing = LinearEasing))
+
+private fun coveredOut(): ExitTransition =
+    fadeOut(
+        tween(
+            durationMillis = TIMELINE_MS / 10,
+            delayMillis = DISSOLVE_START_MS + DISSOLVE_MS,
+            easing = LinearEasing,
+        )
+    )
 
 /**
  * How the sheet finishes once released. Looser than the motion scheme's springs, which are tuned
@@ -465,6 +510,11 @@ private val RoundEarly = CubicBezierEasing(0f, 0f, 0.3f, 1f)
 
 private const val TIMELINE_MS = 400
 private const val ABOVE_CONTAINER = 2f
+private const val ABOVE_LEAVING = 3f
+
+/** When one version of a shared thing gives way to the other: the middle third of the way. */
+private const val DISSOLVE_START_MS = TIMELINE_MS * 3 / 10
+private const val DISSOLVE_MS = TIMELINE_MS * 3 / 10
 
 /** How much the full screen grows per unit of overshoot, and how far down the bar dips. */
 private const val EXPANDED_SWELL = 0.35f
