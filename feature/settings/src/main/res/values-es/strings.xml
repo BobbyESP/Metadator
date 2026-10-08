@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings">Ajustes</string>
+    <string name="back">Atrás</string>
+    <string name="appearance">Apariencia</string>
+    <string name="appearance_description">Tema, colores y contraste</string>
+    <string name="editor">Editor</string>
+    <string name="editor_description">Cómo se escriben las etiquetas</string>
+    <string name="lookup">Fuentes en internet</string>
+    <string name="lookup_description">De dónde salen los metadatos y las portadas</string>
+    <string name="about">Acerca de</string>
+    <string name="about_description">Versión, código fuente y licencias</string>
+
+    <string name="theme">Tema</string>
+    <string name="theme_system">Sistema</string>
+    <string name="theme_light">Claro</string>
+    <string name="theme_dark">Oscuro</string>
+    <string name="colors">Colores</string>
+    <string name="dynamic_color">Colores del fondo de pantalla</string>
+    <string name="dynamic_color_description">Material You, desde Android 12</string>
+    <string name="pure_black">Negro puro</string>
+    <string name="pure_black_description">Tema oscuro más oscuro, mejor para pantallas OLED</string>
+    <string name="color_from_cover">Colorear el editor con la portada</string>
+    <string name="color_from_cover_description">El editor de cada canción toma los tonos de su portada</string>
+    <string name="seed_color">Color de acento</string>
+    <string name="palette_style">Estilo de paleta</string>
+    <string name="palette_tonal_spot">Tono base</string>
+    <string name="palette_neutral">Neutro</string>
+    <string name="palette_vibrant">Vibrante</string>
+    <string name="palette_expressive">Expresivo</string>
+    <string name="palette_rainbow">Arcoíris</string>
+    <string name="palette_fruit_salad">Macedonia</string>
+    <string name="palette_monochrome">Monocromo</string>
+    <string name="palette_fidelity">Fidelidad</string>
+    <string name="palette_content">Contenido</string>
+
+    <string name="multi_values">Varios artistas o géneros</string>
+    <string name="multi_separate">Mantenerlos como valores separados</string>
+    <string name="multi_separate_description">Lo que esperan los formatos. La mayoría de reproductores los muestran todos.</string>
+    <string name="multi_joined">Unirlos en un solo valor</string>
+    <string name="multi_joined_description">Para reproductores que solo muestran el primer artista</string>
+    <string name="separator">Separador</string>
+    <string name="separator_description">Se usa para unir valores y para separar lo que pegues</string>
+    <string name="warn_small_cover">Avisar de portadas pequeñas</string>
+    <string name="warn_small_cover_description">Por debajo de 500 × 500 px</string>
+    <string name="history">Historial para deshacer</string>
+    <string name="clear_history">Borrar el historial para deshacer</string>
+    <string name="clear_history_description">Metadator guarda las etiquetas de tus últimos 100 guardados para poder deshacerlos</string>
+    <string name="history_cleared">Historial borrado</string>
+
+    <string name="lookup_sources">Fuentes</string>
+    <string name="lookup_sources_description">Se consultan a la vez. Solo se envían el título, el artista y el álbum de la canción.</string>
+    <string name="provider_musicbrainz_description">La enciclopedia musical abierta, con portadas del Cover Art Archive</string>
+    <string name="provider_deezer_description">Gran catálogo de lanzamientos comerciales, portadas de hasta 1000 px</string>
+    <string name="provider_other_description">Metadatos en internet</string>
+
+    <string name="version">Versión %1$s</string>
+    <string name="source_code">Código fuente</string>
+    <string name="source_code_description">Metadator es software libre, con licencia GPL 3.0</string>
+    <string name="report_issue">Informar de un problema</string>
+    <string name="report_issue_description">Abre una incidencia en GitHub</string>
+    <string name="rate">Valorar Metadator</string>
+    <string name="rate_description">En Google Play</string>
+    <string name="credits">Hecho con</string>
+    <string name="credits_description">TagLib, Jetpack Compose, Media3, Koin, Ktor, Coil, MaterialKolor, MusicBrainz, Deezer y LRCLIB</string>
+    <string name="made_by">Hecho por BobbyESP</string>
+</resources>

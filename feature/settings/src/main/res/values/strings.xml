@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings">Settings</string>
+    <string name="back">Back</string>
+    <string name="appearance">Appearance</string>
+    <string name="appearance_description">Theme, colors and contrast</string>
+    <string name="editor">Editor</string>
+    <string name="editor_description">How tags are written</string>
+    <string name="lookup">Online sources</string>
+    <string name="lookup_description">Where metadata and covers come from</string>
+    <string name="about">About</string>
+    <string name="about_description">Version, source code and licenses</string>
+
+    <string name="theme">Theme</string>
+    <string name="theme_system">System</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
+    <string name="colors">Colors</string>
+    <string name="dynamic_color">Colors from the wallpaper</string>
+    <string name="dynamic_color_description">Material You, from Android 12</string>
+    <string name="pure_black">Pure black</string>
+    <string name="pure_black_description">Darker dark theme, easier on OLED screens</string>
+    <string name="color_from_cover">Color the editor from the cover</string>
+    <string name="color_from_cover_description">Each song\'s editor takes the tones of its artwork</string>
+    <string name="seed_color">Accent color</string>
+    <string name="palette_style">Palette style</string>
+    <string name="palette_tonal_spot">Tonal spot</string>
+    <string name="palette_neutral">Neutral</string>
+    <string name="palette_vibrant">Vibrant</string>
+    <string name="palette_expressive">Expressive</string>
+    <string name="palette_rainbow">Rainbow</string>
+    <string name="palette_fruit_salad">Fruit salad</string>
+    <string name="palette_monochrome">Monochrome</string>
+    <string name="palette_fidelity">Fidelity</string>
+    <string name="palette_content">Content</string>
+
+    <string name="multi_values">Several artists or genres</string>
+    <string name="multi_separate">Keep them as separate values</string>
+    <string name="multi_separate_description">What the formats expect. Most players show all of them.</string>
+    <string name="multi_joined">Join them into one value</string>
+    <string name="multi_joined_description">For players that only show the first artist</string>
+    <string name="separator">Separator</string>
+    <string name="separator_description">Used to join values and to split what you paste</string>
+    <string name="warn_small_cover">Warn about small covers</string>
+    <string name="warn_small_cover_description">Below 500 × 500 px</string>
+    <string name="history">Undo history</string>
+    <string name="clear_history">Clear undo history</string>
+    <string name="clear_history_description">Metadator keeps the tags of your last 100 saves so they can be undone</string>
+    <string name="history_cleared">Undo history cleared</string>
+
+    <string name="lookup_sources">Sources</string>
+    <string name="lookup_sources_description">Searched together. Nothing is sent but the song\'s title, artist and album.</string>
+    <string name="provider_musicbrainz_description">The open music encyclopedia, with covers from the Cover Art Archive</string>
+    <string name="provider_deezer_description">Large catalogue of commercial releases, covers up to 1000 px</string>
+    <string name="provider_other_description">Online metadata</string>
+
+    <string name="version">Version %1$s</string>
+    <string name="source_code">Source code</string>
+    <string name="source_code_description">Metadator is free software, licensed under the GPL 3.0</string>
+    <string name="report_issue">Report a problem</string>
+    <string name="report_issue_description">Open an issue on GitHub</string>
+    <string name="rate">Rate Metadator</string>
+    <string name="rate_description">On Google Play</string>
+    <string name="credits">Built with</string>
+    <string name="credits_description">TagLib, Jetpack Compose, Media3, Koin, Ktor, Coil, MaterialKolor, MusicBrainz, Deezer and LRCLIB</string>
+    <string name="made_by">Made by BobbyESP</string>
+</resources>

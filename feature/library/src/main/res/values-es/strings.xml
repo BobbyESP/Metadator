@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="search_library">Busca canciones, artistas, álbumes</string>
+    <string name="clear_search">Borrar búsqueda</string>
+    <string name="settings">Ajustes</string>
+    <string name="more_options">Más opciones</string>
+    <string name="open_file">Abrir un archivo</string>
+    <string name="rescan_library">Volver a escanear la música</string>
+    <string name="tab_songs">Canciones</string>
+    <string name="tab_albums">Álbumes</string>
+    <string name="tab_artists">Artistas</string>
+    <string name="tab_folders">Carpetas</string>
+    <string name="needs_attention_filter">Necesitan atención (%1$d)</string>
+    <string name="sort">Ordenar</string>
+    <string name="sort_title">Título</string>
+    <string name="sort_artist">Artista</string>
+    <string name="sort_album">Álbum</string>
+    <string name="sort_date_added">Fecha de añadido</string>
+    <string name="sort_date_modified">Fecha de modificación</string>
+    <string name="sort_duration">Duración</string>
+    <string name="sort_ascending">Ascendente</string>
+    <string name="sort_descending">Descendente</string>
+    <string name="shuffle_all">Aleatorio</string>
+    <string name="play_all">Reproducir todo</string>
+    <string name="edit_together">Editar juntas</string>
+    <string name="play_selection">Reproducir</string>
+    <string name="select_all">Seleccionar todo</string>
+    <string name="close_selection">Dejar de seleccionar</string>
+    <plurals name="selected_count">
+        <item quantity="one">%1$d seleccionada</item>
+        <item quantity="other">%1$d seleccionadas</item>
+    </plurals>
+    <plurals name="song_count">
+        <item quantity="one">%1$d canción</item>
+        <item quantity="other">%1$d canciones</item>
+    </plurals>
+    <string name="permission_title">Tu música, lista para editar</string>
+    <string name="permission_description">Metadator necesita ver tu música para mostrarla. Nada sale de tu dispositivo y ningún archivo cambia hasta que lo guardes.</string>
+    <string name="permission_grant">Permitir acceso</string>
+    <string name="permission_denied_description">El acceso a tu música está desactivado. Puedes activarlo en los ajustes de la app, o abrir un archivo suelto sin él.</string>
+    <string name="permission_open_settings">Abrir ajustes</string>
+    <string name="empty_library_title">Aún no hay canciones</string>
+    <string name="empty_library_description">Metadator muestra las canciones que Android ha encontrado en tu dispositivo. Copia música a la carpeta Música, o vuelve a escanear si acabas de hacerlo.</string>
+    <string name="no_results_title">No hay coincidencias</string>
+    <string name="no_results_description">Prueba con menos palabras, o quita los filtros.</string>
+    <string name="clear_filters">Quitar filtros</string>
+    <string name="library_load_failed">No se pudo leer la biblioteca</string>
+    <string name="collection_play">Reproducir</string>
+    <string name="collection_shuffle">Aleatorio</string>
+    <string name="collection_edit_all">Editar todas</string>
+    <string name="back">Atrás</string>
+    <string name="no_song_open_title">Elige una canción</string>
+    <string name="no_song_open_description">Sus etiquetas se abren aquí, junto a tu biblioteca.</string>
+</resources>

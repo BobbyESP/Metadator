@@ -4,6 +4,17 @@
   <component name="GradleSettings">
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
+        <compositeConfiguration>
+          <compositeBuild compositeDefinitionSource="SCRIPT">
+            <builds>
+              <build path="$PROJECT_DIR$/buildSrc" name="buildSrc">
+                <projects>
+                  <project path="$PROJECT_DIR$/buildSrc" />
+                </projects>
+              </build>
+            </builds>
+          </compositeBuild>
+        </compositeConfiguration>
         <option name="testRunner" value="CHOOSE_PER_TEST" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="gradleJvm" value="#GRADLE_LOCAL_JAVA_HOME" />
@@ -11,13 +22,41 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
-            <option value="$PROJECT_DIR$/app/mediaplayer" />
-            <option value="$PROJECT_DIR$/app/ui" />
-            <option value="$PROJECT_DIR$/app/utilities" />
-            <option value="$PROJECT_DIR$/crashhandler" />
+            <option value="$PROJECT_DIR$/buildSrc" />
+            <option value="$PROJECT_DIR$/core" />
+            <option value="$PROJECT_DIR$/core/common" />
+            <option value="$PROJECT_DIR$/core/data" />
+            <option value="$PROJECT_DIR$/core/database" />
+            <option value="$PROJECT_DIR$/core/designsystem" />
+            <option value="$PROJECT_DIR$/core/domain" />
+            <option value="$PROJECT_DIR$/core/model" />
+            <option value="$PROJECT_DIR$/core/navigation" />
+            <option value="$PROJECT_DIR$/core/network" />
+            <option value="$PROJECT_DIR$/core/ui" />
+            <option value="$PROJECT_DIR$/feature" />
+            <option value="$PROJECT_DIR$/feature/batch" />
+            <option value="$PROJECT_DIR$/feature/editor" />
+            <option value="$PROJECT_DIR$/feature/library" />
+            <option value="$PROJECT_DIR$/feature/player" />
+            <option value="$PROJECT_DIR$/feature/settings" />
+            <option value="$PROJECT_DIR$/library" />
+            <option value="$PROJECT_DIR$/library/api" />
+            <option value="$PROJECT_DIR$/library/mediastore" />
+            <option value="$PROJECT_DIR$/lookup" />
+            <option value="$PROJECT_DIR$/lookup/api" />
+            <option value="$PROJECT_DIR$/lookup/deezer" />
+            <option value="$PROJECT_DIR$/lookup/musicbrainz" />
+            <option value="$PROJECT_DIR$/lyrics" />
+            <option value="$PROJECT_DIR$/lyrics/api" />
+            <option value="$PROJECT_DIR$/lyrics/lrclib" />
+            <option value="$PROJECT_DIR$/player" />
+            <option value="$PROJECT_DIR$/player/api" />
+            <option value="$PROJECT_DIR$/player/media3" />
+            <option value="$PROJECT_DIR$/tags" />
+            <option value="$PROJECT_DIR$/tags/api" />
+            <option value="$PROJECT_DIR$/tags/taglib" />
           </set>
         </option>
-        <option name="resolveExternalAnnotations" value="false" />
       </GradleProjectSettings>
     </option>
   </component>

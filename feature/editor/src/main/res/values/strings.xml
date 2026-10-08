@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="edit_tags">Edit tags</string>
+    <string name="close">Close</string>
+    <string name="save">Save</string>
+    <string name="saving">Saving…</string>
+    <string name="saved">Saved</string>
+    <string name="saved_some_unsupported">Saved. This format can\'t store: %1$s</string>
+    <string name="undo">Undo</string>
+    <string name="undone">Changes undone</string>
+    <string name="undo_unavailable">The original tags are no longer available</string>
+    <string name="undo_failed">Couldn\'t undo the changes</string>
+    <string name="save_failed">Couldn\'t save: %1$s</string>
+    <string name="save_failed_restored">Couldn\'t save, the file was left as it was (%1$s)</string>
+    <string name="write_access_denied">Metadator wasn\'t allowed to change this file</string>
+    <string name="format_unsupported">This file\'s format can\'t be edited</string>
+    <string name="more_options">More options</string>
+    <string name="revert_all">Undo all changes</string>
+    <string name="revert_field">Undo change to %1$s</string>
+    <string name="changed">Changed</string>
+    <string name="play_song">Play</string>
+    <string name="pause_song">Pause</string>
+    <string name="play_unavailable">Only songs in your library can be played</string>
+
+    <string name="needs_attention_title">Needs attention</string>
+    <string name="section_main">Song</string>
+    <string name="section_track">Track</string>
+    <string name="section_credits">Credits</string>
+    <string name="section_more">More</string>
+    <string name="section_lyrics">Lyrics</string>
+    <string name="section_all_tags">All tags</string>
+    <string name="section_file">File</string>
+    <string name="all_tags_description">Every other tag in the file. Kept as it is unless you change it here.</string>
+
+    <string name="add_value">Add another</string>
+    <string name="add_value_hint">Type and press enter</string>
+    <string name="remove_value">Remove %1$s</string>
+
+    <string name="cover">Cover</string>
+    <string name="cover_change">Change cover</string>
+    <string name="cover_remove">Remove cover</string>
+    <string name="cover_revert">Keep the original cover</string>
+    <string name="cover_find_online">Find a cover online</string>
+    <string name="cover_size">%1$d × %2$d px</string>
+    <string name="cover_small_warning">Small cover: it may look blurry on a large screen</string>
+    <string name="cover_unreadable">Couldn\'t read that image</string>
+    <string name="cover_none">No cover</string>
+
+    <string name="lyrics_find">Find lyrics</string>
+    <string name="lyrics_synced">Synced</string>
+    <string name="lyrics_found_synced">Synced lyrics added</string>
+    <string name="lyrics_found_plain">Lyrics added</string>
+    <string name="lyrics_not_found">No lyrics found for this song</string>
+    <string name="lyrics_instrumental">This song is instrumental</string>
+    <string name="lyrics_failed">Couldn\'t look for lyrics</string>
+    <string name="lyrics_need_title_artist">Add a title and an artist first</string>
+    <string name="offline">You\'re offline</string>
+
+    <string name="add_field">Add a tag</string>
+    <string name="add_field_name">Name</string>
+    <string name="add_field_name_hint">For example MOOD</string>
+    <string name="add_field_value">Value</string>
+    <string name="add">Add</string>
+    <string name="cancel">Cancel</string>
+
+    <string name="file_size">Size</string>
+    <string name="file_duration">Duration</string>
+    <string name="file_bitrate">Bitrate</string>
+    <string name="file_bitrate_value">%1$d kbps</string>
+    <string name="file_sample_rate">Sample rate</string>
+    <string name="file_sample_rate_value">%1$s kHz</string>
+    <string name="file_channels">Channels</string>
+    <string name="file_channels_mono">Mono</string>
+    <string name="file_channels_stereo">Stereo</string>
+    <string name="file_location">Location</string>
+
+    <string name="unsaved_title">Discard changes?</string>
+    <string name="unsaved_description">The changes to this song haven\'t been saved.</string>
+    <string name="unsaved_discard">Discard</string>
+    <string name="unsaved_keep">Keep editing</string>
+
+    <string name="file_gone_title">This file is gone</string>
+    <string name="file_gone_description">It was moved or deleted after the library listed it.</string>
+    <string name="access_denied_title">Can\'t open this file</string>
+    <string name="access_denied_description">The app that shared it didn\'t allow Metadator to read it. Try opening it from the library or from a file manager.</string>
+    <string name="unsupported_title">Format not supported</string>
+    <string name="unsupported_description">Metadator can\'t read tags from this kind of file.</string>
+    <string name="failed_title">Couldn\'t open this file</string>
+    <string name="retry">Try again</string>
+    <string name="go_back">Go back</string>
+
+    <string name="lookup_title">Find metadata</string>
+    <string name="lookup_find">Find metadata</string>
+    <string name="lookup_search">Search</string>
+    <string name="lookup_searching">Searching…</string>
+    <string name="lookup_no_results">No matches. Try fewer words.</string>
+    <string name="lookup_no_providers">Every source is turned off. Turn one on in Settings.</string>
+    <string name="lookup_rate_limited">The sources are busy. Try again in a moment.</string>
+    <string name="lookup_failed">The search failed. Try again.</string>
+    <string name="lookup_partial">%1$s didn\'t answer</string>
+    <string name="lookup_confidence_high">Good match</string>
+    <string name="lookup_confidence_medium">Possible match</string>
+    <string name="lookup_confidence_low">Weak match</string>
+    <string name="lookup_compare_title">Choose what to use</string>
+    <string name="lookup_current">Now: %1$s</string>
+    <string name="lookup_empty_value">empty</string>
+    <string name="lookup_show_unchanged">Fields that already match (%1$d)</string>
+    <string name="lookup_results">Results</string>
+    <string name="lookup_selected_count">%1$d of %2$d selected</string>
+    <string name="lookup_select_all">Select all</string>
+    <string name="lookup_select_none">Clear</string>
+    <string name="lookup_use_cover">Use this cover</string>
+    <string name="lookup_apply">Use selected</string>
+    <string name="lookup_back">Back to results</string>
+    <string name="lookup_applied">Applied. Review and save when ready</string>
+</resources>

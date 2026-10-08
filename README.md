@@ -4,56 +4,65 @@
 <h1 align="center"><b>Metadator</b></h1>
 <div align="center">
 
-A simple yet complete metadata editor for your songs powered
-by [TagLib](https://github.com/Kyant0/taglib) and made with Material You and Jetpack Compose.
+**Fix your music's tags, covers and lyrics. On your device, without losing a thing.**
 
-![GitHub all releases](https://img.shields.io/github/downloads/BobbyESP/Metadator/total?label=Downloads&logo=github&style=flat)
-![GitHub Repo stars](https://img.shields.io/github/stars/BobbyESP/Metadator?color=informational&label=Stars&style=flat)
-
-![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/BobbyESP/Metadator?logo=github&logoColor=%23fff&style=for-the-badge)
-![GitHub top language](https://img.shields.io/github/languages/top/BobbyESP/Spowlo?style=for-the-badge)
-</div>
-
-## 📸Showcase
-
-<div align="center">
-
-|                                                                 Features Header                                                                  |
-|:------------------------------------------------------------------------------------------------------------------------------------------------:|
-| <img src="https://github.com/BobbyESP/Metadator/blob/fd6371078143eff9d4c73ccd1f9085d4a0cf0511/assets/feature_header.png" alt="Features header"/> |
-
-| UI                                                                                                                                                                       | Functionality                                                                                                                                                            | Different layouts                                                                                                                                                                       |
-|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| <img src="https://github.com/BobbyESP/Metadator/blob/fd6371078143eff9d4c73ccd1f9085d4a0cf0511/assets/mockups/Mockup1_FINAL.png" alt="Simple and clean UI" height="425"/> | <img src="https://github.com/BobbyESP/Metadator/blob/fd6371078143eff9d4c73ccd1f9085d4a0cf0511/assets/mockups/Mockup3_FINAL.png" alt="Simple yet complete" height="425"/> | <img src="https://github.com/BobbyESP/Metadator/blob/fd6371078143eff9d4c73ccd1f9085d4a0cf0511/assets/mockups/Mockup2_FINAL.png" alt="Different layouts, same experience" height="425"/> |
+![Kotlin](https://img.shields.io/badge/Kotlin-2.4-7F52FF?style=flat-square&logo=kotlin&logoColor=white)
+![Jetpack Compose](https://img.shields.io/badge/Jetpack_Compose-Material_3_Expressive-4285F4?style=flat-square&logo=jetpackcompose&logoColor=white)
+![Android](https://img.shields.io/badge/Android-8.0+-3DDC84?style=flat-square&logo=android&logoColor=white)
+![GitHub all releases](https://img.shields.io/github/downloads/BobbyESP/Metadator/total?label=Downloads&style=flat-square)
 
 </div>
 
-## 🔮Features
+## Features
 
-- **Simple and clean UI**: Metadator has a simple and clean UI that makes it easy to use.
-- **Material You**: Metadator is designed with Material You in mind, making it look great on any
-  device.
-- **TagLib**: Metadator uses TagLib to read and write metadata tags, ensuring compatibility with a
-  wide range of audio formats. We are using a fork of TagLib that has been updated to work with
-  Android.
-- **Multiple layouts**: Metadator has multiple layouts to choose from, so you can find the one that
-  works best for you.
-- **More features to come!**
-    - Auto fetch metadata from the internet
-    - Batch editing
-    - Modify and embed album art, lyrics...
-    - Easy synced lyrics editor
-    - And more!
-- **Open source**: Metadator is open source, so you can contribute to its development or use it as a
-  base for your own projects.
-    - We are also launching the app on **F-Droid** and **Play Store** soon!
+- **Edit every tag**: title, artists, album, album artists, year, genres, track and disc numbers,
+  credits, comment, BPM, ISRC, lyrics, and any other tag in the file under *All tags*.
+- **Never lose data**: Metadator writes only what you changed, keeps every other tag and picture,
+  and backs the file up first. Every save can be undone.
+- **Find metadata online**: search MusicBrainz and Deezer at once, compare each field with what the
+  song has, and pick what to use. Covers up to 1200 px.
+- **Lyrics**: find plain or synced lyrics on LRCLIB.
+- **Edit many songs at once**: set an album artist or a cover for a whole album, number tracks,
+  read tags from file names.
+- **A library that shows what to fix**: search everything, sort, filter by format, and see which
+  songs are missing tags.
+- **A simple music player**, with background playback and the system's media controls.
+- **Open with Metadator** from any file manager or player, no library permission needed.
+- **Material 3 Expressive**, with colors from your wallpaper or the song's cover, and a two-pane
+  layout on tablets and foldables.
 
-## ⬇️Download
+Supported formats: everything TagLib reads, including MP3, FLAC, M4A/AAC/ALAC, Ogg Vorbis, Opus,
+WAV, AIFF, WMA and APE.
 
-You can download the latest version of Metadator from
-the [releases page](https://github.com/BobbyESP/Metadator/releases/latest) or [the Play Store](https://play.google.com/store/apps/details?id=com.bobbyesp.metadator)
+## Download
 
-## 🔠Translation
+[Google Play](https://play.google.com/store/apps/details?id=com.bobbyesp.metadator) ·
+[GitHub releases](https://github.com/BobbyESP/Metadator/releases/latest)
 
-We are soon using Hosted Weblate for the translations of the app. As soon as we have it set up, we
-will provide the link here.
+## Privacy
+
+Metadator works on your device. The only thing that leaves it is a song's title, artist and album
+when you search for metadata or lyrics, sent to the source you search. The Google Play build sends
+anonymous crash reports; the FOSS build sends nothing.
+
+## Build it
+
+Requirements: JDK 21 and the Android SDK (compile SDK 37).
+
+```bash
+./gradlew :app:assembleFossDebug   # an APK without Google services
+./gradlew test                     # unit tests
+./gradlew spotlessApply            # format before committing
+```
+
+How the code is organized, and the rules for changing it, are in [AGENTS.md](AGENTS.md) and
+[docs/](docs/README.md).
+
+## Translations
+
+English and Spanish are included. Contributions of other languages are welcome: copy
+`src/main/res/values/strings.xml` of each module into `values-<language>/`.
+
+## License
+
+GPL-3.0. See [LICENSE](LICENSE).

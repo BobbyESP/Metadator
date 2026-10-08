@@ -1,243 +1,115 @@
-import com.google.firebase.crashlytics.buildtools.gradle.CrashlyticsExtension
-import java.util.Properties
-
-val isGoogleMobileServicesBuild: Boolean by rootProject.extra
-val githubBuild = System.getenv("SIGNING_KEY_STORE_PATH") != null
-
 plugins {
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.android.kotlin)
-    alias(libs.plugins.kotlin.ksp)
-    alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.kotlin.parcelize)
-    alias(libs.plugins.compose.compiler)
+    id("metadator.android.application")
+    id("metadator.android.compose")
 }
 
-val localProperties = Properties().apply {
-    load(project.rootDir.resolve("local.properties").inputStream())
+// Firebase (crash reports) only where its configuration is: a FOSS build, or a fork without the
+// file, builds and runs without it.
+val hasGoogleServices =
+    file("google-services.json").exists() || file("src/playstore/google-services.json").exists()
+
+if (hasGoogleServices) {
+    apply(plugin = libs.plugins.google.gms.get().pluginId)
+    apply(plugin = libs.plugins.firebase.crashlytics.get().pluginId)
 }
+
+val signingStorePath: String? = System.getenv("SIGNING_KEY_STORE_PATH")
 
 android {
     namespace = "com.bobbyesp.metadator"
-    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.bobbyesp.metadator"
-        minSdk = 24
-        targetSdk = 36
-
         versionCode = rootProject.extra["versionCode"] as Int
         versionName = rootProject.extra["versionName"] as String
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        vectorDrawables {
-            useSupportLibrary = true
-        }
-
-        manifestPlaceholders["redirectHostName"] = "metadator"
-        manifestPlaceholders["redirectSchemeName"] = "metadator"
-    }
-
-    androidResources {
-        generateLocaleConfig = true
     }
 
     signingConfigs {
-        create("release") {
-            if (githubBuild) {
-                storeFile = file(System.getenv("SIGNING_KEY_STORE_PATH"))
+        if (signingStorePath != null) {
+            create("release") {
+                storeFile = file(signingStorePath)
                 storePassword = System.getenv("SIGNING_STORE_PASSWORD")
                 keyAlias = System.getenv("SIGNING_KEY_ALIAS")
-                keyPassword = System.getenv("SIGNING_KEY_ALIAS")
+                keyPassword = System.getenv("SIGNING_KEY_PASSWORD")
             }
         }
     }
 
     buildTypes {
         release {
-            buildConfigField(
-                "String", "CLIENT_ID", "\"${localProperties.getProperty("CLIENT_ID")}\""
-            )
-            buildConfigField(
-                "String", "CLIENT_SECRET", "\"${localProperties.getProperty("CLIENT_SECRET")}\""
-            )
             isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro",
             )
-            if (System.getenv("RELEASE_STORE_FILE") != null) {
-                signingConfig = signingConfigs["release"]
-            }
+            if (signingStorePath != null) signingConfig = signingConfigs.getByName("release")
         }
         debug {
-            buildConfigField(
-                "String", "CLIENT_ID", "\"${localProperties.getProperty("CLIENT_ID")}\""
-            )
-            buildConfigField(
-                "String", "CLIENT_SECRET", "\"${localProperties.getProperty("CLIENT_SECRET")}\""
-            )
-            isMinifyEnabled = false
-//            applicationIdSuffix = ".debug"
-            signingConfig = signingConfigs["debug"]
+            applicationIdSuffix = ".debug"
+            versionNameSuffix = "-debug"
         }
     }
 
-    flavorDimensionList.add("version")
-
+    flavorDimensions += "distribution"
     productFlavors {
-        create("playstore") {
-            dimension = "version"
-
-            if (isGoogleMobileServicesBuild) {
-                apply(plugin = libs.plugins.google.gms.get().pluginId)
-                apply(plugin = libs.plugins.firebase.crashlytics.get().pluginId)
-                configure<CrashlyticsExtension> {
-                    mappingFileUploadEnabled = true
-                    nativeSymbolUploadEnabled = true
-                }
-            }
-
-        }
-
-        create("foss") {
-            dimension = "version"
-        }
+        create("playstore") { dimension = "distribution" }
+        create("foss") { dimension = "distribution" }
     }
 
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
-    }
-    kotlinOptions {
-        jvmTarget = "21"
-        //freeCompilerArgs = listOf("-Xcontext-receivers", "-XXLanguage:+ExplicitBackingFields")
-    }
-    buildFeatures {
-        compose = true
-        buildConfig = true
-    }
-    composeCompiler {
-        reportsDestination = layout.buildDirectory.dir("compose_compiler")
-    }
-    kotlin {
-        sourceSets.all {
-            languageSettings {
-                languageVersion = "2.0"
-            }
-        }
-    }
-    packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
-    }
-    applicationVariants.all {
-        val variantName = name
-        sourceSets {
-            getByName("main") {
-                java.srcDir(File("build/generated/ksp/$variantName/kotlin"))
-            }
-        }
-        outputs.all {
-            if (githubBuild) {
-                (this as com.android.build.gradle.internal.api.BaseVariantOutputImpl).outputFileName =
-                    "Metadator-${defaultConfig.versionName}-${name}_(GitHub).apk"
-            } else {
-                (this as com.android.build.gradle.internal.api.BaseVariantOutputImpl).outputFileName =
-                    "Metadator-${defaultConfig.versionName}-${name}.apk"
-            }
-        }
+    buildFeatures { buildConfig = true }
+
+    androidResources { generateLocaleConfig = true }
+
+    dependenciesInfo {
+        // F-Droid cannot read the signed blob Google adds.
+        includeInApk = false
+        includeInBundle = false
     }
 
-}
-
-ksp {
-    arg(RoomSchemaArgProvider(File(projectDir, "schemas")))
-    arg("KOIN_CONFIG_CHECK", "true")
+    packaging { resources { excludes += "/META-INF/{AL2.0,LGPL2.1}" } }
 }
 
 dependencies {
-    implementation(project(":app:utilities"))
-    implementation(project(":app:ui"))
-//---------------Core----------------//
-    implementation(libs.bundles.core) //⚠️ This contains core kotlinx libraries, lifecycle runtime and Activity Compose support
+    // Core
+    implementation(project(":core:model"))
+    implementation(project(":core:common"))
+    implementation(project(":core:domain"))
+    implementation(project(":core:data"))
+    implementation(project(":core:database"))
+    implementation(project(":core:network"))
+    implementation(project(":core:designsystem"))
+    implementation(project(":core:ui"))
+    implementation(project(":core:navigation"))
+
+    // Engines: the one place implementations are named.
+    implementation(project(":tags:taglib"))
+    implementation(project(":library:mediastore"))
+    implementation(project(":lookup:musicbrainz"))
+    implementation(project(":lookup:deezer"))
+    implementation(project(":lyrics:lrclib"))
+    implementation(project(":player:media3"))
+
+    // Features
+    implementation(project(":feature:library"))
+    implementation(project(":feature:editor"))
+    implementation(project(":feature:batch"))
+    implementation(project(":feature:player"))
+    implementation(project(":feature:settings"))
+
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.core.splashscreen)
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.bundles.lifecycle)
+    implementation(libs.bundles.navigation3)
+    implementation(libs.bundles.koin.android)
     implementation(libs.bundles.coroutines)
+    implementation(libs.androidx.profileinstaller)
 
-//---------------User Interface---------------//
-//Core UI libraries
-    api(platform(libs.compose.bom))
-
-//Accompanist libraries
-    implementation(libs.bundles.accompanist)
-
-//Compose libraries
-    implementation(libs.bundles.compose)
-    implementation(libs.materialKolor)
-//Pagination
-    implementation(libs.bundles.pagination)
-
-//-------------------Network-------------------//
-    implementation(libs.bundles.ktor)
-
-    //---------------Media3---------------//
-    implementation(libs.bundles.media3)
-    implementation(project(":app:mediaplayer"))
-
-//---------------Dependency Injection---------------//
-    implementation(libs.bundles.koin)
-
-//-------------------Database-------------------//
-    implementation(libs.room.runtime)
-    implementation(libs.room.ktx)
-    implementation(libs.room.paging)
-    annotationProcessor(libs.room.compiler)
-
-//-------------------Key-value Storage-------------------//
-    implementation(libs.datastore.preferences)
-
-//-------------------Image Loading-------------------//
-    implementation(libs.landscapist.coil)
-
-//-------------------FIREBASE-------------------//
-    "playstoreApi"(platform(libs.firebase.bom))
+    "playstoreImplementation"(platform(libs.firebase.bom))
     "playstoreImplementation"(libs.firebase.analytics)
     "playstoreImplementation"(libs.firebase.crashlytics)
-
-//-------------------Utilities-------------------//
-    implementation(libs.kotlinx.collections.immutable)
-    implementation(libs.profileinstaller)
-    implementation(libs.kotlinx.datetime)
-    implementation(libs.kotlinx.serialization.json)
-    implementation(libs.taglib)
-    implementation(libs.scrollbar)
-    implementation(libs.sonner)
-    implementation(libs.spotify.api.android)
-    implementation(project(":crashhandler"))
-
-//-------------------Testing-------------------//
-//Android testing libraries
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.test.ext.junit)
-    androidTestImplementation(libs.espresso.core)
-
-//Compose testing and tooling libraries
-    androidTestImplementation(platform(libs.compose.bom))
-    androidTestImplementation(libs.compose.test.junit4)
-    implementation(libs.compose.tooling.preview)
-    debugImplementation(libs.compose.tooling)
-    debugImplementation(libs.compose.test.manifest)
+    "playstoreImplementation"(libs.play.review)
 
     debugImplementation(libs.leakcanary)
-}
-
-class RoomSchemaArgProvider(
-    @get:InputDirectory @get:PathSensitive(PathSensitivity.RELATIVE) val schemaDir: File
-) : CommandLineArgumentProvider {
-
-    override fun asArguments(): Iterable<String> {
-        if (!schemaDir.exists()) {
-            schemaDir.mkdirs()
-        }
-        return listOf("room.schemaLocation=${schemaDir.path}")
-    }
 }

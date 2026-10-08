@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="now_playing">Now playing</string>
+    <string name="open_player">Open the player</string>
+    <string name="play">Play</string>
+    <string name="pause">Pause</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+    <string name="shuffle">Shuffle</string>
+    <string name="repeat_off">Repeat off</string>
+    <string name="repeat_all">Repeat all</string>
+    <string name="repeat_one">Repeat one</string>
+    <string name="edit_tags">Edit tags</string>
+    <string name="up_next">Up next</string>
+    <string name="close">Close</string>
+    <string name="stop">Stop</string>
+    <string name="nothing_playing">Nothing is playing</string>
+    <string name="unknown_artist">Unknown artist</string>
+    <string name="lyrics">Lyrics</string>
+    <string name="no_lyrics">No lyrics</string>
+    <string name="no_lyrics_description">This song has no lyrics in its tags. Write them or look them up in the editor.</string>
+    <string name="lyrics_unreadable">The lyrics could not be read</string>
+    <string name="lyrics_unreadable_description">The file could not be opened.</string>
+    <string name="back_to_current_line">Back to the current line</string>
+    <string name="queue_empty">Nothing else in the queue</string>
+</resources>

@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <style name="Theme.Metadator" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.Metadator" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@color/background</item>
+    </style>
 
     <style name="Theme.Metadator.Starting" parent="Theme.SplashScreen">
-        <item name="postSplashScreenTheme">@style/Theme.Metadator</item>
+        <item name="windowSplashScreenBackground">@color/background</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/metadator_logo_foreground</item>
+        <item name="postSplashScreenTheme">@style/Theme.Metadator</item>
     </style>
 </resources>
