@@ -14,8 +14,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CornerSize
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AudioFile
@@ -25,7 +23,6 @@ import androidx.compose.material.icons.rounded.Schedule
 import androidx.compose.material.icons.rounded.SdStorage
 import androidx.compose.material.icons.rounded.Speaker
 import androidx.compose.material.icons.rounded.Speed
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
@@ -42,6 +39,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.bobbyesp.metadator.core.common.formatDuration
 import com.bobbyesp.metadator.core.common.formatFileSize
+import com.bobbyesp.metadator.core.designsystem.theme.GroupShapes
 import com.bobbyesp.metadator.core.designsystem.theme.Spacing
 import com.bobbyesp.metadator.core.domain.editor.LoadedTrack
 import com.bobbyesp.metadator.feature.editor.R
@@ -71,7 +69,7 @@ fun FileInfoCard(loaded: LoadedTrack, modifier: Modifier = Modifier) {
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap),
     ) {
-        FilePiece(shape = pieceShape(first = true, last = pieces == 1)) {
+        FilePiece(shape = GroupShapes.cellShape(first = true, last = pieces == 1)) {
             Row(
                 modifier = Modifier.padding(Spacing.large),
                 horizontalArrangement = Arrangement.spacedBy(Spacing.large),
@@ -100,7 +98,7 @@ fun FileInfoCard(loaded: LoadedTrack, modifier: Modifier = Modifier) {
                     StatTile(
                         stat = stat,
                         shape =
-                            pieceShape(
+                            GroupShapes.cellShape(
                                 last = last,
                                 start = index == 0,
                                 end = index == row.lastIndex,
@@ -112,7 +110,7 @@ fun FileInfoCard(loaded: LoadedTrack, modifier: Modifier = Modifier) {
         }
 
         if (location != null) {
-            FilePiece(shape = pieceShape(last = true)) {
+            FilePiece(shape = GroupShapes.cellShape(last = true)) {
                 Row(
                     modifier = Modifier.padding(Spacing.large),
                     horizontalArrangement = Arrangement.spacedBy(Spacing.large),
@@ -277,30 +275,6 @@ private fun FilePiece(
         shape = shape,
         color = MaterialTheme.colorScheme.surfaceContainerLow,
         content = content,
-    )
-}
-
-/**
- * The shape of a piece by where it is in the group: a corner is round where it is one of the
- * group's own, and tight where it meets another piece. As `GroupShapes` does for a list, with the
- * columns a list does not have.
- */
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
-@Composable
-private fun pieceShape(
-    first: Boolean = false,
-    last: Boolean = false,
-    start: Boolean = true,
-    end: Boolean = true,
-): Shape {
-    val outer = MaterialTheme.shapes.largeIncreased.topStart
-    val inner = MaterialTheme.shapes.extraSmall.topStart
-    fun corner(isOuter: Boolean): CornerSize = if (isOuter) outer else inner
-    return RoundedCornerShape(
-        topStart = corner(first && start),
-        topEnd = corner(first && end),
-        bottomEnd = corner(last && end),
-        bottomStart = corner(last && start),
     )
 }
 

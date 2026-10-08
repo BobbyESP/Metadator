@@ -87,12 +87,13 @@ Versions are in `gradle/libs.versions.toml`; the app's version in the root `buil
 - Use Material components through the design system; don't restyle them per screen. Spacing comes
   from `Spacing`, grouped-list shapes from `GroupShapes`. Menus are `ActionMenu`/`PopupMenu`,
   exclusive options are `ConnectedChoices`, text fields are `TonalTextField` (no outlined fields),
-  chips are `ToggleChip`/`ActionChip`, a floating toolbar is `FloatingActionToolbar`.
+  chips are `ToggleChip`/`ActionChip`/`LabelChip`, a floating toolbar is `FloatingActionToolbar`.
 - Blur comes from `MetadatorBlurDefaults`, and stands in for shadows: `Modifier.frosted` (Haze)
   for a surface floating over content, `Modifier.blurHalo` to lift what floats (it keeps its shadow
-  only where `isHaloSupported` is false), `Modifier.outOfFocus` for what something opens over. A
-  `hazeSource` is a sibling of what it blurs, never an ancestor, and nothing is frosted while a
-  shared element transition runs. A halo stays out of its element's enter and exit animation.
+  only where `isHaloSupported` is false), `Modifier.outOfFocus` for what something opens over,
+  `Modifier.dissolved` for what comes and goes as one surface turns into another. A `hazeSource`
+  is a sibling of what it blurs, never an ancestor, and nothing is frosted while a shared element
+  transition runs. A halo stays out of its element's enter and exit animation.
 - No deprecated API: the build has no deprecation warnings, keep it so. Animate with the theme's
   `motionScheme`, not hand-written tweens. The player sheet is the exception, and says why.
 - Regular expressions run on Android's engine (ICU), stricter than the JVM's the tests use: escape

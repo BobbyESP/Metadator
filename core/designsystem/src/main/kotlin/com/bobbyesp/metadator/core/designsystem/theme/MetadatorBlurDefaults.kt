@@ -11,6 +11,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.BlurredEdgeTreatment
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
@@ -18,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.blur.BlurRadiusSpec
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -41,7 +43,7 @@ import dev.chrisbanes.haze.blur.material3.Material3
  * - **Halos** ([blurHalo], on Haze): the content around a floating element out of focus, where a
  *   shadow would darken it.
  * - **Content out of focus** ([outOfFocus], on `Modifier.blur`): the screen behind something that
- *   opens over it.
+ *   opens over it. And [dissolved], for what comes and goes as one surface turns into another.
  *
  * Below Android 12 neither blurs: a frosted surface falls back to its container color, nearly
  * opaque, and content that would go out of focus is dimmed instead.
@@ -59,6 +61,12 @@ object MetadatorBlurDefaults {
      * what was left behind.
      */
     val BehindOverlayRadius: Dp = 12.dp
+
+    /**
+     * What is [dissolved], at its faintest: clearly out of focus, but its shapes still there to
+     * sharpen into place.
+     */
+    val DissolveRadius: Dp = 12.dp
 
     /** Whether the device can blur at all; where it cannot, a dim does the job. */
     val isBlurSupported: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
@@ -215,5 +223,48 @@ fun Modifier.outOfFocus(fraction: () -> Float, scrim: Color): Modifier {
         drawContent()
         val dim = fraction().coerceIn(0f, 1f) * scrimOpacity
         if (dim > 0f) drawRect(scrim, alpha = dim)
+    }
+}
+
+/**
+ * Brings this in, or takes it away, through focus: as faint and as blurred as it is absent, by
+ * [presence] from 0 (gone) to 1 (as it is). On the way in it sharpens as it shows. For what one
+ * surface has and the surface it turns into has not, which a plain fade would lay, half
+ * see-through, over what is still there. Below Android 12 it only fades.
+ *
+ * `Modifier.blur` and not Haze, so it can run during a shared element transition. What travels in
+ * that transition is drawn in its overlay, outside this, and stays sharp.
+ *
+ * @param presence read while drawing, so a gesture can drive it without recomposing anything
+ */
+@Composable
+fun Modifier.dissolved(presence: () -> Float): Modifier {
+    val absence = remember(presence) { { 1f - presence() } }
+    return defocused(absence).graphicsLayer { alpha = presence().coerceIn(0f, 1f) }
+}
+
+/**
+ * Takes this out of focus by [amount], from 0 (sharp) to 1, and nothing else: it stays as solid as
+ * it was. For what something else is taking the place of, and must not be seen through meanwhile.
+ * Below Android 12 it does nothing.
+ *
+ * @param amount read while drawing, so an animation can drive it without recomposing anything
+ * @param bounded whether the blur stops at the edges of this, which is right for what fills its
+ *   rectangle (a picture); left unbounded it is right for what does not (a pill, a line of text),
+ *   which a blur cut to a rectangle would show the corners of
+ */
+@Composable
+fun Modifier.defocused(amount: () -> Float, bounded: Boolean = false): Modifier {
+    // Only on the way: sharp there is nothing to blur, and no layer to pay for.
+    val blurring by
+        remember(amount) {
+            derivedStateOf { MetadatorBlurDefaults.isBlurSupported && amount() > 0f }
+        }
+    if (!blurring) return this
+    return blur {
+        radius =
+            BlurRadiusSpec.uniform(MetadatorBlurDefaults.DissolveRadius * amount().coerceIn(0f, 1f))
+        edgeTreatment =
+            if (bounded) BlurredEdgeTreatment.Rectangle else BlurredEdgeTreatment.Unbounded
     }
 }

@@ -53,6 +53,10 @@ class GroupAction(
  * fall back to their icon where the row is too narrow for every label: a label cut short says less
  * than an icon. For the header of a collection; a screen whose actions float over a list uses
  * [FloatingActionToolbar].
+ *
+ * @param prominent whether the [primary] action is filled. Not where the screen's own main action
+ *   is somewhere else, and this group is only the first thing to do with one part of it (the
+ *   editor's cover, on a screen that saves from its toolbar).
  */
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -60,6 +64,7 @@ fun ActionButtonGroup(
     primary: GroupAction,
     secondary: List<GroupAction>,
     modifier: Modifier = Modifier,
+    prominent: Boolean = true,
 ) {
     BoxWithConstraints(modifier.fillMaxWidth()) {
         val roomForLabels = maxWidth >= LabelsMinWidth
@@ -80,7 +85,7 @@ fun ActionButtonGroup(
                         if (showLabel) {
                             LabeledAction(
                                 action = action,
-                                filled = isPrimary,
+                                filled = isPrimary && prominent,
                                 interactions = interactions,
                                 modifier = Modifier.weight(1f).animateWidth(interactions),
                             )

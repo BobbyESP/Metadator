@@ -53,7 +53,7 @@ import com.bobbyesp.metadator.core.ui.R
 
 /**
  * A song in a list. Tapping edits it, the play button plays it, a long press starts selecting. A
- * song missing essential tags says so under its name, so the library shows what to fix next.
+ * song missing essential tags says which under its name, so the library shows what to fix next.
  *
  * @param isPlaybackRunning whether the playing song is actually sounding, not paused
  */
@@ -180,23 +180,32 @@ private fun TrackSubtitle(track: Track) {
                 track.album ?: stringResource(R.string.unknown_album),
             )
             .joinToString(" · ")
-    if (!track.needsAttention) {
+    val missing = missingTagsText(track.missingFields)
+    if (missing == null) {
         Text(subtitle, maxLines = 1, overflow = TextOverflow.Ellipsis)
         return
     }
-    val missing = stringResource(R.string.needs_attention)
-    Row(
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.semantics { contentDescription = "$subtitle. $missing" },
-    ) {
-        Icon(
-            Icons.Rounded.Warning,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.error,
-            modifier = Modifier.size(14.dp),
-        )
+    // Why it needs attention, under what is known of it: a warning alone left the reason to guess.
+    Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
         Text(subtitle, maxLines = 1, overflow = TextOverflow.Ellipsis)
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Icon(
+                Icons.Rounded.Warning,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.error,
+                modifier = Modifier.size(14.dp),
+            )
+            Text(
+                missing,
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.error,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+        }
     }
 }
 

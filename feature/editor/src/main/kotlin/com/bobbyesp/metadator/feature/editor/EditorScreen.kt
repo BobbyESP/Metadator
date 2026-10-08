@@ -13,13 +13,16 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -31,21 +34,24 @@ import androidx.compose.material.icons.rounded.Error
 import androidx.compose.material.icons.rounded.Lyrics
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material.icons.rounded.Save
+import androidx.compose.material.icons.rounded.Schedule
 import androidx.compose.material.icons.rounded.SearchOff
 import androidx.compose.material.icons.rounded.TravelExplore
 import androidx.compose.material.icons.rounded.Warning
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.AssistChip
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -74,6 +80,7 @@ import androidx.navigationevent.compose.rememberNavigationEventState
 import com.bobbyesp.metadator.core.designsystem.component.ActionMenu
 import com.bobbyesp.metadator.core.designsystem.component.FloatingActionToolbar
 import com.bobbyesp.metadator.core.designsystem.component.FloatingActionToolbarDefaults
+import com.bobbyesp.metadator.core.designsystem.component.LabelChip
 import com.bobbyesp.metadator.core.designsystem.component.LoadingScreen
 import com.bobbyesp.metadator.core.designsystem.component.MenuAction
 import com.bobbyesp.metadator.core.designsystem.component.PlaceholderCard
@@ -81,12 +88,15 @@ import com.bobbyesp.metadator.core.designsystem.component.SectionHeader
 import com.bobbyesp.metadator.core.designsystem.component.TonalFieldDefaults
 import com.bobbyesp.metadator.core.designsystem.component.TonalTextField
 import com.bobbyesp.metadator.core.designsystem.component.sidesOf
+import com.bobbyesp.metadator.core.designsystem.theme.GroupShapes
 import com.bobbyesp.metadator.core.designsystem.theme.Spacing
 import com.bobbyesp.metadator.core.designsystem.theme.blurHalo
 import com.bobbyesp.metadator.core.domain.editor.Position
 import com.bobbyesp.metadator.core.domain.editor.TagDraft
+import com.bobbyesp.metadator.core.model.TrackField
 import com.bobbyesp.metadator.core.ui.R as CoreUiR
 import com.bobbyesp.metadator.core.ui.component.fieldLabel
+import com.bobbyesp.metadator.core.ui.component.missingTagsText
 import com.bobbyesp.metadator.feature.editor.components.CoverCard
 import com.bobbyesp.metadator.feature.editor.components.FileInfoCard
 import com.bobbyesp.metadator.feature.editor.components.PositionField
@@ -402,20 +412,23 @@ private fun EditorToolbar(
     }
 }
 
-/** Every editable section, as items of the editor's list. */
+/** Every editable section, as items of the editor's list. Each is a group, as the app's lists. */
 private fun LazyListScope.fields(
     state: EditorState,
     draft: TagDraft,
     onIntent: (EditorIntent) -> Unit,
 ) {
     val separator = state.settings.multiValueSeparator
-    item(key = "main-header") { SectionHeader(stringResource(R.string.section_main)) }
-    MainFields.forEach { field ->
-        item(key = field.key) { FieldInput(field, draft, separator, onIntent) }
+    val missing = draft.missingEssentials()
+    if (missing.isNotEmpty()) {
+        item(key = "attention") { AttentionNotice(missing, Modifier.animateItem()) }
     }
+    item(key = "main-header") { SectionHeader(stringResource(R.string.section_main)) }
+    fieldGroup(MainFields, draft, separator, onIntent)
 
     item(key = "track-header") { SectionHeader(stringResource(R.string.section_track)) }
-    listOf(TagField.TrackNumber, TagField.DiscNumber).forEach { field ->
+    val positions = listOf(TagField.TrackNumber, TagField.DiscNumber)
+    positions.forEachIndexed { index, field ->
         item(key = field.key) {
             val position = state.position(field)
             val keys =
@@ -431,21 +444,20 @@ private fun LazyListScope.fields(
                 },
                 changed = keys.any(draft::isChanged),
                 onRevert = { onIntent(EditorIntent.Revert(keys)) },
-                modifier = Modifier.padding(bottom = Spacing.small),
+                modifier = GroupGap,
+                first = index == 0,
+                last = index == positions.lastIndex,
             )
         }
     }
 
     item(key = "credits-header") { SectionHeader(stringResource(R.string.section_credits)) }
-    CreditFields.forEach { field ->
-        item(key = field.key) { FieldInput(field, draft, separator, onIntent) }
-    }
+    fieldGroup(CreditFields, draft, separator, onIntent)
 
     item(key = "more-header") { SectionHeader(stringResource(R.string.section_more)) }
-    MoreFields.forEach { field ->
-        item(key = field.key) { FieldInput(field, draft, separator, onIntent) }
-    }
+    fieldGroup(MoreFields, draft, separator, onIntent)
 
+    val lyrics = draft.tags.first(TagField.Lyrics.key).orEmpty()
     item(key = "lyrics-header") {
         SectionHeader(
             stringResource(R.string.section_lyrics),
@@ -455,34 +467,34 @@ private fun LazyListScope.fields(
                     enabled = !state.findingLyrics,
                     shapes = ButtonDefaults.shapes(),
                 ) {
-                    Text(stringResource(R.string.lyrics_find))
+                    Icon(Icons.Rounded.Lyrics, null, Modifier.size(ButtonDefaults.IconSize))
+                    Text(
+                        stringResource(R.string.lyrics_find),
+                        Modifier.padding(start = ButtonDefaults.IconSpacing),
+                    )
                 }
             },
         )
     }
-    item(key = TagField.Lyrics.key) {
-        val lyrics = draft.tags.first(TagField.Lyrics.key).orEmpty()
-        Column {
-            if (Lrc.isSynced(lyrics)) {
-                AssistChip(
-                    onClick = {},
-                    label = { Text(stringResource(R.string.lyrics_synced)) },
-                    leadingIcon = { Icon(Icons.Rounded.Lyrics, null) },
-                )
+    if (Lrc.isSynced(lyrics)) {
+        item(key = "lyrics-synced") {
+            // Said, not pressed: a label, where a chip would ask to be tapped.
+            Box(Modifier.padding(bottom = Spacing.small).animateItem()) {
+                LabelChip(stringResource(R.string.lyrics_synced), Icons.Rounded.Schedule)
             }
-            TagTextField(
-                label = fieldLabel(TagField.Lyrics.key),
-                value = lyrics,
-                onValueChange = {
-                    onIntent(EditorIntent.SetField(TagField.Lyrics.key, listOf(it)))
-                },
-                changed = draft.isChanged(TagField.Lyrics.key),
-                onRevert = { onIntent(EditorIntent.Revert(listOf(TagField.Lyrics.key))) },
-                singleLine = false,
-                minLines = 4,
-                maxLines = 14,
-            )
         }
+    }
+    item(key = TagField.Lyrics.key) {
+        TagTextField(
+            label = fieldLabel(TagField.Lyrics.key),
+            value = lyrics,
+            onValueChange = { onIntent(EditorIntent.SetField(TagField.Lyrics.key, listOf(it))) },
+            changed = draft.isChanged(TagField.Lyrics.key),
+            onRevert = { onIntent(EditorIntent.Revert(listOf(TagField.Lyrics.key))) },
+            singleLine = false,
+            minLines = 4,
+            maxLines = 14,
+        )
     }
 
     val otherKeys =
@@ -492,7 +504,10 @@ private fun LazyListScope.fields(
         SectionHeader(
             stringResource(R.string.section_all_tags),
             trailing = {
-                IconButton(onClick = { adding = true }, shapes = IconButtonDefaults.shapes()) {
+                FilledTonalIconButton(
+                    onClick = { adding = true },
+                    shapes = IconButtonDefaults.shapes(),
+                ) {
                     Icon(Icons.Rounded.Add, stringResource(R.string.add_field))
                 }
             },
@@ -520,7 +535,7 @@ private fun LazyListScope.fields(
                 ),
         )
     }
-    otherKeys.forEach { key ->
+    otherKeys.forEachIndexed { index, key ->
         item(key = "raw:$key") {
             TagChipsField(
                 label = key,
@@ -529,8 +544,67 @@ private fun LazyListScope.fields(
                 changed = draft.isChanged(key),
                 onRevert = { onIntent(EditorIntent.Revert(listOf(key))) },
                 separator = separator,
-                modifier = Modifier.padding(bottom = Spacing.small),
+                modifier = GroupGap.animateItem(),
+                shape = GroupShapes.itemShape(index, otherKeys.size),
             )
+        }
+    }
+}
+
+/**
+ * The essential tags the song would still be missing if it were saved now: what the library flags
+ * it for, read from the draft, so the notice goes as the fields are filled in.
+ */
+private fun TagDraft.missingEssentials(): Set<TrackField> = buildSet {
+    fun missing(field: TagField) = tags[field.key].all { it.isBlank() }
+    if (missing(TagField.Artist)) add(TrackField.Artist)
+    if (missing(TagField.Album)) add(TrackField.Album)
+    if (missing(TagField.AlbumArtist)) add(TrackField.AlbumArtist)
+    if (missing(TagField.Date)) add(TrackField.Year)
+    if (missing(TagField.TrackNumber)) add(TrackField.TrackNumber)
+}
+
+/** Why the library says this song needs attention, before the fields that would fix it. */
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+private fun AttentionNotice(missing: Set<TrackField>, modifier: Modifier = Modifier) {
+    val text = missingTagsText(missing) ?: return
+    Surface(
+        modifier = modifier.fillMaxWidth(),
+        shape = MaterialTheme.shapes.largeIncreased,
+        color = MaterialTheme.colorScheme.errorContainer,
+        contentColor = MaterialTheme.colorScheme.onErrorContainer,
+    ) {
+        Row(
+            // Read as one thing: "Needs attention. Missing: year".
+            modifier = Modifier.padding(Spacing.large).semantics(mergeDescendants = true) {},
+            horizontalArrangement = Arrangement.spacedBy(Spacing.large),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Icon(Icons.Rounded.Warning, contentDescription = null)
+            Column {
+                Text(
+                    stringResource(R.string.needs_attention_title),
+                    style = MaterialTheme.typography.titleSmallEmphasized,
+                )
+                Text(text, style = MaterialTheme.typography.bodyMedium)
+            }
+        }
+    }
+}
+
+/** What keeps the fields of a group apart: the gap of the app's grouped lists. */
+private val GroupGap = Modifier.padding(bottom = ListItemDefaults.SegmentedGap)
+
+private fun LazyListScope.fieldGroup(
+    fields: List<TagField>,
+    draft: TagDraft,
+    separator: String,
+    onIntent: (EditorIntent) -> Unit,
+) {
+    fields.forEachIndexed { index, field ->
+        item(key = field.key) {
+            FieldInput(field, draft, separator, GroupShapes.itemShape(index, fields.size), onIntent)
         }
     }
 }
@@ -540,12 +614,12 @@ private fun FieldInput(
     field: TagField,
     draft: TagDraft,
     separator: String,
+    shape: RoundedCornerShape,
     onIntent: (EditorIntent) -> Unit,
 ) {
     val label = fieldLabel(field.key)
     val changed = draft.isChanged(field.key)
     val revert = { onIntent(EditorIntent.Revert(listOf(field.key))) }
-    val modifier = Modifier.padding(bottom = Spacing.small)
     if (field.multiValue) {
         TagChipsField(
             label = label,
@@ -554,7 +628,8 @@ private fun FieldInput(
             changed = changed,
             onRevert = revert,
             separator = separator,
-            modifier = modifier,
+            modifier = GroupGap,
+            shape = shape,
         )
     } else {
         TagTextField(
@@ -573,7 +648,8 @@ private fun FieldInput(
             capitalization =
                 if (field == TagField.Isrc) KeyboardCapitalization.Characters
                 else KeyboardCapitalization.Sentences,
-            modifier = modifier,
+            modifier = GroupGap,
+            shape = shape,
         )
     }
 }

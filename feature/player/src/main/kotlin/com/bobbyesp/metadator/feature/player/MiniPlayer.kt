@@ -8,13 +8,6 @@ import android.content.pm.PackageManager
 import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
-import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -39,7 +32,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.onClick
@@ -49,8 +41,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import com.bobbyesp.metadator.core.designsystem.theme.Spacing
+import com.bobbyesp.metadator.core.designsystem.theme.dissolved
 import com.bobbyesp.metadator.core.model.Track
-import com.bobbyesp.metadator.core.ui.component.ArtworkImage
 import com.bobbyesp.metadator.player.api.PlaybackState
 import com.bobbyesp.metadator.player.api.PlayerController
 
@@ -63,8 +55,8 @@ import com.bobbyesp.metadator.player.api.PlayerController
  * @param modifier applied to the bar's surface
  * @param contentModifier applied to what is on the surface, as a whole
  * @param artworkShape the cover's shape, which the sheet changes on the way to the full player
- * @param contentAlpha how visible what only the bar has is (next, the progress), read while drawing
- *   so that a transition does not recompose the bar
+ * @param ownContentPresence how much of what only the bar has (next, the progress) is there, from 0
+ *   to 1, read while drawing so that a transition does not recompose the bar
  */
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -80,10 +72,10 @@ internal fun MiniPlayerBar(
     contentModifier: Modifier = Modifier,
     artworkModifier: Modifier = Modifier,
     titleModifier: Modifier = Modifier,
+    artistModifier: Modifier = Modifier,
     playButtonModifier: Modifier = Modifier,
-    contentAlpha: () -> Float = { 1f },
+    ownContentPresence: () -> Float = { 1f },
 ) {
-    val motion = MaterialTheme.motionScheme
     val openLabel = stringResource(R.string.open_player)
     Surface(
         onClick = onOpen,
@@ -104,55 +96,39 @@ internal fun MiniPlayerBar(
                 modifier = Modifier.padding(Spacing.medium),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                ArtworkImage(
-                    model = track.artworkRef?.uri,
-                    contentDescription = null,
-                    modifier = Modifier.size(48.dp).then(artworkModifier),
-                    shape = artworkShape,
-                    cacheKey = track.artworkCacheKey,
-                )
-                // As wide as the text and no wider: these are the bounds the name travels from.
-                Box(Modifier.weight(1f).padding(horizontal = Spacing.large)) {
-                    // A new song pushes the old one's name up and out.
-                    AnimatedContent(
-                        targetState = track,
-                        transitionSpec = {
-                            (slideInVertically(motion.defaultSpatialSpec()) { it } +
-                                fadeIn(motion.defaultEffectsSpec())) togetherWith
-                                (slideOutVertically(motion.fastSpatialSpec()) { -it } +
-                                    fadeOut(motion.fastEffectsSpec()))
-                        },
-                        contentKey = { it.id },
-                        modifier = titleModifier,
-                        label = "MiniPlayerTrack",
-                    ) { shown ->
-                        Column {
-                            Text(
-                                shown.title,
-                                style = MaterialTheme.typography.titleSmall,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                            )
-                            Text(
-                                shown.artist ?: stringResource(R.string.unknown_artist),
-                                style = MaterialTheme.typography.bodySmall,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                            )
-                        }
+                TrackArtwork(track, artworkShape, Modifier.size(48.dp).then(artworkModifier))
+                // Each line as wide as its text and no wider: those are the bounds it travels from.
+                // Set as the full player sets them, only smaller, so that each grows into its own.
+                Column(Modifier.weight(1f).padding(horizontal = Spacing.large)) {
+                    TrackLine(track, titleModifier) { shown ->
+                        Text(
+                            shown.title,
+                            style = TrackNameDefaults.barTitleStyle,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                    }
+                    TrackLine(track, artistModifier, follows = true) { shown ->
+                        Text(
+                            shown.artist ?: stringResource(R.string.unknown_artist),
+                            style = TrackNameDefaults.barArtistStyle,
+                            color = TrackNameDefaults.artistColor,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                        )
                     }
                 }
                 PlayPauseButton(
                     isPlaying = playback.isPlaying,
                     onToggle = player::togglePlayPause,
-                    iconSize = IconButtonDefaults.smallIconSize,
-                    modifier = playButtonModifier,
+                    // The sheet's modifier first: it is what sizes the button on the way out.
+                    modifier = playButtonModifier.size(PlayPauseButtonDefaults.CompactSize),
                 )
                 IconButton(
                     onClick = player::skipToNext,
                     enabled = playback.hasNext,
                     shapes = IconButtonDefaults.shapes(),
-                    modifier = Modifier.graphicsLayer { alpha = contentAlpha() },
+                    modifier = Modifier.dissolved(ownContentPresence),
                 ) {
                     Icon(Icons.Rounded.SkipNext, stringResource(R.string.next))
                 }
@@ -164,7 +140,7 @@ internal fun MiniPlayerBar(
                     Modifier.fillMaxWidth()
                         .padding(horizontal = Spacing.extraLarge)
                         .padding(bottom = Spacing.medium)
-                        .graphicsLayer { alpha = contentAlpha() },
+                        .dissolved(ownContentPresence),
                 amplitude = { if (isPlaying) 1f else 0f },
             )
         }

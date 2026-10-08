@@ -89,6 +89,7 @@ fun EditorDestination(uri: String, onClose: () -> Unit) {
                     state.draft?.let { lookup.open(candidate, it.tags, state.positionStyle) }
                 },
                 onToggle = lookup::toggle,
+                onCheckOnly = lookup::checkOnly,
                 onToggleCover = lookup::toggleCover,
                 onBackToResults = lookup::closeComparison,
                 onApply = { fields, coverUrl ->

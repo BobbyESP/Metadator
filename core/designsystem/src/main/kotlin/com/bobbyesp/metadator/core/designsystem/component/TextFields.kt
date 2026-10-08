@@ -3,6 +3,7 @@
  */
 package com.bobbyesp.metadator.core.designsystem.component
 
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
@@ -96,6 +97,7 @@ object TonalFieldDefaults {
  *
  * @param emphasized tints the field with the primary color, to tell it from its neighbours (the
  *   editor: what will be written on saving)
+ * @param shape the field's own, where it is one of a group (`GroupShapes`)
  */
 @Composable
 fun TonalTextField(
@@ -114,11 +116,14 @@ fun TonalTextField(
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     colors: TonalFieldColors = TonalFieldDefaults.colors(),
+    shape: Shape = TonalFieldDefaults.shape,
+    interactionSource: MutableInteractionSource? = null,
 ) {
     TextField(
         value = value,
         onValueChange = onValueChange,
         modifier = modifier,
+        interactionSource = interactionSource,
         label = { Text(label, fontWeight = FontWeight.SemiBold) },
         placeholder = placeholder?.let { { Text(it) } },
         supportingText = supportingText?.let { { Text(it) } },
@@ -129,7 +134,7 @@ fun TonalTextField(
         maxLines = maxLines,
         keyboardOptions = keyboardOptions,
         keyboardActions = keyboardActions,
-        shape = TonalFieldDefaults.shape,
+        shape = shape,
         colors =
             TextFieldDefaults.colors(
                 focusedContainerColor = colors.container(focused = true, emphasized),

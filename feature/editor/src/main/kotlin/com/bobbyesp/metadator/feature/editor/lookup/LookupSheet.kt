@@ -4,38 +4,57 @@
 package com.bobbyesp.metadator.feature.editor.lookup
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material.icons.automirrored.rounded.HelpOutline
+import androidx.compose.material.icons.rounded.Check
+import androidx.compose.material.icons.rounded.ChevronRight
+import androidx.compose.material.icons.rounded.CloudOff
+import androidx.compose.material.icons.rounded.ErrorOutline
+import androidx.compose.material.icons.rounded.HourglassTop
+import androidx.compose.material.icons.rounded.Image
+import androidx.compose.material.icons.rounded.Public
 import androidx.compose.material.icons.rounded.Search
+import androidx.compose.material.icons.rounded.SearchOff
+import androidx.compose.material.icons.rounded.TravelExplore
+import androidx.compose.material.icons.rounded.Verified
+import androidx.compose.material.icons.rounded.WarningAmber
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.ContainedLoadingIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.ListItemDefaults
-import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SegmentedListItem
 import androidx.compose.material3.SheetValue
-import androidx.compose.material3.SuggestionChip
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberBottomSheetState
@@ -46,11 +65,19 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.bobbyesp.metadator.core.common.formatDuration
+import com.bobbyesp.metadator.core.designsystem.component.ItemIcon
+import com.bobbyesp.metadator.core.designsystem.component.LabelChip
+import com.bobbyesp.metadator.core.designsystem.component.SectionHeader
+import com.bobbyesp.metadator.core.designsystem.component.ShapedIcon
+import com.bobbyesp.metadator.core.designsystem.component.ToggleChip
 import com.bobbyesp.metadator.core.designsystem.component.TonalFieldDefaults
 import com.bobbyesp.metadator.core.designsystem.component.TonalTextField
 import com.bobbyesp.metadator.core.designsystem.theme.GroupShapes
@@ -75,6 +102,7 @@ fun LookupSheet(
     onSearch: () -> Unit,
     onOpen: (LookupCandidate) -> Unit,
     onToggle: (String) -> Unit,
+    onCheckOnly: (Set<String>) -> Unit,
     onToggleCover: () -> Unit,
     onBackToResults: () -> Unit,
     onApply: (fields: Map<String, List<String>>, coverUrl: String?) -> Unit,
@@ -86,14 +114,31 @@ fun LookupSheet(
             initialValue = SheetValue.Hidden,
             enabledValues = setOf(SheetValue.Hidden, SheetValue.Expanded),
         )
+    val motion = MaterialTheme.motionScheme
     ModalBottomSheet(onDismissRequest = onDismiss, sheetState = sheetState) {
-        AnimatedContent(targetState = state.comparison, label = "LookupStage") { comparison ->
+        // Keyed by the stage, not by the comparison: ticking a field makes a new comparison, and
+        // that must update the list in place rather than animate in a whole new one.
+        AnimatedContent(
+            targetState = state.comparison,
+            contentKey = { it != null },
+            // The comparison comes in from the side the results leave by, and goes back the same
+            // way: one step forward, one step back.
+            transitionSpec = {
+                val direction = if (targetState != null) 1 else -1
+                (slideInHorizontally(motion.defaultSpatialSpec()) { direction * it / 4 } +
+                    fadeIn(motion.defaultEffectsSpec())) togetherWith
+                    (slideOutHorizontally(motion.defaultSpatialSpec()) { -direction * it / 4 } +
+                        fadeOut(motion.fastEffectsSpec()))
+            },
+            label = "LookupStage",
+        ) { comparison ->
             if (comparison == null) {
                 SearchStage(state, onQueryChange, onSearch, onOpen)
             } else {
                 ComparisonStage(
                     comparison = comparison,
                     onToggle = onToggle,
+                    onCheckOnly = onCheckOnly,
                     onToggleCover = onToggleCover,
                     onBack = onBackToResults,
                     onApply = {
@@ -122,14 +167,12 @@ private fun SearchStage(
             PaddingValues(start = Spacing.screen, end = Spacing.screen, bottom = Spacing.huge),
         verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap),
     ) {
-        item {
-            Column(
-                verticalArrangement = Arrangement.spacedBy(Spacing.small),
-                modifier = Modifier.padding(bottom = Spacing.medium),
-            ) {
+        item(key = "query") {
+            Column(verticalArrangement = Arrangement.spacedBy(Spacing.small)) {
                 Text(
                     stringResource(R.string.lookup_title),
-                    style = MaterialTheme.typography.headlineSmall,
+                    style = MaterialTheme.typography.headlineSmallEmphasized,
+                    modifier = Modifier.padding(bottom = Spacing.small),
                 )
                 QueryField(CoreUiR.string.field_title, state.title) {
                     onQueryChange(it, state.artist, state.album)
@@ -140,56 +183,111 @@ private fun SearchStage(
                 QueryField(CoreUiR.string.field_album, state.album, onSearch) {
                     onQueryChange(state.title, state.artist, it)
                 }
-                Button(
+                SheetButton(
+                    text = stringResource(R.string.lookup_search),
+                    icon = Icons.Rounded.Search,
                     onClick = onSearch,
-                    shapes = ButtonDefaults.shapes(),
-                    modifier = Modifier.align(Alignment.End),
                     enabled = state.status != LookupStatus.Searching,
-                ) {
-                    Icon(Icons.Rounded.Search, null, Modifier.size(ButtonDefaults.IconSize))
-                    Text(
-                        stringResource(R.string.lookup_search),
-                        Modifier.padding(start = ButtonDefaults.IconSpacing),
-                    )
-                }
+                    modifier = Modifier.fillMaxWidth().padding(top = Spacing.small),
+                )
             }
         }
         when (val status = state.status) {
             LookupStatus.Idle -> Unit
             LookupStatus.Searching ->
-                item {
-                    Box(
-                        Modifier.fillMaxWidth().padding(Spacing.huge),
-                        contentAlignment = Alignment.Center,
+                item(key = "searching") {
+                    Column(
+                        modifier = Modifier.fillMaxWidth().padding(Spacing.huge).animateItem(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(Spacing.medium),
                     ) {
-                        LoadingIndicator()
-                    }
-                }
-            is LookupStatus.Results -> {
-                if (status.failedProviders.isNotEmpty()) {
-                    item {
-                        Message(
-                            stringResource(
-                                R.string.lookup_partial,
-                                status.failedProviders.joinToString(", "),
-                            )
+                        ContainedLoadingIndicator()
+                        Text(
+                            stringResource(R.string.lookup_searching),
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     }
                 }
-                if (status.candidates.isEmpty())
-                    item { Message(stringResource(R.string.lookup_no_results)) }
+            is LookupStatus.Results -> {
+                if (status.candidates.isEmpty()) {
+                    item(key = "state") {
+                        StateMessage(
+                            Icons.Rounded.SearchOff,
+                            stringResource(R.string.lookup_no_results),
+                            Modifier.animateItem(),
+                        )
+                    }
+                } else {
+                    item(key = "results") {
+                        SectionHeader(
+                            stringResource(R.string.lookup_results),
+                            Modifier.animateItem(),
+                        )
+                    }
+                }
                 itemsIndexed(status.candidates, key = { _, it -> it.providerId + it.id }) {
                     index,
                     candidate ->
-                    CandidateItem(candidate, index, status.candidates.size) { onOpen(candidate) }
+                    CandidateItem(
+                        candidate,
+                        index,
+                        status.candidates.size,
+                        Modifier.animateItem(),
+                    ) {
+                        onOpen(candidate)
+                    }
+                }
+                if (status.failedProviders.isNotEmpty()) {
+                    item(key = "partial") {
+                        Text(
+                            stringResource(
+                                R.string.lookup_partial,
+                                status.failedProviders.joinToString(", "),
+                            ),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            textAlign = TextAlign.Center,
+                            modifier =
+                                Modifier.fillMaxWidth().padding(top = Spacing.medium).animateItem(),
+                        )
+                    }
                 }
             }
             LookupStatus.NoProviders ->
-                item { Message(stringResource(R.string.lookup_no_providers)) }
-            LookupStatus.Offline -> item { Message(stringResource(R.string.offline)) }
+                item(key = "state") {
+                    StateMessage(
+                        Icons.Rounded.TravelExplore,
+                        stringResource(R.string.lookup_no_providers),
+                        Modifier.animateItem(),
+                    )
+                }
+            LookupStatus.Offline ->
+                item(key = "state") {
+                    StateMessage(
+                        Icons.Rounded.CloudOff,
+                        stringResource(R.string.offline),
+                        Modifier.animateItem(),
+                        isError = true,
+                    )
+                }
             LookupStatus.RateLimited ->
-                item { Message(stringResource(R.string.lookup_rate_limited)) }
-            LookupStatus.Failed -> item { Message(stringResource(R.string.lookup_failed)) }
+                item(key = "state") {
+                    StateMessage(
+                        Icons.Rounded.HourglassTop,
+                        stringResource(R.string.lookup_rate_limited),
+                        Modifier.animateItem(),
+                    )
+                }
+            LookupStatus.Failed ->
+                item(key = "state") {
+                    StateMessage(
+                        Icons.Rounded.ErrorOutline,
+                        stringResource(R.string.lookup_failed),
+                        Modifier.animateItem(),
+                        isError = true,
+                    )
+                }
         }
     }
 }
@@ -213,22 +311,75 @@ private fun QueryField(
     )
 }
 
+/**
+ * The one thing to do at each stage, as Material's medium button: tall and as wide as the sheet, so
+ * that it is found without being looked for.
+ */
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-private fun Message(text: String) {
-    Text(
-        text,
-        style = MaterialTheme.typography.bodyLarge,
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
-        modifier = Modifier.fillMaxWidth().padding(vertical = Spacing.large),
-    )
+private fun SheetButton(
+    text: String,
+    icon: ImageVector,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+) {
+    val height = ButtonDefaults.MediumContainerHeight
+    Button(
+        onClick = onClick,
+        shapes = ButtonDefaults.shapesFor(height),
+        enabled = enabled,
+        modifier = modifier.heightIn(min = height),
+        contentPadding = ButtonDefaults.contentPaddingFor(height, hasStartIcon = true),
+    ) {
+        Icon(icon, null, Modifier.size(ButtonDefaults.iconSizeFor(height)))
+        Spacer(Modifier.width(ButtonDefaults.iconSpacingFor(height)))
+        Text(text, style = ButtonDefaults.textStyleFor(height))
+    }
+}
+
+/** Why there are no results, under the shape the app's empty screens use. */
+@Composable
+private fun StateMessage(
+    icon: ImageVector,
+    text: String,
+    modifier: Modifier = Modifier,
+    isError: Boolean = false,
+) {
+    val colors = MaterialTheme.colorScheme
+    Column(
+        modifier = modifier.fillMaxWidth().padding(vertical = Spacing.extraLarge),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(Spacing.large),
+    ) {
+        ShapedIcon(
+            icon = icon,
+            size = 88.dp,
+            containerColor = if (isError) colors.errorContainer else colors.primaryContainer,
+            contentColor = if (isError) colors.onErrorContainer else colors.onPrimaryContainer,
+        )
+        Text(
+            text,
+            style = MaterialTheme.typography.bodyLarge,
+            color = colors.onSurfaceVariant,
+            textAlign = TextAlign.Center,
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-private fun CandidateItem(candidate: LookupCandidate, index: Int, count: Int, onClick: () -> Unit) {
+private fun CandidateItem(
+    candidate: LookupCandidate,
+    index: Int,
+    count: Int,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+) {
     SegmentedListItem(
         onClick = onClick,
         shapes = GroupShapes.listItemShapes(index, count),
+        modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
         colors =
             ListItemDefaults.segmentedColors(
@@ -238,29 +389,14 @@ private fun CandidateItem(candidate: LookupCandidate, index: Int, count: Int, on
             ArtworkImage(
                 model = candidate.artworkThumbnailUrl,
                 contentDescription = null,
-                modifier = Modifier.size(56.dp),
+                modifier = Modifier.size(64.dp),
             )
         },
+        trailingContent = { Icon(Icons.Rounded.ChevronRight, contentDescription = null) },
         supportingContent = {
-            Column(verticalArrangement = Arrangement.spacedBy(Spacing.extraSmall)) {
-                Text(
-                    listOfNotNull(
-                            candidate.artists.joinToString(", ").ifEmpty { null },
-                            candidate.album,
-                            candidate.year,
-                            candidate.durationMs?.let(::formatDuration),
-                        )
-                        .joinToString(" · "),
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
-                )
-                Row(horizontalArrangement = Arrangement.spacedBy(Spacing.small)) {
-                    SuggestionChip(
-                        onClick = onClick,
-                        label = { Text(confidenceLabel(candidate.score)) },
-                    )
-                    SuggestionChip(onClick = onClick, label = { Text(candidate.providerName) })
-                }
+            Column(verticalArrangement = Arrangement.spacedBy(Spacing.small)) {
+                Text(candidate.summary(), maxLines = 2, overflow = TextOverflow.Ellipsis)
+                CandidateLabels(candidate)
             }
         },
     ) {
@@ -273,30 +409,61 @@ private fun CandidateItem(candidate: LookupCandidate, index: Int, count: Int, on
     }
 }
 
+private fun LookupCandidate.summary(): String =
+    listOfNotNull(
+            artists.joinToString(", ").ifEmpty { null },
+            album,
+            year,
+            durationMs?.let(::formatDuration),
+        )
+        .joinToString(" · ")
+
+/** How good a match it is and where it comes from: said, not pressed, so labels and not chips. */
 @Composable
-private fun confidenceLabel(score: Double): String =
-    stringResource(
-        when (MatchConfidence.of(score)) {
-            MatchConfidence.High -> R.string.lookup_confidence_high
-            MatchConfidence.Medium -> R.string.lookup_confidence_medium
-            MatchConfidence.Low -> R.string.lookup_confidence_low
-        }
-    )
+private fun CandidateLabels(candidate: LookupCandidate, modifier: Modifier = Modifier) {
+    val confidence = MatchConfidence.of(candidate.score)
+    FlowRow(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(Spacing.small),
+        verticalArrangement = Arrangement.spacedBy(Spacing.extraSmall),
+    ) {
+        LabelChip(
+            label =
+                stringResource(
+                    when (confidence) {
+                        MatchConfidence.High -> R.string.lookup_confidence_high
+                        MatchConfidence.Medium -> R.string.lookup_confidence_medium
+                        MatchConfidence.Low -> R.string.lookup_confidence_low
+                    }
+                ),
+            icon =
+                when (confidence) {
+                    MatchConfidence.High -> Icons.Rounded.Verified
+                    MatchConfidence.Medium -> Icons.AutoMirrored.Rounded.HelpOutline
+                    MatchConfidence.Low -> Icons.Rounded.WarningAmber
+                },
+        )
+        LabelChip(label = candidate.providerName, icon = Icons.Rounded.Public)
+    }
+}
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun ComparisonStage(
     comparison: Comparison,
     onToggle: (String) -> Unit,
+    onCheckOnly: (Set<String>) -> Unit,
     onToggleCover: () -> Unit,
     onBack: () -> Unit,
     onApply: () -> Unit,
 ) {
     var showUnchanged by rememberSaveable { mutableStateOf(false) }
-    val changed = comparison.changedProposals
-    val unchanged = comparison.proposals.filterNot { it.differs }
-    val shown = if (showUnchanged) comparison.proposals else changed
+    val unchangedCount = comparison.proposals.count { !it.differs }
+    val shown = if (showUnchanged) comparison.proposals else comparison.changedProposals
+    val shownKeys = shown.mapTo(mutableSetOf()) { it.key }
+    val checkedShown = shownKeys.count { it in comparison.checked }
     val candidate = comparison.candidate
+    val hasCover = candidate.artworkUrl != null
 
     Column(Modifier.fillMaxWidth().navigationBarsPadding()) {
         LazyColumn(
@@ -304,7 +471,7 @@ private fun ComparisonStage(
             contentPadding = PaddingValues(horizontal = Spacing.screen),
             verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap),
         ) {
-            item {
+            item(key = "title") {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.padding(bottom = Spacing.small),
@@ -315,69 +482,131 @@ private fun ComparisonStage(
                             stringResource(R.string.lookup_back),
                         )
                     }
-                    Column(Modifier.weight(1f)) {
-                        Text(
-                            stringResource(R.string.lookup_compare_title),
-                            style = MaterialTheme.typography.titleLarge,
-                        )
-                        Text(
-                            stringResource(R.string.lookup_from, candidate.providerName),
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                    }
+                    Text(
+                        stringResource(R.string.lookup_compare_title),
+                        style = MaterialTheme.typography.headlineSmallEmphasized,
+                        modifier = Modifier.padding(start = Spacing.extraSmall),
+                    )
                 }
             }
-            if (candidate.artworkUrl != null) {
-                item {
+            item(key = "candidate") {
+                CandidateHero(candidate, GroupShapes.itemShape(0, if (hasCover) 2 else 1))
+            }
+            if (hasCover) {
+                item(key = "cover") {
                     SegmentedListItem(
                         checked = comparison.includeCover,
                         onCheckedChange = { onToggleCover() },
-                        shapes = GroupShapes.listItemShapes(0, 1),
+                        shapes = GroupShapes.listItemShapes(1, 2),
                         verticalAlignment = Alignment.CenterVertically,
                         colors =
                             ListItemDefaults.segmentedColors(
                                 containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
                             ),
-                        leadingContent = {
-                            ArtworkImage(
-                                candidate.artworkThumbnailUrl ?: candidate.artworkUrl,
-                                null,
-                                Modifier.size(72.dp),
-                            )
-                        },
+                        leadingContent = { ItemIcon(Icons.Rounded.Image) },
                         trailingContent = {
                             Checkbox(checked = comparison.includeCover, onCheckedChange = null)
                         },
                     ) {
-                        Text(stringResource(R.string.lookup_use_cover))
+                        Text(
+                            stringResource(R.string.lookup_use_cover),
+                            style = MaterialTheme.typography.bodyLargeEmphasized,
+                        )
                     }
                 }
-                item { Box(Modifier.padding(top = Spacing.small)) }
             }
-            itemsIndexed(shown, key = { _, it -> it.key }) { index, proposal ->
-                ProposalItem(proposal, proposal.key in comparison.checked, index, shown.size) {
+            if (shown.isNotEmpty()) {
+                item(key = "fields") {
+                    val allChecked = checkedShown == shown.size
+                    SectionHeader(
+                        stringResource(R.string.lookup_selected_count, checkedShown, shown.size),
+                        Modifier.animateItem(),
+                    ) {
+                        TextButton(
+                            onClick = { onCheckOnly(if (allChecked) emptySet() else shownKeys) },
+                            shapes = ButtonDefaults.shapes(),
+                        ) {
+                            Text(
+                                stringResource(
+                                    if (allChecked) R.string.lookup_select_none
+                                    else R.string.lookup_select_all
+                                )
+                            )
+                        }
+                    }
+                }
+            }
+            itemsIndexed(shown, key = { _, it -> "field:" + it.key }) { index, proposal ->
+                ProposalItem(
+                    proposal,
+                    proposal.key in comparison.checked,
+                    index,
+                    shown.size,
+                    Modifier.animateItem(),
+                ) {
                     onToggle(proposal.key)
                 }
             }
-            if (unchanged.isNotEmpty() && !showUnchanged) {
-                item {
-                    TextButton(onClick = { showUnchanged = true }) {
-                        Text(stringResource(R.string.lookup_show_unchanged, unchanged.size))
-                    }
+            if (unchangedCount > 0) {
+                item(key = "unchanged") {
+                    ToggleChip(
+                        selected = showUnchanged,
+                        onClick = { showUnchanged = !showUnchanged },
+                        label = stringResource(R.string.lookup_show_unchanged, unchangedCount),
+                        modifier = Modifier.padding(top = Spacing.small).animateItem(),
+                    )
                 }
             }
         }
-        Button(
+        SheetButton(
+            text = stringResource(R.string.lookup_apply),
+            icon = Icons.Rounded.Check,
             onClick = onApply,
-            shapes = ButtonDefaults.shapes(),
             enabled = comparison.checked.isNotEmpty() || comparison.includeCover,
-            modifier =
-                Modifier.fillMaxWidth()
-                    .padding(Spacing.screen)
-                    .heightIn(min = ButtonDefaults.MediumContainerHeight),
+            modifier = Modifier.fillMaxWidth().padding(Spacing.screen),
+        )
+    }
+}
+
+/** The result being compared, said once and large: what the fields below would make of the song. */
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+private fun CandidateHero(candidate: LookupCandidate, shape: Shape, modifier: Modifier = Modifier) {
+    Surface(
+        modifier = modifier.fillMaxWidth(),
+        shape = shape,
+        color = MaterialTheme.colorScheme.surfaceContainerHigh,
+    ) {
+        Row(
+            modifier = Modifier.padding(Spacing.large),
+            horizontalArrangement = Arrangement.spacedBy(Spacing.large),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text(stringResource(R.string.lookup_apply))
+            ArtworkImage(
+                model = candidate.artworkThumbnailUrl ?: candidate.artworkUrl,
+                contentDescription = null,
+                modifier = Modifier.size(96.dp),
+                shape = MaterialTheme.shapes.large,
+            )
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(Spacing.extraSmall),
+            ) {
+                Text(
+                    candidate.title,
+                    style = MaterialTheme.typography.titleLargeEmphasized,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                )
+                Text(
+                    candidate.summary(),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                )
+                CandidateLabels(candidate, Modifier.padding(top = Spacing.extraSmall))
+            }
         }
     }
 }
@@ -389,6 +618,7 @@ private fun ProposalItem(
     checked: Boolean,
     index: Int,
     count: Int,
+    modifier: Modifier = Modifier,
     onToggle: () -> Unit,
 ) {
     val empty = stringResource(R.string.lookup_empty_value)
@@ -396,6 +626,7 @@ private fun ProposalItem(
         checked = checked,
         onCheckedChange = { onToggle() },
         shapes = GroupShapes.listItemShapes(index, count),
+        modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
         colors =
             ListItemDefaults.segmentedColors(

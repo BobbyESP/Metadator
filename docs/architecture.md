@@ -82,7 +82,9 @@ same everywhere:
   an outline nor an indicator line. Stacked outlines turn a form into a grid of boxes; tone keeps
   the fields apart quietly. Focus raises the tone, `emphasized` tints it with the primary color (the
   editor: what will be written on saving), and `TonalFieldDefaults` has the tones for a field in a
-  dialog or a sheet.
+  dialog or a sheet. Stacked fields are a group like the app's lists: each takes its `shape` from
+  `GroupShapes` (`itemShape`, or `cellShape` where the group has columns too), and
+  `GroupShapes.focusedShape` rounds off the one with the focus, on the theme's spring.
 - `ToggleChip`, `ActionChip`: a filter or one option of a few, and a chip that does something. The
   first is Material's filter chip with its expressive shapes, a tick under the finger, and a check
   once chosen; the second never looks selected, so it is not read as a filter that is on.
@@ -90,7 +92,9 @@ same everywhere:
   the library's selection).
 - `ActionButtonGroup`: what to do with everything a screen shows, as an expressive button group of
   medium buttons across the width (an album, an artist, a folder: play, edit all, shuffle). The
-  primary action keeps its label; the others fall back to their icon where the row is narrow.
+  primary action keeps its label; the others fall back to their icon where the row is narrow. The
+  primary one is filled unless the screen's main action is elsewhere (`prominent = false`: the
+  editor's cover, on a screen that saves from its toolbar).
 - `ShapedIcon`: an icon on a slowly turning Material shape, for empty states and the About page.
 - `PlayingBars`: the three bars on the row of the song that is playing; still while paused.
 - `SectionHeader`, `NavigationItem`, `SwitchItem`, `RadioItem`, `PlaceholderCard`: grouped lists
@@ -141,6 +145,11 @@ what the shell records.
 `Modifier.blur` and dimmed, by a fraction read while drawing so a gesture can drive it. The shell
 does it to everything behind the player as it opens.
 
+**What comes and goes as one surface turns into another does so through focus**
+(`Modifier.dissolved`): as faint and as blurred as it is absent, sharpening as it shows. It is
+`Modifier.blur` too, so unlike a frosted surface it can run during a shared element transition.
+The player's sheet does it to what its bar and its full screen do not share.
+
 Below Android 12 nothing blurs: a frosted surface falls back to its container color, nearly opaque,
 and what would go out of focus is only dimmed, and more.
 
@@ -171,28 +180,61 @@ screen while its corners straighten. Pulling the full player down, or back, clos
 - The cover is a `sharedElement`: the same picture in both, so only the arriving one is drawn.
   Both ask Coil for it under one cache key (`ArtworkImage`'s `cacheKey`), so the one arriving
   starts from the picture already loaded.
-- The song's name and the play button are `sharedBounds`, and there is never a moment with neither
-  version of them on screen. The name is scaled (its bounds are the text's own, centered by its
-  parent and not by `TextAlign`, so it scales without wrapping again) and one version dissolves
-  into the other, both fading at once. The button is laid out again in the changing bounds
-  (`RemeasureToBounds`), which makes the bar's round button and the screen's wide one the same
-  shape at every step: the one arriving fades in over the one leaving, which only goes once it is
-  covered, so it reads as one button growing.
-- Both travel on an arc (`ArcAnimationSpec`), not a straight line: sideways first and up late on
-  the way to the screen. That way round because the container's top edge rises at a steady pace
+- The song's title, its artist and the play button are tied too, and of each **only the version
+  the sheet is going to is ever drawn**, from the first frame. So the rule for each is that its
+  two versions look the same in the same bounds: then that swap does not show, and it reads as one
+  thing moving and growing. Never both at once with one fading into the other: each version has a
+  bounds animation of its own, and seeked as this transition is the two are not in step, so they
+  show apart, as a double image.
+  - The title and the artist are one line each in both players, and the bar's styles are the full
+    player's at a smaller size (`TextStyle.resizedTo`, `TrackNameDefaults`), not other roles of the
+    type scale: those differ in weight, line height and tracking, and two texts that differ in any
+    of them drift apart glyph by glyph. They are scaled by their height from their start
+    (`scaleToBounds(FillHeight, CenterStart)`), so the two coincide for as long as they say the
+    same. They are `sharedBounds`, since a `sharedElement` would lay the text out again at every
+    width, with no enter and an exit that snaps, which is what draws only one. Both players say
+    the same in each line, so it travels whole. It is not clipped to its bounds on the way: on an
+    arc they do not keep the shape of the text, and would cut into it. A title too long for its
+    line scrolls in the full player instead of wrapping.
+  - The album is the full player's alone and is not part of what travels. It is a `LabelChip`
+    under the name that rolls into its place the first time the sheet settles (`RolledIn`): up
+    from under it, out of focus from the speed and sharp as it stops. Its place is kept meanwhile,
+    so nothing below moves. From then on it stays, and goes with the rest of what only the full
+    player has as the sheet is dragged down.
+  - A new song replaces the old one's pieces through focus, in both players. Its title and artist
+    come in a short way from the side (`TrackLine`), the artist a moment after the title; what
+    leaves starts slowly and is quickest as it goes, what arrives is quick and slows to a stop.
+    Those are tweens on Material's emphasized accelerate and decelerate curves, since a spring
+    cannot end at its quickest. Its cover comes into focus over the old one (`TrackArtwork`),
+    which blurs beneath it and stays solid until covered. Nothing is clipped on the way but the
+    cover, to its own shape: a blur or a slide cut to a rectangle shows the rectangle.
+  - The button is a `sharedElement`, laid out again in the changing bounds. `PlayPauseButton`
+    fills the size it is given and draws its icon at half its height, and the bar gives it the
+    whole 48 dp touch target: left to Material's 40 dp container inside that target, it jumped to
+    fill it on the first frame of the transition.
+  - The cover steps back while paused, in the full player only. Both covers scale by as much as
+    the sheet is open, since a shared element draws only one of the two.
+- All three travel on an arc (`ArcAnimationSpec`), not a straight line: sideways first and up late
+  on the way to the screen. That way round because the container's top edge rises at a steady pace
   and clips what gets ahead of it.
+- What only one of the two has (the bar's next button and progress; everything else on the screen)
+  is not shared. It goes through focus (`Modifier.dissolved`), by how far open the sheet is: the
+  bar's is gone a fifth of the way up, the screen's sharpens into place between three and eight
+  tenths, and in between there is only the surface changing color. Faded in with the surface from
+  the start, the whole screen lay half see-through over the bar.
 - Shapes are not animated by shared elements. The container's corner and the cover's are values
   of the same transition (`animateDp`), given to the shape and to the container's overlay clip,
   which shared elements inside inherit.
 - `PlayerSheetState` holds a `progress` (0 the bar, 1 the screen) and a `SeekableTransitionState`
   that follows it. A drag sets the progress; a release hands it to a spring with the finger's
-  velocity. A navigation transition cannot be held halfway like this, which is why the full player
+  velocity. A tap on the bar opens it with a softer spring, since it starts from rest and has the
+  whole way to cover. A navigation transition cannot be held halfway like this, which is why the full player
   stopped being a `NavKey`.
 - The bounce is the spring running past either end. The transition cannot go past its ends, so
   that excess (`overshoot`) is drawn on the whole sheet: the screen swells slightly, the bar dips.
 - The container moves linearly, so its edge stays under the finger. What it carries eases in and
   out. The corners stay round most of the way and straighten late.
-- The surface is never see-through: the content leaving keeps its place while the one arriving
+- The surface is never see-through: the surface leaving keeps its place while the one arriving
   fades in over it.
 - The full player's list shares its gesture through nested scroll: at its top, pulling further
   down pulls the player down. The back gesture previews the collapse through `NavigationEvent`.

@@ -4,6 +4,8 @@
 package com.bobbyesp.metadator.feature.editor.components
 
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -12,6 +14,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.input.TextFieldLineLimits
@@ -26,6 +29,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.InputChip
 import androidx.compose.material3.InputChipDefaults
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -33,6 +37,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -50,6 +55,7 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import com.bobbyesp.metadator.core.designsystem.component.TonalFieldDefaults
 import com.bobbyesp.metadator.core.designsystem.component.TonalTextField
+import com.bobbyesp.metadator.core.designsystem.theme.GroupShapes
 import com.bobbyesp.metadator.core.designsystem.theme.Spacing
 import com.bobbyesp.metadator.core.ui.R as CoreUiR
 import com.bobbyesp.metadator.feature.editor.R
@@ -83,12 +89,17 @@ fun TagTextField(
     placeholder: String? = null,
     keyboardType: KeyboardType = KeyboardType.Text,
     capitalization: KeyboardCapitalization = KeyboardCapitalization.Sentences,
+    shape: RoundedCornerShape = GroupShapes.itemShape(0, 1),
 ) {
+    val interactions = remember { MutableInteractionSource() }
+    val focused by interactions.collectIsFocusedAsState()
     TonalTextField(
         value = value,
         onValueChange = onValueChange,
         label = label,
         modifier = modifier.fillMaxWidth().changedState(changed),
+        shape = GroupShapes.focusedShape(shape, focused),
+        interactionSource = interactions,
         placeholder = placeholder,
         emphasized = changed,
         singleLine = singleLine,
@@ -132,6 +143,7 @@ fun TagChipsField(
     onRevert: () -> Unit,
     separator: String,
     modifier: Modifier = Modifier,
+    shape: RoundedCornerShape = GroupShapes.itemShape(0, 1),
 ) {
     val input = rememberTextFieldState()
     var focused by rememberSaveable(label) { mutableStateOf(false) }
@@ -160,7 +172,7 @@ fun TagChipsField(
         )
     Surface(
         modifier = modifier.fillMaxWidth().changedState(changed),
-        shape = TonalFieldDefaults.shape,
+        shape = GroupShapes.focusedShape(shape, focused),
         color = container,
     ) {
         Column(
@@ -263,7 +275,10 @@ private fun splitTyped(text: String, separator: String): List<String> {
     return parts.map { it.trim() }.filter { it.isNotEmpty() }
 }
 
-/** A position and its total, side by side: "Track 3 of 12". */
+/**
+ * A position and its total, side by side: "Track 3 of 12". Two cells of a group: [first] and [last]
+ * say whether theirs is the group's first row and its last one.
+ */
 @Composable
 fun PositionField(
     label: String,
@@ -273,33 +288,59 @@ fun PositionField(
     changed: Boolean,
     onRevert: () -> Unit,
     modifier: Modifier = Modifier,
+    first: Boolean = true,
+    last: Boolean = true,
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(Spacing.small),
+        horizontalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap),
         verticalAlignment = Alignment.Top,
     ) {
-        TonalTextField(
+        PositionCell(
             value = number,
             onValueChange = { onChange(it, total) },
             label = label,
-            modifier = Modifier.weight(1f).changedState(changed),
-            emphasized = changed,
-            keyboardOptions =
-                KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next),
+            changed = changed,
+            shape = GroupShapes.cellShape(first, last, end = false),
+            modifier = Modifier.weight(1f),
         )
-        TonalTextField(
+        PositionCell(
             value = total,
             onValueChange = { onChange(number, it) },
             label = stringResource(CoreUiR.string.field_of),
-            modifier = Modifier.weight(1f).changedState(changed),
-            emphasized = changed,
-            keyboardOptions =
-                KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next),
+            changed = changed,
+            shape = GroupShapes.cellShape(first, last, start = false),
+            modifier = Modifier.weight(1f),
             trailingIcon =
                 if (changed) {
                     { RevertButton(label, onRevert) }
                 } else null,
         )
     }
+}
+
+@Composable
+private fun PositionCell(
+    value: String,
+    onValueChange: (String) -> Unit,
+    label: String,
+    changed: Boolean,
+    shape: RoundedCornerShape,
+    modifier: Modifier = Modifier,
+    trailingIcon: (@Composable () -> Unit)? = null,
+) {
+    val interactions = remember { MutableInteractionSource() }
+    val focused by interactions.collectIsFocusedAsState()
+    TonalTextField(
+        value = value,
+        onValueChange = onValueChange,
+        label = label,
+        modifier = modifier.changedState(changed),
+        emphasized = changed,
+        keyboardOptions =
+            KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next),
+        trailingIcon = trailingIcon,
+        shape = GroupShapes.focusedShape(shape, focused),
+        interactionSource = interactions,
+    )
 }

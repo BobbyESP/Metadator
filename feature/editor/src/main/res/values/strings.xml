@@ -22,6 +22,7 @@
     <string name="pause_song">Pause</string>
     <string name="play_unavailable">Only songs in your library can be played</string>
 
+    <string name="needs_attention_title">Needs attention</string>
     <string name="section_main">Song</string>
     <string name="section_track">Track</string>
     <string name="section_credits">Credits</string>
@@ -103,10 +104,13 @@
     <string name="lookup_compare_title">Choose what to use</string>
     <string name="lookup_current">Now: %1$s</string>
     <string name="lookup_empty_value">empty</string>
-    <string name="lookup_show_unchanged">Show fields that already match (%1$d)</string>
+    <string name="lookup_show_unchanged">Fields that already match (%1$d)</string>
+    <string name="lookup_results">Results</string>
+    <string name="lookup_selected_count">%1$d of %2$d selected</string>
+    <string name="lookup_select_all">Select all</string>
+    <string name="lookup_select_none">Clear</string>
     <string name="lookup_use_cover">Use this cover</string>
     <string name="lookup_apply">Use selected</string>
     <string name="lookup_back">Back to results</string>
     <string name="lookup_applied">Applied. Review and save when ready</string>
-    <string name="lookup_from">From %1$s</string>
 </resources>

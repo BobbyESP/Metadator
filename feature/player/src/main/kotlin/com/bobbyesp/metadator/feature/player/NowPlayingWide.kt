@@ -65,6 +65,7 @@ import com.bobbyesp.metadator.core.designsystem.component.Choice
 import com.bobbyesp.metadator.core.designsystem.component.ConnectedChoices
 import com.bobbyesp.metadator.core.designsystem.theme.MetadatorBlurDefaults
 import com.bobbyesp.metadator.core.designsystem.theme.Spacing
+import com.bobbyesp.metadator.core.designsystem.theme.dissolved
 import com.bobbyesp.metadator.core.designsystem.theme.frosted
 import com.bobbyesp.metadator.core.domain.lyrics.TrackLyrics
 import com.bobbyesp.metadator.core.model.Track
@@ -83,7 +84,9 @@ import dev.chrisbanes.haze.rememberHazeState
  *
  * @param compact whether the controls do not fit under the cover and float over the lyrics instead
  * @param settled whether the sheet is at rest, open. Only then is anything frosted: while the sheet
- *   moves its content is drawn in the transition's overlay, where a frosted surface flickers.
+ *   moves its content is drawn in the transition's overlay, where a frosted surface flickers. And
+ *   only then does the album show.
+ * @param ownContentPresence how much of what only this has is there, as in [NowPlayingContent]
  */
 @Composable
 internal fun NowPlayingWideContent(
@@ -100,7 +103,9 @@ internal fun NowPlayingWideContent(
     artworkShape: Shape = MaterialTheme.shapes.extraLarge,
     artworkModifier: Modifier = Modifier,
     titleModifier: Modifier = Modifier,
+    artistModifier: Modifier = Modifier,
     playButtonModifier: Modifier = Modifier,
+    ownContentPresence: () -> Float = { 1f },
 ) {
     // What the floating controls frost: the backdrop and the lyrics. Both are recorded here as
     // siblings of the controls, never as their ancestors, or the controls would blur themselves.
@@ -111,6 +116,8 @@ internal fun NowPlayingWideContent(
             Row(
                 modifier =
                     Modifier.fillMaxSize()
+                        // Over the backdrop, which is the surface and stays as it is.
+                        .dissolved(ownContentPresence)
                         .safeDrawingPadding()
                         .padding(horizontal = Spacing.extraLarge),
                 horizontalArrangement = Arrangement.spacedBy(Spacing.extraLarge),
@@ -120,6 +127,7 @@ internal fun NowPlayingWideContent(
                     playback = playback,
                     player = player,
                     withControls = !compact,
+                    settled = settled,
                     onClose = onClose,
                     onEdit = { onEdit(track.ref.uri) },
                     modifier = Modifier.weight(SONG_COLUMN_WEIGHT).fillMaxHeight(),
@@ -127,6 +135,7 @@ internal fun NowPlayingWideContent(
                     artworkShape = artworkShape,
                     artworkModifier = artworkModifier,
                     titleModifier = titleModifier,
+                    artistModifier = artistModifier,
                     playButtonModifier = playButtonModifier,
                 )
                 SidePanel(
@@ -153,6 +162,7 @@ private fun SongColumn(
     playback: PlaybackState,
     player: PlayerController,
     withControls: Boolean,
+    settled: Boolean,
     onClose: () -> Unit,
     onEdit: () -> Unit,
     modifier: Modifier,
@@ -160,6 +170,7 @@ private fun SongColumn(
     artworkShape: Shape,
     artworkModifier: Modifier,
     titleModifier: Modifier,
+    artistModifier: Modifier,
     playButtonModifier: Modifier,
 ) {
     Column(modifier, horizontalAlignment = Alignment.CenterHorizontally) {
@@ -181,12 +192,11 @@ private fun SongColumn(
             // The cover takes what height the rest leaves, and is as wide as it is tall.
             Cover(
                 track = track,
-                isPlaying = playback.isPlaying,
                 shape = artworkShape,
                 sharedModifier = artworkModifier,
                 modifier = Modifier.weight(1f, fill = false).aspectRatio(1f),
             )
-            TrackTitle(track, titleModifier)
+            TrackName(track, settled, titleModifier, artistModifier)
             if (withControls) {
                 SeekBar(playback, onSeek = player::seekTo)
                 TransportControls(playback, player, playButtonModifier)
@@ -347,8 +357,8 @@ private fun FloatingControls(
         PlayPauseButton(
             isPlaying = playback.isPlaying,
             onToggle = player::togglePlayPause,
-            iconSize = IconButtonDefaults.smallIconSize,
-            modifier = playButtonModifier,
+            // The sheet's modifier first: it is what sizes the button on the way here.
+            modifier = playButtonModifier.size(PlayPauseButtonDefaults.CompactSize),
         )
         IconButton(
             onClick = player::skipToNext,

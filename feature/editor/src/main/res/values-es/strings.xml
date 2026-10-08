@@ -22,6 +22,7 @@
     <string name="pause_song">Pausar</string>
     <string name="play_unavailable">Solo se pueden reproducir las canciones de tu biblioteca</string>
 
+    <string name="needs_attention_title">Necesita atención</string>
     <string name="section_main">Canción</string>
     <string name="section_track">Pista</string>
     <string name="section_credits">Créditos</string>
@@ -103,10 +104,13 @@
     <string name="lookup_compare_title">Elige qué usar</string>
     <string name="lookup_current">Ahora: %1$s</string>
     <string name="lookup_empty_value">vacío</string>
-    <string name="lookup_show_unchanged">Mostrar los campos que ya coinciden (%1$d)</string>
+    <string name="lookup_show_unchanged">Campos que ya coinciden (%1$d)</string>
+    <string name="lookup_results">Resultados</string>
+    <string name="lookup_selected_count">%1$d de %2$d seleccionados</string>
+    <string name="lookup_select_all">Seleccionar todo</string>
+    <string name="lookup_select_none">Quitar todo</string>
     <string name="lookup_use_cover">Usar esta portada</string>
     <string name="lookup_apply">Usar lo seleccionado</string>
     <string name="lookup_back">Volver a los resultados</string>
     <string name="lookup_applied">Aplicado. Revisa y guarda cuando quieras</string>
-    <string name="lookup_from">De %1$s</string>
 </resources>
