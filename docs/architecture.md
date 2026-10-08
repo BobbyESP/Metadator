@@ -53,7 +53,9 @@ which each activity lends its launchers in `onCreate`; a use case suspends until
 One back stack, one Navigation 3 `NavDisplay` (`MetadatorNavDisplay`), keys in
 `core:navigation/Keys.kt`. Scene strategies decide the layout: overlays first, then
 list-detail, which puts the editor beside the library on wide windows. Destinations are told
-whether they share the window (`LocalPaneContext`), never measure it.
+whether they share the window (`LocalPaneContext`), never measure it. The list-detail scaffold is
+told not to move the focus to the pane it shows (`paneDirective` in `MetadatorApp`): it would give
+it to the library's search field, and open the keyboard, on every rotation to a wide window.
 
 "Open with Metadator" runs `ExternalEditorActivity` in its own task with only the editor, so
 closing it returns to the app that opened the file.

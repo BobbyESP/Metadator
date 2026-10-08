@@ -12,6 +12,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.Surface
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfoV2
+import androidx.compose.material3.adaptive.layout.PaneScaffoldDirective
+import androidx.compose.material3.adaptive.layout.calculatePaneScaffoldDirective
 import androidx.compose.material3.adaptive.navigation3.rememberListDetailSceneStrategy
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -60,7 +63,7 @@ fun MetadatorApp(onExit: () -> Unit) {
     val backStack = rememberNavBackStack(Library)
     val navigator = rememberNavigator(backStack, onExit)
     val overlay = rememberOverlaySceneStrategy<NavKey>()
-    val listDetail = rememberListDetailSceneStrategy<NavKey>()
+    val listDetail = rememberListDetailSceneStrategy<NavKey>(directive = paneDirective())
     val strategies =
         remember(overlay, listDetail) { listOf(overlay, listDetail.sharingTheWindow()) }
     val snackbarHostState = LocalSnackbarHostState.current
@@ -129,5 +132,30 @@ fun MetadatorApp(onExit: () -> Unit) {
                 backdrop = backdrop,
             )
         }
+    }
+}
+
+/**
+ * The window's own directive, but the scaffold does not move the focus to the pane it shows. It
+ * would whenever the layout turns into list-detail, as on a rotation, and the first thing to take
+ * it in the library is the search field: the keyboard came up over a library nobody was searching.
+ *
+ * Built field by field: `copy` has no parameter for it, and sets it back to true.
+ */
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
+@Composable
+private fun paneDirective(): PaneScaffoldDirective {
+    val default = calculatePaneScaffoldDirective(currentWindowAdaptiveInfoV2())
+    return remember(default) {
+        PaneScaffoldDirective(
+            maxHorizontalPartitions = default.maxHorizontalPartitions,
+            horizontalPartitionSpacerSize = default.horizontalPartitionSpacerSize,
+            maxVerticalPartitions = default.maxVerticalPartitions,
+            verticalPartitionSpacerSize = default.verticalPartitionSpacerSize,
+            defaultPanePreferredWidth = default.defaultPanePreferredWidth,
+            defaultPanePreferredHeight = default.defaultPanePreferredHeight,
+            excludedBounds = default.excludedBounds,
+            shouldAutoFocusCurrentDestination = false,
+        )
     }
 }
