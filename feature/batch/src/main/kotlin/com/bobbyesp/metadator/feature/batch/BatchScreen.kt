@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
@@ -117,7 +118,8 @@ internal fun BatchScreen(state: BatchState, onIntent: (BatchIntent) -> Unit, onC
             return@Scaffold
         }
         LazyColumn(
-            modifier = Modifier.fillMaxSize().padding(padding).imePadding(),
+            modifier =
+                Modifier.fillMaxSize().padding(padding).consumeWindowInsets(padding).imePadding(),
             contentPadding = PaddingValues(horizontal = Spacing.screen, vertical = Spacing.small),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
