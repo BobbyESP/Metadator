@@ -1,8 +1,8 @@
 [versions]
 # Tooling
 androidGradlePlugin = "9.4.1"
-kotlin = "2.4.0"
-ksp = "2.3.7"
+kotlin = "2.4.20"
+ksp = "2.3.12"
 spotless = "8.10.3"
 googleServices = "4.5.0"
 firebaseCrashlyticsPlugin = "3.0.8"
@@ -15,7 +15,7 @@ androidxLifecycle = "2.11.0"
 androidxNavigation3 = "1.2.0"
 androidxProfileInstaller = "1.4.1"
 androidxPalette = "1.0.0"
-media3 = "1.8.0"
+media3 = "1.11.1"
 
 # Jetpack Compose
 composeBom = "2026.09.01"
@@ -39,7 +39,7 @@ coil = "3.6.3"
 # Third-party
 taglib = "1.0.6"
 materialKolor = "5.0.1"
-haze = "2.0.0"
+haze = "2.0.1"
 
 # Google Play services (playstore flavor only)
 firebaseBom = "34.19.0"
