@@ -4,6 +4,7 @@
 package com.bobbyesp.metadator.core.database
 
 import android.content.Context
+import androidx.room.AutoMigration
 import androidx.room.ColumnInfo
 import androidx.room.Dao
 import androidx.room.Database
@@ -14,6 +15,7 @@ import androidx.room.PrimaryKey
 import androidx.room.Query
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.Upsert
 
 /**
  * A backup of a file's tags, taken before Metadator wrote it. The pictures are files next to the
@@ -49,9 +51,43 @@ interface TagBackupDao {
     @Query("DELETE FROM tag_backups") suspend fun clear()
 }
 
-@Database(entities = [TagBackupEntity::class], version = 1, exportSchema = true)
+/**
+ * What was read from a song's file to fill in what MediaStore does not know about it. A cache: a
+ * row is only good for the file as it was at [dateModified] and [sizeBytes].
+ */
+@Entity(tableName = "track_tags")
+data class TrackTagsEntity(
+    @PrimaryKey @ColumnInfo(name = "track_id") val trackId: Long,
+    @ColumnInfo(name = "date_modified") val dateModified: Long,
+    @ColumnInfo(name = "size_bytes") val sizeBytes: Long,
+    val artist: String?,
+    val album: String?,
+    @ColumnInfo(name = "album_artist") val albumArtist: String?,
+    val year: Int?,
+    @ColumnInfo(name = "track_number") val trackNumber: Int?,
+    @ColumnInfo(name = "disc_number") val discNumber: Int?,
+    val genre: String?,
+)
+
+@Dao
+interface TrackTagsDao {
+    @Query("SELECT * FROM track_tags") suspend fun all(): List<TrackTagsEntity>
+
+    @Upsert suspend fun upsert(rows: List<TrackTagsEntity>)
+
+    @Query("DELETE FROM track_tags WHERE track_id IN (:ids)") suspend fun delete(ids: List<Long>)
+}
+
+@Database(
+    entities = [TagBackupEntity::class, TrackTagsEntity::class],
+    version = 2,
+    exportSchema = true,
+    autoMigrations = [AutoMigration(from = 1, to = 2)],
+)
 abstract class MetadatorDatabase : RoomDatabase() {
     abstract fun tagBackups(): TagBackupDao
+
+    abstract fun trackTags(): TrackTagsDao
 
     companion object {
         fun build(context: Context): MetadatorDatabase =

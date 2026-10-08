@@ -7,8 +7,9 @@ package com.bobbyesp.metadator.core.model
 @JvmInline value class TrackId(val value: Long)
 
 /**
- * What the library knows about a song without opening it. The tags in the file are the truth; this
- * is MediaStore's copy, which can lag behind until the file is rescanned.
+ * What the library knows about a song. The tags in the file are the truth; this is MediaStore's
+ * copy, which can lag behind until the file is rescanned, with the fields MediaStore has no value
+ * for read from the file.
  */
 data class Track(
     val id: TrackId,
@@ -34,7 +35,7 @@ data class Track(
     /** MediaStore's cached album art. Only for display: it is often a downscaled copy. */
     val artworkRef: ContentRef?,
 ) {
-    /** What the library can tell is missing without reading the file. */
+    /** The fields neither MediaStore nor the file has a value for. */
     val missingFields: Set<TrackField>
         get() = buildSet {
             if (artist.isNullOrBlank()) add(TrackField.Artist)

@@ -6,7 +6,7 @@
 |---|---|---|
 | JVM unit | Tag merge and diff, pictures, multi-values (`TagChangesTest`) | `tags/api` |
 | JVM unit | Save, verify, restore, failure paths, with in-memory fakes of TagLib's behaviour (`SaveTagChangesUseCaseTest`) | `core/domain` |
-| JVM unit | Track positions, drafts, multi-value mode, library search/sort/grouping, file-name patterns, batch numbering, lookup merging and proposals | `core/domain` |
+| JVM unit | Track positions, drafts, multi-value mode, library search/sort/grouping, completing the library from the files, file-name patterns, batch numbering, lookup merging and proposals | `core/domain` |
 | JVM unit | MusicBrainz, Deezer and LRCLIB parsing and error mapping, with Ktor's `MockEngine` | `lookup/*`, `lyrics/lrclib` |
 | JVM unit | Ranking, LRC parsing, text normalization | `lookup/api`, `lyrics/api`, `core/common` |
 

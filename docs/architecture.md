@@ -27,11 +27,18 @@ or on another feature fails the build.
 - **Domain** (`core:domain`): use cases and pure logic. `SaveTagChangesUseCase`,
   `RestoreBackupUseCase`, `LoadTrackUseCase`, `LookupService`, `BatchRunner`, `TrackPositions`,
   `FileNamePattern`, library filtering and grouping.
-- **Ports** (`*:api`): `TagReader`, `TagWriter`, `TagBackupStore`, `AudioLibrary`,
+- **Ports** (`*:api`): `TagReader`, `TagWriter`, `TagBackupStore`, `AudioLibrary`, `TrackTagCache`,
   `AudioFileOpener`, `AudioFileInfo`, `WriteAccess`, `MediaIndexer`, `MetadataProvider`,
   `ArtworkDownloader`, `LyricsProvider`, `PlayerController`.
 - **Implementations**: TagLib, MediaStore, Room, DataStore, Ktor, Media3.
 - **Presentation** (`feature:*`): screens and ViewModels.
+
+The library is MediaStore's, completed from the files (`TagCompletedAudioLibrary`). Android's
+scanner does not index every tag of every format: a FLAC's `DATE` never becomes a year, and before
+Android 11 there is no album artist or genre at all. A song with a field MediaStore has no value
+for has its tags read once, and what was read is cached in Room (`track_tags`) against the file's
+modification date and size. MediaStore's values always win; the file only fills the gaps, so
+"Needs attention" means the file itself lacks the field.
 
 Results, not exceptions: everything the user can cause or fix (no permission, file gone, format
 not supported, offline) is a sealed result the UI can explain.
