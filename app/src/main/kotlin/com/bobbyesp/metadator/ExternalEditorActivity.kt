@@ -27,7 +27,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bobbyesp.metadator.core.designsystem.theme.MetadatorTheme
 import com.bobbyesp.metadator.core.domain.settings.SettingsRepository
-import com.bobbyesp.metadator.core.model.UserSettings
 import com.bobbyesp.metadator.core.ui.viewmodel.LocalSnackbarHostState
 import com.bobbyesp.metadator.feature.editor.EditorDestination
 import com.bobbyesp.metadator.library.mediastore.ActivityResultHost
@@ -52,10 +51,9 @@ class ExternalEditorActivity : ComponentActivity() {
         resultHost.attach(this)
 
         setContent {
-            val settings by
-                settingsRepository.settings.collectAsStateWithLifecycle(
-                    initialValue = UserSettings()
-                )
+            val loaded by
+                settingsRepository.settings.collectAsStateWithLifecycle(initialValue = null)
+            val settings = loaded ?: return@setContent
             val snackbar = remember { SnackbarHostState() }
             CompositionLocalProvider(LocalSnackbarHostState provides snackbar) {
                 MetadatorTheme(settings) {

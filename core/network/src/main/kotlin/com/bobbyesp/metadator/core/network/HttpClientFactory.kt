@@ -4,6 +4,7 @@
 package com.bobbyesp.metadator.core.network
 
 import io.ktor.client.HttpClient
+import io.ktor.client.HttpClientConfig
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.HttpTimeout
@@ -29,7 +30,7 @@ object HttpClientFactory {
     }
 
     fun create(userAgent: String, engine: HttpClientEngine? = null): HttpClient {
-        val configure: io.ktor.client.HttpClientConfig<*>.() -> Unit = {
+        val configure: HttpClientConfig<*>.() -> Unit = {
             expectSuccess = false
             install(ContentNegotiation) { json(json) }
             install(HttpTimeout) {

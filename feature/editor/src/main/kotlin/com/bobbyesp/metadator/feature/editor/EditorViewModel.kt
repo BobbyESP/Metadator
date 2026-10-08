@@ -231,11 +231,9 @@ class EditorViewModel(
 
     private fun inspectCover() = launch {
         val cover = currentState.draft?.cover
-        setState { copy(coverInfo = null) }
-        if (cover != null) {
-            val info = images.inspect(cover.data)
-            if (currentState.draft?.cover === cover) setState { copy(coverInfo = info) }
-        }
+
+        val info = cover?.let { images.inspect(it.data) }
+        if (currentState.draft?.cover === cover) setState { copy(coverInfo = info) }
     }
 
     private fun save() {

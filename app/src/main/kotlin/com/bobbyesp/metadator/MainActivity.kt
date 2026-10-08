@@ -16,7 +16,6 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bobbyesp.metadator.core.designsystem.theme.MetadatorTheme
 import com.bobbyesp.metadator.core.domain.settings.SettingsRepository
-import com.bobbyesp.metadator.core.model.UserSettings
 import com.bobbyesp.metadator.core.ui.viewmodel.LocalSnackbarHostState
 import com.bobbyesp.metadator.library.mediastore.ActivityResultHost
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -41,7 +40,7 @@ class MainActivity : ComponentActivity() {
             val settings by
                 settingsRepository.settings.collectAsStateWithLifecycle(initialValue = null)
             LaunchedEffect(settings != null) { if (settings != null) settingsLoaded.value = true }
-            val current = settings ?: UserSettings()
+            val current = settings ?: return@setContent
             ReviewPrompt(successfulSaves = current.successfulSaves)
 
             val snackbar = remember { SnackbarHostState() }

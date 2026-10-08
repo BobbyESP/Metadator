@@ -66,6 +66,17 @@ fun MetadatorApp(onExit: () -> Unit) {
     val listDetail = rememberListDetailSceneStrategy<NavKey>(directive = paneDirective())
     val strategies =
         remember(overlay, listDetail) { listOf(overlay, listDetail.sharingTheWindow()) }
+    // Remembered: entries are equal only while their content is the same instance, and a back
+    // gesture let go is finished only if the scene it was showing still equals the one it ends on.
+    val entries =
+        remember(navigator) {
+            entryProvider<NavKey> {
+                librarySection(navigator)
+                editorSection(navigator)
+                batchSection(navigator)
+                settingsSection(navigator)
+            }
+        }
     val snackbarHostState = LocalSnackbarHostState.current
 
     // The player belongs to browsing; the editors have their own controls and need the room.
@@ -105,13 +116,7 @@ fun MetadatorApp(onExit: () -> Unit) {
                         backStack = backStack,
                         navigator = navigator,
                         sceneStrategies = strategies,
-                        entryProvider =
-                            entryProvider {
-                                librarySection(navigator)
-                                editorSection(navigator)
-                                batchSection(navigator)
-                                settingsSection(navigator)
-                            },
+                        entryProvider = entries,
                         modifier = Modifier.hazeSource(backdrop),
                     )
                 }

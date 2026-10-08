@@ -32,7 +32,7 @@
     <string name="section_file">File</string>
     <string name="all_tags_description">Every other tag in the file. Kept as it is unless you change it here.</string>
 
-    <string name="add_value">Add</string>
+    <string name="add_value">Add another</string>
     <string name="add_value_hint">Type and press enter</string>
     <string name="remove_value">Remove %1$s</string>
 

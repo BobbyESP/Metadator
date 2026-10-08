@@ -6,14 +6,18 @@ package com.bobbyesp.metadator.feature.editor
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
@@ -29,16 +33,23 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.automirrored.rounded.Undo
 import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.Album
+import androidx.compose.material.icons.rounded.CalendarMonth
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Error
+import androidx.compose.material.icons.rounded.Groups
 import androidx.compose.material.icons.rounded.Lyrics
 import androidx.compose.material.icons.rounded.MoreVert
+import androidx.compose.material.icons.rounded.Numbers
+import androidx.compose.material.icons.rounded.Person
+import androidx.compose.material.icons.rounded.PriorityHigh
 import androidx.compose.material.icons.rounded.Save
 import androidx.compose.material.icons.rounded.Schedule
 import androidx.compose.material.icons.rounded.SearchOff
 import androidx.compose.material.icons.rounded.TravelExplore
 import androidx.compose.material.icons.rounded.Warning
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -58,6 +69,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -65,7 +77,10 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -84,7 +99,9 @@ import com.bobbyesp.metadator.core.designsystem.component.LabelChip
 import com.bobbyesp.metadator.core.designsystem.component.LoadingScreen
 import com.bobbyesp.metadator.core.designsystem.component.MenuAction
 import com.bobbyesp.metadator.core.designsystem.component.PlaceholderCard
+import com.bobbyesp.metadator.core.designsystem.component.RolledIn
 import com.bobbyesp.metadator.core.designsystem.component.SectionHeader
+import com.bobbyesp.metadator.core.designsystem.component.ShapedIcon
 import com.bobbyesp.metadator.core.designsystem.component.TonalFieldDefaults
 import com.bobbyesp.metadator.core.designsystem.component.TonalTextField
 import com.bobbyesp.metadator.core.designsystem.component.sidesOf
@@ -93,10 +110,8 @@ import com.bobbyesp.metadator.core.designsystem.theme.Spacing
 import com.bobbyesp.metadator.core.designsystem.theme.blurHalo
 import com.bobbyesp.metadator.core.domain.editor.Position
 import com.bobbyesp.metadator.core.domain.editor.TagDraft
-import com.bobbyesp.metadator.core.model.TrackField
 import com.bobbyesp.metadator.core.ui.R as CoreUiR
 import com.bobbyesp.metadator.core.ui.component.fieldLabel
-import com.bobbyesp.metadator.core.ui.component.missingTagsText
 import com.bobbyesp.metadator.feature.editor.components.CoverCard
 import com.bobbyesp.metadator.feature.editor.components.FileInfoCard
 import com.bobbyesp.metadator.feature.editor.components.PositionField
@@ -172,6 +187,7 @@ internal fun EditorScreen(
         }
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val haze = rememberHazeState()
+    val focusManager = LocalFocusManager.current
 
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -204,7 +220,9 @@ internal fun EditorScreen(
                     Modifier.fillMaxSize()
                         .padding(top = padding.calculateTopPadding())
                         .sidesOf(padding)
-                        .imePadding()
+                        .pointerInput(focusManager) {
+                            detectTapGestures { focusManager.clearFocus() }
+                        }
                 ) {
                     val cover =
                         @Composable { m: Modifier ->
@@ -232,8 +250,8 @@ internal fun EditorScreen(
                                 modifier = m,
                             )
                         }
-                    // The fields, recorded for the toolbar floating over them: its sibling.
-                    BoxWithConstraints(Modifier.fillMaxSize().hazeSource(haze)) {
+
+                    BoxWithConstraints(Modifier.fillMaxSize().imePadding().hazeSource(haze)) {
                         if (maxWidth >= TwoColumnWidth) {
                             // Wide: the cover and the file stay in view while the fields scroll.
                             Row(Modifier.fillMaxSize().padding(horizontal = Spacing.extraLarge)) {
@@ -544,7 +562,9 @@ private fun LazyListScope.fields(
                 changed = draft.isChanged(key),
                 onRevert = { onIntent(EditorIntent.Revert(listOf(key))) },
                 separator = separator,
-                modifier = GroupGap.animateItem(),
+                // No placement animation: a focused field stays composed out of view, and scrolled
+                // back to, it would travel to its place from wherever it was kept.
+                modifier = GroupGap.animateItem(placementSpec = null),
                 shape = GroupShapes.itemShape(index, otherKeys.size),
             )
         }
@@ -555,39 +575,67 @@ private fun LazyListScope.fields(
  * The essential tags the song would still be missing if it were saved now: what the library flags
  * it for, read from the draft, so the notice goes as the fields are filled in.
  */
-private fun TagDraft.missingEssentials(): Set<TrackField> = buildSet {
-    fun missing(field: TagField) = tags[field.key].all { it.isBlank() }
-    if (missing(TagField.Artist)) add(TrackField.Artist)
-    if (missing(TagField.Album)) add(TrackField.Album)
-    if (missing(TagField.AlbumArtist)) add(TrackField.AlbumArtist)
-    if (missing(TagField.Date)) add(TrackField.Year)
-    if (missing(TagField.TrackNumber)) add(TrackField.TrackNumber)
-}
+private fun TagDraft.missingEssentials(): List<TagField> =
+    EssentialFields.keys.filter { field -> tags[field.key].all { it.isBlank() } }
+
+/** The tags a song needs, in the order the editor has them, each with the icon of its chip. */
+private val EssentialFields: Map<TagField, ImageVector> =
+    linkedMapOf(
+        TagField.Artist to Icons.Rounded.Person,
+        TagField.Album to Icons.Rounded.Album,
+        TagField.AlbumArtist to Icons.Rounded.Groups,
+        TagField.Date to Icons.Rounded.CalendarMonth,
+        TagField.TrackNumber to Icons.Rounded.Numbers,
+    )
+
+private const val PILL_FOLLOW_MS = 60
 
 /** Why the library says this song needs attention, before the fields that would fix it. */
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalLayoutApi::class)
 @Composable
-private fun AttentionNotice(missing: Set<TrackField>, modifier: Modifier = Modifier) {
-    val text = missingTagsText(missing) ?: return
+private fun AttentionNotice(missing: List<TagField>, modifier: Modifier = Modifier) {
     Surface(
         modifier = modifier.fillMaxWidth(),
         shape = MaterialTheme.shapes.largeIncreased,
-        color = MaterialTheme.colorScheme.errorContainer,
-        contentColor = MaterialTheme.colorScheme.onErrorContainer,
+        color = MaterialTheme.colorScheme.surfaceContainerLow,
     ) {
         Row(
-            // Read as one thing: "Needs attention. Missing: year".
+            // Read as one thing: "Needs attention. Year".
             modifier = Modifier.padding(Spacing.large).semantics(mergeDescendants = true) {},
             horizontalArrangement = Arrangement.spacedBy(Spacing.large),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Icon(Icons.Rounded.Warning, contentDescription = null)
-            Column {
+            ShapedIcon(
+                icon = Icons.Rounded.PriorityHigh,
+                size = 56.dp,
+                containerColor = MaterialTheme.colorScheme.errorContainer,
+                contentColor = MaterialTheme.colorScheme.onErrorContainer,
+                turnMillis = 20_000,
+            )
+            Column(verticalArrangement = Arrangement.spacedBy(Spacing.small)) {
                 Text(
                     stringResource(R.string.needs_attention_title),
-                    style = MaterialTheme.typography.titleSmallEmphasized,
+                    style = MaterialTheme.typography.titleMediumEmphasized,
                 )
-                Text(text, style = MaterialTheme.typography.bodyMedium)
+
+                var arrived by rememberSaveable { mutableStateOf(false) }
+                LaunchedEffect(Unit) { arrived = true }
+
+                FlowRow(Modifier.heightIn(min = AssistChipDefaults.Height + Spacing.small)) {
+                    EssentialFields.entries.forEachIndexed { index, (field, icon) ->
+                        RolledIn(
+                            target = field.takeIf { arrived && it in missing },
+                            delayMillis = index * PILL_FOLLOW_MS,
+                        ) { shown ->
+                            LabelChip(
+                                label = fieldLabel(shown.key),
+                                icon = icon,
+                                modifier =
+                                    Modifier.padding(end = Spacing.small, bottom = Spacing.small),
+                            )
+                        }
+                    }
+                }
             }
         }
     }

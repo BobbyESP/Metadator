@@ -57,6 +57,26 @@ whether they share the window (`LocalPaneContext`), never measure it. The list-d
 told not to move the focus to the pane it shows (`paneDirective` in `MetadatorApp`): it would give
 it to the library's search field, and open the keyboard, on every rotation to a wide window.
 
+Every transition between screens is in `NavigationMotion`:
+
+- **Forward**: the new screen springs in from the end, over the old one, which moves a quarter of
+  the way, shrinks a little and fades. **Backward** is the reverse. Both run on the theme's motion
+  scheme: the default spatial spring for what moves and the effects springs for the fades. Not the
+  slow spring Material suggests for a full screen: a screen is changed too often to wait for it.
+  The springs are given a threshold of one pixel, or the transition, with both screens composed,
+  would outlast the motion.
+- **Predictive back**: the screen shrinks under the finger and shows the one behind, then leaves
+  the way the finger goes. `NavDisplay` seeks this transition by the gesture's progress and plays
+  what is left of it once released, so it is tweens of one length: each spring would run through
+  its own time under the same finger. With gesture navigation every back goes through it.
+  Meanwhile the screen behind is out of focus (`BehindTheGesture`, an entry decorator over
+  `Modifier.outOfFocus`): most at the start, sharp once uncovered. The blur is a layer that exists
+  only during the gesture, and is driven while drawing.
+
+The entry provider is remembered in `MetadatorApp`. Entries are equal only while their content is
+the same instance, and `NavDisplay` finishes a back gesture that was let go only if the scene it
+was showing equals the one the stack ends on: otherwise the leaving screen is gone at once.
+
 "Open with Metadator" runs `ExternalEditorActivity` in its own task with only the editor, so
 closing it returns to the app that opened the file.
 
@@ -67,6 +87,12 @@ Material keys running shape morphs by their spec) and a color scheme from the wa
 (MaterialKolor). Schemes are cached and built off the main thread. The editor and the player nest
 `MetadatorAccentTheme`, seeded from the cover's dominant color and harmonized with the app's. That
 color comes from `ArtworkAccentSource` (`:core:ui`), which keeps bitmaps out of ViewModels.
+
+A new scheme costs one recomposition of what is under its theme, and nothing else does: what the
+theme provides keeps its instance until the scheme changes, so saving an unrelated setting
+recomposes nothing. Schemes are swapped, not faded: `ColorScheme` is immutable and its local is
+static, so a fade would recompose everything under the theme on every frame. Both activities wait
+for the settings before composing, so the default theme is never shown in place of the user's.
 
 Settings keep the 1.x DataStore file name and theme keys, so an update keeps the user's theme.
 
@@ -101,6 +127,10 @@ same everywhere:
 - `PlayingBars`: the three bars on the row of the song that is playing; still while paused.
 - `SectionHeader`, `NavigationItem`, `SwitchItem`, `RadioItem`, `PlaceholderCard`: grouped lists
   and what a screen shows instead of content.
+
+- `RolledIn`: something that turns up by rolling into its place through focus, and leaves the same
+  way, at the pace of `ThroughFocus`: the album's chip in the player, the pills of the editor's
+  "needs attention" notice.
 
 Animations use the theme's motion scheme (`MaterialTheme.motionScheme`): spatial specs for what
 moves or changes size, effects specs for fades. They are kept for changes of state the user caused

@@ -73,13 +73,14 @@ fun MetadatorTheme(settings: UserSettings = UserSettings(), content: @Composable
                 ),
             cache = cache,
         )
-    // One instance for the app's lifetime: Material keys running shape morphs by their spec, and a
-    // new scheme per recomposition made buttons jump to their pressed shape.
+
     val motionScheme = remember { MotionScheme.expressive() }
 
+    val themeColors = remember(built, cache) { ThemeColors(built, cache) }
+
     CompositionLocalProvider(
-        LocalDarkTheme provides isDark,
-        LocalThemeColors provides ThemeColors(built, cache),
+        LocalDarkTheme provides built.source.isDark,
+        LocalThemeColors provides themeColors,
     ) {
         MaterialExpressiveTheme(
             colorScheme = built.scheme,

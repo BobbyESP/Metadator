@@ -8,14 +8,9 @@ import androidx.compose.animation.EnterExitState
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.SizeTransform
-import androidx.compose.animation.core.CubicBezierEasing
-import androidx.compose.animation.core.FiniteAnimationSpec
 import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -87,6 +82,8 @@ import androidx.compose.ui.unit.dp
 import com.bobbyesp.metadator.core.common.formatDuration
 import com.bobbyesp.metadator.core.designsystem.component.LabelChip
 import com.bobbyesp.metadator.core.designsystem.component.PlaceholderCard
+import com.bobbyesp.metadator.core.designsystem.component.RolledIn
+import com.bobbyesp.metadator.core.designsystem.component.ThroughFocus
 import com.bobbyesp.metadator.core.designsystem.component.sidesOf
 import com.bobbyesp.metadator.core.designsystem.theme.GroupShapes
 import com.bobbyesp.metadator.core.designsystem.theme.Spacing
@@ -294,7 +291,10 @@ internal fun TrackArtwork(track: Track, shape: Shape, modifier: Modifier = Modif
         label = "TrackArtwork",
     ) { shown ->
         val focus =
-            transition.animateFloat(transitionSpec = { replacing() }, label = "Focus") {
+            transition.animateFloat(
+                transitionSpec = { ThroughFocus.replacing() },
+                label = "Focus",
+            ) {
                 if (it == EnterExitState.Visible) 1f else 0f
             }
         val blur = remember(focus) { { 1f - focus.value } }
@@ -397,48 +397,6 @@ internal fun TrackName(
 }
 
 /**
- * Something that turns up like a figure on a counter: it rolls in from under its place, out of
- * focus from the speed and sharp as it stops. It rolls out over the top the same way, and a new one
- * rolls the old one out. Nothing clips it on the way: it is faint enough there to pass over what is
- * next to it.
- *
- * @param target what to show, or `null` for nothing
- */
-@Composable
-private fun <T : Any> RolledIn(
-    target: T?,
-    modifier: Modifier = Modifier,
-    content: @Composable (T) -> Unit,
-) {
-    AnimatedContent(
-        targetState = target,
-        transitionSpec = {
-            // No fade of its own: going through focus is one.
-            slideInVertically(arriving()) { it } togetherWith
-                slideOutVertically(leaving()) { -it } using
-                SizeTransform(clip = false)
-        },
-        modifier = modifier,
-        contentAlignment = Alignment.CenterStart,
-        label = "RolledIn",
-    ) { shown ->
-        val focus =
-            transition.animateFloat(
-                transitionSpec = {
-                    if (targetState == EnterExitState.Visible) arriving() else leaving()
-                },
-                label = "Focus",
-            ) {
-                if (it == EnterExitState.Visible) 1f else 0f
-            }
-        val presence = remember(focus) { { focus.value } }
-        if (shown != null) {
-            Box(Modifier.dissolved(presence)) { content(shown) }
-        }
-    }
-}
-
-/**
  * One line about the playing song. A new song's comes in from the side through focus, a short way
  * and sharpening as it stops, while the old one's leaves the other way: the same as the album's
  * chip turning up, on its side.
@@ -461,8 +419,8 @@ internal fun TrackLine(
     AnimatedContent(
         targetState = track,
         transitionSpec = {
-            slideInHorizontally(arriving(delay)) { shift } togetherWith
-                slideOutHorizontally(leaving(delay)) { -shift } using
+            slideInHorizontally(ThroughFocus.arriving(delay)) { shift } togetherWith
+                slideOutHorizontally(ThroughFocus.leaving(delay)) { -shift } using
                 SizeTransform(clip = false)
         },
         contentKey = { it.id },
@@ -472,7 +430,8 @@ internal fun TrackLine(
         val focus =
             transition.animateFloat(
                 transitionSpec = {
-                    if (targetState == EnterExitState.Visible) arriving(delay) else leaving(delay)
+                    if (targetState == EnterExitState.Visible) ThroughFocus.arriving(delay)
+                    else ThroughFocus.leaving(delay)
                 },
                 label = "Focus",
             ) {
@@ -482,31 +441,6 @@ internal fun TrackLine(
         Box(Modifier.dissolved(presence)) { line(shown) }
     }
 }
-
-/**
- * The pace of one thing replacing another through focus ([TrackLine], [RolledIn]): what leaves
- * starts slowly and is quickest as it goes, and what arrives does the opposite, quick at first and
- * slowing to a stop. The one arriving waits for the other to be on its way.
- *
- * Tweens, where the app otherwise animates with the theme's springs: a spring cannot start slowly
- * and end at its quickest, which is the whole of the way out. The curves are Material's emphasized
- * accelerate and decelerate.
- */
-private fun <T> leaving(delayMillis: Int = 0): FiniteAnimationSpec<T> =
-    tween(LEAVE_MS, delayMillis = delayMillis, easing = EmphasizedAccelerate)
-
-private fun <T> arriving(delayMillis: Int = 0): FiniteAnimationSpec<T> =
-    tween(ARRIVE_MS, delayMillis = ARRIVE_AFTER_MS + delayMillis, easing = EmphasizedDecelerate)
-
-/** The pace of one picture coming into focus over another, which only waits beneath it. */
-private fun <T> replacing(): FiniteAnimationSpec<T> =
-    tween(ARRIVE_MS, easing = EmphasizedDecelerate)
-
-private val EmphasizedAccelerate = CubicBezierEasing(0.3f, 0f, 0.8f, 0.15f)
-private val EmphasizedDecelerate = CubicBezierEasing(0.05f, 0.7f, 0.1f, 1f)
-private const val LEAVE_MS = 280
-private const val ARRIVE_MS = 440
-private const val ARRIVE_AFTER_MS = 160
 
 /** How much later the second line of a pair starts than the first, going and coming. */
 private const val FOLLOW_MS = 140

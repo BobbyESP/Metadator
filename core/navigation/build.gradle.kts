@@ -8,4 +8,5 @@ dependencies {
     api(project(":core:model"))
     api(libs.bundles.navigation3)
     api(libs.kotlinx.serialization.json)
+    implementation(project(":core:designsystem"))
 }

@@ -95,7 +95,8 @@ Versions are in `gradle/libs.versions.toml`; the app's version in the root `buil
   is a sibling of what it blurs, never an ancestor, and nothing is frosted while a shared element
   transition runs. A halo stays out of its element's enter and exit animation.
 - No deprecated API: the build has no deprecation warnings, keep it so. Animate with the theme's
-  `motionScheme`, not hand-written tweens. The player sheet is the exception, and says why.
+  `motionScheme`, not hand-written tweens. The player sheet and predictive back are the
+  exceptions, and say why.
 - Regular expressions run on Android's engine (ICU), stricter than the JVM's the tests use: escape
   every literal `}` and `]`.
 

@@ -32,7 +32,7 @@
     <string name="section_file">Archivo</string>
     <string name="all_tags_description">El resto de etiquetas del archivo. Se mantienen tal cual salvo que las cambies aquí.</string>
 
-    <string name="add_value">Añadir</string>
+    <string name="add_value">Añadir otro</string>
     <string name="add_value_hint">Escribe y pulsa intro</string>
     <string name="remove_value">Quitar %1$s</string>
 

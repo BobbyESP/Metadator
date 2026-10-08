@@ -10,7 +10,7 @@ import com.bobbyesp.metadator.core.model.Track
 import com.bobbyesp.metadator.core.ui.artwork.ArtworkAccentSource
 import com.bobbyesp.metadator.core.ui.viewmodel.BaseViewModel
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
@@ -55,11 +55,12 @@ internal class NowPlayingViewModel(
         if (currentState.ref != track.ref) setState { copy(ref = track.ref, lyrics = null) }
         loading =
             launch(onError = { setState { copy(lyrics = TrackLyrics.Unreadable) } }) {
-                val accent = async { track.artworkRef?.let { accents.fromUri(it.uri) } }
+                this.launch {
+                    val color = track.artworkRef?.let { accents.fromUri(it.uri) }
+                    setState { copy(accent = color) }
+                }
                 val lyrics = loadLyrics(track.ref)
                 setState { copy(lyrics = lyrics) }
-                val color = accent.await()
-                setState { copy(accent = color) }
             }
     }
 }
