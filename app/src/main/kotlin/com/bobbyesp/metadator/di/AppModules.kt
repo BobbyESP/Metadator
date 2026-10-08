@@ -12,9 +12,11 @@ import com.bobbyesp.metadator.core.data.DataStoreSettingsRepository
 import com.bobbyesp.metadator.core.data.createSettingsDataStore
 import com.bobbyesp.metadator.core.database.MetadatorDatabase
 import com.bobbyesp.metadator.core.database.RoomTagBackupStore
+import com.bobbyesp.metadator.core.database.RoomTrackTagCache
 import com.bobbyesp.metadator.core.database.TagBackupFiles
 import com.bobbyesp.metadator.core.domain.batch.BatchRunner
 import com.bobbyesp.metadator.core.domain.editor.LoadTrackUseCase
+import com.bobbyesp.metadator.core.domain.library.TagCompletedAudioLibrary
 import com.bobbyesp.metadator.core.domain.lookup.LookupService
 import com.bobbyesp.metadator.core.domain.lyrics.FindLyricsUseCase
 import com.bobbyesp.metadator.core.domain.lyrics.LoadLyricsUseCase
@@ -34,6 +36,7 @@ import com.bobbyesp.metadator.library.api.AudioFileInfo
 import com.bobbyesp.metadator.library.api.AudioFileOpener
 import com.bobbyesp.metadator.library.api.AudioLibrary
 import com.bobbyesp.metadator.library.api.MediaIndexer
+import com.bobbyesp.metadator.library.api.TrackTagCache
 import com.bobbyesp.metadator.library.api.WriteAccess
 import com.bobbyesp.metadator.library.mediastore.ActivityResultHost
 import com.bobbyesp.metadator.library.mediastore.ContentResolverFileInfo
@@ -105,7 +108,14 @@ private val engineModule = module {
     single { RecoverableAccessCache() }
     single { ActivityResultHost() }
     single<AudioFileOpener> { ContentResolverFileOpener(androidContext(), get()) }
-    single<AudioLibrary> { MediaStoreAudioLibrary(androidContext(), get()) }
+    single<TrackTagCache> { RoomTrackTagCache(get<MetadatorDatabase>().trackTags()) }
+    single<AudioLibrary> {
+        TagCompletedAudioLibrary(
+            source = MediaStoreAudioLibrary(androidContext(), get()),
+            reader = get(),
+            cache = get(),
+        )
+    }
     single<AudioFileInfo> { ContentResolverFileInfo(androidContext(), get()) }
     single<WriteAccess> { MediaStoreWriteAccess(androidContext(), get(), get()) }
     single<MediaIndexer> { MediaStoreIndexer(androidContext(), get()) }

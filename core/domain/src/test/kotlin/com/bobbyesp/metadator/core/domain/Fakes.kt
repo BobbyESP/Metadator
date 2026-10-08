@@ -5,8 +5,13 @@ package com.bobbyesp.metadator.core.domain
 
 import com.bobbyesp.metadator.core.domain.settings.SettingsRepository
 import com.bobbyesp.metadator.core.model.ContentRef
+import com.bobbyesp.metadator.core.model.Track
+import com.bobbyesp.metadator.core.model.TrackId
 import com.bobbyesp.metadator.core.model.UserSettings
+import com.bobbyesp.metadator.library.api.AudioLibrary
+import com.bobbyesp.metadator.library.api.CachedTrackTags
 import com.bobbyesp.metadator.library.api.MediaIndexer
+import com.bobbyesp.metadator.library.api.TrackTagCache
 import com.bobbyesp.metadator.tags.api.AudioProperties
 import com.bobbyesp.metadator.tags.api.BackupId
 import com.bobbyesp.metadator.tags.api.EmbeddedPicture
@@ -18,6 +23,7 @@ import com.bobbyesp.metadator.tags.api.TagReader
 import com.bobbyesp.metadator.tags.api.TagSnapshot
 import com.bobbyesp.metadator.tags.api.TagWriteResult
 import com.bobbyesp.metadator.tags.api.TagWriter
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 
@@ -33,8 +39,10 @@ class FakeTagFiles(
     var writeResult: TagWriteResult? = null
     var failNextWrites = 0
     val writes = mutableListOf<ContentRef>()
+    val reads = mutableListOf<ContentRef>()
 
     override suspend fun read(ref: ContentRef, includePictures: Boolean): TagReadResult {
+        reads += ref
         val snapshot = files[ref] ?: return TagReadResult.NotFound
         return TagReadResult.Success(
             if (includePictures) snapshot else snapshot.copy(pictures = emptyList())
@@ -93,6 +101,32 @@ class FakeIndexer : MediaIndexer {
 
     override suspend fun rescan(refs: List<ContentRef>) {
         rescanned += refs
+    }
+}
+
+class FakeLibrary(initial: List<Track> = emptyList()) : AudioLibrary {
+    val tracks = MutableStateFlow(initial)
+
+    override fun observeTracks(): Flow<List<Track>> = tracks
+
+    override suspend fun track(id: TrackId) = tracks.value.firstOrNull { it.id == id }
+
+    override suspend fun findByRef(ref: ContentRef) = tracks.value.firstOrNull { it.ref == ref }
+
+    override suspend fun refresh() = Unit
+}
+
+class FakeTrackTagCache(initial: List<CachedTrackTags> = emptyList()) : TrackTagCache {
+    val entries = initial.associateByTo(mutableMapOf()) { it.id }
+
+    override suspend fun all() = entries.values.toList()
+
+    override suspend fun put(entries: List<CachedTrackTags>) {
+        entries.forEach { this.entries[it.id] = it }
+    }
+
+    override suspend fun remove(ids: Collection<TrackId>) {
+        ids.forEach(entries::remove)
     }
 }
 
