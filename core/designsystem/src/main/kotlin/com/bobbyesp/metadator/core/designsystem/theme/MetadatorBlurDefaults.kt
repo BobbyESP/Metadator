@@ -9,7 +9,9 @@ import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.BlurredEdgeTreatment
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
@@ -17,11 +19,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.blur.BlurRadiusSpec
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.HazeInput
 import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.blur.HazeBlurDefaults
 import dev.chrisbanes.haze.blur.HazeBlurStyle
 import dev.chrisbanes.haze.blur.HazeColorEffect
 import dev.chrisbanes.haze.blur.hazeBlur
@@ -33,11 +37,13 @@ import dev.chrisbanes.haze.blur.material3.Material3
  * tells the two apart better than a shadow, and keeps the content's colors in view. The surface
  * keeps its Material color role, only translucent.
  *
- * Two kinds of blur, for two jobs:
- * - **Frosted surfaces** ([surfaceStyle] and [frosted], on Haze): a bar over content recorded with
- *   `Modifier.hazeSource`.
+ * Three kinds of blur, for three jobs:
+ * - **Frosted surfaces** ([surfaceStyle] and [frosted], on Haze): a bar or a menu over content
+ *   recorded with `Modifier.hazeSource`.
+ * - **Halos** ([blurHalo], on Haze): the content around a floating element out of focus, where a
+ *   shadow would darken it.
  * - **Content out of focus** ([outOfFocus], on `Modifier.blur`): the screen behind something that
- *   opens over it.
+ *   opens over it. And [dissolved], for what comes and goes as one surface turns into another.
  *
  * Below Android 12 neither blurs: a frosted surface falls back to its container color, nearly
  * opaque, and content that would go out of focus is dimmed instead.
@@ -56,8 +62,63 @@ object MetadatorBlurDefaults {
      */
     val BehindOverlayRadius: Dp = 12.dp
 
+    /**
+     * What is [dissolved], at its faintest: clearly out of focus, but its shapes still there to
+     * sharpen into place.
+     */
+    val DissolveRadius: Dp = 12.dp
+
     /** Whether the device can blur at all; where it cannot, a dim does the job. */
     val isBlurSupported: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+
+    /**
+     * How far a [blurHalo] reaches past its element. Wider than the shadow it replaces: a shadow
+     * shows over any background, a blur only over detail, so it needs the room to be seen.
+     */
+    val HaloSpread: Dp = 32.dp
+
+    /**
+     * A menu's halo: wider than [HaloSpread], because a menu opens over more of the content, and
+     * its halo is all that separates the two.
+     */
+    val MenuHaloSpread: Dp = 36.dp
+
+    /**
+     * The halo's blur at the element's edge, easing to none at the end of its spread. Enough to
+     * soften what is beside the element, not to smear it: past this the halo stops reading as depth
+     * and starts reading as an effect.
+     */
+    val HaloRadius: Dp = 12.dp
+
+    /**
+     * How much further below its element the halo reaches than above it, as a fraction of its
+     * spread: Material's key light casts its shadows downwards, and the halo keeps that direction.
+     */
+    private const val HaloDropFraction = 0.25f
+
+    /** How far down a halo of [spread] is moved; see [HaloDropFraction]. */
+    fun haloDrop(spread: Dp): Dp = spread * HaloDropFraction
+
+    /** The room a halo of [spread] needs on every side of its element. */
+    fun haloMargin(spread: Dp = HaloSpread): Dp = spread + haloDrop(spread)
+
+    /**
+     * A breath of the surface color over the halo's blur, fading with it: over a flat area, where
+     * blur alone changes nothing, the element still has a faint rim around it. Kept low, or the rim
+     * reads as a band with an edge of its own.
+     */
+    internal const val HaloVeilOpacity = 0.18f
+
+    /** The halo's grain: the same reason as [NoiseFactor], over a narrower blur. */
+    internal const val HaloNoiseFactor = 0.04f
+
+    /**
+     * Whether [blurHalo] draws: its radius varies with distance, which Haze does from Android 13.
+     * Where it does not, an element keeps the shadow the halo replaces.
+     */
+    val isHaloSupported: Boolean =
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+            HazeBlurDefaults.isBlurEnabledByDefault()
 
     /**
      * How much of the container color covers the blur. Enough for the content colors on it to keep
@@ -106,6 +167,16 @@ object MetadatorBlurDefaults {
 }
 
 /**
+ * What is recorded of the screen for whatever floats over all of it to blur: the menus, and the
+ * shell's own player bar. The shell records it and provides it; a screen never does.
+ *
+ * `null` where nothing is recorded (a preview, the player, an overlay in a window of its own):
+ * there a menu keeps Material's container and shadow. Never frost with it something drawn inside
+ * the screen itself, which is inside what it records: that takes a source of the screen's own.
+ */
+val LocalBackdropHaze = staticCompositionLocalOf<HazeState?> { null }
+
+/**
  * Frosts this surface with [style], blurring what [state] records beneath it. The surface's own
  * container must then be transparent, and its shadow gone: the frost is what sets it apart.
  *
@@ -152,5 +223,48 @@ fun Modifier.outOfFocus(fraction: () -> Float, scrim: Color): Modifier {
         drawContent()
         val dim = fraction().coerceIn(0f, 1f) * scrimOpacity
         if (dim > 0f) drawRect(scrim, alpha = dim)
+    }
+}
+
+/**
+ * Brings this in, or takes it away, through focus: as faint and as blurred as it is absent, by
+ * [presence] from 0 (gone) to 1 (as it is). On the way in it sharpens as it shows. For what one
+ * surface has and the surface it turns into has not, which a plain fade would lay, half
+ * see-through, over what is still there. Below Android 12 it only fades.
+ *
+ * `Modifier.blur` and not Haze, so it can run during a shared element transition. What travels in
+ * that transition is drawn in its overlay, outside this, and stays sharp.
+ *
+ * @param presence read while drawing, so a gesture can drive it without recomposing anything
+ */
+@Composable
+fun Modifier.dissolved(presence: () -> Float): Modifier {
+    val absence = remember(presence) { { 1f - presence() } }
+    return defocused(absence).graphicsLayer { alpha = presence().coerceIn(0f, 1f) }
+}
+
+/**
+ * Takes this out of focus by [amount], from 0 (sharp) to 1, and nothing else: it stays as solid as
+ * it was. For what something else is taking the place of, and must not be seen through meanwhile.
+ * Below Android 12 it does nothing.
+ *
+ * @param amount read while drawing, so an animation can drive it without recomposing anything
+ * @param bounded whether the blur stops at the edges of this, which is right for what fills its
+ *   rectangle (a picture); left unbounded it is right for what does not (a pill, a line of text),
+ *   which a blur cut to a rectangle would show the corners of
+ */
+@Composable
+fun Modifier.defocused(amount: () -> Float, bounded: Boolean = false): Modifier {
+    // Only on the way: sharp there is nothing to blur, and no layer to pay for.
+    val blurring by
+        remember(amount) {
+            derivedStateOf { MetadatorBlurDefaults.isBlurSupported && amount() > 0f }
+        }
+    if (!blurring) return this
+    return blur {
+        radius =
+            BlurRadiusSpec.uniform(MetadatorBlurDefaults.DissolveRadius * amount().coerceIn(0f, 1f))
+        edgeTreatment =
+            if (bounded) BlurredEdgeTreatment.Rectangle else BlurredEdgeTreatment.Unbounded
     }
 }

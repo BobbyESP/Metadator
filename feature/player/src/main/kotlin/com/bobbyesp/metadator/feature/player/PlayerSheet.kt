@@ -5,19 +5,24 @@ package com.bobbyesp.metadator.feature.player
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.EnterExitState
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.animation.core.ArcAnimationSpec
+import androidx.compose.animation.core.ArcMode
 import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.Easing
+import androidx.compose.animation.core.ExperimentalAnimationSpecApi
 import androidx.compose.animation.core.FiniteAnimationSpec
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateDp
-import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.rememberTransition
+import androidx.compose.animation.core.snap
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -30,13 +35,16 @@ import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,21 +54,28 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.util.lerp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigationevent.NavigationEventInfo
 import androidx.navigationevent.NavigationEventTransitionState
 import androidx.navigationevent.compose.NavigationBackHandler
 import androidx.navigationevent.compose.rememberNavigationEventState
 import com.bobbyesp.metadator.core.designsystem.theme.MetadatorAccentTheme
+import com.bobbyesp.metadator.core.designsystem.theme.MetadatorBlurDefaults
 import com.bobbyesp.metadator.core.designsystem.theme.Spacing
+import com.bobbyesp.metadator.core.designsystem.theme.blurHalo
+import com.bobbyesp.metadator.core.designsystem.theme.dissolved
 import com.bobbyesp.metadator.player.api.PlayerController
+import dev.chrisbanes.haze.HazeState
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 
@@ -81,8 +96,17 @@ object PlayerSheetDefaults {
  *   container clips it. Without that, everything inside is laid out again every frame in bounds
  *   that are changing, and the shared elements in it start by jumping.
  * - The cover is a `sharedElement`: the same picture in both, so only one of them is drawn.
- * - The song's name and the play button are `sharedBounds`: they differ between the two, and one
- *   fades into the other while scaling.
+ * - The song's title, its artist and the play button are tied too, each on an arc, and of each only
+ *   the version the sheet is going to is ever drawn, from the first frame. The two versions are
+ *   made to be the same thing in the same bounds (the same text at another scale, the same button
+ *   laid out again), so that swap does not show: it reads as one thing that moves and grows. Never
+ *   both at once, one fading into the other: each has a bounds animation of its own, and seeked as
+ *   this transition is they are not in step, so the two show apart, as a double image.
+ * - What only one of the two has is not shared, and goes through focus instead ([dissolved]): the
+ *   bar's is gone early on the way up, the screen's comes in once the surface is its color.
+ *
+ * All of it is a function of how far open the sheet is, the same going up as coming down, since a
+ * finger can stop it anywhere and turn back.
  *
  * The transition is seekable, which is what lets a drag hold it halfway; [PlayerSheetState] is what
  * moves it.
@@ -94,6 +118,8 @@ object PlayerSheetDefaults {
  * @param onEdit asked to open the editor for the playing song, by its URI
  * @param layout how the full player is laid out, which the shell decides from the window
  * @param expansion told how far open the sheet is, for the shell to step back what is behind it
+ * @param backdrop what is recorded of the screens under the player, which the bar is lifted off
+ *   with a blur halo; without it, or where the device cannot draw one, with a shadow
  */
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
@@ -103,6 +129,7 @@ fun PlayerSheet(
     modifier: Modifier = Modifier,
     layout: PlayerLayout = PlayerLayout.Stacked,
     expansion: PlayerSheetExpansion? = null,
+    backdrop: HazeState? = null,
 ) {
     val player: PlayerController = koinInject()
     val playback by player.state.collectAsStateWithLifecycle()
@@ -128,6 +155,28 @@ fun PlayerSheet(
     }
 
     val motion = MaterialTheme.motionScheme
+    // The halo is the bar's alone: it goes as soon as the bar starts to open, since nothing blurs
+    // while the shared elements travel, and comes back once the bar is at rest again.
+    val haloed = backdrop != null && MetadatorBlurDefaults.isHaloSupported
+    val barAtRest by remember(sheet) { derivedStateOf { sheet.fraction == 0f } }
+    val haloStrength by
+        animateFloatAsState(
+            targetValue = if (available && barAtRest) 1f else 0f,
+            animationSpec = motion.defaultEffectsSpec(),
+            label = "MiniPlayerHalo",
+        )
+    // The cover steps back while the music is paused, in the full player only. Both covers do it
+    // by as much as the sheet is open: a shared element draws one of the two from the first frame,
+    // and if only the screen's stepped back, the cover would jump to its size there.
+    val pausedCoverScale by
+        animateFloatAsState(
+            targetValue = if (playback.isPlaying) 1f else PAUSED_COVER_SCALE,
+            animationSpec = motion.slowSpatialSpec(),
+            label = "CoverScale",
+        )
+    val barPresence = remember(sheet) { { 1f - sheet.fraction / BAR_GONE_BY } }
+    val screenPresence =
+        remember(sheet) { { (sheet.fraction - SCREEN_FROM) / (SCREEN_BY - SCREEN_FROM) } }
     val dragState = rememberDraggableState { delta -> sheet.dragBy(delta) }
     val dragToMove =
         Modifier.draggable(
@@ -197,29 +246,13 @@ fun PlayerSheet(
                         else ScreenArtworkCorner
                     }
                 val shape = RoundedCornerShape(corner)
-                // What only the bar has is out of the way early going up, and back late coming
-                // down.
-                val barContentAlpha by
-                    scope.transition.animateFloat(
-                        transitionSpec = {
-                            val part = TIMELINE_MS / 4
-                            if (targetState == EnterExitState.Visible) {
-                                tween(part, delayMillis = TIMELINE_MS - part, easing = LinearEasing)
-                            } else {
-                                tween(part, easing = LinearEasing)
-                            }
-                        },
-                        label = "BarContentAlpha",
-                    ) {
-                        if (it == EnterExitState.Visible) 1f else 0f
-                    }
-
                 val container =
                     Modifier.sharedBounds(
                         sharedContentState = rememberSharedContentState(SharedKey.Container),
                         animatedVisibilityScope = scope,
-                        // The screen shows up during the first half of the way up and holds through
-                        // the first half of the way down; the bar takes the other half.
+                        // The surface only: what is on it has a pace of its own. The screen's shows
+                        // up during the first half of the way up and holds through the first half
+                        // of the way down; the bar's takes the other half.
                         enter =
                             fadeIn(
                                 tween(
@@ -240,66 +273,91 @@ fun PlayerSheet(
                 // drawn.
                 val artwork =
                     Modifier.sharedElement(
-                        sharedContentState = rememberSharedContentState(SharedKey.Artwork),
-                        animatedVisibilityScope = scope,
-                        boundsTransform = { _, _ -> traveller() },
-                        zIndexInOverlay = ABOVE_CONTAINER,
+                            sharedContentState = rememberSharedContentState(SharedKey.Artwork),
+                            animatedVisibilityScope = scope,
+                            boundsTransform = { _, _ -> traveller() },
+                            zIndexInOverlay = ABOVE_CONTAINER,
+                        )
+                        .graphicsLayer {
+                            val scale = lerp(1f, pausedCoverScale, sheet.fraction)
+                            scaleX = scale
+                            scaleY = scale
+                        }
+                // A line of text is scaled, not laid out again: it would wrap or cut differently
+                // at every width. By its height, from its start: the two are the same text at two
+                // sizes, so at the same height they are the same glyphs, and from the same edge
+                // they coincide for as long as both say the same, even where the bar's is cut
+                // short.
+                val text =
+                    SharedTransitionScope.ResizeMode.scaleToBounds(
+                        contentScale = ContentScale.FillHeight,
+                        alignment = Alignment.CenterStart,
                     )
-                // Different in each: shared bounds, scaled rather than laid out again (text would
-                // wrap differently at every width), one handing over to the other halfway.
-                val title =
-                    Modifier.sharedBounds(
-                        sharedContentState = rememberSharedContentState(SharedKey.Title),
-                        animatedVisibilityScope = scope,
-                        enter = handOverIn(),
-                        exit = handOverOut(),
-                        boundsTransform = { _, _ -> traveller() },
-                        zIndexInOverlay = ABOVE_CONTAINER,
-                    )
+                val title = travellingText(SharedKey.Title, scope, text)
+                val artist = travellingText(SharedKey.Artist, scope, text)
+                // The button fills whatever bounds it is given, so the screen's laid out in the
+                // bar's bounds is the bar's: a shared element, as the cover is.
                 val playButton =
-                    Modifier.sharedBounds(
+                    Modifier.sharedElement(
                         sharedContentState = rememberSharedContentState(SharedKey.PlayButton),
                         animatedVisibilityScope = scope,
-                        enter = handOverIn(),
-                        exit = handOverOut(),
-                        boundsTransform = { _, _ -> traveller() },
+                        boundsTransform = { _, _ -> arcTraveller() },
                         zIndexInOverlay = ABOVE_CONTAINER,
                     )
 
                 when (value) {
                     PlayerSheetValue.Collapsed ->
                         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
-                            AnimatedVisibility(
-                                visible = available,
-                                // A spring, so the bar lands with a little bounce.
-                                enter =
-                                    slideInVertically(motion.defaultSpatialSpec()) { it * 2 } +
-                                        fadeIn(motion.defaultEffectsSpec()),
-                                exit =
-                                    slideOutVertically(motion.fastSpatialSpec()) { it * 2 } +
-                                        fadeOut(motion.fastEffectsSpec()),
-                                modifier =
-                                    Modifier.navigationBarsPadding()
-                                        .padding(bottom = Spacing.medium),
-                            ) {
-                                if (track != null) {
-                                    MiniPlayerBar(
-                                        track = track,
-                                        playback = playback,
-                                        player = player,
-                                        onOpen = sheet::expand,
-                                        shape = shape,
-                                        artworkShape = RoundedCornerShape(artworkCorner),
-                                        modifier = container.then(dragToMove),
-                                        // Laid out as a bar throughout, at the top of the surface
-                                        // as
-                                        // it grows.
-                                        contentModifier = Modifier.skipToLookaheadSize(),
-                                        artworkModifier = artwork,
-                                        titleModifier = title,
-                                        playButtonModifier = playButton,
-                                        contentAlpha = { barContentAlpha },
+                            // The bar's place, which the halo is drawn around: outside the bar's
+                            // own way in and out, which would slide and fade the halo with it.
+                            Box(
+                                Modifier.navigationBarsPadding()
+                                    .padding(bottom = Spacing.medium)
+                                    .widthIn(max = BarMaxWidth)
+                                    .fillMaxWidth()
+                                    .padding(horizontal = Spacing.medium)
+                                    .then(
+                                        // Only while there is a halo to draw: the screens are
+                                        // recorded for as long as something blurs them.
+                                        if (backdrop != null && (available || haloStrength > 0f)) {
+                                            Modifier.blurHalo(
+                                                state = backdrop,
+                                                shape = RoundedCornerShape(BarCorner),
+                                                strength = haloStrength,
+                                            )
+                                        } else Modifier
                                     )
+                            ) {
+                                AnimatedVisibility(
+                                    visible = available,
+                                    // A spring, so the bar lands with a little bounce.
+                                    enter =
+                                        slideInVertically(motion.defaultSpatialSpec()) { it * 2 } +
+                                            fadeIn(motion.defaultEffectsSpec()),
+                                    exit =
+                                        slideOutVertically(motion.fastSpatialSpec()) { it * 2 } +
+                                            fadeOut(motion.fastEffectsSpec()),
+                                ) {
+                                    if (track != null) {
+                                        MiniPlayerBar(
+                                            track = track,
+                                            playback = playback,
+                                            player = player,
+                                            onOpen = sheet::open,
+                                            shape = shape,
+                                            artworkShape = RoundedCornerShape(artworkCorner),
+                                            shadowElevation = if (haloed) 0.dp else BarShadow,
+                                            modifier = container.then(dragToMove),
+                                            // Laid out as a bar throughout, at the top of the
+                                            // surface as it grows.
+                                            contentModifier = Modifier.skipToLookaheadSize(),
+                                            artworkModifier = artwork,
+                                            titleModifier = title,
+                                            artistModifier = artist,
+                                            playButtonModifier = playButton,
+                                            ownContentPresence = barPresence,
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -319,6 +377,7 @@ fun PlayerSheet(
                             NowPlayingContent(
                                 playback = playback,
                                 player = player,
+                                settled = sheet.isSettledExpanded,
                                 onClose = sheet::collapse,
                                 onEdit = edit,
                                 modifier = content,
@@ -326,7 +385,9 @@ fun PlayerSheet(
                                 artworkShape = RoundedCornerShape(artworkCorner),
                                 artworkModifier = artwork,
                                 titleModifier = title,
+                                artistModifier = artist,
                                 playButtonModifier = playButton,
+                                ownContentPresence = screenPresence,
                             )
                         } else {
                             NowPlayingWideContent(
@@ -345,7 +406,9 @@ fun PlayerSheet(
                                 artworkShape = RoundedCornerShape(artworkCorner),
                                 artworkModifier = artwork,
                                 titleModifier = title,
+                                artistModifier = artist,
                                 playButtonModifier = playButton,
+                                ownContentPresence = screenPresence,
                             )
                         }
                     }
@@ -366,6 +429,7 @@ private fun rememberPlayerSheetState(): PlayerSheetState {
             initial = if (expanded) PlayerSheetValue.Expanded else PlayerSheetValue.Collapsed,
             scope = scope,
             settleSpec = SettleSpring,
+            openSpec = OpenSpring,
             velocityThreshold = velocityThreshold,
         )
     }
@@ -403,11 +467,46 @@ private fun <T> timeline(): FiniteAnimationSpec<T> = tween(TIMELINE_MS, easing =
 /** The pace of what the container carries: slow to leave, slow to arrive. */
 private fun <T> traveller(): FiniteAnimationSpec<T> = tween(TIMELINE_MS, easing = Carried)
 
-/** Two different things in the same bounds: one leaves in the first half, the other comes after. */
-private fun handOverOut(): ExitTransition = fadeOut(tween(TIMELINE_MS / 2, easing = LinearEasing))
+/**
+ * The pace of what the container carries, on a curve instead of a straight line: sideways first and
+ * up late on the way to the screen, down first and sideways late on the way back, which is the same
+ * path walked the other way.
+ *
+ * That way round and not the other because of the container: its top edge rises at a steady pace,
+ * and what rose ahead of it would be cut by it. An arc that keeps low stays behind the edge.
+ */
+@OptIn(ExperimentalAnimationSpecApi::class)
+private fun arcTraveller(): FiniteAnimationSpec<Rect> =
+    ArcAnimationSpec(mode = ArcMode.ArcBelow, durationMillis = TIMELINE_MS, easing = Carried)
 
-private fun handOverIn(): EnterTransition =
-    fadeIn(tween(TIMELINE_MS / 2, delayMillis = TIMELINE_MS / 2, easing = LinearEasing))
+/**
+ * Ties a line of text the bar and the full player both have. It is a shared element in all but
+ * name: only the version the transition is going to is drawn, the other gone from the first frame.
+ * `sharedElement` itself lays its content out again in the bounds as they change, which would wrap
+ * or cut a text differently at every width; these bounds scale it.
+ *
+ * The two say the same, so the line travels whole, and it is not clipped to its bounds on the way:
+ * they travel on an arc, which moves their corners apart and together again, so they do not keep
+ * the shape of the text and would cut into it.
+ *
+ * @param resizeMode how the text is scaled into the bounds
+ */
+@OptIn(ExperimentalSharedTransitionApi::class)
+@Composable
+private fun SharedTransitionScope.travellingText(
+    key: SharedKey,
+    scope: AnimatedVisibilityScope,
+    resizeMode: SharedTransitionScope.ResizeMode,
+): Modifier =
+    Modifier.sharedBounds(
+        sharedContentState = rememberSharedContentState(key),
+        animatedVisibilityScope = scope,
+        enter = EnterTransition.None,
+        exit = fadeOut(snap()),
+        boundsTransform = { _, _ -> arcTraveller() },
+        resizeMode = resizeMode,
+        zIndexInOverlay = ABOVE_CONTAINER,
+    )
 
 /**
  * How the sheet finishes once released. Looser than the motion scheme's springs, which are tuned
@@ -415,6 +514,13 @@ private fun handOverIn(): EnterTransition =
  * is meant to run a little past the end and come back.
  */
 private val SettleSpring = spring<Float>(dampingRatio = 0.68f, stiffness = 240f)
+
+/**
+ * How the sheet opens from a tap on the bar. Softer than [SettleSpring], which finishes what a
+ * finger had already started and at its speed: a tap starts from rest and covers the whole way, and
+ * at that stiffness the pieces that travel were there before they could be followed.
+ */
+private val OpenSpring = spring<Float>(dampingRatio = 0.76f, stiffness = 110f)
 
 /**
  * Slow to leave and slow to arrive, but never far ahead of the container's linear pace: what
@@ -428,11 +534,27 @@ private val RoundEarly = CubicBezierEasing(0f, 0f, 0.3f, 1f)
 private const val TIMELINE_MS = 400
 private const val ABOVE_CONTAINER = 2f
 
+/**
+ * How far open the sheet is when what only the bar has is gone, and between which two points what
+ * only the screen has comes into focus. The gap between them is the surface alone, changing color:
+ * the two never show through each other.
+ */
+private const val BAR_GONE_BY = 0.2f
+private const val SCREEN_FROM = 0.3f
+private const val SCREEN_BY = 0.8f
+
+/** The cover's size in the full player while the music is paused. */
+private const val PAUSED_COVER_SCALE = 0.86f
+
 /** How much the full screen grows per unit of overshoot, and how far down the bar dips. */
 private const val EXPANDED_SWELL = 0.35f
 private const val COLLAPSED_DIP = 0.12f
 
 private val BarCorner = 28.dp
+private val BarMaxWidth = 560.dp
+
+/** The bar's shadow where no halo lifts it. */
+private val BarShadow = 6.dp
 private val BarArtworkCorner = 16.dp
 private val ScreenArtworkCorner = 28.dp
 private val FlingThreshold = 125.dp
@@ -441,5 +563,6 @@ private enum class SharedKey {
     Container,
     Artwork,
     Title,
+    Artist,
     PlayButton,
 }

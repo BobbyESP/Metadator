@@ -3,7 +3,15 @@
     <string name="cover_of">Portada de %1$s</string>
     <string name="play">Reproducir</string>
     <string name="pause">Pausar</string>
-    <string name="needs_attention">Faltan etiquetas</string>
+    <plurals name="missing_tags">
+        <item quantity="one">Falta: %1$s</item>
+        <item quantity="other">Faltan: %1$s</item>
+    </plurals>
+    <string name="missing_artist">artista</string>
+    <string name="missing_album">álbum</string>
+    <string name="missing_album_artist">artista del álbum</string>
+    <string name="missing_year">año</string>
+    <string name="missing_track_number">número de pista</string>
     <string name="selected">Seleccionada</string>
     <string name="select">Seleccionar</string>
     <string name="unknown_artist">Artista desconocido</string>

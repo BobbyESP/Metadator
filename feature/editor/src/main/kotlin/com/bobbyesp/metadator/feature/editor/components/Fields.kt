@@ -3,7 +3,9 @@
  */
 package com.bobbyesp.metadator.feature.editor.components
 
-import androidx.compose.foundation.BorderStroke
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -12,6 +14,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.input.TextFieldLineLimits
@@ -26,15 +29,15 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.InputChip
 import androidx.compose.material3.InputChipDefaults
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -44,10 +47,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.unit.dp
+import com.bobbyesp.metadator.core.designsystem.component.TonalFieldDefaults
+import com.bobbyesp.metadator.core.designsystem.component.TonalTextField
+import com.bobbyesp.metadator.core.designsystem.theme.GroupShapes
 import com.bobbyesp.metadator.core.designsystem.theme.Spacing
 import com.bobbyesp.metadator.core.ui.R as CoreUiR
 import com.bobbyesp.metadator.feature.editor.R
@@ -64,7 +72,7 @@ private fun RevertButton(label: String, onRevert: () -> Unit) {
 }
 
 /**
- * A field with one value. A changed field gets a primary outline and an undo button, so what will
+ * A field with one value. A changed field takes the primary tint and an undo button, so what will
  * be written is visible at a glance before saving.
  */
 @Composable
@@ -81,13 +89,19 @@ fun TagTextField(
     placeholder: String? = null,
     keyboardType: KeyboardType = KeyboardType.Text,
     capitalization: KeyboardCapitalization = KeyboardCapitalization.Sentences,
+    shape: RoundedCornerShape = GroupShapes.itemShape(0, 1),
 ) {
-    OutlinedTextField(
+    val interactions = remember { MutableInteractionSource() }
+    val focused by interactions.collectIsFocusedAsState()
+    TonalTextField(
         value = value,
         onValueChange = onValueChange,
-        modifier = modifier.fillMaxWidth(),
-        label = { Text(label) },
-        placeholder = placeholder?.let { { Text(it) } },
+        label = label,
+        modifier = modifier.fillMaxWidth().changedState(changed),
+        shape = GroupShapes.focusedShape(shape, focused),
+        interactionSource = interactions,
+        placeholder = placeholder,
+        emphasized = changed,
         singleLine = singleLine,
         minLines = minLines,
         maxLines = maxLines,
@@ -95,31 +109,25 @@ fun TagTextField(
             if (changed) {
                 { RevertButton(label, onRevert) }
             } else null,
-        supportingText =
-            if (changed) {
-                { Text(stringResource(R.string.changed)) }
-            } else null,
         keyboardOptions =
             KeyboardOptions(
                 capitalization = capitalization,
                 keyboardType = keyboardType,
                 imeAction = if (singleLine) ImeAction.Next else ImeAction.Default,
             ),
-        colors = changedColors(changed),
-        shape = MaterialTheme.shapes.large,
     )
 }
 
+/**
+ * Says that a field is changed to who cannot see its tint. Not a line of text under the field: that
+ * moved everything below it down on the first key typed.
+ */
 @Composable
-private fun changedColors(changed: Boolean) =
-    if (changed) {
-        OutlinedTextFieldDefaults.colors(
-            unfocusedBorderColor = MaterialTheme.colorScheme.primary,
-            unfocusedLabelColor = MaterialTheme.colorScheme.primary,
-            unfocusedSupportingTextColor = MaterialTheme.colorScheme.primary,
-            focusedSupportingTextColor = MaterialTheme.colorScheme.primary,
-        )
-    } else OutlinedTextFieldDefaults.colors()
+private fun Modifier.changedState(changed: Boolean): Modifier {
+    if (!changed) return this
+    val description = stringResource(R.string.changed)
+    return semantics { stateDescription = description }
+}
 
 /**
  * A field with several values (artists, genres): one chip per value, so "Tyler, The Creator" is one
@@ -135,6 +143,7 @@ fun TagChipsField(
     onRevert: () -> Unit,
     separator: String,
     modifier: Modifier = Modifier,
+    shape: RoundedCornerShape = GroupShapes.itemShape(0, 1),
 ) {
     val input = rememberTextFieldState()
     var focused by rememberSaveable(label) { mutableStateOf(false) }
@@ -155,19 +164,16 @@ fun TagChipsField(
             }
     }
 
+    val container by
+        animateColorAsState(
+            targetValue = TonalFieldDefaults.colors().container(focused, emphasized = changed),
+            animationSpec = MaterialTheme.motionScheme.fastEffectsSpec(),
+            label = "ChipsFieldContainer",
+        )
     Surface(
-        modifier = modifier.fillMaxWidth(),
-        shape = MaterialTheme.shapes.large,
-        color = MaterialTheme.colorScheme.surface,
-        border =
-            BorderStroke(
-                width = if (focused || changed) 2.dp else 1.dp,
-                color =
-                    when {
-                        focused || changed -> MaterialTheme.colorScheme.primary
-                        else -> MaterialTheme.colorScheme.outline
-                    },
-            ),
+        modifier = modifier.fillMaxWidth().changedState(changed),
+        shape = GroupShapes.focusedShape(shape, focused),
+        color = container,
     ) {
         Column(
             Modifier.padding(
@@ -181,6 +187,7 @@ fun TagChipsField(
                 Text(
                     label,
                     style = MaterialTheme.typography.bodySmall,
+                    fontWeight = FontWeight.SemiBold,
                     color =
                         if (focused || changed) MaterialTheme.colorScheme.primary
                         else MaterialTheme.colorScheme.onSurfaceVariant,
@@ -203,6 +210,7 @@ fun TagChipsField(
                                 onValuesChange(values.filterIndexed { i, _ -> i != index })
                             },
                             label = { Text(value) },
+                            shapes = InputChipDefaults.shapes(),
                             trailingIcon = {
                                 IconButton(
                                     onClick = {
@@ -267,7 +275,10 @@ private fun splitTyped(text: String, separator: String): List<String> {
     return parts.map { it.trim() }.filter { it.isNotEmpty() }
 }
 
-/** A position and its total, side by side: "Track 3 of 12". */
+/**
+ * A position and its total, side by side: "Track 3 of 12". Two cells of a group: [first] and [last]
+ * say whether theirs is the group's first row and its last one.
+ */
 @Composable
 fun PositionField(
     label: String,
@@ -277,37 +288,59 @@ fun PositionField(
     changed: Boolean,
     onRevert: () -> Unit,
     modifier: Modifier = Modifier,
+    first: Boolean = true,
+    last: Boolean = true,
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(Spacing.small),
+        horizontalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap),
         verticalAlignment = Alignment.Top,
     ) {
-        OutlinedTextField(
+        PositionCell(
             value = number,
             onValueChange = { onChange(it, total) },
+            label = label,
+            changed = changed,
+            shape = GroupShapes.cellShape(first, last, end = false),
             modifier = Modifier.weight(1f),
-            label = { Text(label) },
-            singleLine = true,
-            keyboardOptions =
-                KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next),
-            colors = changedColors(changed),
-            shape = MaterialTheme.shapes.large,
         )
-        OutlinedTextField(
+        PositionCell(
             value = total,
             onValueChange = { onChange(number, it) },
+            label = stringResource(CoreUiR.string.field_of),
+            changed = changed,
+            shape = GroupShapes.cellShape(first, last, start = false),
             modifier = Modifier.weight(1f),
-            label = { Text(stringResource(CoreUiR.string.field_of)) },
-            singleLine = true,
-            keyboardOptions =
-                KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next),
-            colors = changedColors(changed),
-            shape = MaterialTheme.shapes.large,
             trailingIcon =
                 if (changed) {
                     { RevertButton(label, onRevert) }
                 } else null,
         )
     }
+}
+
+@Composable
+private fun PositionCell(
+    value: String,
+    onValueChange: (String) -> Unit,
+    label: String,
+    changed: Boolean,
+    shape: RoundedCornerShape,
+    modifier: Modifier = Modifier,
+    trailingIcon: (@Composable () -> Unit)? = null,
+) {
+    val interactions = remember { MutableInteractionSource() }
+    val focused by interactions.collectIsFocusedAsState()
+    TonalTextField(
+        value = value,
+        onValueChange = onValueChange,
+        label = label,
+        modifier = modifier.changedState(changed),
+        emphasized = changed,
+        keyboardOptions =
+            KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next),
+        trailingIcon = trailingIcon,
+        shape = GroupShapes.focusedShape(shape, focused),
+        interactionSource = interactions,
+    )
 }

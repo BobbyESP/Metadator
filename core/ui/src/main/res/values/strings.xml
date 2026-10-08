@@ -3,7 +3,15 @@
     <string name="cover_of">Cover of %1$s</string>
     <string name="play">Play</string>
     <string name="pause">Pause</string>
-    <string name="needs_attention">Missing tags</string>
+    <plurals name="missing_tags">
+        <item quantity="one">Missing: %1$s</item>
+        <item quantity="other">Missing: %1$s</item>
+    </plurals>
+    <string name="missing_artist">artist</string>
+    <string name="missing_album">album</string>
+    <string name="missing_album_artist">album artist</string>
+    <string name="missing_year">year</string>
+    <string name="missing_track_number">track number</string>
     <string name="selected">Selected</string>
     <string name="select">Select</string>
     <string name="unknown_artist">Unknown artist</string>

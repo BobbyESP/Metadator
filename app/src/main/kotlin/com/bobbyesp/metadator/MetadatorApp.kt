@@ -14,6 +14,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.navigation3.rememberListDetailSceneStrategy
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -24,6 +25,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
+import com.bobbyesp.metadator.core.designsystem.theme.LocalBackdropHaze
 import com.bobbyesp.metadator.core.designsystem.theme.Spacing
 import com.bobbyesp.metadator.core.designsystem.theme.outOfFocus
 import com.bobbyesp.metadator.core.navigation.Collection
@@ -43,6 +45,8 @@ import com.bobbyesp.metadator.feature.player.PlayerSheetDefaults
 import com.bobbyesp.metadator.feature.player.rememberPlayerSheetExpansion
 import com.bobbyesp.metadator.feature.settings.settingsSection
 import com.bobbyesp.metadator.player.api.PlayerController
+import dev.chrisbanes.haze.hazeSource
+import dev.chrisbanes.haze.rememberHazeState
 import org.koin.compose.koinInject
 
 /**
@@ -81,6 +85,9 @@ fun MetadatorApp(onExit: () -> Unit) {
             PlayerLayout.forWindow(width = window.width.toDp(), height = window.height.toDp())
         }
     val playerExpansion = rememberPlayerSheetExpansion()
+    // The screens, recorded for what floats over all of them to blur: their menus, and the bar of
+    // the player, which is their sibling here.
+    val backdrop = rememberHazeState()
     // Nothing once the player covers the screen: it is opaque, and what is behind it would be
     // blurred again on every frame for nobody to see.
     val behindPlayer =
@@ -90,18 +97,21 @@ fun MetadatorApp(onExit: () -> Unit) {
         Box(Modifier.fillMaxSize()) {
             // Everything the player opens over goes out of focus as it does.
             Box(Modifier.fillMaxSize().outOfFocus(behindPlayer, MaterialTheme.colorScheme.scrim)) {
-                MetadatorNavDisplay(
-                    backStack = backStack,
-                    navigator = navigator,
-                    sceneStrategies = strategies,
-                    entryProvider =
-                        entryProvider {
-                            librarySection(navigator)
-                            editorSection(navigator)
-                            batchSection(navigator)
-                            settingsSection(navigator)
-                        },
-                )
+                CompositionLocalProvider(LocalBackdropHaze provides backdrop) {
+                    MetadatorNavDisplay(
+                        backStack = backStack,
+                        navigator = navigator,
+                        sceneStrategies = strategies,
+                        entryProvider =
+                            entryProvider {
+                                librarySection(navigator)
+                                editorSection(navigator)
+                                batchSection(navigator)
+                                settingsSection(navigator)
+                            },
+                        modifier = Modifier.hazeSource(backdrop),
+                    )
+                }
                 SnackbarHost(
                     snackbarHostState,
                     modifier =
@@ -116,6 +126,7 @@ fun MetadatorApp(onExit: () -> Unit) {
                 onEdit = { uri -> navigator.goTo(Editor(uri)) },
                 layout = playerLayout,
                 expansion = playerExpansion,
+                backdrop = backdrop,
             )
         }
     }

@@ -4,12 +4,20 @@
 package com.bobbyesp.metadator.feature.player
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
+import androidx.compose.animation.EnterExitState
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.SizeTransform
+import androidx.compose.animation.core.CubicBezierEasing
+import androidx.compose.animation.core.FiniteAnimationSpec
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -27,6 +35,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Album
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material.icons.rounded.PlayArrow
@@ -35,6 +44,7 @@ import androidx.compose.material.icons.rounded.RepeatOne
 import androidx.compose.material.icons.rounded.Shuffle
 import androidx.compose.material.icons.rounded.SkipNext
 import androidx.compose.material.icons.rounded.SkipPrevious
+import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ButtonGroup
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -51,6 +61,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SegmentedListItem
 import androidx.compose.material3.Slider
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberSliderState
@@ -62,33 +73,51 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.bobbyesp.metadator.core.common.formatDuration
+import com.bobbyesp.metadator.core.designsystem.component.LabelChip
 import com.bobbyesp.metadator.core.designsystem.component.PlaceholderCard
+import com.bobbyesp.metadator.core.designsystem.component.sidesOf
 import com.bobbyesp.metadator.core.designsystem.theme.GroupShapes
 import com.bobbyesp.metadator.core.designsystem.theme.Spacing
+import com.bobbyesp.metadator.core.designsystem.theme.defocused
+import com.bobbyesp.metadator.core.designsystem.theme.dissolved
+import com.bobbyesp.metadator.core.designsystem.theme.resizedTo
 import com.bobbyesp.metadator.core.model.Track
 import com.bobbyesp.metadator.core.ui.component.ArtworkImage
 import com.bobbyesp.metadator.player.api.PlaybackState
 import com.bobbyesp.metadator.player.api.PlayerController
 import com.bobbyesp.metadator.player.api.RepeatMode
 import kotlin.math.abs
+import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.delay
 
 /**
  * The player, full screen. It is the expanded content of [PlayerSheet], which owns how it gets on
  * and off the screen; the modifiers are how the sheet ties the pieces it shares with the bar.
+ *
+ * @param settled whether the sheet is at rest, open: what waits for the pieces that travel to have
+ *   arrived shows then
+ * @param ownContentPresence how much of what only this has (all but the cover, the name and the
+ *   play button) is there, from 0 to 1, read while drawing: it comes into focus once the sheet has
+ *   opened some way. The surface itself is not part of it, and is always solid.
  */
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 internal fun NowPlayingContent(
     playback: PlaybackState,
     player: PlayerController,
+    settled: Boolean,
     onClose: () -> Unit,
     onEdit: (String) -> Unit,
     modifier: Modifier = Modifier,
@@ -96,11 +125,51 @@ internal fun NowPlayingContent(
     artworkShape: Shape = MaterialTheme.shapes.extraLarge,
     artworkModifier: Modifier = Modifier,
     titleModifier: Modifier = Modifier,
+    artistModifier: Modifier = Modifier,
     playButtonModifier: Modifier = Modifier,
+    ownContentPresence: () -> Float = { 1f },
 ) {
     val track = playback.current
+    Surface(modifier = modifier, color = MaterialTheme.colorScheme.background) {
+        NowPlayingScaffold(
+            playback = playback,
+            player = player,
+            track = track,
+            settled = settled,
+            onClose = onClose,
+            onEdit = onEdit,
+            modifier = Modifier.dissolved(ownContentPresence),
+            topBarModifier = topBarModifier,
+            artworkShape = artworkShape,
+            artworkModifier = artworkModifier,
+            titleModifier = titleModifier,
+            artistModifier = artistModifier,
+            playButtonModifier = playButtonModifier,
+        )
+    }
+}
+
+/** What is on the full player's surface, which is drawn apart so that this can come and go. */
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+private fun NowPlayingScaffold(
+    playback: PlaybackState,
+    player: PlayerController,
+    track: Track?,
+    settled: Boolean,
+    onClose: () -> Unit,
+    onEdit: (String) -> Unit,
+    modifier: Modifier,
+    topBarModifier: Modifier,
+    artworkShape: Shape,
+    artworkModifier: Modifier,
+    titleModifier: Modifier,
+    artistModifier: Modifier,
+    playButtonModifier: Modifier,
+) {
     Scaffold(
         modifier = modifier,
+        containerColor = Color.Transparent,
         topBar = {
             TopAppBar(
                 modifier = topBarModifier,
@@ -127,7 +196,7 @@ internal fun NowPlayingContent(
             return@Scaffold
         }
         LazyColumn(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize().sidesOf(padding),
             contentPadding =
                 PaddingValues(
                     top = padding.calculateTopPadding(),
@@ -144,8 +213,8 @@ internal fun NowPlayingContent(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(Spacing.large),
                 ) {
-                    Cover(track, playback.isPlaying, artworkShape, artworkModifier)
-                    TrackTitle(track, titleModifier)
+                    Cover(track, artworkShape, artworkModifier)
+                    TrackName(track, settled, titleModifier, artistModifier)
                     SeekBar(playback, onSeek = player::seekTo)
                     TransportControls(playback, player, playButtonModifier)
                     SecondaryControls(playback, player, onEdit = { onEdit(track.ref.uri) })
@@ -202,7 +271,50 @@ internal fun LazyListScope.upNextItems(
 }
 
 /**
- * The cover steps back while the music is paused and comes forward again when it plays.
+ * The playing song's cover, in either player. A new song's comes into focus over the old one's,
+ * which goes out of focus beneath it and stays solid until it is covered: the cover is never seen
+ * through, and never empty.
+ *
+ * @param modifier how it takes its size, and what ties it to the other player's
+ */
+@Composable
+internal fun TrackArtwork(track: Track, shape: Shape, modifier: Modifier = Modifier) {
+    AnimatedContent(
+        targetState = track,
+        // Nothing of the container's own: each picture's focus is its transition, and the one
+        // leaving has to wait for it.
+        transitionSpec = {
+            EnterTransition.None togetherWith
+                ExitTransition.KeepUntilTransitionsFinished using
+                SizeTransform(clip = false)
+        },
+        contentKey = { it.id },
+        // The shape's clip is here and not on each picture: it is what a blur must not get past.
+        modifier = modifier.clip(shape),
+        label = "TrackArtwork",
+    ) { shown ->
+        val focus =
+            transition.animateFloat(transitionSpec = { replacing() }, label = "Focus") {
+                if (it == EnterExitState.Visible) 1f else 0f
+            }
+        val blur = remember(focus) { { 1f - focus.value } }
+        val leaving = transition.targetState == EnterExitState.PostExit
+        ArtworkImage(
+            model = shown.artworkRef?.uri,
+            contentDescription = null,
+            modifier =
+                Modifier.fillMaxSize().defocused(blur, bounded = true).graphicsLayer {
+                    alpha = if (leaving) 1f else focus.value
+                },
+            shape = RectangleShape,
+            cacheKey = shown.artworkCacheKey,
+        )
+    }
+}
+
+/**
+ * The song's cover. That it steps back while the music is paused is the sheet's doing, in
+ * [sharedModifier]: the bar's cover has to do the same.
  *
  * @param sharedModifier what ties it to the bar's cover, applied once it has its size
  * @param modifier how it takes its size, which is what differs between layouts
@@ -210,69 +322,219 @@ internal fun LazyListScope.upNextItems(
 @Composable
 internal fun Cover(
     track: Track,
-    isPlaying: Boolean,
     shape: Shape,
     sharedModifier: Modifier,
     modifier: Modifier = Modifier.fillMaxWidth().aspectRatio(1f),
 ) {
-    val scale by
-        animateFloatAsState(
-            targetValue = if (isPlaying) 1f else 0.86f,
-            animationSpec = MaterialTheme.motionScheme.slowSpatialSpec(),
-            label = "CoverScale",
-        )
-    ArtworkImage(
-        model = track.artworkRef?.uri,
-        contentDescription = null,
-        modifier =
-            modifier.then(sharedModifier).graphicsLayer {
-                scaleX = scale
-                scaleY = scale
-            },
-        shape = shape,
-        cacheKey = track.artworkCacheKey,
-    )
+    TrackArtwork(track, shape, modifier.then(sharedModifier))
 }
 
+/**
+ * The song's title and, under it, who it is by, each a line of its own that the sheet ties to the
+ * same line of the bar.
+ *
+ * Each is one line that says what the bar's says, set in a style the bar's is a smaller copy of
+ * ([TrackNameDefaults]): scaled to the same height the two are then the same glyphs in the same
+ * places, and the line travels whole. A title that wrapped here would be twice the shape of the
+ * bar's, so one too long for the line scrolls instead.
+ *
+ * The album is this player's alone, so it is not part of what travels: it is a chip under the name,
+ * which rolls into its place the first time the sheet settles. From then on it is one more thing on
+ * this player, and comes and goes with the rest of it as the sheet is dragged. Its place is kept
+ * for it meanwhile, so nothing below moves when it turns up.
+ *
+ * All of it starts at the leading edge, as it does in the bar. The title carries the weight and the
+ * artist is set apart from it by its style, lighter in weight and in the color role for what
+ * matters less, not by being made see-through.
+ *
+ * @param settled whether the sheet is at rest, open, which is when the album first shows
+ */
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-internal fun TrackTitle(track: Track, modifier: Modifier) {
-    val motion = MaterialTheme.motionScheme
-    // Centered by this box rather than by the text's alignment: the bounds the name travels to
-    // are then the text's own, and the same text at another size scales into them exactly.
-    Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-        AnimatedContent(
-            targetState = track,
-            transitionSpec = {
-                (slideInVertically(motion.defaultSpatialSpec()) { it / 2 } +
-                    fadeIn(motion.defaultEffectsSpec())) togetherWith
-                    (slideOutVertically(motion.fastSpatialSpec()) { -it / 2 } +
-                        fadeOut(motion.fastEffectsSpec()))
-            },
-            contentKey = { it.id },
-            modifier = modifier,
-            label = "TrackTitle",
-        ) { shown ->
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(
-                    shown.title,
-                    style = MaterialTheme.typography.headlineSmallEmphasized,
-                    textAlign = TextAlign.Center,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
-                )
-                Text(
-                    listOfNotNull(shown.artist, shown.album).joinToString(" · ").ifEmpty {
-                        stringResource(R.string.unknown_artist)
-                    },
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    textAlign = TextAlign.Center,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
+internal fun TrackName(
+    track: Track,
+    settled: Boolean,
+    titleModifier: Modifier,
+    artistModifier: Modifier,
+) {
+    Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.Start) {
+        TrackLine(track, titleModifier) { shown ->
+            Text(
+                shown.title,
+                style = TrackNameDefaults.titleStyle,
+                maxLines = 1,
+                softWrap = false,
+                modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
+            )
+        }
+        TrackLine(track, artistModifier, follows = true) { shown ->
+            Text(
+                shown.artist ?: stringResource(R.string.unknown_artist),
+                style = TrackNameDefaults.artistStyle,
+                color = TrackNameDefaults.artistColor,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+        }
+        // Once it has turned up it stays: a finger that starts to pull the sheet down must not send
+        // it away, any more than it does the controls.
+        var albumArrived by remember { mutableStateOf(false) }
+        LaunchedEffect(settled) { if (settled) albumArrived = true }
+        val album = track.album
+        if (album != null) {
+            // The chip's place, kept while it is not there. Not a window it is clipped to: a pill
+            // cut by a rectangle on its way in shows the rectangle.
+            Box(
+                modifier = Modifier.padding(top = Spacing.small).height(AssistChipDefaults.Height),
+                contentAlignment = Alignment.CenterStart,
+            ) {
+                RolledIn(album.takeIf { albumArrived }) { shown ->
+                    LabelChip(label = shown, icon = Icons.Rounded.Album)
+                }
             }
         }
     }
+}
+
+/**
+ * Something that turns up like a figure on a counter: it rolls in from under its place, out of
+ * focus from the speed and sharp as it stops. It rolls out over the top the same way, and a new one
+ * rolls the old one out. Nothing clips it on the way: it is faint enough there to pass over what is
+ * next to it.
+ *
+ * @param target what to show, or `null` for nothing
+ */
+@Composable
+private fun <T : Any> RolledIn(
+    target: T?,
+    modifier: Modifier = Modifier,
+    content: @Composable (T) -> Unit,
+) {
+    AnimatedContent(
+        targetState = target,
+        transitionSpec = {
+            // No fade of its own: going through focus is one.
+            slideInVertically(arriving()) { it } togetherWith
+                slideOutVertically(leaving()) { -it } using
+                SizeTransform(clip = false)
+        },
+        modifier = modifier,
+        contentAlignment = Alignment.CenterStart,
+        label = "RolledIn",
+    ) { shown ->
+        val focus =
+            transition.animateFloat(
+                transitionSpec = {
+                    if (targetState == EnterExitState.Visible) arriving() else leaving()
+                },
+                label = "Focus",
+            ) {
+                if (it == EnterExitState.Visible) 1f else 0f
+            }
+        val presence = remember(focus) { { focus.value } }
+        if (shown != null) {
+            Box(Modifier.dissolved(presence)) { content(shown) }
+        }
+    }
+}
+
+/**
+ * One line about the playing song. A new song's comes in from the side through focus, a short way
+ * and sharpening as it stops, while the old one's leaves the other way: the same as the album's
+ * chip turning up, on its side.
+ *
+ * Nothing clips it. Slid the whole of its width inside its own box, the text was cut by the box's
+ * edges as it went; a short way and out of focus, it needs no box to come out of.
+ *
+ * @param follows whether this is the second line of a pair, which then starts a moment after the
+ *   first so that the two do not move as one block
+ */
+@Composable
+internal fun TrackLine(
+    track: Track,
+    modifier: Modifier = Modifier,
+    follows: Boolean = false,
+    line: @Composable (Track) -> Unit,
+) {
+    val delay = if (follows) FOLLOW_MS else 0
+    val shift = with(LocalDensity.current) { Spacing.extraLarge.roundToPx() }
+    AnimatedContent(
+        targetState = track,
+        transitionSpec = {
+            slideInHorizontally(arriving(delay)) { shift } togetherWith
+                slideOutHorizontally(leaving(delay)) { -shift } using
+                SizeTransform(clip = false)
+        },
+        contentKey = { it.id },
+        modifier = modifier,
+        label = "TrackLine",
+    ) { shown ->
+        val focus =
+            transition.animateFloat(
+                transitionSpec = {
+                    if (targetState == EnterExitState.Visible) arriving(delay) else leaving(delay)
+                },
+                label = "Focus",
+            ) {
+                if (it == EnterExitState.Visible) 1f else 0f
+            }
+        val presence = remember(focus) { { focus.value } }
+        Box(Modifier.dissolved(presence)) { line(shown) }
+    }
+}
+
+/**
+ * The pace of one thing replacing another through focus ([TrackLine], [RolledIn]): what leaves
+ * starts slowly and is quickest as it goes, and what arrives does the opposite, quick at first and
+ * slowing to a stop. The one arriving waits for the other to be on its way.
+ *
+ * Tweens, where the app otherwise animates with the theme's springs: a spring cannot start slowly
+ * and end at its quickest, which is the whole of the way out. The curves are Material's emphasized
+ * accelerate and decelerate.
+ */
+private fun <T> leaving(delayMillis: Int = 0): FiniteAnimationSpec<T> =
+    tween(LEAVE_MS, delayMillis = delayMillis, easing = EmphasizedAccelerate)
+
+private fun <T> arriving(delayMillis: Int = 0): FiniteAnimationSpec<T> =
+    tween(ARRIVE_MS, delayMillis = ARRIVE_AFTER_MS + delayMillis, easing = EmphasizedDecelerate)
+
+/** The pace of one picture coming into focus over another, which only waits beneath it. */
+private fun <T> replacing(): FiniteAnimationSpec<T> =
+    tween(ARRIVE_MS, easing = EmphasizedDecelerate)
+
+private val EmphasizedAccelerate = CubicBezierEasing(0.3f, 0f, 0.8f, 0.15f)
+private val EmphasizedDecelerate = CubicBezierEasing(0.05f, 0.7f, 0.1f, 1f)
+private const val LEAVE_MS = 280
+private const val ARRIVE_MS = 440
+private const val ARRIVE_AFTER_MS = 160
+
+/** How much later the second line of a pair starts than the first, going and coming. */
+private const val FOLLOW_MS = 140
+
+/**
+ * How the song's name is set in the full player, and in the bar: the same styles at the size of the
+ * bar's roles in the type scale.
+ */
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+internal object TrackNameDefaults {
+    /** No lighter than semibold: the title is what the eye should land on in either player. */
+    val titleStyle: TextStyle
+        @Composable
+        get() =
+            MaterialTheme.typography.headlineSmallEmphasized.copy(fontWeight = FontWeight.SemiBold)
+
+    val artistStyle: TextStyle
+        @Composable get() = MaterialTheme.typography.bodyLarge
+
+    /** The role for text that matters less, on whichever surface: a color, not an opacity. */
+    val artistColor: Color
+        @Composable get() = MaterialTheme.colorScheme.onSurfaceVariant
+
+    val barTitleStyle: TextStyle
+        @Composable get() = titleStyle.resizedTo(MaterialTheme.typography.titleSmall.fontSize)
+
+    val barArtistStyle: TextStyle
+        @Composable get() = artistStyle.resizedTo(MaterialTheme.typography.bodySmall.fontSize)
 }
 
 /**
@@ -298,7 +560,7 @@ internal fun SeekBar(
     }
     LaunchedEffect(sought) {
         if (sought != null) {
-            delay(SEEK_TIMEOUT_MS)
+            delay(SEEK_TIMEOUT_MS.milliseconds)
             sought = null
         }
     }
@@ -342,7 +604,7 @@ private const val SEEK_TOLERANCE = 0.02f
 private const val SEEK_TIMEOUT_MS = 1_500L
 
 /**
- * Previous, play and next as one button group: pressing one squeezes its neighbours, which is the
+ * Previous, play and next as one button group: pressing one squeezes its neighbors, which is the
  * whole point of putting them in a group.
  */
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
@@ -382,7 +644,6 @@ internal fun TransportControls(
                 PlayPauseButton(
                     isPlaying = playback.isPlaying,
                     onToggle = player::togglePlayPause,
-                    iconSize = 40.dp,
                     interactionSource = interactions,
                     modifier =
                         Modifier.weight(1.5f)

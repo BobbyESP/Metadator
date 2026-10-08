@@ -144,6 +144,12 @@ class LookupViewModel(private val service: LookupService) : ViewModel() {
         )
     }
 
+    /** Checks [keys] and nothing else: every field at once, or none. */
+    fun checkOnly(keys: Set<String>) = _state.update { state ->
+        val comparison = state.comparison ?: return@update state
+        state.copy(comparison = comparison.copy(checked = keys))
+    }
+
     fun toggleCover() = _state.update { state ->
         val comparison = state.comparison ?: return@update state
         state.copy(comparison = comparison.copy(includeCover = !comparison.includeCover))

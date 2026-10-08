@@ -46,6 +46,8 @@ internal class PlayerSheetState(
     private val scope: CoroutineScope,
     /** How the sheet finishes on its own once released. */
     private val settleSpec: AnimationSpec<Float>,
+    /** How the sheet opens from a tap, with no finger to give it a pace. */
+    private val openSpec: AnimationSpec<Float>,
     /** Above this speed a release follows the fling, whatever the distance covered. */
     private val velocityThreshold: Float,
 ) {
@@ -86,6 +88,9 @@ internal class PlayerSheetState(
         get() = progress.value - progress.value.coerceIn(0f, 1f)
 
     fun expand() = animateTo(PlayerSheetValue.Expanded)
+
+    /** Opens the full player from a tap on the bar: the whole way, unhurried. */
+    fun open() = animateTo(PlayerSheetValue.Expanded, spec = openSpec)
 
     fun collapse() = animateTo(PlayerSheetValue.Collapsed)
 
@@ -134,8 +139,12 @@ internal class PlayerSheetState(
         animateTo(target, initialVelocity = upwards / travel)
     }
 
-    private fun animateTo(target: PlayerSheetValue, initialVelocity: Float = 0f) {
-        scope.launch { progress.animateTo(target.progress, settleSpec, initialVelocity) }
+    private fun animateTo(
+        target: PlayerSheetValue,
+        initialVelocity: Float = 0f,
+        spec: AnimationSpec<Float> = settleSpec,
+    ) {
+        scope.launch { progress.animateTo(target.progress, spec, initialVelocity) }
     }
 
     /**

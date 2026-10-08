@@ -5,12 +5,12 @@ package com.bobbyesp.metadator.feature.library
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
@@ -18,18 +18,14 @@ import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material.icons.rounded.Shuffle
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.LargeFlexibleTopAppBar
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -41,7 +37,10 @@ import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.bobbyesp.metadator.core.designsystem.component.ActionButtonGroup
+import com.bobbyesp.metadator.core.designsystem.component.GroupAction
 import com.bobbyesp.metadator.core.designsystem.component.LoadingScreen
+import com.bobbyesp.metadator.core.designsystem.component.sidesOf
 import com.bobbyesp.metadator.core.designsystem.theme.GroupShapes
 import com.bobbyesp.metadator.core.designsystem.theme.Spacing
 import com.bobbyesp.metadator.core.model.Track
@@ -101,7 +100,7 @@ internal fun CollectionScreen(
         }
         val tracks = collection.tracks
         LazyColumn(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize().sidesOf(padding),
             contentPadding =
                 PaddingValues(
                     top = padding.calculateTopPadding(),
@@ -155,30 +154,32 @@ private fun CollectionHeader(
                 shape = MaterialTheme.shapes.extraLarge,
             )
         }
-        // Wraps instead of squeezing: the labels are longer in other languages.
-        FlowRow(
-            horizontalArrangement =
-                Arrangement.spacedBy(Spacing.small, Alignment.CenterHorizontally),
-            verticalArrangement = Arrangement.spacedBy(Spacing.small),
-            itemVerticalAlignment = Alignment.CenterVertically,
-        ) {
-            Button(onClick = onPlay, shapes = ButtonDefaults.shapes()) {
-                Icon(Icons.Rounded.PlayArrow, null, Modifier.size(ButtonDefaults.IconSize))
-                Text(
-                    stringResource(R.string.collection_play),
-                    Modifier.padding(start = ButtonDefaults.IconSpacing),
-                )
-            }
-            FilledTonalButton(onClick = onEditAll, shapes = ButtonDefaults.shapes()) {
-                Icon(Icons.Rounded.Edit, null, Modifier.size(ButtonDefaults.IconSize))
-                Text(
-                    stringResource(R.string.collection_edit_all),
-                    Modifier.padding(start = ButtonDefaults.IconSpacing),
-                )
-            }
-            OutlinedIconButton(onClick = onShuffle, shapes = IconButtonDefaults.shapes()) {
-                Icon(Icons.Rounded.Shuffle, stringResource(R.string.collection_shuffle))
-            }
-        }
+        ActionButtonGroup(
+            primary =
+                GroupAction(
+                    label = stringResource(R.string.collection_play),
+                    icon = Icons.Rounded.PlayArrow,
+                    onClick = onPlay,
+                ),
+            secondary =
+                listOf(
+                    GroupAction(
+                        label = stringResource(R.string.collection_edit_all),
+                        icon = Icons.Rounded.Edit,
+                        onClick = onEditAll,
+                    ),
+                    GroupAction(
+                        label = stringResource(R.string.collection_shuffle),
+                        icon = Icons.Rounded.Shuffle,
+                        labeled = false,
+                        onClick = onShuffle,
+                    ),
+                ),
+            // As wide as the songs under it on a phone; on a wide window, no wider than reads as
+            // one group.
+            modifier = Modifier.widthIn(max = ActionsMaxWidth),
+        )
     }
 }
+
+private val ActionsMaxWidth = 520.dp
