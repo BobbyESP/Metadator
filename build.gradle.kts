@@ -73,7 +73,7 @@ sealed class Version(val major: Int, val minor: Int, val patch: Int, val build: 
 }
 
 // 1.x used major * 10000 + minor * 100 + patch (1.0.0 = 10000), so any 2.x code is higher.
-val currentVersion: Version = Version.Alpha(major = 2, minor = 0, patch = 0, build = 1)
+val currentVersion: Version = Version.Beta(major = 2, minor = 0, patch = 0, build = 5)
 
 extra.set("versionCode", currentVersion.toVersionCode())
 
