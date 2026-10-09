@@ -74,22 +74,21 @@ fun EntryProviderScope<NavKey>.librarySection(navigator: Navigator) {
         val state by viewModel.state.collectAsStateWithLifecycle()
         LaunchedEffect(Unit) { viewModel.onIntent(LibraryIntent.Start) }
         val player: PlayerController = koinInject()
-        val playback by player.state.collectAsStateWithLifecycle()
 
-        val collection =
-            remember(state, key) {
-                when (key.type) {
-                    CollectionType.Album -> state.albums
-                    CollectionType.Artist -> state.artists
-                    CollectionType.Folder -> state.folders
-                }.firstOrNull { it.key == key.key }
+        val collections =
+            when (key.type) {
+                CollectionType.Album -> state.albums
+                CollectionType.Artist -> state.artists
+                CollectionType.Folder -> state.folders
             }
+        val collection =
+            remember(collections, key) { collections.firstOrNull { it.key == key.key } }
 
         CollectionScreen(
             title = key.title,
             collection = collection.takeUnless { state.loading },
-            playingTrack = playback.current,
-            isPlaybackRunning = playback.isPlaying,
+            playingId = state.playingId,
+            isPlaybackRunning = state.playbackRunning,
             showBack = true,
             onBack = navigator::goBack,
             onOpenTrack = { navigator.goTo(Editor(it.ref.uri)) },

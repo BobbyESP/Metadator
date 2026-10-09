@@ -185,7 +185,6 @@ private fun TrackSubtitle(track: Track) {
         Text(subtitle, maxLines = 1, overflow = TextOverflow.Ellipsis)
         return
     }
-    // Why it needs attention, under what is known of it: a warning alone left the reason to guess.
     Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
         Text(subtitle, maxLines = 1, overflow = TextOverflow.Ellipsis)
         Row(

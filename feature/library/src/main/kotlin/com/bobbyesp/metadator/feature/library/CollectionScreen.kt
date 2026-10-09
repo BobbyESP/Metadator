@@ -45,6 +45,7 @@ import com.bobbyesp.metadator.core.designsystem.theme.GroupShapes
 import com.bobbyesp.metadator.core.designsystem.theme.Spacing
 import com.bobbyesp.metadator.core.model.Track
 import com.bobbyesp.metadator.core.model.TrackCollection
+import com.bobbyesp.metadator.core.model.TrackId
 import com.bobbyesp.metadator.core.ui.component.ArtworkImage
 import com.bobbyesp.metadator.core.ui.component.TrackListItem
 
@@ -54,7 +55,7 @@ import com.bobbyesp.metadator.core.ui.component.TrackListItem
 internal fun CollectionScreen(
     title: String,
     collection: TrackCollection?,
-    playingTrack: Track?,
+    playingId: TrackId?,
     isPlaybackRunning: Boolean,
     showBack: Boolean,
     onBack: () -> Unit,
@@ -110,7 +111,7 @@ internal fun CollectionScreen(
                 ),
             verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap),
         ) {
-            item(key = "header") {
+            item(key = "header", contentType = "header") {
                 CollectionHeader(
                     collection = collection,
                     onPlay = { onPlay(tracks, 0, false) },
@@ -118,14 +119,19 @@ internal fun CollectionScreen(
                     onEditAll = { onEditAll(tracks) },
                 )
             }
-            itemsIndexed(tracks, key = { _, it -> it.id.value }) { index, track ->
+            itemsIndexed(
+                tracks,
+                key = { _, it -> it.id.value },
+                contentType = { _, _ -> "track" },
+            ) { index, track ->
+                val isPlaying = track.id == playingId
                 TrackListItem(
                     track = track,
                     onClick = { onOpenTrack(track) },
                     onLongClick = { onOpenTrack(track) },
                     onPlay = { onPlay(tracks, index, false) },
-                    isPlaying = track.id == playingTrack?.id,
-                    isPlaybackRunning = isPlaybackRunning,
+                    isPlaying = isPlaying,
+                    isPlaybackRunning = isPlaying && isPlaybackRunning,
                     shapes = GroupShapes.listItemShapes(index, tracks.size),
                 )
             }

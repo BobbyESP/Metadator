@@ -91,6 +91,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -119,12 +120,15 @@ import com.bobbyesp.metadator.core.designsystem.component.ToggleChip
 import com.bobbyesp.metadator.core.designsystem.theme.GroupShapes
 import com.bobbyesp.metadator.core.designsystem.theme.Spacing
 import com.bobbyesp.metadator.core.designsystem.theme.blurHalo
+import com.bobbyesp.metadator.core.model.SortOrder
 import com.bobbyesp.metadator.core.model.Track
 import com.bobbyesp.metadator.core.model.TrackCollection
+import com.bobbyesp.metadator.core.model.TrackId
 import com.bobbyesp.metadator.core.model.TrackSort
 import com.bobbyesp.metadator.core.ui.component.ArtworkImage
 import com.bobbyesp.metadator.core.ui.component.CollectionCard
 import com.bobbyesp.metadator.core.ui.component.TrackListItem
+import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
 
@@ -148,12 +152,7 @@ internal fun LibraryScreen(
 
     // The lists, recorded for the selection toolbar that floats over them.
     val haze = rememberHazeState()
-    val toolbarHalo by
-        animateFloatAsState(
-            targetValue = if (state.selecting) 1f else 0f,
-            animationSpec = MaterialTheme.motionScheme.defaultEffectsSpec(),
-            label = "SelectionToolbarHalo",
-        )
+    val latestState by rememberUpdatedState(state)
 
     Scaffold(
         modifier = modifier,
@@ -200,33 +199,14 @@ internal fun LibraryScreen(
                 }
             }
 
-            AnimatedVisibility(
-                visible = state.selecting,
-                enter = slideInVertically { it } + fadeIn(),
-                exit = slideOutVertically { it } + fadeOut(),
-                modifier =
-                    Modifier.align(Alignment.BottomCenter)
-                        .navigationBarsPadding()
-                        // Above the mini player when one is showing.
-                        .padding(bottom = if (state.playerActive) 104.dp else Spacing.large)
-                        // On the visibility, not inside it: its slide and fade would move and
-                        // clip the halo with the toolbar. And only while there is one to draw:
-                        // the lists are recorded for as long as something blurs them.
-                        .then(
-                            if (state.selecting || toolbarHalo > 0f) {
-                                Modifier.blurHalo(
-                                    state = haze,
-                                    shape = FloatingActionToolbarDefaults.HaloShape,
-                                    strength = toolbarHalo,
-                                )
-                            } else Modifier
-                        ),
-            ) {
-                SelectionToolbar(
-                    onEdit = { onEditTracks(state.selectedTracks) },
-                    onPlay = { onIntent(LibraryIntent.PlaySelection) },
-                )
-            }
+            SelectionToolbar(
+                selecting = state.selecting,
+                playerActive = state.playerActive,
+                haze = haze,
+                onEdit = { onEditTracks(latestState.selectedTracks) },
+                onPlay = { onIntent(LibraryIntent.PlaySelection) },
+                modifier = Modifier.align(Alignment.BottomCenter),
+            )
         }
     }
 }
@@ -374,18 +354,57 @@ private fun SelectionTopBar(count: Int, onClose: () -> Unit, onSelectAll: () -> 
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-private fun SelectionToolbar(onEdit: () -> Unit, onPlay: () -> Unit) {
-    FloatingActionToolbar(
-        onPrimaryAction = onEdit,
-        primaryAction = {
-            Icon(Icons.Rounded.Edit, contentDescription = stringResource(R.string.edit_together))
-        },
+private fun SelectionToolbar(
+    selecting: Boolean,
+    playerActive: Boolean,
+    haze: HazeState,
+    onEdit: () -> Unit,
+    onPlay: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val halo by
+        animateFloatAsState(
+            targetValue = if (selecting) 1f else 0f,
+            animationSpec = MaterialTheme.motionScheme.defaultEffectsSpec(),
+            label = "SelectionToolbarHalo",
+        )
+    AnimatedVisibility(
+        visible = selecting,
+        enter = slideInVertically { it } + fadeIn(),
+        exit = slideOutVertically { it } + fadeOut(),
+        modifier =
+            modifier
+                .navigationBarsPadding()
+                // Above the mini player when one is showing.
+                .padding(bottom = if (playerActive) 104.dp else Spacing.large)
+                // On the visibility, not inside it: its slide and fade would move and clip the
+                // halo with the toolbar. And only while there is one to draw: the lists are
+                // recorded for as long as something blurs them.
+                .then(
+                    if (selecting || halo > 0f) {
+                        Modifier.blurHalo(
+                            state = haze,
+                            shape = FloatingActionToolbarDefaults.HaloShape,
+                            strength = halo,
+                        )
+                    } else Modifier
+                ),
     ) {
-        IconButton(onClick = onPlay, shapes = IconButtonDefaults.shapes()) {
-            Icon(
-                Icons.Rounded.PlayArrow,
-                contentDescription = stringResource(R.string.play_selection),
-            )
+        FloatingActionToolbar(
+            onPrimaryAction = onEdit,
+            primaryAction = {
+                Icon(
+                    Icons.Rounded.Edit,
+                    contentDescription = stringResource(R.string.edit_together),
+                )
+            },
+        ) {
+            IconButton(onClick = onPlay, shapes = IconButtonDefaults.shapes()) {
+                Icon(
+                    Icons.Rounded.PlayArrow,
+                    contentDescription = stringResource(R.string.play_selection),
+                )
+            }
         }
     }
 }
@@ -427,9 +446,14 @@ private fun LibraryContent(
 ) {
     val spatial = MaterialTheme.motionScheme.defaultSpatialSpec<IntOffset>()
     val effects = MaterialTheme.motionScheme.defaultEffectsSpec<Float>()
+    val tabLabels = LibraryTab.entries.map { stringResource(it.label) }
+    val tabs =
+        remember(tabLabels) {
+            LibraryTab.entries.mapIndexed { index, tab -> Choice(tab, tabLabels[index], tab.icon) }
+        }
     Column(Modifier.fillMaxSize()) {
         ConnectedChoices(
-            choices = LibraryTab.entries.map { Choice(it, stringResource(it.label), it.icon) },
+            choices = tabs,
             selected = state.tab,
             onSelect = { onIntent(LibraryIntent.SelectTab(it)) },
             modifier =
@@ -437,7 +461,14 @@ private fun LibraryContent(
                     .horizontalScroll(rememberScrollState())
                     .padding(horizontal = Spacing.screen),
         )
-        FilterRow(state, onIntent)
+        FilterRow(
+            sort = state.sort,
+            needsAttention = state.filter.needsAttention,
+            needsAttentionCount = state.needsAttentionCount,
+            formats = state.formats,
+            selectedFormats = state.filter.formats,
+            onIntent = onIntent,
+        )
 
         PullToRefreshBox(
             isRefreshing = state.refreshing,
@@ -484,7 +515,15 @@ private fun LibraryContent(
                         label = "LibraryTab",
                     ) { tab ->
                         when (tab) {
-                            LibraryTab.Songs -> SongList(state, onIntent, onOpenTrack)
+                            LibraryTab.Songs ->
+                                SongList(
+                                    tracks = state.tracks,
+                                    selection = state.selection,
+                                    playingId = state.playingId,
+                                    playbackRunning = state.playbackRunning,
+                                    onIntent = onIntent,
+                                    onOpenTrack = onOpenTrack,
+                                )
                             LibraryTab.Albums -> AlbumGrid(state.albums, onOpenCollection)
                             LibraryTab.Artists ->
                                 CollectionList(
@@ -514,13 +553,20 @@ private fun CenteredPlaceholder(content: @Composable () -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
-        item { content() }
+        item(key = "placeholder", contentType = "placeholder") { content() }
     }
 }
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-private fun FilterRow(state: LibraryState, onIntent: (LibraryIntent) -> Unit) {
+private fun FilterRow(
+    sort: SortOrder,
+    needsAttention: Boolean,
+    needsAttentionCount: Int,
+    formats: List<String>,
+    selectedFormats: Set<String>,
+    onIntent: (LibraryIntent) -> Unit,
+) {
     var sortMenuOpen by remember { mutableStateOf(false) }
     Row(
         modifier =
@@ -534,20 +580,20 @@ private fun FilterRow(state: LibraryState, onIntent: (LibraryIntent) -> Unit) {
             // An action, not a filter: it is never "on".
             ActionChip(
                 onClick = { sortMenuOpen = true },
-                label = stringResource(state.sort.sort.label),
+                label = stringResource(sort.sort.label),
                 icon = Icons.AutoMirrored.Rounded.Sort,
                 opensMenu = true,
             )
             PopupMenu(expanded = sortMenuOpen, onDismissRequest = { sortMenuOpen = false }) {
                 PopupMenuGroup(index = 0, count = 2) {
-                    TrackSort.entries.forEachIndexed { index, sort ->
+                    TrackSort.entries.forEachIndexed { index, option ->
                         SelectableDropdownMenuItem(
-                            selected = state.sort.sort == sort,
+                            selected = sort.sort == option,
                             onClick = {
-                                onIntent(LibraryIntent.Sort(sort))
+                                onIntent(LibraryIntent.Sort(option))
                                 sortMenuOpen = false
                             },
-                            text = { Text(stringResource(sort.label)) },
+                            text = { Text(stringResource(option.label)) },
                             shapes = MenuDefaults.itemShape(index, TrackSort.entries.size),
                             selectedLeadingIcon = { Icon(Icons.Rounded.Check, null) },
                         )
@@ -563,7 +609,7 @@ private fun FilterRow(state: LibraryState, onIntent: (LibraryIntent) -> Unit) {
                         text = {
                             Text(
                                 stringResource(
-                                    if (state.sort.ascending) R.string.sort_descending
+                                    if (sort.ascending) R.string.sort_descending
                                     else R.string.sort_ascending
                                 )
                             )
@@ -571,7 +617,7 @@ private fun FilterRow(state: LibraryState, onIntent: (LibraryIntent) -> Unit) {
                         shape = MenuDefaults.itemShape(0, 1).shape,
                         leadingIcon = {
                             Icon(
-                                if (state.sort.ascending) Icons.Rounded.ArrowDownward
+                                if (sort.ascending) Icons.Rounded.ArrowDownward
                                 else Icons.Rounded.ArrowUpward,
                                 null,
                             )
@@ -580,18 +626,18 @@ private fun FilterRow(state: LibraryState, onIntent: (LibraryIntent) -> Unit) {
                 }
             }
         }
-        if (state.needsAttentionCount > 0 || state.filter.needsAttention) {
+        if (needsAttentionCount > 0 || needsAttention) {
             ToggleChip(
-                selected = state.filter.needsAttention,
+                selected = needsAttention,
                 onClick = { onIntent(LibraryIntent.ToggleNeedsAttention) },
-                label = stringResource(R.string.needs_attention_filter, state.needsAttentionCount),
+                label = stringResource(R.string.needs_attention_filter, needsAttentionCount),
                 icon = Icons.Rounded.Warning,
             )
         }
-        if (state.formats.size > 1) {
-            state.formats.forEach { format ->
+        if (formats.size > 1) {
+            formats.forEach { format ->
                 ToggleChip(
-                    selected = format in state.filter.formats,
+                    selected = format in selectedFormats,
                     onClick = { onIntent(LibraryIntent.ToggleFormat(format)) },
                     label = format.uppercase(),
                 )
@@ -603,10 +649,14 @@ private fun FilterRow(state: LibraryState, onIntent: (LibraryIntent) -> Unit) {
 @OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalFoundationApi::class)
 @Composable
 private fun SongList(
-    state: LibraryState,
+    tracks: List<Track>,
+    selection: Set<TrackId>,
+    playingId: TrackId?,
+    playbackRunning: Boolean,
     onIntent: (LibraryIntent) -> Unit,
     onOpenTrack: (Track) -> Unit,
 ) {
+    val selecting = selection.isNotEmpty()
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding =
@@ -623,11 +673,7 @@ private fun SongList(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    pluralStringResource(
-                        R.plurals.song_count,
-                        state.tracks.size,
-                        state.tracks.size,
-                    ),
+                    pluralStringResource(R.plurals.song_count, tracks.size, tracks.size),
                     style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.weight(1f),
@@ -655,19 +701,20 @@ private fun SongList(
             }
         }
         itemsIndexed(
-            state.tracks,
+            tracks,
             key = { _, track -> track.id.value },
             contentType = { _, _ -> "track" },
         ) { index, track ->
+            val isPlaying = track.id == playingId
             TrackListItem(
                 track = track,
-                selected = track.id in state.selection,
-                selecting = state.selecting,
-                isPlaying = track.id == state.playingId,
-                isPlaybackRunning = state.playbackRunning,
-                shapes = GroupShapes.listItemShapes(index, state.tracks.size),
+                selected = track.id in selection,
+                selecting = selecting,
+                isPlaying = isPlaying,
+                isPlaybackRunning = isPlaying && playbackRunning,
+                shapes = GroupShapes.listItemShapes(index, tracks.size),
                 onClick = {
-                    if (state.selecting) onIntent(LibraryIntent.ToggleSelection(track.id))
+                    if (selecting) onIntent(LibraryIntent.ToggleSelection(track.id))
                     else onOpenTrack(track)
                 },
                 onLongClick = { onIntent(LibraryIntent.ToggleSelection(track.id)) },
@@ -692,7 +739,7 @@ private fun AlbumGrid(albums: List<TrackCollection.Album>, onOpen: (TrackCollect
         horizontalArrangement = Arrangement.spacedBy(Spacing.medium),
         verticalArrangement = Arrangement.spacedBy(Spacing.medium),
     ) {
-        items(albums, key = { it.key }) { album ->
+        items(albums, key = { it.key }, contentType = { "album" }) { album ->
             CollectionCard(
                 title = album.title,
                 subtitle =
@@ -704,7 +751,9 @@ private fun AlbumGrid(albums: List<TrackCollection.Album>, onOpen: (TrackCollect
                 modifier = Modifier.animateItem(),
             )
         }
-        item(span = { GridItemSpan(maxLineSpan) }) { Spacer(Modifier.height(Spacing.small)) }
+        item(key = "end", span = { GridItemSpan(maxLineSpan) }, contentType = "end") {
+            Spacer(Modifier.height(Spacing.small))
+        }
     }
 }
 
@@ -725,7 +774,11 @@ private fun CollectionList(
             ),
         verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap),
     ) {
-        itemsIndexed(collections, key = { _, it -> it.key }) { index, collection ->
+        itemsIndexed(
+            collections,
+            key = { _, it -> it.key },
+            contentType = { _, _ -> "collection" },
+        ) { index, collection ->
             SegmentedListItem(
                 onClick = { onOpen(collection) },
                 modifier = Modifier.animateItem(),

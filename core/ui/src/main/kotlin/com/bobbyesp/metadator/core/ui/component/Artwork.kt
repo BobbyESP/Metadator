@@ -43,6 +43,16 @@ fun ArtworkImage(
     cacheKey: String? = null,
 ) {
     var failed by remember(model) { mutableStateOf(false) }
+    val context = LocalContext.current
+    val request =
+        remember(context, model, cacheKey) {
+            ImageRequest.Builder(context)
+                .data(model)
+                .crossfade(true)
+                .memoryCacheKey(cacheKey)
+                .placeholderMemoryCacheKey(cacheKey)
+                .build()
+        }
     Box(
         modifier =
             modifier.clip(shape).background(MaterialTheme.colorScheme.surfaceContainerHighest),
@@ -58,13 +68,7 @@ fun ArtworkImage(
         }
         if (model != null && !failed) {
             AsyncImage(
-                model =
-                    ImageRequest.Builder(LocalContext.current)
-                        .data(model)
-                        .crossfade(true)
-                        .memoryCacheKey(cacheKey)
-                        .placeholderMemoryCacheKey(cacheKey)
-                        .build(),
+                model = request,
                 contentDescription = contentDescription,
                 contentScale = ContentScale.Crop,
                 onError = { failed = true },
