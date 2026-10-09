@@ -165,7 +165,9 @@ fun PlayerSheet(
     // since they were read, and the editor is one tap away from here.
     val expanded by remember(sheet) { derivedStateOf { sheet.isExpanded } }
     LaunchedEffect(track?.ref, expanded) {
-        if (track != null) viewModel.onIntent(NowPlayingIntent.Show(track))
+        if (track != null && (expanded || nowPlaying.ref != track.ref)) {
+            viewModel.onIntent(NowPlayingIntent.Show(track))
+        }
     }
 
     val motion = MaterialTheme.motionScheme

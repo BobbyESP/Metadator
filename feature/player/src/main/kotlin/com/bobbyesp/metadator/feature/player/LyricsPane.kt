@@ -48,6 +48,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.BlendMode
@@ -302,6 +303,7 @@ private fun LyricLine(
     val text = MaterialTheme.colorScheme.onSurface
     val primary = MaterialTheme.colorScheme.primary
     var layout by remember(line) { mutableStateOf<TextLayoutResult?>(null) }
+    val places = remember(line) { WordPlaces() }
     // Each word measured on its own, to be drawn again over itself with its glow. Only when the
     // line first needs them: most lines are never the one being sung while they are on screen.
     val measurer = rememberTextMeasurer()
@@ -349,6 +351,7 @@ private fun LyricLine(
                             drawSweep(
                                 layout = measured,
                                 words = line.words,
+                                places = places,
                                 wordLayouts = wordLayouts.value,
                                 positionMs = clock.positionMs,
                                 focus = focus,
@@ -380,29 +383,19 @@ private fun LyricLine(
 private fun DrawScope.drawSweep(
     layout: TextLayoutResult,
     words: List<TimedWord>,
+    places: WordPlaces,
     wordLayouts: List<TextLayoutResult>,
     positionMs: Long,
     focus: Float,
     lit: Color,
     waiting: Color,
 ) {
-    val lastChar = layout.layoutInput.text.length - 1
-    if (lastChar < 0) return
+    if (layout.layoutInput.text.isEmpty()) return
     val count = words.size
-    // Where each word is: its row, and its left and right edges on it. A word broken over two
-    // rows counts as far as the end of the first.
-    val rows = IntArray(count)
-    val lefts = FloatArray(count)
-    val rights = FloatArray(count)
-    for (i in 0 until count) {
-        val first = words[i].start.coerceIn(0, lastChar)
-        val last = (words[i].end - 1).coerceIn(first, lastChar)
-        rows[i] = layout.getLineForOffset(first)
-        lefts[i] = layout.getBoundingBox(first).left
-        rights[i] =
-            if (layout.getLineForOffset(last) == rows[i]) layout.getBoundingBox(last).right
-            else layout.getLineRight(rows[i])
-    }
+    places.measure(layout, words)
+    val rows = places.rows
+    val lefts = places.lefts
+    val rights = places.rights
 
     val index = words.indexOfLast { it.startMs <= positionMs }
     val sung =
@@ -498,6 +491,46 @@ private fun DrawScope.drawSweep(
 }
 
 /**
+ * Where each word of a line is in its layout: its row, and its left and right edges on it. A word
+ * broken over two rows counts as far as the end of the first. Worked out once per layout, not on
+ * each of the frames the line is drawn in.
+ */
+private class WordPlaces {
+    private var measured: TextLayoutResult? = null
+
+    var rows = IntArray(0)
+        private set
+
+    var lefts = FloatArray(0)
+        private set
+
+    var rights = FloatArray(0)
+        private set
+
+    fun measure(layout: TextLayoutResult, words: List<TimedWord>) {
+        if (measured === layout && rows.size == words.size) return
+        val lastChar = layout.layoutInput.text.length - 1
+        val count = words.size
+        val rows = IntArray(count)
+        val lefts = FloatArray(count)
+        val rights = FloatArray(count)
+        for (i in 0 until count) {
+            val first = words[i].start.coerceIn(0, lastChar)
+            val last = (words[i].end - 1).coerceIn(first, lastChar)
+            rows[i] = layout.getLineForOffset(first)
+            lefts[i] = layout.getBoundingBox(first).left
+            rights[i] =
+                if (layout.getLineForOffset(last) == rows[i]) layout.getBoundingBox(last).right
+                else layout.getLineRight(rows[i])
+        }
+        this.rows = rows
+        this.lefts = lefts
+        this.rights = rights
+        measured = layout
+    }
+}
+
+/**
  * For how long a word is sung, as far as its glow and its rise go. The last word of a line with no
  * end of its own lasts until the next line, which can be a whole instrumental break away, and
  * nobody holds a note that long.
@@ -554,17 +587,18 @@ private fun List<TimedLine>.indexAt(positionMs: Long): Int {
 private fun Modifier.fadingEdges(): Modifier = graphicsLayer {
     compositingStrategy = CompositingStrategy.Offscreen
 }
-    .drawWithContent {
-        drawContent()
-        drawRect(
+    .drawWithCache {
+        val fade =
             Brush.verticalGradient(
                 0f to Color.Transparent,
                 EDGE_FADE to Color.Black,
                 1f - EDGE_FADE to Color.Black,
                 1f to Color.Transparent,
-            ),
-            blendMode = BlendMode.DstIn,
-        )
+            )
+        onDrawWithContent {
+            drawContent()
+            drawRect(fade, blendMode = BlendMode.DstIn)
+        }
     }
 
 /** How far down the pane the line being sung rests. */
