@@ -68,8 +68,6 @@ fun EntryProviderScope<NavKey>.librarySection(navigator: Navigator) {
     entry<Collection>(
         metadata = ListDetailSceneStrategy.listPane(detailPlaceholder = { NoSongOpen() })
     ) { key ->
-        // The library's ViewModel lives in the Library entry; a collection reads the same data
-        // through its own, keyed by what it shows.
         val viewModel: LibraryViewModel = koinViewModel(key = "collection:${key.key}")
         val state by viewModel.state.collectAsStateWithLifecycle()
         LaunchedEffect(Unit) { viewModel.onIntent(LibraryIntent.Start) }
