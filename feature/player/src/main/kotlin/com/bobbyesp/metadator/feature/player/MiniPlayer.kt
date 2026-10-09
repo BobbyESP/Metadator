@@ -51,6 +51,7 @@ import com.bobbyesp.metadator.player.api.PlayerController
  * [PlayerSheet], which owns how it appears, opens and is dragged; the modifiers are how the sheet
  * ties the pieces it shares with the full player.
  *
+ * @param playback what is playing, without its position, which is [progress]: read while drawing
  * @param shadowElevation the bar's shadow; none where the sheet lifts it with a blur halo
  * @param modifier applied to the bar's surface
  * @param contentModifier applied to what is on the surface, as a whole
@@ -63,6 +64,7 @@ import com.bobbyesp.metadator.player.api.PlayerController
 internal fun MiniPlayerBar(
     track: Track,
     playback: PlaybackState,
+    progress: () -> Float,
     player: PlayerController,
     onOpen: () -> Unit,
     shape: Shape,
@@ -135,7 +137,7 @@ internal fun MiniPlayerBar(
             }
             val isPlaying = playback.isPlaying
             LinearWavyProgressIndicator(
-                progress = { playback.progress },
+                progress = progress,
                 modifier =
                     Modifier.fillMaxWidth()
                         .padding(horizontal = Spacing.extraLarge)

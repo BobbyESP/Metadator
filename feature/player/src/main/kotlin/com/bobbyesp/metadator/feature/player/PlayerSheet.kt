@@ -44,6 +44,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.Stable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -55,13 +57,18 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Outline
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -132,7 +139,13 @@ fun PlayerSheet(
     backdrop: HazeState? = null,
 ) {
     val player: PlayerController = koinInject()
-    val playback by player.state.collectAsStateWithLifecycle()
+    val playbackState = player.state.collectAsStateWithLifecycle()
+    // Without the position, which the player reports twice a second: where it shows, it is read
+    // through positionMs and progress.
+    val playback by
+        remember(playbackState) { derivedStateOf { playbackState.value.copy(positionMs = 0) } }
+    val positionMs = remember(playbackState) { { playbackState.value.positionMs } }
+    val progress = remember(playbackState) { { playbackState.value.progress } }
     val track = playback.current
     RequestNotificationsOnFirstPlay(active = playback.isActive)
 
@@ -150,20 +163,14 @@ fun PlayerSheet(
     val nowPlaying by viewModel.state.collectAsStateWithLifecycle()
     // On every new song, and each time the player is opened: the song's tags may have been edited
     // since they were read, and the editor is one tap away from here.
-    LaunchedEffect(track?.ref, sheet.isExpanded) {
+    val expanded by remember(sheet) { derivedStateOf { sheet.isExpanded } }
+    LaunchedEffect(track?.ref, expanded) {
         if (track != null) viewModel.onIntent(NowPlayingIntent.Show(track))
     }
 
     val motion = MaterialTheme.motionScheme
 
     val haloed = backdrop != null && MetadatorBlurDefaults.isHaloSupported
-    val barAtRest by remember(sheet) { derivedStateOf { sheet.fraction == 0f } }
-    val haloStrength by
-        animateFloatAsState(
-            targetValue = if (available && barAtRest) 1f else 0f,
-            animationSpec = motion.defaultEffectsSpec(),
-            label = "MiniPlayerHalo",
-        )
     // The cover steps back while the music is paused, in the full player only. Both covers do it
     // by as much as the sheet is open: a shared element draws one of the two from the first frame,
     // and if only the screen's stepped back, the cover would jump to its size there.
@@ -217,7 +224,7 @@ fun PlayerSheet(
 
                 val arriving = scope.transition.targetState == EnterExitState.Visible
 
-                val corner by
+                val corner =
                     scope.transition.animateDp(
                         transitionSpec = {
                             val becomingBar = (targetState == EnterExitState.Visible) == isBar
@@ -230,7 +237,7 @@ fun PlayerSheet(
                     ) {
                         if ((it == EnterExitState.Visible) == isBar) BarCorner else 0.dp
                     }
-                val artworkCorner by
+                val artworkCorner =
                     scope.transition.animateDp(
                         transitionSpec = { traveller() },
                         label = "Artwork",
@@ -238,7 +245,9 @@ fun PlayerSheet(
                         if ((it == EnterExitState.Visible) == isBar) BarArtworkCorner
                         else ScreenArtworkCorner
                     }
-                val shape = RoundedCornerShape(corner)
+                val shape = remember(corner) { CornerShape(corner) }
+                val artworkShape = remember(artworkCorner) { CornerShape(artworkCorner) }
+                val overlayClip = remember(shape) { OverlayClip(shape) }
                 val container =
                     Modifier.sharedBounds(
                         sharedContentState = rememberSharedContentState(SharedKey.Container),
@@ -255,7 +264,7 @@ fun PlayerSheet(
                         boundsTransform = { _, _ -> timeline() },
                         zIndexInOverlay = if (arriving) 1f else 0f,
                         resizeMode = SharedTransitionScope.ResizeMode.RemeasureToBounds,
-                        clipInOverlayDuringTransition = OverlayClip(shape),
+                        clipInOverlayDuringTransition = overlayClip,
                     )
                 val artwork =
                     Modifier.sharedElement(
@@ -287,21 +296,16 @@ fun PlayerSheet(
                 when (value) {
                     PlayerSheetValue.Collapsed ->
                         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
-                            Box(
-                                Modifier.navigationBarsPadding()
-                                    .padding(bottom = Spacing.medium)
-                                    .widthIn(max = BarMaxWidth)
-                                    .fillMaxWidth()
-                                    .padding(horizontal = Spacing.medium)
-                                    .then(
-                                        if (backdrop != null && (available || haloStrength > 0f)) {
-                                            Modifier.blurHalo(
-                                                state = backdrop,
-                                                shape = RoundedCornerShape(BarCorner),
-                                                strength = haloStrength,
-                                            )
-                                        } else Modifier
-                                    )
+                            BarPlace(
+                                sheet = sheet,
+                                available = available,
+                                backdrop = backdrop,
+                                modifier =
+                                    Modifier.navigationBarsPadding()
+                                        .padding(bottom = Spacing.medium)
+                                        .widthIn(max = BarMaxWidth)
+                                        .fillMaxWidth()
+                                        .padding(horizontal = Spacing.medium),
                             ) {
                                 AnimatedVisibility(
                                     visible = available,
@@ -317,10 +321,11 @@ fun PlayerSheet(
                                         MiniPlayerBar(
                                             track = track,
                                             playback = playback,
+                                            progress = progress,
                                             player = player,
                                             onOpen = sheet::open,
                                             shape = shape,
-                                            artworkShape = RoundedCornerShape(artworkCorner),
+                                            artworkShape = artworkShape,
                                             shadowElevation = if (haloed) 0.dp else BarShadow,
                                             modifier = container.then(dragToMove),
                                             // Laid out as a bar throughout, at the top of the
@@ -349,13 +354,14 @@ fun PlayerSheet(
                         if (track == null || layout == PlayerLayout.Stacked) {
                             NowPlayingContent(
                                 playback = playback,
+                                positionMs = positionMs,
                                 player = player,
                                 settled = sheet.isSettledExpanded,
                                 onClose = sheet::collapse,
                                 onEdit = edit,
                                 modifier = content,
                                 topBarModifier = dragToMove,
-                                artworkShape = RoundedCornerShape(artworkCorner),
+                                artworkShape = artworkShape,
                                 artworkModifier = artwork,
                                 titleModifier = title,
                                 artistModifier = artist,
@@ -366,6 +372,7 @@ fun PlayerSheet(
                             NowPlayingWideContent(
                                 track = track,
                                 playback = playback,
+                                positionMs = positionMs,
                                 player = player,
                                 // Not the last song's, for the moment before this one's are asked
                                 // for.
@@ -376,7 +383,7 @@ fun PlayerSheet(
                                 onEdit = edit,
                                 modifier = content,
                                 topBarModifier = dragToMove,
-                                artworkShape = RoundedCornerShape(artworkCorner),
+                                artworkShape = artworkShape,
                                 artworkModifier = artwork,
                                 titleModifier = title,
                                 artistModifier = artist,
@@ -389,6 +396,46 @@ fun PlayerSheet(
             }
         }
     }
+}
+
+/**
+ * Where the bar sits, lifted off what is behind it by a halo while it is at rest. The halo's
+ * strength is animated here, so that only this follows it and not the bar.
+ */
+@Composable
+private fun BarPlace(
+    sheet: PlayerSheetState,
+    available: Boolean,
+    backdrop: HazeState?,
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit,
+) {
+    val atRest by remember(sheet) { derivedStateOf { sheet.fraction == 0f } }
+    val strength by
+        animateFloatAsState(
+            targetValue = if (available && atRest) 1f else 0f,
+            animationSpec = MaterialTheme.motionScheme.defaultEffectsSpec(),
+            label = "MiniPlayerHalo",
+        )
+    Box(
+        modifier.then(
+            if (backdrop != null && (available || strength > 0f)) {
+                Modifier.blurHalo(state = backdrop, shape = BarShape, strength = strength)
+            } else Modifier
+        )
+    ) {
+        content()
+    }
+}
+
+/** A rounded shape whose corner is read as it is drawn, so that animating it recomposes nothing. */
+@Stable
+private class CornerShape(private val corner: State<Dp>) : Shape {
+    override fun createOutline(
+        size: Size,
+        layoutDirection: LayoutDirection,
+        density: Density,
+    ): Outline = RoundedCornerShape(corner.value).createOutline(size, layoutDirection, density)
 }
 
 @Composable
@@ -417,14 +464,20 @@ private fun rememberPlayerSheetState(): PlayerSheetState {
 @Composable
 private fun CollapseOnBack(sheet: PlayerSheetState) {
     val backState = rememberNavigationEventState(currentInfo = NavigationEventInfo.None)
-    val progress =
-        (backState.transitionState as? NavigationEventTransitionState.InProgress)
-            ?.latestEvent
-            ?.progress
-    LaunchedEffect(progress) { if (progress != null) sheet.previewCollapse(progress) }
+    // Read as it is when it is delivered, not as a composition saw it: a quick gesture is over
+    // before the frame that would have shown its last step.
+    LaunchedEffect(backState, sheet) {
+        snapshotFlow {
+            (backState.transitionState as? NavigationEventTransitionState.InProgress)
+                ?.latestEvent
+                ?.progress
+        }
+            .collect { progress -> if (progress != null) sheet.previewCollapse(progress) }
+    }
+    val expanded by remember(sheet) { derivedStateOf { sheet.isExpanded } }
     NavigationBackHandler(
         state = backState,
-        isBackEnabled = sheet.isExpanded,
+        isBackEnabled = expanded,
         onBackCancelled = sheet::expand,
         onBackCompleted = sheet::collapse,
     )
@@ -490,8 +543,7 @@ private val SettleSpring = spring<Float>(dampingRatio = 0.68f, stiffness = 240f)
 
 /**
  * How the sheet opens from a tap on the bar. Softer than [SettleSpring], which finishes what a
- * finger had already started and at its speed: a tap starts from rest and covers the whole way, and
- * at that stiffness the pieces that travel were there before they could be followed.
+ * finger had already started and at its speed: a tap starts from rest and covers the whole way.
  */
 private val OpenSpring = spring<Float>(dampingRatio = 0.76f, stiffness = 110f)
 
@@ -524,6 +576,7 @@ private const val EXPANDED_SWELL = 0.35f
 private const val COLLAPSED_DIP = 0.12f
 
 private val BarCorner = 28.dp
+private val BarShape = RoundedCornerShape(BarCorner)
 private val BarMaxWidth = 560.dp
 
 /** The bar's shadow where no halo lifts it. */

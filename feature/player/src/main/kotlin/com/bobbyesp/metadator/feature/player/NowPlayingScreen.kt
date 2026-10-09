@@ -103,6 +103,7 @@ import kotlinx.coroutines.delay
  * The player, full screen. It is the expanded content of [PlayerSheet], which owns how it gets on
  * and off the screen; the modifiers are how the sheet ties the pieces it shares with the bar.
  *
+ * @param playback what is playing, without its position, which is [positionMs]
  * @param settled whether the sheet is at rest, open: what waits for the pieces that travel to have
  *   arrived shows then
  * @param ownContentPresence how much of what only this has (all but the cover, the name and the
@@ -113,6 +114,7 @@ import kotlinx.coroutines.delay
 @Composable
 internal fun NowPlayingContent(
     playback: PlaybackState,
+    positionMs: () -> Long,
     player: PlayerController,
     settled: Boolean,
     onClose: () -> Unit,
@@ -130,6 +132,7 @@ internal fun NowPlayingContent(
     Surface(modifier = modifier, color = MaterialTheme.colorScheme.background) {
         NowPlayingScaffold(
             playback = playback,
+            positionMs = positionMs,
             player = player,
             track = track,
             settled = settled,
@@ -151,6 +154,7 @@ internal fun NowPlayingContent(
 @Composable
 private fun NowPlayingScaffold(
     playback: PlaybackState,
+    positionMs: () -> Long,
     player: PlayerController,
     track: Track?,
     settled: Boolean,
@@ -204,7 +208,7 @@ private fun NowPlayingScaffold(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap),
         ) {
-            item(key = "player") {
+            item(key = "player", contentType = "player") {
                 Column(
                     modifier = Modifier.widthIn(max = 480.dp).fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -212,13 +216,13 @@ private fun NowPlayingScaffold(
                 ) {
                     Cover(track, artworkShape, artworkModifier)
                     TrackName(track, settled, titleModifier, artistModifier)
-                    SeekBar(playback, onSeek = player::seekTo)
+                    SeekBar(playback, positionMs, onSeek = player::seekTo)
                     TransportControls(playback, player, playButtonModifier)
                     SecondaryControls(playback, player, onEdit = { onEdit(track.ref.uri) })
                 }
             }
             if (playback.hasUpNext) {
-                item(key = "up-next") {
+                item(key = "up-next", contentType = "up-next") {
                     Text(
                         stringResource(R.string.up_next),
                         style = MaterialTheme.typography.titleMedium,
@@ -247,7 +251,11 @@ internal fun LazyListScope.upNextItems(
     itemModifier: Modifier = Modifier,
 ) {
     val upNext = playback.queue.drop(playback.currentIndex + 1).take(MAX_UP_NEXT)
-    itemsIndexed(upNext, key = { index, it -> "${it.id.value}:$index" }) { index, next ->
+    itemsIndexed(
+        upNext,
+        key = { index, it -> "${it.id.value}:$index" },
+        contentType = { _, _ -> "queued" },
+    ) { index, next ->
         SegmentedListItem(
             onClick = { player.skipToQueueItem(playback.currentIndex + 1 + index) },
             shapes = GroupShapes.listItemShapes(index, upNext.size),
@@ -382,8 +390,7 @@ internal fun TrackName(
         LaunchedEffect(settled) { if (settled) albumArrived = true }
         val album = track.album
         if (album != null) {
-            // The chip's place, kept while it is not there. Not a window it is clipped to: a pill
-            // cut by a rectangle on its way in shows the rectangle.
+            // The chip's place, kept while it is not there.
             Box(
                 modifier = Modifier.padding(top = Spacing.small).height(AssistChipDefaults.Height),
                 contentAlignment = Alignment.CenterStart,
@@ -399,10 +406,7 @@ internal fun TrackName(
 /**
  * One line about the playing song. A new song's comes in from the side through focus, a short way
  * and sharpening as it stops, while the old one's leaves the other way: the same as the album's
- * chip turning up, on its side.
- *
- * Nothing clips it. Slid the whole of its width inside its own box, the text was cut by the box's
- * edges as it went; a short way and out of focus, it needs no box to come out of.
+ * chip turning up, on its side. Nothing clips it.
  *
  * @param follows whether this is the second line of a pair, which then starts a moment after the
  *   first so that the two do not move as one block
@@ -474,23 +478,30 @@ internal object TrackNameDefaults {
 /**
  * The position in the song, as a wave that moves while it plays and lies flat while it is paused or
  * being dragged.
+ *
+ * @param positionMs where the song is, which [playback] does not say: read here, so that only this
+ *   follows it
  */
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 internal fun SeekBar(
     playback: PlaybackState,
+    positionMs: () -> Long,
     onSeek: (Long) -> Unit,
     modifier: Modifier = Modifier.fillMaxWidth(),
     showTimes: Boolean = true,
 ) {
     val state = rememberSliderState()
+    val progress =
+        if (playback.durationMs <= 0) 0f
+        else (positionMs().toFloat() / playback.durationMs).coerceIn(0f, 1f)
     // Where the user let go, until the player reports it: without this the thumb jumps back to the
     // old position for the moment the seek takes.
     var sought by remember { mutableStateOf<Float?>(null) }
-    LaunchedEffect(playback.progress, state.isDragging, sought) {
+    LaunchedEffect(progress, state.isDragging, sought) {
         val target = sought
-        if (target != null && abs(playback.progress - target) < SEEK_TOLERANCE) sought = null
-        if (!state.isDragging && sought == null) state.value = playback.progress
+        if (target != null && abs(progress - target) < SEEK_TOLERANCE) sought = null
+        if (!state.isDragging && sought == null) state.value = progress
     }
     LaunchedEffect(sought) {
         if (sought != null) {

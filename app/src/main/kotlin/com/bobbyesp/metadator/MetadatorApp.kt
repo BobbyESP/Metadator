@@ -18,6 +18,7 @@ import androidx.compose.material3.adaptive.layout.calculatePaneScaffoldDirective
 import androidx.compose.material3.adaptive.navigation3.rememberListDetailSceneStrategy
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -81,11 +82,12 @@ fun MetadatorApp(onExit: () -> Unit) {
     // the player belongs to browsing. the editors have their own controls and need the room.
     val top = backStack.lastOrNull()
     val showPlayer = top == Library || top is Collection
-    val playback by koinInject<PlayerController>().state.collectAsStateWithLifecycle()
+    val playback = koinInject<PlayerController>().state.collectAsStateWithLifecycle()
+    val playerActive by remember(playback) { derivedStateOf { playback.value.isActive } }
     val snackbarClearance by
         animateDpAsState(
             targetValue =
-                if (showPlayer && playback.isActive) PlayerSheetDefaults.CollapsedClearance
+                if (showPlayer && playerActive) PlayerSheetDefaults.CollapsedClearance
                 else Spacing.medium,
             label = "SnackbarClearance",
         )

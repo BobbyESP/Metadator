@@ -10,6 +10,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.runtime.withFrameNanos
 import com.bobbyesp.metadator.player.api.PlaybackState
 import kotlin.math.abs
@@ -61,16 +62,19 @@ internal class PlaybackClock(initialMs: Long) {
 }
 
 /**
- * A clock following [playback]. It asks for a frame on every frame while the song plays, so it
- * belongs only where something on screen moves with the song.
+ * A clock following [playback], whose position is what [positionMs] reports. It asks for a frame on
+ * every frame while the song plays, so it belongs only where something on screen moves with the
+ * song.
  */
 @Composable
-internal fun rememberPlaybackClock(playback: PlaybackState): PlaybackClock {
-    val clock = remember { PlaybackClock(playback.positionMs) }
+internal fun rememberPlaybackClock(
+    playback: PlaybackState,
+    positionMs: () -> Long,
+): PlaybackClock {
+    val clock = remember { PlaybackClock(positionMs()) }
     val running = playback.isPlaying && !playback.isBuffering
-    // Keyed by the position: the same report read twice would look like the song standing still.
-    LaunchedEffect(clock, playback.positionMs, running, playback.current?.id) {
-        clock.report(playback.positionMs, running)
+    LaunchedEffect(clock, running, playback.current?.id) {
+        snapshotFlow(positionMs).collect { clock.report(it, running) }
     }
     LaunchedEffect(clock, running) {
         if (!running) return@LaunchedEffect

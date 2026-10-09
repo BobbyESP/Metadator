@@ -64,6 +64,9 @@ internal class PlayerSheetState(
     /** Where the finger has it, kept apart from [progress] because that one is set a frame late. */
     private var dragPosition = initial.progress
 
+    /** Whether the sheet was last sent to the bar: a back gesture's progress must not undo that. */
+    private var collapsing = false
+
     /** Whether the full player is on screen, or on its way there. */
     val isExpanded: Boolean
         get() =
@@ -102,7 +105,7 @@ internal class PlayerSheetState(
 
     /** Shows how far a back gesture has got, [backProgress] from 0 to 1, without committing. */
     fun previewCollapse(backProgress: Float) {
-        if (transition.currentState != PlayerSheetValue.Expanded) return
+        if (collapsing || transition.currentState != PlayerSheetValue.Expanded) return
         scope.launch { progress.snapTo(1f - backProgress * BACK_PREVIEW_FRACTION) }
     }
 
@@ -113,6 +116,7 @@ internal class PlayerSheetState(
     fun dragBy(delta: Float): Float {
         if (!dragging) {
             dragging = true
+            collapsing = false
             dragFrom = transition.currentState
             dragPosition = progress.value.coerceIn(0f, 1f)
         }
@@ -144,6 +148,7 @@ internal class PlayerSheetState(
         initialVelocity: Float = 0f,
         spec: AnimationSpec<Float> = settleSpec,
     ) {
+        collapsing = target == PlayerSheetValue.Collapsed
         scope.launch { progress.animateTo(target.progress, spec, initialVelocity) }
     }
 

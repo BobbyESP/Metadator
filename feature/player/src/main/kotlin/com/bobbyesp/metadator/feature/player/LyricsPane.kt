@@ -93,6 +93,7 @@ import kotlinx.coroutines.flow.collectLatest
 internal fun LyricsPane(
     lyrics: TrackLyrics?,
     playback: PlaybackState,
+    positionMs: () -> Long,
     onSeek: (Long) -> Unit,
     onEdit: () -> Unit,
     compact: Boolean,
@@ -132,7 +133,14 @@ internal fun LyricsPane(
                     when (val song = shown.lyrics) {
                         is SongLyrics.Plain -> PlainLyrics(song.text, compact, bottomClearance)
                         is SongLyrics.Synced ->
-                            SyncedLyrics(song.lines, playback, onSeek, compact, bottomClearance)
+                            SyncedLyrics(
+                                lines = song.lines,
+                                playback = playback,
+                                positionMs = positionMs,
+                                onSeek = onSeek,
+                                compact = compact,
+                                bottomClearance = bottomClearance,
+                            )
                     }
             }
         }
@@ -179,11 +187,12 @@ private fun PlainLyrics(text: String, compact: Boolean, bottomClearance: Dp) {
 private fun SyncedLyrics(
     lines: List<TimedLine>,
     playback: PlaybackState,
+    positionMs: () -> Long,
     onSeek: (Long) -> Unit,
     compact: Boolean,
     bottomClearance: Dp,
 ) {
-    val clock = rememberPlaybackClock(playback)
+    val clock = rememberPlaybackClock(playback, positionMs)
     // Derived, so that a clock that changes every frame recomposes only when the line does.
     val activeIndex by remember(lines, clock) { derivedStateOf { lines.indexAt(clock.positionMs) } }
     val listState = rememberLazyListState()
@@ -228,7 +237,9 @@ private fun SyncedLyrics(
                 ),
             verticalArrangement = Arrangement.spacedBy(Spacing.extraSmall),
         ) {
-            itemsIndexed(lines, key = { index, _ -> index }) { index, line ->
+            itemsIndexed(lines, key = { index, _ -> index }, contentType = { _, _ -> "line" }) {
+                index,
+                line ->
                 LyricLine(
                     line = line,
                     active = index == activeIndex,

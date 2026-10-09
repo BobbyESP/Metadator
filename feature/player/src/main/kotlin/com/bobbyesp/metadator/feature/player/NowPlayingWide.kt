@@ -92,6 +92,7 @@ import dev.chrisbanes.haze.rememberHazeState
 internal fun NowPlayingWideContent(
     track: Track,
     playback: PlaybackState,
+    positionMs: () -> Long,
     player: PlayerController,
     lyrics: TrackLyrics?,
     compact: Boolean,
@@ -125,6 +126,7 @@ internal fun NowPlayingWideContent(
                 SongColumn(
                     track = track,
                     playback = playback,
+                    positionMs = positionMs,
                     player = player,
                     withControls = !compact,
                     settled = settled,
@@ -140,6 +142,7 @@ internal fun NowPlayingWideContent(
                 )
                 SidePanel(
                     playback = playback,
+                    positionMs = positionMs,
                     player = player,
                     lyrics = lyrics,
                     compact = compact,
@@ -160,6 +163,7 @@ internal fun NowPlayingWideContent(
 private fun SongColumn(
     track: Track,
     playback: PlaybackState,
+    positionMs: () -> Long,
     player: PlayerController,
     withControls: Boolean,
     settled: Boolean,
@@ -198,7 +202,7 @@ private fun SongColumn(
             )
             TrackName(track, settled, titleModifier, artistModifier)
             if (withControls) {
-                SeekBar(playback, onSeek = player::seekTo)
+                SeekBar(playback, positionMs, onSeek = player::seekTo)
                 TransportControls(playback, player, playButtonModifier)
                 SecondaryControls(playback, player, onEdit)
             }
@@ -216,6 +220,7 @@ private enum class SidePane {
 @Composable
 private fun SidePanel(
     playback: PlaybackState,
+    positionMs: () -> Long,
     player: PlayerController,
     lyrics: TrackLyrics?,
     compact: Boolean,
@@ -227,6 +232,15 @@ private fun SidePanel(
 ) {
     var pane by rememberSaveable { mutableStateOf(SidePane.Lyrics) }
     val motion = MaterialTheme.motionScheme
+    val lyricsLabel = stringResource(R.string.lyrics)
+    val upNextLabel = stringResource(R.string.up_next)
+    val panes =
+        remember(lyricsLabel, upNextLabel) {
+            listOf(
+                Choice(SidePane.Lyrics, lyricsLabel, Icons.Rounded.Lyrics),
+                Choice(SidePane.UpNext, upNextLabel, Icons.AutoMirrored.Rounded.QueueMusic),
+            )
+        }
     // What scrolls passes beneath the floating controls, padded to clear them at its end.
     val bottomClearance = if (compact) FloatingControlsClearance else 0.dp
     Box(modifier) {
@@ -242,19 +256,7 @@ private fun SidePanel(
                     }
                 }
                 ConnectedChoices(
-                    choices =
-                        listOf(
-                            Choice(
-                                SidePane.Lyrics,
-                                stringResource(R.string.lyrics),
-                                Icons.Rounded.Lyrics,
-                            ),
-                            Choice(
-                                SidePane.UpNext,
-                                stringResource(R.string.up_next),
-                                Icons.AutoMirrored.Rounded.QueueMusic,
-                            ),
-                        ),
+                    choices = panes,
                     selected = pane,
                     onSelect = { pane = it },
                 )
@@ -273,6 +275,7 @@ private fun SidePanel(
                         LyricsPane(
                             lyrics = lyrics,
                             playback = playback,
+                            positionMs = positionMs,
                             onSeek = player::seekTo,
                             onEdit = onEdit,
                             compact = compact,
@@ -286,6 +289,7 @@ private fun SidePanel(
         if (compact) {
             FloatingControls(
                 playback = playback,
+                positionMs = positionMs,
                 player = player,
                 haze = haze,
                 frost = settled,
@@ -330,6 +334,7 @@ private fun UpNextPane(playback: PlaybackState, player: PlayerController, bottom
 @Composable
 private fun FloatingControls(
     playback: PlaybackState,
+    positionMs: () -> Long,
     player: PlayerController,
     haze: HazeState,
     frost: Boolean,
@@ -369,6 +374,7 @@ private fun FloatingControls(
         }
         SeekBar(
             playback = playback,
+            positionMs = positionMs,
             onSeek = player::seekTo,
             modifier = Modifier.weight(1f).padding(horizontal = Spacing.small),
             showTimes = false,
