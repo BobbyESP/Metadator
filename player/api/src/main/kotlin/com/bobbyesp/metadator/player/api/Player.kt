@@ -13,7 +13,10 @@ import kotlinx.coroutines.flow.StateFlow
 interface PlayerController {
     val state: StateFlow<PlaybackState>
 
-    /** Replaces the queue with [tracks] and starts at [startIndex]. */
+    /**
+     * Replaces the queue with [tracks] and starts at [startIndex]. With [shuffle] the queue is
+     * [tracks] in a random order, and starts at its first song.
+     */
     fun play(tracks: List<Track>, startIndex: Int = 0, shuffle: Boolean = false)
 
     fun togglePlayPause()
@@ -26,6 +29,10 @@ interface PlayerController {
 
     fun skipToQueueItem(index: Int)
 
+    /**
+     * Puts the rest of the queue in a random order, once, or back in the order it came in. The song
+     * that plays goes on.
+     */
     fun setShuffle(enabled: Boolean)
 
     fun setRepeatMode(mode: RepeatMode)

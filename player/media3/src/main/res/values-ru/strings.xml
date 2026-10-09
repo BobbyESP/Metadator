@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Notification -->
+    <string name="notification_shuffle">Перемешать</string>
+    <string name="notification_repeat_off">Повтор выключен</string>
+    <string name="notification_repeat_all">Повторять все</string>
+    <string name="notification_repeat_one">Повторять одну</string>
+</resources>

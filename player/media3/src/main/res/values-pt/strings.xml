@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Notification -->
+    <string name="notification_shuffle">Aleatório</string>
+    <string name="notification_repeat_off">Repetição desativada</string>
+    <string name="notification_repeat_all">Repetir tudo</string>
+    <string name="notification_repeat_one">Repetir uma</string>
+</resources>

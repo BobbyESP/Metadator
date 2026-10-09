@@ -199,7 +199,20 @@ system's media notification and lock-screen controls. Its player is built with t
 and the audio containers only (FLAC, WAV, MP4, AMR, Ogg, Matroska, ADTS, AC-3, AC-4, MP3), so R8
 drops the rest of Media3; a new container is one more line there. `Media3PlayerController`
 connects to it on first use and exposes a `StateFlow<PlaybackState>`. It is driven from the main
-thread, as Media3 requires. Both players show the position as a wave that lies flat while paused;
+thread, as Media3 requires.
+
+Shuffle is an order of the queue. ExoPlayer's shuffle mode keeps its random order to itself, so
+the queue shown would not be the one played; `QueueShuffler`, in the service, gives the player an
+order that shuffles nothing and, when the mode turns on, puts the items themselves in one random
+order (`PlayQueue`) around the song that plays. Turning it off puts them back in the order they
+came in. The mode is the player's own, so every controller turns it on and sees the same queue:
+`Media3PlayerController` reads the queue from the player rather than keeping its own.
+
+The notification carries the app's icon (`ic_metadator_notification`, the launcher's glyph) and,
+beside the transport controls, a shuffle and a repeat button. They are custom session commands
+the service answers, and their icons follow the player's state.
+
+Both players show the position as a wave that lies flat while paused;
 in the full player it is the slider's track.
 
 ### One surface, two sizes

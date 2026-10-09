@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Notification -->
+    <string name="notification_shuffle">Zufallswiedergabe</string>
+    <string name="notification_repeat_off">Wiederholung aus</string>
+    <string name="notification_repeat_all">Alle wiederholen</string>
+    <string name="notification_repeat_one">Song wiederholen</string>
+</resources>

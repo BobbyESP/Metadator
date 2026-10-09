@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Notification -->
+    <string name="notification_shuffle">Casuale</string>
+    <string name="notification_repeat_off">Ripetizione disattivata</string>
+    <string name="notification_repeat_all">Ripeti tutto</string>
+    <string name="notification_repeat_one">Ripeti il brano</string>
+</resources>

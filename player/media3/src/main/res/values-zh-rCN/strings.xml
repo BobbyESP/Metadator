@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Notification -->
+    <string name="notification_shuffle">随机播放</string>
+    <string name="notification_repeat_off">关闭循环</string>
+    <string name="notification_repeat_all">列表循环</string>
+    <string name="notification_repeat_one">单曲循环</string>
+</resources>

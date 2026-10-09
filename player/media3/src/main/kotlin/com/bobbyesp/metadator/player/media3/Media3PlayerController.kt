@@ -17,6 +17,7 @@ import com.bobbyesp.metadator.core.model.Track
 import com.bobbyesp.metadator.player.api.PlaybackState
 import com.bobbyesp.metadator.player.api.PlayerController
 import com.bobbyesp.metadator.player.api.RepeatMode
+import kotlin.random.Random
 import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -44,12 +45,16 @@ class Media3PlayerController(
     private var controller: MediaController? = null
     private var connecting = false
     private val pending = ArrayDeque<(MediaController) -> Unit>()
+    private var tracks: Map<String, Track> = emptyMap()
     private var queue: List<Track> = emptyList()
     private var ticker: Job? = null
 
     private val listener =
         object : Player.Listener {
-            override fun onEvents(player: Player, events: Player.Events) = publish()
+            override fun onEvents(player: Player, events: Player.Events) {
+                if (events.contains(Player.EVENT_TIMELINE_CHANGED)) readQueue(player)
+                publish()
+            }
 
             override fun onPlayerError(error: PlaybackException) {
                 _state.value = _state.value.copy(error = error.message)
@@ -73,6 +78,7 @@ class Media3PlayerController(
                 controller = connected
                 connected.addListener(listener)
                 while (pending.isNotEmpty()) pending.removeFirst()(connected)
+                readQueue(connected)
                 publish()
             },
             ContextCompat.getMainExecutor(context),
@@ -81,13 +87,13 @@ class Media3PlayerController(
 
     override fun play(tracks: List<Track>, startIndex: Int, shuffle: Boolean) {
         if (tracks.isEmpty()) return
-        queue = tracks
+        this.tracks = tracks.associateBy { it.id.value.toString() }
+        val first =
+            if (shuffle) Random.nextInt(tracks.size) else startIndex.coerceIn(tracks.indices)
         withController { player ->
-            player.setMediaItems(
-                tracks.map { it.toMediaItem() },
-                startIndex.coerceIn(tracks.indices),
-                0L,
-            )
+            // Off first: the service shuffles a queue when the mode turns on.
+            player.shuffleModeEnabled = false
+            player.setMediaItems(tracks.map { it.toMediaItem() }, first, 0L)
             player.shuffleModeEnabled = shuffle
             player.prepare()
             player.play()
@@ -124,7 +130,13 @@ class Media3PlayerController(
     override fun stop() = withController { player ->
         player.stop()
         player.clearMediaItems()
-        queue = emptyList()
+    }
+
+    /** The service orders the queue (see [QueueShuffler]), so the queue is read from the player. */
+    private fun readQueue(player: Player) {
+        queue =
+            List(player.mediaItemCount) { tracks[player.getMediaItemAt(it).mediaId] }
+                .filterNotNull()
     }
 
     private fun publish() {
@@ -133,7 +145,7 @@ class Media3PlayerController(
         val current = queue.getOrNull(index)
         _state.value =
             PlaybackState(
-                queue = if (player.mediaItemCount == 0) emptyList() else queue,
+                queue = queue,
                 currentIndex = index,
                 isPlaying = player.isPlaying,
                 isBuffering = player.playbackState == Player.STATE_BUFFERING,
