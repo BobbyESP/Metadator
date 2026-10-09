@@ -44,9 +44,6 @@ data class Comparison(
     val checked: Set<String>,
     val includeCover: Boolean,
 ) {
-    val changedProposals: List<FieldProposal>
-        get() = proposals.filter { it.differs }
-
     val selectedFields: Map<String, List<String>>
         get() = proposals.filter { it.key in checked }.associate { it.key to it.proposed }
 }

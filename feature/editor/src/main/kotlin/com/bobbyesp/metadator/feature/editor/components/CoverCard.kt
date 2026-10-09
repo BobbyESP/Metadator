@@ -58,7 +58,7 @@ import com.bobbyesp.metadator.feature.editor.R
  * What can be done with it is in sight, as one group of buttons: changing it is the one with a
  * name, the rest are their icons. None of them is filled, since the screen's own main action is
  * saving, from its toolbar. Going back to the file's cover is on the cover itself, while it is not
- * the file's: one more button in the group would leave no room for the name of the first.
+ * the file's.
  */
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -96,7 +96,6 @@ fun CoverCard(
                 shape = MaterialTheme.shapes.extraLarge,
             )
             if (loadingCover) LoadingIndicator()
-            // Undoing a new cover is done where the new cover is, and only while there is one.
             androidx.compose.animation.AnimatedVisibility(
                 visible = coverChanged && hasOriginalCover,
                 modifier = Modifier.align(Alignment.TopEnd).padding(Spacing.medium),

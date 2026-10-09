@@ -135,10 +135,7 @@ fun TagTextField(
     )
 }
 
-/**
- * Says that a field is changed to who cannot see its tint. Not a line of text under the field: that
- * moved everything below it down on the first key typed.
- */
+/** Says that a field is changed to who cannot see its tint. */
 @Composable
 private fun Modifier.changedState(changed: Boolean): Modifier {
     if (!changed) return this

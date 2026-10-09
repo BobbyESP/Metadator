@@ -50,11 +50,7 @@ private class FileStat(val icon: ImageVector, val label: String, val value: Stri
 
 /**
  * What the file is, read-only: its name under a badge of its format, what is known about its audio
- * as a grid of figures, and where it is.
- *
- * A group like the app's lists, rounded outside and tight inside, rather than one card of label and
- * value rows: the name and the folder are text to read (and to copy, so both can be selected), the
- * rest are figures to glance at, and a table gave all of them the same weight.
+ * as a grid of figures, and where it is. The name and the folder can be selected, to copy them.
  */
 @Composable
 fun FileInfoCard(loaded: LoadedTrack, modifier: Modifier = Modifier) {

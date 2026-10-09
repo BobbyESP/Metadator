@@ -83,7 +83,9 @@ fun EditorDestination(uri: String, onClose: () -> Unit) {
         if (showLookup) {
             LookupSheet(
                 state = lookupState,
-                onQueryChange = { title, artist, album -> lookup.setQuery(title, artist, album) },
+                onTitleChange = { lookup.setQuery(title = it) },
+                onArtistChange = { lookup.setQuery(artist = it) },
+                onAlbumChange = { lookup.setQuery(album = it) },
                 onSearch = lookup::search,
                 onOpen = { candidate ->
                     state.draft?.let { lookup.open(candidate, it.tags, state.positionStyle) }

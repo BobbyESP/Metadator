@@ -61,6 +61,8 @@ import androidx.compose.material3.rememberBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -98,7 +100,9 @@ import com.bobbyesp.metadator.lookup.api.MatchConfidence
 @Composable
 fun LookupSheet(
     state: LookupState,
-    onQueryChange: (title: String, artist: String, album: String) -> Unit,
+    onTitleChange: (String) -> Unit,
+    onArtistChange: (String) -> Unit,
+    onAlbumChange: (String) -> Unit,
     onSearch: () -> Unit,
     onOpen: (LookupCandidate) -> Unit,
     onToggle: (String) -> Unit,
@@ -108,21 +112,14 @@ fun LookupSheet(
     onApply: (fields: Map<String, List<String>>, coverUrl: String?) -> Unit,
     onDismiss: () -> Unit,
 ) {
-    // No half-open state: the sheet is as tall as what it shows.
     val sheetState =
-        rememberBottomSheetState(
-            initialValue = SheetValue.Hidden,
-            enabledValues = setOf(SheetValue.Hidden, SheetValue.Expanded),
-        )
+        rememberBottomSheetState(initialValue = SheetValue.Hidden, enabledValues = SheetValues)
     val motion = MaterialTheme.motionScheme
     ModalBottomSheet(onDismissRequest = onDismiss, sheetState = sheetState) {
-        // Keyed by the stage, not by the comparison: ticking a field makes a new comparison, and
-        // that must update the list in place rather than animate in a whole new one.
+        // Keyed by the stage: ticking a field makes a new comparison, which updates in place.
         AnimatedContent(
             targetState = state.comparison,
             contentKey = { it != null },
-            // The comparison comes in from the side the results leave by, and goes back the same
-            // way: one step forward, one step back.
             transitionSpec = {
                 val direction = if (targetState != null) 1 else -1
                 (slideInHorizontally(motion.defaultSpatialSpec()) { direction * it / 4 } +
@@ -133,7 +130,7 @@ fun LookupSheet(
             label = "LookupStage",
         ) { comparison ->
             if (comparison == null) {
-                SearchStage(state, onQueryChange, onSearch, onOpen)
+                SearchStage(state, onTitleChange, onArtistChange, onAlbumChange, onSearch, onOpen)
             } else {
                 ComparisonStage(
                     comparison = comparison,
@@ -141,23 +138,23 @@ fun LookupSheet(
                     onCheckOnly = onCheckOnly,
                     onToggleCover = onToggleCover,
                     onBack = onBackToResults,
-                    onApply = {
-                        onApply(
-                            comparison.selectedFields,
-                            comparison.candidate.artworkUrl.takeIf { comparison.includeCover },
-                        )
-                    },
+                    onApply = onApply,
                 )
             }
         }
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+private val SheetValues = setOf(SheetValue.Hidden, SheetValue.Expanded)
+
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun SearchStage(
     state: LookupState,
-    onQueryChange: (String, String, String) -> Unit,
+    onTitleChange: (String) -> Unit,
+    onArtistChange: (String) -> Unit,
+    onAlbumChange: (String) -> Unit,
     onSearch: () -> Unit,
     onOpen: (LookupCandidate) -> Unit,
 ) {
@@ -167,35 +164,22 @@ private fun SearchStage(
             PaddingValues(start = Spacing.screen, end = Spacing.screen, bottom = Spacing.huge),
         verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap),
     ) {
-        item(key = "query") {
-            Column(verticalArrangement = Arrangement.spacedBy(Spacing.small)) {
-                Text(
-                    stringResource(R.string.lookup_title),
-                    style = MaterialTheme.typography.headlineSmallEmphasized,
-                    modifier = Modifier.padding(bottom = Spacing.small),
-                )
-                QueryField(CoreUiR.string.field_title, state.title) {
-                    onQueryChange(it, state.artist, state.album)
-                }
-                QueryField(CoreUiR.string.field_artist, state.artist) {
-                    onQueryChange(state.title, it, state.album)
-                }
-                QueryField(CoreUiR.string.field_album, state.album, onSearch) {
-                    onQueryChange(state.title, state.artist, it)
-                }
-                SheetButton(
-                    text = stringResource(R.string.lookup_search),
-                    icon = Icons.Rounded.Search,
-                    onClick = onSearch,
-                    enabled = state.status != LookupStatus.Searching,
-                    modifier = Modifier.fillMaxWidth().padding(top = Spacing.small),
-                )
-            }
+        item(key = "query", contentType = "query") {
+            QueryForm(
+                title = state.title,
+                artist = state.artist,
+                album = state.album,
+                searching = state.status == LookupStatus.Searching,
+                onTitleChange = onTitleChange,
+                onArtistChange = onArtistChange,
+                onAlbumChange = onAlbumChange,
+                onSearch = onSearch,
+            )
         }
         when (val status = state.status) {
             LookupStatus.Idle -> Unit
             LookupStatus.Searching ->
-                item(key = "searching") {
+                item(key = "searching", contentType = "searching") {
                     Column(
                         modifier = Modifier.fillMaxWidth().padding(Spacing.huge).animateItem(),
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -211,7 +195,7 @@ private fun SearchStage(
                 }
             is LookupStatus.Results -> {
                 if (status.candidates.isEmpty()) {
-                    item(key = "state") {
+                    item(key = "state", contentType = "state") {
                         StateMessage(
                             Icons.Rounded.SearchOff,
                             stringResource(R.string.lookup_no_results),
@@ -219,16 +203,18 @@ private fun SearchStage(
                         )
                     }
                 } else {
-                    item(key = "results") {
+                    item(key = "results", contentType = "results") {
                         SectionHeader(
                             stringResource(R.string.lookup_results),
                             Modifier.animateItem(),
                         )
                     }
                 }
-                itemsIndexed(status.candidates, key = { _, it -> it.providerId + it.id }) {
-                    index,
-                    candidate ->
+                itemsIndexed(
+                    status.candidates,
+                    key = { _, it -> it.providerId + it.id },
+                    contentType = { _, _ -> "candidate" },
+                ) { index, candidate ->
                     CandidateItem(
                         candidate,
                         index,
@@ -239,7 +225,7 @@ private fun SearchStage(
                     }
                 }
                 if (status.failedProviders.isNotEmpty()) {
-                    item(key = "partial") {
+                    item(key = "partial", contentType = "partial") {
                         Text(
                             stringResource(
                                 R.string.lookup_partial,
@@ -255,7 +241,7 @@ private fun SearchStage(
                 }
             }
             LookupStatus.NoProviders ->
-                item(key = "state") {
+                item(key = "state", contentType = "state") {
                     StateMessage(
                         Icons.Rounded.TravelExplore,
                         stringResource(R.string.lookup_no_providers),
@@ -263,7 +249,7 @@ private fun SearchStage(
                     )
                 }
             LookupStatus.Offline ->
-                item(key = "state") {
+                item(key = "state", contentType = "state") {
                     StateMessage(
                         Icons.Rounded.CloudOff,
                         stringResource(R.string.offline),
@@ -272,7 +258,7 @@ private fun SearchStage(
                     )
                 }
             LookupStatus.RateLimited ->
-                item(key = "state") {
+                item(key = "state", contentType = "state") {
                     StateMessage(
                         Icons.Rounded.HourglassTop,
                         stringResource(R.string.lookup_rate_limited),
@@ -280,7 +266,7 @@ private fun SearchStage(
                     )
                 }
             LookupStatus.Failed ->
-                item(key = "state") {
+                item(key = "state", contentType = "state") {
                     StateMessage(
                         Icons.Rounded.ErrorOutline,
                         stringResource(R.string.lookup_failed),
@@ -289,6 +275,37 @@ private fun SearchStage(
                     )
                 }
         }
+    }
+}
+
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+private fun QueryForm(
+    title: String,
+    artist: String,
+    album: String,
+    searching: Boolean,
+    onTitleChange: (String) -> Unit,
+    onArtistChange: (String) -> Unit,
+    onAlbumChange: (String) -> Unit,
+    onSearch: () -> Unit,
+) {
+    Column(verticalArrangement = Arrangement.spacedBy(Spacing.small)) {
+        Text(
+            stringResource(R.string.lookup_title),
+            style = MaterialTheme.typography.headlineSmallEmphasized,
+            modifier = Modifier.padding(bottom = Spacing.small),
+        )
+        QueryField(CoreUiR.string.field_title, title, onChange = onTitleChange)
+        QueryField(CoreUiR.string.field_artist, artist, onChange = onArtistChange)
+        QueryField(CoreUiR.string.field_album, album, onSearch, onAlbumChange)
+        SheetButton(
+            text = stringResource(R.string.lookup_search),
+            icon = Icons.Rounded.Search,
+            onClick = onSearch,
+            enabled = !searching,
+            modifier = Modifier.fillMaxWidth().padding(top = Spacing.small),
+        )
     }
 }
 
@@ -455,15 +472,20 @@ private fun ComparisonStage(
     onCheckOnly: (Set<String>) -> Unit,
     onToggleCover: () -> Unit,
     onBack: () -> Unit,
-    onApply: () -> Unit,
+    onApply: (fields: Map<String, List<String>>, coverUrl: String?) -> Unit,
 ) {
     var showUnchanged by rememberSaveable { mutableStateOf(false) }
-    val unchangedCount = comparison.proposals.count { !it.differs }
-    val shown = if (showUnchanged) comparison.proposals else comparison.changedProposals
-    val shownKeys = shown.mapTo(mutableSetOf()) { it.key }
+    val proposals = comparison.proposals
+    val unchangedCount = remember(proposals) { proposals.count { !it.differs } }
+    val shown =
+        remember(proposals, showUnchanged) {
+            if (showUnchanged) proposals else proposals.filter { it.differs }
+        }
+    val shownKeys = remember(shown) { shown.mapTo(mutableSetOf()) { it.key } }
     val checkedShown = shownKeys.count { it in comparison.checked }
     val candidate = comparison.candidate
     val hasCover = candidate.artworkUrl != null
+    val latest by rememberUpdatedState(comparison)
 
     Column(Modifier.fillMaxWidth().navigationBarsPadding()) {
         LazyColumn(
@@ -471,7 +493,7 @@ private fun ComparisonStage(
             contentPadding = PaddingValues(horizontal = Spacing.screen),
             verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap),
         ) {
-            item(key = "title") {
+            item(key = "title", contentType = "title") {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.padding(bottom = Spacing.small),
@@ -489,11 +511,11 @@ private fun ComparisonStage(
                     )
                 }
             }
-            item(key = "candidate") {
+            item(key = "candidate", contentType = "candidate") {
                 CandidateHero(candidate, GroupShapes.itemShape(0, if (hasCover) 2 else 1))
             }
             if (hasCover) {
-                item(key = "cover") {
+                item(key = "cover", contentType = "cover") {
                     SegmentedListItem(
                         checked = comparison.includeCover,
                         onCheckedChange = { onToggleCover() },
@@ -516,7 +538,7 @@ private fun ComparisonStage(
                 }
             }
             if (shown.isNotEmpty()) {
-                item(key = "fields") {
+                item(key = "fields", contentType = "fields") {
                     val allChecked = checkedShown == shown.size
                     SectionHeader(
                         stringResource(R.string.lookup_selected_count, checkedShown, shown.size),
@@ -536,7 +558,11 @@ private fun ComparisonStage(
                     }
                 }
             }
-            itemsIndexed(shown, key = { _, it -> "field:" + it.key }) { index, proposal ->
+            itemsIndexed(
+                shown,
+                key = { _, it -> "field:" + it.key },
+                contentType = { _, _ -> "field" },
+            ) { index, proposal ->
                 ProposalItem(
                     proposal,
                     proposal.key in comparison.checked,
@@ -548,7 +574,7 @@ private fun ComparisonStage(
                 }
             }
             if (unchangedCount > 0) {
-                item(key = "unchanged") {
+                item(key = "unchanged", contentType = "unchanged") {
                     ToggleChip(
                         selected = showUnchanged,
                         onClick = { showUnchanged = !showUnchanged },
@@ -561,7 +587,12 @@ private fun ComparisonStage(
         SheetButton(
             text = stringResource(R.string.lookup_apply),
             icon = Icons.Rounded.Check,
-            onClick = onApply,
+            onClick = {
+                onApply(
+                    latest.selectedFields,
+                    latest.candidate.artworkUrl.takeIf { latest.includeCover },
+                )
+            },
             enabled = comparison.checked.isNotEmpty() || comparison.includeCover,
             modifier = Modifier.fillMaxWidth().padding(Spacing.screen),
         )
