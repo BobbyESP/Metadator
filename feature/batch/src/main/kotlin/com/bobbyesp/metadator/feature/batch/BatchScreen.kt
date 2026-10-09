@@ -47,6 +47,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.pluralStringResource
@@ -76,19 +77,13 @@ internal fun BatchScreen(state: BatchState, onIntent: (BatchIntent) -> Unit, onC
         rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
             if (uri != null) onIntent(BatchIntent.SetCoverFromUri(uri.toString()))
         }
+    val fileCount = state.files.size
+    val canApply = state.canApply
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = {
-                    Text(
-                        pluralStringResource(
-                            R.plurals.batch_title,
-                            state.files.size,
-                            state.files.size,
-                        )
-                    )
-                },
+                title = { Text(pluralStringResource(R.plurals.batch_title, fileCount, fileCount)) },
                 navigationIcon = {
                     IconButton(onClick = onClose, shapes = IconButtonDefaults.shapes()) {
                         Icon(Icons.Rounded.Close, stringResource(R.string.close))
@@ -100,7 +95,7 @@ internal fun BatchScreen(state: BatchState, onIntent: (BatchIntent) -> Unit, onC
             Box(Modifier.fillMaxWidth().navigationBarsPadding().padding(Spacing.screen)) {
                 Button(
                     onClick = { onIntent(BatchIntent.Apply) },
-                    enabled = state.canApply,
+                    enabled = canApply,
                     shapes = ButtonDefaults.shapes(),
                     modifier =
                         Modifier.readableWidth()
@@ -118,15 +113,21 @@ internal fun BatchScreen(state: BatchState, onIntent: (BatchIntent) -> Unit, onC
             LoadingScreen(Modifier.padding(padding))
             return@Scaffold
         }
+        val patternPreview =
+            remember(state.usePattern, state.pattern, state.files) {
+                if (state.usePattern) state.patternPreview else emptyList()
+            }
         LazyColumn(
             modifier =
                 Modifier.fillMaxSize().padding(padding).consumeWindowInsets(padding).imePadding(),
             contentPadding = PaddingValues(horizontal = Spacing.screen, vertical = Spacing.small),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            item { FilesSummary(state) }
-            item { SectionHeader(stringResource(R.string.batch_fields), Modifier.readableWidth()) }
-            item {
+            item(key = "files", contentType = "files") { FilesSummary(state.files) }
+            item(key = "fields-header", contentType = "header") {
+                SectionHeader(stringResource(R.string.batch_fields), Modifier.readableWidth())
+            }
+            item(key = "fields-description", contentType = "description") {
                 Text(
                     stringResource(R.string.batch_fields_description),
                     style = MaterialTheme.typography.bodySmall,
@@ -139,11 +140,19 @@ internal fun BatchScreen(state: BatchState, onIntent: (BatchIntent) -> Unit, onC
                 key = { it.key },
                 contentType = { "batch_field" },
             ) { field ->
-                BatchField(field, state, onIntent)
+                BatchField(
+                    field = field,
+                    edited = state.edits[field.key],
+                    common = state.common[field.key],
+                    separator = state.separator,
+                    onIntent = onIntent,
+                )
             }
 
-            item { SectionHeader(stringResource(R.string.batch_cover), Modifier.readableWidth()) }
-            item {
+            item(key = "cover-header", contentType = "header") {
+                SectionHeader(stringResource(R.string.batch_cover), Modifier.readableWidth())
+            }
+            item(key = "cover", contentType = "cover") {
                 CoverChoice(
                     cover = state.cover,
                     onPick = {
@@ -157,8 +166,19 @@ internal fun BatchScreen(state: BatchState, onIntent: (BatchIntent) -> Unit, onC
                     onKeep = { onIntent(BatchIntent.KeepCovers) },
                 )
             }
-            item { SectionHeader(stringResource(R.string.batch_tools), Modifier.readableWidth()) }
-            item { Tools(state, onIntent) }
+            item(key = "tools-header", contentType = "header") {
+                SectionHeader(stringResource(R.string.batch_tools), Modifier.readableWidth())
+            }
+            item(key = "tools", contentType = "tools") {
+                Tools(
+                    fileCount = fileCount,
+                    numbering = state.numbering,
+                    usePattern = state.usePattern,
+                    pattern = state.pattern,
+                    patternPreview = patternPreview,
+                    onIntent = onIntent,
+                )
+            }
         }
     }
 
@@ -166,9 +186,9 @@ internal fun BatchScreen(state: BatchState, onIntent: (BatchIntent) -> Unit, onC
 }
 
 @Composable
-private fun FilesSummary(state: BatchState) {
-    val names = state.files.take(4).joinToString(", ") { it.title }
-    val more = state.files.size - 4
+private fun FilesSummary(files: List<BatchFile>) {
+    val names = files.take(4).joinToString(", ") { it.title }
+    val more = files.size - 4
     Text(
         if (more > 0) "$names ${stringResource(R.string.batch_and_more, more)}" else names,
         style = MaterialTheme.typography.bodyMedium,
@@ -180,19 +200,23 @@ private fun FilesSummary(state: BatchState) {
 }
 
 @Composable
-private fun BatchField(field: TagField, state: BatchState, onIntent: (BatchIntent) -> Unit) {
+private fun BatchField(
+    field: TagField,
+    edited: List<String>?,
+    common: CommonValue?,
+    separator: String,
+    onIntent: (BatchIntent) -> Unit,
+) {
     val label = fieldLabel(field.key)
-    val edited = state.edits[field.key]
-    val common = state.common[field.key]
     val shown =
-        edited?.joinToString(state.separator)
-            ?: (common as? CommonValue.Same)?.values?.joinToString(state.separator).orEmpty()
+        edited?.joinToString(separator)
+            ?: (common as? CommonValue.Same)?.values?.joinToString(separator).orEmpty()
     TonalTextField(
         value = shown,
         onValueChange = { text ->
             val values =
                 if (field.multiValue)
-                    text.split(state.separator.trim()).map { it.trim() }.filter { it.isNotEmpty() }
+                    text.split(separator.trim()).map { it.trim() }.filter { it.isNotEmpty() }
                 else listOf(text)
             onIntent(BatchIntent.SetField(field.key, values))
         },
@@ -266,18 +290,25 @@ private fun CoverChoice(
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun Tools(state: BatchState, onIntent: (BatchIntent) -> Unit) {
+private fun Tools(
+    fileCount: Int,
+    numbering: TrackNumbering?,
+    usePattern: Boolean,
+    pattern: String,
+    patternPreview: List<Pair<String, Map<String, List<String>>?>>,
+    onIntent: (BatchIntent) -> Unit,
+) {
     Column(Modifier.readableWidth(), verticalArrangement = Arrangement.spacedBy(Spacing.small)) {
         SwitchItem(
             title = stringResource(R.string.batch_numbering),
-            supportingText = stringResource(R.string.batch_numbering_description, state.files.size),
+            supportingText = stringResource(R.string.batch_numbering_description, fileCount),
             icon = Icons.Rounded.FormatListNumbered,
-            checked = state.numbering != null,
+            checked = numbering != null,
             onCheckedChange = {
                 onIntent(BatchIntent.SetNumbering(if (it) TrackNumbering() else null))
             },
         )
-        state.numbering?.let { numbering ->
+        if (numbering != null) {
             TonalTextField(
                 value = numbering.startAt.toString(),
                 onValueChange = { text ->
@@ -295,13 +326,13 @@ private fun Tools(state: BatchState, onIntent: (BatchIntent) -> Unit) {
             title = stringResource(R.string.batch_pattern),
             supportingText = stringResource(R.string.batch_pattern_description),
             icon = Icons.Rounded.TextFields,
-            checked = state.usePattern,
+            checked = usePattern,
             onCheckedChange = { onIntent(BatchIntent.UsePattern(it)) },
         )
-        if (state.usePattern) {
-            val valid = FileNamePattern(state.pattern).isValid
+        if (usePattern) {
+            val valid = remember(pattern) { FileNamePattern(pattern).isValid }
             TonalTextField(
-                value = state.pattern,
+                value = pattern,
                 onValueChange = { onIntent(BatchIntent.SetPattern(it)) },
                 label = stringResource(R.string.batch_pattern_field),
                 isError = !valid,
@@ -312,13 +343,13 @@ private fun Tools(state: BatchState, onIntent: (BatchIntent) -> Unit) {
             FlowRow(horizontalArrangement = Arrangement.spacedBy(Spacing.small)) {
                 FileNamePattern.Suggestions.forEach { suggestion ->
                     ToggleChip(
-                        selected = suggestion == state.pattern,
+                        selected = suggestion == pattern,
                         onClick = { onIntent(BatchIntent.SetPattern(suggestion)) },
                         label = suggestion,
                     )
                 }
             }
-            state.patternPreview.forEach { (name, parsed) ->
+            patternPreview.forEach { (name, parsed) ->
                 val described =
                     parsed?.entries?.map { (key, values) ->
                         fieldLabel(key) to values.joinToString()
