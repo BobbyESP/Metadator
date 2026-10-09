@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Notification -->
+    <string name="notification_shuffle">셔플</string>
+    <string name="notification_repeat_off">반복 사용 안함</string>
+    <string name="notification_repeat_all">전체 반복</string>
+    <string name="notification_repeat_one">한 곡 반복</string>
+</resources>

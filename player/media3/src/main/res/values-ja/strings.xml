@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Notification -->
+    <string name="notification_shuffle">シャッフル</string>
+    <string name="notification_repeat_off">リピートオフ</string>
+    <string name="notification_repeat_all">すべてリピート</string>
+    <string name="notification_repeat_one">1 曲リピート</string>
+</resources>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Notification -->
+    <string name="notification_shuffle">Shuffle</string>
+    <string name="notification_repeat_off">Herhalen uit</string>
+    <string name="notification_repeat_all">Alles herhalen</string>
+    <string name="notification_repeat_one">Eén herhalen</string>
+</resources>

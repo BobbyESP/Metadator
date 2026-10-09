@@ -201,11 +201,16 @@ drops the rest of Media3; a new container is one more line there. `Media3PlayerC
 connects to it on first use and exposes a `StateFlow<PlaybackState>`. It is driven from the main
 thread, as Media3 requires.
 
-Shuffle is an order of the queue, not a mode of the player: `PlayQueue` (`:player:api`) draws one
-random order and keeps it, and the controller puts the player's items in that order around the
-song that plays. ExoPlayer's own shuffle mode stays off, since it keeps its order to itself and
-the queue shown would not be the one played. Turning shuffle off puts the songs back in the order
-they came in.
+Shuffle is an order of the queue. ExoPlayer's shuffle mode keeps its random order to itself, so
+the queue shown would not be the one played; `QueueShuffler`, in the service, gives the player an
+order that shuffles nothing and, when the mode turns on, puts the items themselves in one random
+order (`PlayQueue`) around the song that plays. Turning it off puts them back in the order they
+came in. The mode is the player's own, so every controller turns it on and sees the same queue:
+`Media3PlayerController` reads the queue from the player rather than keeping its own.
+
+The notification carries the app's icon (`ic_metadator_notification`, the launcher's glyph) and,
+beside the transport controls, a shuffle and a repeat button. They are custom session commands
+the service answers, and their icons follow the player's state.
 
 Both players show the position as a wave that lies flat while paused;
 in the full player it is the slider's track.

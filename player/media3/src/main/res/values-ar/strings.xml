@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Notification -->
+    <string name="notification_shuffle">ترتيب عشوائي</string>
+    <string name="notification_repeat_off">التكرار متوقف</string>
+    <string name="notification_repeat_all">تكرار الكل</string>
+    <string name="notification_repeat_one">تكرار أغنية واحدة</string>
+</resources>

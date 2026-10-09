@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Notification -->
+    <string name="notification_shuffle">शफ़ल करें</string>
+    <string name="notification_repeat_off">दोहराना बंद है</string>
+    <string name="notification_repeat_all">सभी दोहराएं</string>
+    <string name="notification_repeat_one">एक गाना दोहराएं</string>
+</resources>
