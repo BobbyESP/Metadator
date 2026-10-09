@@ -55,10 +55,15 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.luminance
@@ -533,6 +538,31 @@ private val PaletteStyle.label: Int
             PaletteStyle.Content -> R.string.palette_content
         }
 
+/**
+ * The separator. While it has the focus the field shows what is typed, not what is saved, which
+ * arrives a moment after each key. An empty one is not saved: left so, it goes back to the last.
+ */
+@Composable
+private fun SeparatorField(saved: String, onChange: (String) -> Unit, modifier: Modifier) {
+    var text by rememberSaveable { mutableStateOf(saved) }
+    var focused by remember { mutableStateOf(false) }
+    LaunchedEffect(saved, focused) { if (!focused) text = saved }
+    TonalTextField(
+        value = text,
+        onValueChange = { value ->
+            if (value.length <= SEPARATOR_MAX_LENGTH) {
+                text = value
+                if (value.isNotEmpty()) onChange(value)
+            }
+        },
+        label = stringResource(R.string.separator),
+        supportingText = stringResource(R.string.separator_description),
+        modifier = modifier.onFocusChanged { focused = it.isFocused },
+    )
+}
+
+private const val SEPARATOR_MAX_LENGTH = 5
+
 private fun LazyListScope.editor(
     settings: UserSettings,
     update: ((UserSettings) -> UserSettings) -> Unit,
@@ -563,14 +593,9 @@ private fun LazyListScope.editor(
         }
     }
     item(key = "separator", contentType = "separator") {
-        TonalTextField(
-            value = settings.multiValueSeparator,
-            onValueChange = { value ->
-                if (value.isNotEmpty() && value.length <= 5)
-                    update { it.copy(multiValueSeparator = value) }
-            },
-            label = stringResource(R.string.separator),
-            supportingText = stringResource(R.string.separator_description),
+        SeparatorField(
+            saved = settings.multiValueSeparator,
+            onChange = { value -> update { it.copy(multiValueSeparator = value) } },
             modifier = Modifier.readableWidth().padding(top = Spacing.medium),
         )
     }
