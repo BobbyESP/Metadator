@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Actions shared by several screens -->
+    <string name="back">Назад</string>
+    <string name="close">Закрыть</string>
+    <string name="more_options">Ещё</string>
+    <string name="settings">Настройки</string>
+    <string name="edit_tags">Изменить теги</string>
+    <string name="select">Выбрать</string>
+    <string name="selected">Выбрано</string>
+    <string name="select_all">Выбрать все</string>
+
+    <!-- Playback -->
+    <string name="play">Воспроизвести</string>
+    <string name="pause">Пауза</string>
+    <string name="shuffle">Перемешать</string>
+    <string name="now_playing">Сейчас играет</string>
+
+    <!-- Track rows -->
+    <string name="unknown_artist">Неизвестный исполнитель</string>
+    <string name="unknown_album">Неизвестный альбом</string>
+    <!-- %1$s is a list made of the "missing_" names below; the quantity is how many it holds -->
+    <plurals name="missing_tags">
+        <item quantity="one">Не указано: %1$s</item>
+        <item quantity="few">Не указано: %1$s</item>
+        <item quantity="many">Не указано: %1$s</item>
+        <item quantity="other">Не указано: %1$s</item>
+    </plurals>
+    <string name="missing_artist">исполнитель</string>
+    <string name="missing_album">альбом</string>
+    <string name="missing_album_artist">исполнитель альбома</string>
+    <string name="missing_year">год</string>
+    <string name="missing_track_number">номер трека</string>
+
+    <!-- Cover -->
+    <string name="cover">Обложка</string>
+    <string name="cover_unreadable">Не удалось прочитать это изображение</string>
+
+    <!-- Tag fields -->
+    <string name="field_title">Название</string>
+    <string name="field_artist">Исполнители</string>
+    <string name="field_album">Альбом</string>
+    <string name="field_album_artist">Исполнители альбома</string>
+    <string name="field_date">Год или дата</string>
+    <string name="field_date_hint">2019 или 2019-05-17</string>
+    <string name="field_genre">Жанры</string>
+    <string name="field_track">Трек</string>
+    <string name="field_disc">Диск</string>
+    <!-- Between two numbers: track 3 of 12 -->
+    <string name="field_of">из</string>
+    <string name="field_composer">Композиторы</string>
+    <string name="field_lyricist">Авторы текста</string>
+    <string name="field_conductor">Дирижёр</string>
+    <string name="field_remixer">Авторы ремикса</string>
+    <string name="field_performer">Участники записи</string>
+    <string name="field_comment">Комментарий</string>
+    <string name="field_copyright">Авторские права</string>
+    <string name="field_label">Лейбл</string>
+    <string name="field_grouping">Группировка</string>
+    <string name="field_lyrics">Текст песни</string>
+
+    <!-- Editing a field -->
+    <string name="field_changed">Изменено</string>
+    <string name="field_revert">Отменить изменение: %1$s</string>
+    <string name="field_add_value">Добавить ещё</string>
+    <string name="field_add_value_hint">Введите и нажмите Enter</string>
+    <string name="field_remove_value">Удалить: %1$s</string>
+</resources>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- The songs being edited -->
+    <plurals name="batch_title">
+        <item quantity="one">%1$d गाने में बदलाव करें</item>
+        <item quantity="other">%1$d गानों में बदलाव करें</item>
+    </plurals>
+    <!-- After the first song titles: "One, Two, Three and 4 more" -->
+    <string name="batch_and_more">और %1$d अन्य</string>
+
+    <!-- Fields -->
+    <string name="batch_fields">हर गाने पर सेट करें</string>
+    <string name="batch_fields_description">हर गाने की अपनी वैल्यू बनाए रखने के लिए फ़ील्ड को जैसा है वैसा छोड़ दें।</string>
+    <string name="batch_multiple_values">एक से ज़्यादा वैल्यू</string>
+    <!-- %1$s is the name of a field, such as Album -->
+    <string name="batch_reset_field">“%1$s” के लिए हर गाने की अपनी वैल्यू रखें</string>
+
+    <!-- Cover -->
+    <string name="batch_cover_set">सभी के लिए एक कवर इस्तेमाल करें</string>
+    <string name="batch_cover_remove">सभी कवर हटाएं</string>
+    <string name="batch_cover_keep">हर गाने का अपना कवर रखें</string>
+    <string name="batch_cover_will_replace">हर गाने को यह कवर मिलेगा</string>
+    <string name="batch_cover_will_remove">हर गाने का कवर हटा दिया जाएगा</string>
+
+    <!-- Tools -->
+    <string name="batch_tools">टूल</string>
+    <string name="batch_numbering">ट्रैक को नंबर दें</string>
+    <string name="batch_numbering_description">दिखाए गए क्रम में, %1$d में से ट्रैक N के तौर पर</string>
+    <string name="batch_numbering_start">इससे शुरू करें</string>
+    <string name="batch_pattern">फ़ाइल के नामों से टैग पढ़ें</string>
+    <!-- The placeholders in braces are typed as they are: don't translate them -->
+    <string name="batch_pattern_description">{title}, {artist}, {album}, {albumartist}, {track}, {disc}, {year} और {genre} इस्तेमाल करें</string>
+    <string name="batch_pattern_field">पैटर्न</string>
+    <string name="batch_pattern_invalid">हर प्लेसहोल्डर एक ही बार इस्तेमाल करें, और कम से कम एक ज़रूर</string>
+    <string name="batch_pattern_no_match">मेल नहीं खाता</string>
+
+    <!-- Applying -->
+    <string name="batch_apply">सभी पर लागू करें</string>
+    <string name="batch_access_denied">Metadator को ये फ़ाइलें बदलने की अनुमति नहीं मिली</string>
+    <string name="batch_running">%2$d में से %1$d सेव हो रहा है</string>
+    <string name="batch_cancel">रोकें</string>
+
+    <!-- Result -->
+    <string name="batch_done_title">हो गया</string>
+    <plurals name="batch_saved">
+        <item quantity="one">%1$d गाना सेव हुआ</item>
+        <item quantity="other">%1$d गाने सेव हुए</item>
+    </plurals>
+    <plurals name="batch_failed">
+        <item quantity="one">%1$d गाना सेव नहीं हो सका</item>
+        <item quantity="other">%1$d गाने सेव नहीं हो सके</item>
+    </plurals>
+    <plurals name="batch_undone">
+        <item quantity="one">%1$d गाना पहले जैसा किया गया</item>
+        <item quantity="other">%1$d गाने पहले जैसे किए गए</item>
+    </plurals>
+    <string name="batch_cancelled">रोक दिया गया। अब तक सेव हुए गानों के बदलाव बने रहेंगे।</string>
+    <string name="batch_undo_all">सभी पहले जैसे करें</string>
+    <string name="batch_finish">पूरा करें</string>
+    <!-- Why a song couldn't be saved, shown next to its title -->
+    <string name="batch_reason_access">अनुमति नहीं है</string>
+    <string name="batch_reason_gone">फ़ाइल मौजूद नहीं है</string>
+    <string name="batch_reason_unsupported">फ़ॉर्मैट काम नहीं करता</string>
+    <string name="batch_reason_failed">लिखा नहीं जा सका</string>
+</resources>

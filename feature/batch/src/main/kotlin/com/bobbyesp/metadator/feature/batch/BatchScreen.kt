@@ -66,6 +66,7 @@ import com.bobbyesp.metadator.core.designsystem.theme.Spacing
 import com.bobbyesp.metadator.core.domain.batch.FileNamePattern
 import com.bobbyesp.metadator.core.domain.batch.TrackNumbering
 import com.bobbyesp.metadator.core.domain.save.SaveOutcome
+import com.bobbyesp.metadator.core.ui.R as CoreUiR
 import com.bobbyesp.metadator.core.ui.component.ArtworkImage
 import com.bobbyesp.metadator.core.ui.component.TagChipsField
 import com.bobbyesp.metadator.core.ui.component.fieldLabel
@@ -88,7 +89,7 @@ internal fun BatchScreen(state: BatchState, onIntent: (BatchIntent) -> Unit, onC
                 title = { Text(pluralStringResource(R.plurals.batch_title, fileCount, fileCount)) },
                 navigationIcon = {
                     IconButton(onClick = onClose, shapes = IconButtonDefaults.shapes()) {
-                        Icon(Icons.Rounded.Close, stringResource(R.string.close))
+                        Icon(Icons.Rounded.Close, stringResource(CoreUiR.string.close))
                     }
                 },
             )
@@ -152,7 +153,7 @@ internal fun BatchScreen(state: BatchState, onIntent: (BatchIntent) -> Unit, onC
             }
 
             item(key = "cover-header", contentType = "header") {
-                SectionHeader(stringResource(R.string.batch_cover), Modifier.readableWidth())
+                SectionHeader(stringResource(CoreUiR.string.cover), Modifier.readableWidth())
             }
             item(key = "cover", contentType = "cover") {
                 CoverChoice(

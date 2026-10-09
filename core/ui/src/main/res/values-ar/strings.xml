@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Actions shared by several screens -->
+    <string name="back">رجوع</string>
+    <string name="close">إغلاق</string>
+    <string name="more_options">خيارات إضافية</string>
+    <string name="settings">الإعدادات</string>
+    <string name="edit_tags">تعديل الوسوم</string>
+    <string name="select">تحديد</string>
+    <string name="selected">محدَّدة</string>
+    <string name="select_all">تحديد الكل</string>
+
+    <!-- Playback -->
+    <string name="play">تشغيل</string>
+    <string name="pause">إيقاف مؤقت</string>
+    <string name="shuffle">ترتيب عشوائي</string>
+    <string name="now_playing">قيد التشغيل الآن</string>
+
+    <!-- Track rows -->
+    <string name="unknown_artist">فنان غير معروف</string>
+    <string name="unknown_album">ألبوم غير معروف</string>
+    <!-- %1$s is a list made of the "missing_" names below; the quantity is how many it holds -->
+    <plurals name="missing_tags">
+        <item quantity="zero">ينقص: %1$s</item>
+        <item quantity="one">ينقص: %1$s</item>
+        <item quantity="two">ينقص: %1$s</item>
+        <item quantity="few">ينقص: %1$s</item>
+        <item quantity="many">ينقص: %1$s</item>
+        <item quantity="other">ينقص: %1$s</item>
+    </plurals>
+    <string name="missing_artist">الفنان</string>
+    <string name="missing_album">الألبوم</string>
+    <string name="missing_album_artist">فنان الألبوم</string>
+    <string name="missing_year">السنة</string>
+    <string name="missing_track_number">رقم المقطع</string>
+
+    <!-- Cover -->
+    <string name="cover">الغلاف</string>
+    <string name="cover_unreadable">تعذّرت قراءة هذه الصورة</string>
+
+    <!-- Tag fields -->
+    <string name="field_title">العنوان</string>
+    <string name="field_artist">الفنانون</string>
+    <string name="field_album">الألبوم</string>
+    <string name="field_album_artist">فنانو الألبوم</string>
+    <string name="field_date">السنة أو التاريخ</string>
+    <string name="field_date_hint">2019 أو 2019-05-17</string>
+    <string name="field_genre">الأنواع الموسيقية</string>
+    <string name="field_track">المقطع</string>
+    <string name="field_disc">القرص</string>
+    <!-- Between two numbers: track 3 of 12 -->
+    <string name="field_of">من</string>
+    <string name="field_composer">الملحّنون</string>
+    <string name="field_lyricist">مؤلفو الكلمات</string>
+    <string name="field_conductor">قائد الأوركسترا</string>
+    <string name="field_remixer">معيدو التوزيع</string>
+    <string name="field_performer">المؤدّون</string>
+    <string name="field_comment">تعليق</string>
+    <string name="field_copyright">حقوق النشر</string>
+    <string name="field_label">شركة الإنتاج</string>
+    <string name="field_grouping">المجموعة</string>
+    <string name="field_lyrics">كلمات الأغنية</string>
+
+    <!-- Editing a field -->
+    <string name="field_changed">تم التغيير</string>
+    <string name="field_revert">التراجع عن تغيير «%1$s»</string>
+    <string name="field_add_value">إضافة قيمة أخرى</string>
+    <string name="field_add_value_hint">اكتب ثم اضغط على Enter</string>
+    <string name="field_remove_value">إزالة «%1$s»</string>
+</resources>

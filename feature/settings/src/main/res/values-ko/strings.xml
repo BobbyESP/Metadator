@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Sections -->
+    <string name="appearance">디자인</string>
+    <string name="appearance_description">테마, 색상, 대비</string>
+    <string name="editor">편집기</string>
+    <string name="editor_description">태그 기록 방식</string>
+    <string name="lookup">온라인 소스</string>
+    <string name="lookup_description">메타데이터와 커버를 가져오는 곳</string>
+    <string name="about">정보</string>
+    <string name="about_description">버전, 소스 코드, 라이선스</string>
+
+    <!-- Appearance -->
+    <string name="theme">테마</string>
+    <string name="theme_system">시스템</string>
+    <string name="theme_light">밝게</string>
+    <string name="theme_dark">어둡게</string>
+    <string name="colors">색상</string>
+    <string name="dynamic_color">배경화면 색상 사용</string>
+    <string name="dynamic_color_description">Material You, Android 12 이상</string>
+    <string name="pure_black">순수 검정</string>
+    <string name="pure_black_description">더 어두운 어두운 테마로 OLED 화면에 적합합니다</string>
+    <string name="color_from_cover">커버 색상을 편집기에 적용</string>
+    <string name="color_from_cover_description">각 곡의 편집기가 커버의 색조를 따릅니다</string>
+    <string name="seed_color">강조 색상</string>
+    <string name="palette_style">팔레트 스타일</string>
+    <string name="palette_tonal_spot">토널 스폿</string>
+    <string name="palette_neutral">뉴트럴</string>
+    <string name="palette_vibrant">비비드</string>
+    <string name="palette_expressive">익스프레시브</string>
+    <string name="palette_rainbow">레인보우</string>
+    <string name="palette_fruit_salad">프루트 샐러드</string>
+    <string name="palette_monochrome">모노크롬</string>
+    <string name="palette_fidelity">피델리티</string>
+    <string name="palette_content">콘텐츠</string>
+
+    <!-- Editor -->
+    <string name="multi_values">여러 아티스트 또는 장르</string>
+    <string name="multi_separate">별도의 값으로 유지</string>
+    <string name="multi_separate_description">형식에서 권장하는 방식입니다. 대부분의 플레이어가 모두 표시합니다.</string>
+    <string name="multi_joined">하나의 값으로 합치기</string>
+    <string name="multi_joined_description">첫 번째 아티스트만 표시하는 플레이어용</string>
+    <string name="separator">구분자</string>
+    <string name="separator_description">값을 합칠 때와 붙여넣은 내용을 나눌 때 사용됩니다</string>
+    <string name="warn_small_cover">작은 커버 경고</string>
+    <string name="warn_small_cover_description">500 × 500px 미만</string>
+    <string name="history">실행취소 기록</string>
+    <string name="clear_history">실행취소 기록 지우기</string>
+    <string name="clear_history_description">Metadator는 실행취소할 수 있도록 최근 100회 저장분의 태그를 보관합니다</string>
+    <string name="history_cleared">실행취소 기록을 지웠습니다</string>
+
+    <!-- Online sources -->
+    <string name="lookup_sources">소스</string>
+    <string name="lookup_sources_description">함께 검색됩니다. 곡의 제목, 아티스트, 앨범 외에는 아무것도 전송되지 않습니다.</string>
+    <string name="provider_musicbrainz_description">개방형 음악 백과사전. 커버는 Cover Art Archive에서 제공</string>
+    <string name="provider_deezer_description">대규모 상업 음반 카탈로그. 커버 최대 1000px</string>
+    <string name="provider_other_description">온라인 메타데이터</string>
+
+    <!-- About -->
+    <string name="version">버전 %1$s</string>
+    <string name="source_code">소스 코드</string>
+    <string name="source_code_description">Metadator는 GPL 3.0 라이선스의 자유 소프트웨어입니다</string>
+    <string name="report_issue">문제 신고</string>
+    <string name="report_issue_description">GitHub에서 이슈 열기</string>
+    <string name="rate">Metadator 평가</string>
+    <string name="rate_description">Google Play에서</string>
+    <string name="credits">사용된 기술</string>
+    <string name="credits_description">TagLib, Jetpack Compose, Media3, Koin, Ktor, Coil, MaterialKolor, MusicBrainz, Deezer, LRCLIB</string>
+    <string name="made_by">제작: BobbyESP</string>
+</resources>

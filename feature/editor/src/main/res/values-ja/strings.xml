@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Saving and undoing -->
+    <string name="save">保存</string>
+    <string name="saving">保存中…</string>
+    <string name="saved">保存しました</string>
+    <string name="saved_some_unsupported">保存しました。この形式では保存できない項目: %1$s</string>
+    <string name="save_failed">保存できませんでした: %1$s</string>
+    <string name="save_failed_restored">保存できませんでした。ファイルは元のままです（%1$s）</string>
+    <string name="write_access_denied">Metadator にこのファイルの変更が許可されませんでした</string>
+    <string name="format_unsupported">このファイルの形式は編集できません</string>
+    <string name="undo">元に戻す</string>
+    <string name="undone">変更を元に戻しました</string>
+    <string name="undo_unavailable">元のタグはもう利用できません</string>
+    <string name="undo_failed">変更を元に戻せませんでした</string>
+    <string name="revert_all">すべての変更を元に戻す</string>
+    <string name="play_unavailable">再生できるのはライブラリ内の曲のみです</string>
+
+    <!-- Sections -->
+    <string name="needs_attention_title">要確認</string>
+    <string name="section_main">曲</string>
+    <string name="section_track">トラック</string>
+    <string name="section_credits">クレジット</string>
+    <string name="section_more">その他</string>
+    <string name="section_lyrics">歌詞</string>
+    <string name="section_all_tags">すべてのタグ</string>
+    <string name="section_file">ファイル</string>
+    <string name="all_tags_description">ファイル内のその他のタグです。ここで変更しない限り、そのまま保持されます。</string>
+
+    <!-- Cover -->
+    <string name="cover_change">カバー画像を変更</string>
+    <string name="cover_remove">カバー画像を削除</string>
+    <string name="cover_revert">元のカバー画像を維持</string>
+    <string name="cover_find_online">カバー画像をオンラインで検索</string>
+    <string name="cover_small_warning">カバー画像が小さいため、大きな画面ではぼやけて見えることがあります</string>
+    <string name="cover_none">カバー画像なし</string>
+
+    <!-- Lyrics -->
+    <string name="lyrics_find">歌詞を検索</string>
+    <string name="lyrics_synced">同期歌詞</string>
+    <string name="lyrics_found_synced">同期歌詞を追加しました</string>
+    <string name="lyrics_found_plain">歌詞を追加しました</string>
+    <string name="lyrics_not_found">この曲の歌詞は見つかりませんでした</string>
+    <string name="lyrics_instrumental">この曲はインストゥルメンタルです</string>
+    <string name="lyrics_failed">歌詞を検索できませんでした</string>
+    <string name="lyrics_need_title_artist">先にタイトルとアーティストを入力してください</string>
+    <string name="offline">オフラインです</string>
+
+    <!-- Adding a tag -->
+    <string name="add_field">タグを追加</string>
+    <string name="add_field_name">名前</string>
+    <string name="add_field_name_hint">例: MOOD</string>
+    <string name="add_field_value">値</string>
+    <string name="add">追加</string>
+    <string name="cancel">キャンセル</string>
+
+    <!-- File details -->
+    <string name="file_size">サイズ</string>
+    <string name="file_duration">長さ</string>
+    <string name="file_bitrate">ビットレート</string>
+    <string name="file_bitrate_value">%1$d kbps</string>
+    <string name="file_sample_rate">サンプルレート</string>
+    <string name="file_sample_rate_value">%1$s kHz</string>
+    <string name="file_channels">チャンネル</string>
+    <string name="file_channels_mono">モノラル</string>
+    <string name="file_channels_stereo">ステレオ</string>
+    <string name="file_location">場所</string>
+
+    <!-- Leaving with unsaved changes -->
+    <string name="unsaved_title">変更を破棄しますか？</string>
+    <string name="unsaved_description">この曲への変更は保存されていません。</string>
+    <string name="unsaved_discard">破棄</string>
+    <string name="unsaved_keep">編集を続ける</string>
+
+    <!-- Files that can't be opened -->
+    <string name="file_gone_title">このファイルは存在しません</string>
+    <string name="file_gone_description">ライブラリに表示された後で、移動または削除されました。</string>
+    <string name="access_denied_title">このファイルを開けません</string>
+    <string name="access_denied_description">共有元のアプリが Metadator による読み取りを許可しませんでした。ライブラリまたはファイルマネージャーから開いてみてください。</string>
+    <string name="unsupported_title">対応していない形式です</string>
+    <string name="unsupported_description">Metadator はこの種類のファイルのタグを読み取れません。</string>
+    <string name="failed_title">このファイルを開けませんでした</string>
+    <string name="retry">再試行</string>
+    <string name="go_back">戻る</string>
+
+    <!-- Finding metadata online: searching -->
+    <string name="lookup_title">メタデータを検索</string>
+    <string name="lookup_find">メタデータを検索</string>
+    <string name="lookup_search">検索</string>
+    <string name="lookup_searching">検索中…</string>
+    <string name="lookup_results">検索結果</string>
+    <string name="lookup_no_results">一致する項目がありません。単語を減らしてみてください。</string>
+    <string name="lookup_no_providers">すべてのソースがオフになっています。設定でいずれかをオンにしてください。</string>
+    <string name="lookup_rate_limited">ソースが混み合っています。しばらくしてからもう一度お試しください。</string>
+    <string name="lookup_failed">検索に失敗しました。もう一度お試しください。</string>
+    <!-- %1$s is the name of a source, such as MusicBrainz -->
+    <string name="lookup_partial">%1$s から応答がありませんでした</string>
+    <string name="lookup_confidence_high">高い一致</string>
+    <string name="lookup_confidence_medium">一致の可能性あり</string>
+    <string name="lookup_confidence_low">低い一致</string>
+
+    <!-- Finding metadata online: choosing what to use -->
+    <string name="lookup_compare_title">使用する項目を選択</string>
+    <!-- %1$s is the field's current value -->
+    <string name="lookup_current">現在: %1$s</string>
+    <string name="lookup_empty_value">空</string>
+    <string name="lookup_show_unchanged">すでに一致しているフィールド（%1$d）</string>
+    <string name="lookup_selected_count">%2$d 件中 %1$d 件を選択</string>
+    <string name="lookup_select_none">選択を解除</string>
+    <string name="lookup_use_cover">このカバー画像を使用</string>
+    <string name="lookup_apply">選択した項目を使用</string>
+    <string name="lookup_back">検索結果に戻る</string>
+    <string name="lookup_applied">適用しました。確認してから保存してください</string>
+</resources>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- The songs being edited -->
+    <plurals name="batch_title">
+        <item quantity="zero">تعديل الأغاني</item>
+        <item quantity="one">تعديل أغنية واحدة</item>
+        <item quantity="two">تعديل أغنيتين</item>
+        <item quantity="few">تعديل %1$d أغانٍ</item>
+        <item quantity="many">تعديل %1$d أغنية</item>
+        <item quantity="other">تعديل %1$d أغنية</item>
+    </plurals>
+    <!-- After the first song titles: "One, Two, Three and 4 more" -->
+    <string name="batch_and_more">و%1$d أخرى</string>
+
+    <!-- Fields -->
+    <string name="batch_fields">التعيين لكل الأغاني</string>
+    <string name="batch_fields_description">اترك الحقل كما هو للإبقاء على قيمة كل أغنية.</string>
+    <string name="batch_multiple_values">قيم متعددة</string>
+    <!-- %1$s is the name of a field, such as Album -->
+    <string name="batch_reset_field">الإبقاء على «%1$s» لكل أغنية</string>
+
+    <!-- Cover -->
+    <string name="batch_cover_set">استخدام غلاف واحد للكل</string>
+    <string name="batch_cover_remove">إزالة كل الأغلفة</string>
+    <string name="batch_cover_keep">الإبقاء على غلاف كل أغنية</string>
+    <string name="batch_cover_will_replace">ستحصل كل الأغاني على هذا الغلاف</string>
+    <string name="batch_cover_will_remove">ستتم إزالة غلاف كل الأغاني</string>
+
+    <!-- Tools -->
+    <string name="batch_tools">الأدوات</string>
+    <string name="batch_numbering">ترقيم المقاطع</string>
+    <string name="batch_numbering_description">بالترتيب المعروض، كالمقطع N من %1$d</string>
+    <string name="batch_numbering_start">البدء من</string>
+    <string name="batch_pattern">قراءة الوسوم من أسماء الملفات</string>
+    <!-- The placeholders in braces are typed as they are: don't translate them -->
+    <string name="batch_pattern_description">استخدم {title} و{artist} و{album} و{albumartist} و{track} و{disc} و{year} و{genre}</string>
+    <string name="batch_pattern_field">النمط</string>
+    <string name="batch_pattern_invalid">استخدم كل عنصر نائب مرة واحدة، وعنصرًا واحدًا على الأقل</string>
+    <string name="batch_pattern_no_match">غير مطابق</string>
+
+    <!-- Applying -->
+    <string name="batch_apply">تطبيق على الكل</string>
+    <string name="batch_access_denied">لم يُسمح لـ Metadator بتغيير هذه الملفات</string>
+    <string name="batch_running">جارٍ حفظ %1$d من %2$d</string>
+    <string name="batch_cancel">إيقاف</string>
+
+    <!-- Result -->
+    <string name="batch_done_title">تم</string>
+    <plurals name="batch_saved">
+        <item quantity="zero">لم يتم حفظ أي أغنية</item>
+        <item quantity="one">تم حفظ أغنية واحدة</item>
+        <item quantity="two">تم حفظ أغنيتين</item>
+        <item quantity="few">تم حفظ %1$d أغانٍ</item>
+        <item quantity="many">تم حفظ %1$d أغنية</item>
+        <item quantity="other">تم حفظ %1$d أغنية</item>
+    </plurals>
+    <plurals name="batch_failed">
+        <item quantity="zero">لم يتعذّر حفظ أي أغنية</item>
+        <item quantity="one">تعذّر حفظ أغنية واحدة</item>
+        <item quantity="two">تعذّر حفظ أغنيتين</item>
+        <item quantity="few">تعذّر حفظ %1$d أغانٍ</item>
+        <item quantity="many">تعذّر حفظ %1$d أغنية</item>
+        <item quantity="other">تعذّر حفظ %1$d أغنية</item>
+    </plurals>
+    <plurals name="batch_undone">
+        <item quantity="zero">لم تتم استعادة أي أغنية</item>
+        <item quantity="one">تمت استعادة أغنية واحدة</item>
+        <item quantity="two">تمت استعادة أغنيتين</item>
+        <item quantity="few">تمت استعادة %1$d أغانٍ</item>
+        <item quantity="many">تمت استعادة %1$d أغنية</item>
+        <item quantity="other">تمت استعادة %1$d أغنية</item>
+    </plurals>
+    <string name="batch_cancelled">تم الإيقاف. الأغاني المحفوظة حتى الآن تحتفظ بتغييراتها.</string>
+    <string name="batch_undo_all">التراجع عن الكل</string>
+    <string name="batch_finish">إنهاء</string>
+    <!-- Why a song couldn't be saved, shown next to its title -->
+    <string name="batch_reason_access">غير مسموح</string>
+    <string name="batch_reason_gone">الملف لم يعد موجودًا</string>
+    <string name="batch_reason_unsupported">التنسيق غير متوافق</string>
+    <string name="batch_reason_failed">تعذّرت الكتابة</string>
+</resources>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- The songs being edited -->
+    <plurals name="batch_title">
+        <item quantity="other">%1$d곡 편집</item>
+    </plurals>
+    <!-- After the first song titles: "One, Two, Three and 4 more" -->
+    <string name="batch_and_more">외 %1$d곡</string>
+
+    <!-- Fields -->
+    <string name="batch_fields">모든 곡에 설정</string>
+    <string name="batch_fields_description">필드를 그대로 두면 각 곡의 값이 유지됩니다.</string>
+    <string name="batch_multiple_values">여러 값</string>
+    <!-- %1$s is the name of a field, such as Album -->
+    <string name="batch_reset_field">각 곡의 %1$s 유지</string>
+
+    <!-- Cover -->
+    <string name="batch_cover_set">모든 곡에 커버 하나 사용</string>
+    <string name="batch_cover_remove">모든 커버 삭제</string>
+    <string name="batch_cover_keep">각 곡의 커버 유지</string>
+    <string name="batch_cover_will_replace">모든 곡에 이 커버가 적용됩니다</string>
+    <string name="batch_cover_will_remove">모든 곡의 커버가 삭제됩니다</string>
+
+    <!-- Tools -->
+    <string name="batch_tools">도구</string>
+    <string name="batch_numbering">트랙 번호 매기기</string>
+    <string name="batch_numbering_description">표시된 순서대로 트랙 N / %1$d(으)로 지정</string>
+    <string name="batch_numbering_start">시작 번호</string>
+    <string name="batch_pattern">파일 이름에서 태그 읽기</string>
+    <!-- The placeholders in braces are typed as they are: don't translate them -->
+    <string name="batch_pattern_description">{title}, {artist}, {album}, {albumartist}, {track}, {disc}, {year}, {genre}을(를) 사용하세요</string>
+    <string name="batch_pattern_field">패턴</string>
+    <string name="batch_pattern_invalid">각 자리표시자는 한 번만, 하나 이상 사용하세요</string>
+    <string name="batch_pattern_no_match">일치하지 않음</string>
+
+    <!-- Applying -->
+    <string name="batch_apply">모두에 적용</string>
+    <string name="batch_access_denied">Metadator가 이 파일들을 변경할 권한을 받지 못했습니다</string>
+    <string name="batch_running">%2$d개 중 %1$d개 저장 중</string>
+    <string name="batch_cancel">중지</string>
+
+    <!-- Result -->
+    <string name="batch_done_title">완료</string>
+    <plurals name="batch_saved">
+        <item quantity="other">%1$d곡 저장됨</item>
+    </plurals>
+    <plurals name="batch_failed">
+        <item quantity="other">%1$d곡을 저장할 수 없습니다</item>
+    </plurals>
+    <plurals name="batch_undone">
+        <item quantity="other">%1$d곡 복원됨</item>
+    </plurals>
+    <string name="batch_cancelled">중지되었습니다. 지금까지 저장된 곡의 변경사항은 유지됩니다.</string>
+    <string name="batch_undo_all">모두 실행취소</string>
+    <string name="batch_finish">마침</string>
+    <!-- Why a song couldn't be saved, shown next to its title -->
+    <string name="batch_reason_access">권한 없음</string>
+    <string name="batch_reason_gone">파일 없음</string>
+    <string name="batch_reason_unsupported">지원되지 않는 형식</string>
+    <string name="batch_reason_failed">쓰기 실패</string>
+</resources>

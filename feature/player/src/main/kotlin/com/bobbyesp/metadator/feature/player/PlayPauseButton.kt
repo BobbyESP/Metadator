@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.bobbyesp.metadator.core.ui.R as CoreUiR
 
 /**
  * Play and pause, in both players. A toggle only so that its shape can say what is happening: round
@@ -73,7 +74,8 @@ internal fun PlayPauseButton(
         ) { playing ->
             Icon(
                 if (playing) Icons.Rounded.Pause else Icons.Rounded.PlayArrow,
-                contentDescription = stringResource(if (playing) R.string.pause else R.string.play),
+                contentDescription =
+                    stringResource(if (playing) CoreUiR.string.pause else CoreUiR.string.play),
                 modifier =
                     Modifier.fillMaxHeight(ICON_FRACTION)
                         .aspectRatio(1f, matchHeightConstraintsFirst = true),

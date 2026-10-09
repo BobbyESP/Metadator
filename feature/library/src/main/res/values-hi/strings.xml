@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Search and menu -->
+    <string name="search_library">गाने, कलाकार, एल्बम खोजें</string>
+    <string name="clear_search">खोज मिटाएं</string>
+    <string name="open_file">कोई फ़ाइल खोलें</string>
+    <string name="rescan_library">संगीत फ़ोल्डर फिर से स्कैन करें</string>
+
+    <!-- Tabs -->
+    <string name="tab_songs">गाने</string>
+    <string name="tab_albums">एल्बम</string>
+    <string name="tab_artists">कलाकार</string>
+    <string name="tab_folders">फ़ोल्डर</string>
+
+    <!-- Filters and sorting -->
+    <string name="needs_attention_filter">ध्यान देने की ज़रूरत (%1$d)</string>
+    <string name="clear_filters">फ़िल्टर हटाएं</string>
+    <string name="sort_title">टाइटल</string>
+    <string name="sort_artist">कलाकार</string>
+    <string name="sort_album">एल्बम</string>
+    <string name="sort_date_added">जोड़ने की तारीख</string>
+    <string name="sort_date_modified">बदलाव की तारीख</string>
+    <string name="sort_duration">अवधि</string>
+    <string name="sort_ascending">बढ़ते क्रम में</string>
+    <string name="sort_descending">घटते क्रम में</string>
+
+    <!-- Playing -->
+    <string name="shuffle_all">सभी शफ़ल करें</string>
+    <string name="play_all">सभी चलाएं</string>
+
+    <!-- Selecting songs -->
+    <plurals name="selected_count">
+        <item quantity="one">%1$d चुना गया</item>
+        <item quantity="other">%1$d चुने गए</item>
+    </plurals>
+    <string name="edit_together">एक साथ बदलाव करें</string>
+    <string name="close_selection">चुनना बंद करें</string>
+
+    <!-- Albums, artists and folders -->
+    <plurals name="song_count">
+        <item quantity="one">%1$d गाना</item>
+        <item quantity="other">%1$d गाने</item>
+    </plurals>
+    <string name="collection_edit_all">सभी में बदलाव करें</string>
+
+    <!-- Access to the music -->
+    <string name="permission_title">आपका संगीत, बदलाव के लिए तैयार</string>
+    <string name="permission_description">आपका संगीत दिखाने के लिए Metadator को उसे देखने की अनुमति चाहिए। आपके डिवाइस से कुछ भी बाहर नहीं जाता, और जब तक आप सेव नहीं करते, कोई फ़ाइल नहीं बदलती।</string>
+    <string name="permission_grant">ऐक्सेस की अनुमति दें</string>
+    <string name="permission_denied_description">आपके संगीत का ऐक्सेस बंद कर दिया गया है। इसे ऐप्लिकेशन की सेटिंग में चालू किया जा सकता है या इसके बिना कोई एक फ़ाइल खोली जा सकती है।</string>
+    <string name="permission_open_settings">सेटिंग खोलें</string>
+
+    <!-- Empty states -->
+    <string name="empty_library_title">अभी कोई गाना नहीं है</string>
+    <string name="empty_library_description">Metadator वे गाने दिखाता है जो Android को आपके डिवाइस पर मिले हैं। Music फ़ोल्डर में कुछ संगीत कॉपी करें, या अगर अभी-अभी किया है तो फिर से स्कैन करें।</string>
+    <string name="no_results_title">कोई नतीजा नहीं मिला</string>
+    <string name="no_results_description">कम शब्द आज़माएं या फ़िल्टर हटाएं।</string>
+    <string name="library_load_failed">लाइब्रेरी पढ़ी नहीं जा सकी</string>
+    <string name="no_song_open_title">कोई गाना चुनें</string>
+    <string name="no_song_open_description">उसके टैग यहां, आपकी लाइब्रेरी के बगल में खुलते हैं।</string>
+</resources>

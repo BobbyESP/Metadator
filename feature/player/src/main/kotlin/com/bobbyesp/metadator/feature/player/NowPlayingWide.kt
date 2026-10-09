@@ -69,6 +69,7 @@ import com.bobbyesp.metadator.core.designsystem.theme.dissolved
 import com.bobbyesp.metadator.core.designsystem.theme.frosted
 import com.bobbyesp.metadator.core.domain.lyrics.TrackLyrics
 import com.bobbyesp.metadator.core.model.Track
+import com.bobbyesp.metadator.core.ui.R as CoreUiR
 import com.bobbyesp.metadator.core.ui.component.ArtworkImage
 import com.bobbyesp.metadator.player.api.PlaybackState
 import com.bobbyesp.metadator.player.api.PlayerController
@@ -181,7 +182,7 @@ private fun SongColumn(
         // The whole row is the handle the sheet is dragged down by, as the app bar is when stacked.
         Row(Modifier.fillMaxWidth().then(topBarModifier).padding(vertical = Spacing.small)) {
             IconButton(onClick = onClose, shapes = IconButtonDefaults.shapes()) {
-                Icon(Icons.Rounded.KeyboardArrowDown, stringResource(R.string.close))
+                Icon(Icons.Rounded.KeyboardArrowDown, stringResource(CoreUiR.string.close))
             }
         }
         Column(
@@ -252,7 +253,7 @@ private fun SidePanel(
             ) {
                 if (compact) {
                     FilledTonalIconButton(onClick = onEdit, shapes = IconButtonDefaults.shapes()) {
-                        Icon(Icons.Rounded.Edit, stringResource(R.string.edit_tags))
+                        Icon(Icons.Rounded.Edit, stringResource(CoreUiR.string.edit_tags))
                     }
                 }
                 ConnectedChoices(

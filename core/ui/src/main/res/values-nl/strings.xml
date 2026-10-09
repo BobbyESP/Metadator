@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Actions shared by several screens -->
+    <string name="back">Terug</string>
+    <string name="close">Sluiten</string>
+    <string name="more_options">Meer opties</string>
+    <string name="settings">Instellingen</string>
+    <string name="edit_tags">Tags bewerken</string>
+    <string name="select">Selecteren</string>
+    <string name="selected">Geselecteerd</string>
+    <string name="select_all">Alles selecteren</string>
+
+    <!-- Playback -->
+    <string name="play">Afspelen</string>
+    <string name="pause">Pauzeren</string>
+    <string name="shuffle">Shuffle</string>
+    <string name="now_playing">Wordt nu afgespeeld</string>
+
+    <!-- Track rows -->
+    <string name="unknown_artist">Onbekende artiest</string>
+    <string name="unknown_album">Onbekend album</string>
+    <!-- %1$s is a list made of the "missing_" names below; the quantity is how many it holds -->
+    <plurals name="missing_tags">
+        <item quantity="one">Ontbreekt: %1$s</item>
+        <item quantity="other">Ontbreken: %1$s</item>
+    </plurals>
+    <string name="missing_artist">artiest</string>
+    <string name="missing_album">album</string>
+    <string name="missing_album_artist">albumartiest</string>
+    <string name="missing_year">jaar</string>
+    <string name="missing_track_number">tracknummer</string>
+
+    <!-- Cover -->
+    <string name="cover">Hoes</string>
+    <string name="cover_unreadable">Die afbeelding kon niet worden gelezen</string>
+
+    <!-- Tag fields -->
+    <string name="field_title">Titel</string>
+    <string name="field_artist">Artiesten</string>
+    <string name="field_album">Album</string>
+    <string name="field_album_artist">Albumartiesten</string>
+    <string name="field_date">Jaar of datum</string>
+    <string name="field_date_hint">2019 of 2019-05-17</string>
+    <string name="field_genre">Genres</string>
+    <string name="field_track">Track</string>
+    <string name="field_disc">Schijf</string>
+    <!-- Between two numbers: track 3 of 12 -->
+    <string name="field_of">van</string>
+    <string name="field_composer">Componisten</string>
+    <string name="field_lyricist">Tekstschrijvers</string>
+    <string name="field_conductor">Dirigent</string>
+    <string name="field_remixer">Remixers</string>
+    <string name="field_performer">Uitvoerenden</string>
+    <string name="field_comment">Opmerking</string>
+    <string name="field_copyright">Copyright</string>
+    <string name="field_label">Label</string>
+    <string name="field_grouping">Groepering</string>
+    <string name="field_lyrics">Songtekst</string>
+
+    <!-- Editing a field -->
+    <string name="field_changed">Gewijzigd</string>
+    <string name="field_revert">Wijziging in ‘%1$s’ ongedaan maken</string>
+    <string name="field_add_value">Nog een toevoegen</string>
+    <string name="field_add_value_hint">Typ en druk op Enter</string>
+    <string name="field_remove_value">%1$s verwijderen</string>
+</resources>

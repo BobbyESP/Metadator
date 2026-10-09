@@ -1,8 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="cover_of">Cover of %1$s</string>
+    <!-- Actions shared by several screens -->
+    <string name="back">Back</string>
+    <string name="close">Close</string>
+    <string name="more_options">More options</string>
+    <string name="settings">Settings</string>
+    <string name="edit_tags">Edit tags</string>
+    <string name="select">Select</string>
+    <string name="selected">Selected</string>
+    <string name="select_all">Select all</string>
+
+    <!-- Playback -->
     <string name="play">Play</string>
     <string name="pause">Pause</string>
+    <string name="shuffle">Shuffle</string>
+    <string name="now_playing">Now playing</string>
+
+    <!-- Track rows -->
+    <string name="unknown_artist">Unknown artist</string>
+    <string name="unknown_album">Unknown album</string>
+    <!-- %1$s is a list made of the "missing_" names below; the quantity is how many it holds -->
     <plurals name="missing_tags">
         <item quantity="one">Missing: %1$s</item>
         <item quantity="other">Missing: %1$s</item>
@@ -12,11 +29,12 @@
     <string name="missing_album_artist">album artist</string>
     <string name="missing_year">year</string>
     <string name="missing_track_number">track number</string>
-    <string name="selected">Selected</string>
-    <string name="select">Select</string>
-    <string name="unknown_artist">Unknown artist</string>
-    <string name="unknown_album">Unknown album</string>
-    <string name="now_playing">Now playing</string>
+
+    <!-- Cover -->
+    <string name="cover">Cover</string>
+    <string name="cover_unreadable">Couldn\'t read that image</string>
+
+    <!-- Tag fields -->
     <string name="field_title">Title</string>
     <string name="field_artist">Artists</string>
     <string name="field_album">Album</string>
@@ -26,6 +44,7 @@
     <string name="field_genre">Genres</string>
     <string name="field_track">Track</string>
     <string name="field_disc">Disc</string>
+    <!-- Between two numbers: track 3 of 12 -->
     <string name="field_of">of</string>
     <string name="field_composer">Composers</string>
     <string name="field_lyricist">Lyricists</string>
@@ -33,12 +52,14 @@
     <string name="field_remixer">Remixers</string>
     <string name="field_performer">Performers</string>
     <string name="field_comment">Comment</string>
-    <string name="field_bpm">BPM</string>
-    <string name="field_isrc">ISRC</string>
+    <string name="field_bpm" translatable="false">BPM</string>
+    <string name="field_isrc" translatable="false">ISRC</string>
     <string name="field_copyright">Copyright</string>
     <string name="field_label">Label</string>
     <string name="field_grouping">Grouping</string>
     <string name="field_lyrics">Lyrics</string>
+
+    <!-- Editing a field -->
     <string name="field_changed">Changed</string>
     <string name="field_revert">Undo change to %1$s</string>
     <string name="field_add_value">Add another</string>

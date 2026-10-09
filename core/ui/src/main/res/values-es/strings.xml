@@ -1,10 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="cover_of">Portada de %1$s</string>
+    <!-- Actions shared by several screens -->
+    <string name="back">Atrás</string>
+    <string name="close">Cerrar</string>
+    <string name="more_options">Más opciones</string>
+    <string name="settings">Ajustes</string>
+    <string name="edit_tags">Editar etiquetas</string>
+    <string name="select">Seleccionar</string>
+    <string name="selected">Seleccionada</string>
+    <string name="select_all">Seleccionar todo</string>
+
+    <!-- Playback -->
     <string name="play">Reproducir</string>
     <string name="pause">Pausar</string>
+    <string name="shuffle">Aleatorio</string>
+    <string name="now_playing">Sonando ahora</string>
+
+    <!-- Track rows -->
+    <string name="unknown_artist">Artista desconocido</string>
+    <string name="unknown_album">Álbum desconocido</string>
+    <!-- %1$s is a list made of the "missing_" names below; the quantity is how many it holds -->
     <plurals name="missing_tags">
         <item quantity="one">Falta: %1$s</item>
+        <item quantity="many">Faltan: %1$s</item>
         <item quantity="other">Faltan: %1$s</item>
     </plurals>
     <string name="missing_artist">artista</string>
@@ -12,11 +30,12 @@
     <string name="missing_album_artist">artista del álbum</string>
     <string name="missing_year">año</string>
     <string name="missing_track_number">número de pista</string>
-    <string name="selected">Seleccionada</string>
-    <string name="select">Seleccionar</string>
-    <string name="unknown_artist">Artista desconocido</string>
-    <string name="unknown_album">Álbum desconocido</string>
-    <string name="now_playing">Sonando ahora</string>
+
+    <!-- Cover -->
+    <string name="cover">Portada</string>
+    <string name="cover_unreadable">No se pudo leer esa imagen</string>
+
+    <!-- Tag fields -->
     <string name="field_title">Título</string>
     <string name="field_artist">Artistas</string>
     <string name="field_album">Álbum</string>
@@ -26,6 +45,7 @@
     <string name="field_genre">Géneros</string>
     <string name="field_track">Pista</string>
     <string name="field_disc">Disco</string>
+    <!-- Between two numbers: track 3 of 12 -->
     <string name="field_of">de</string>
     <string name="field_composer">Compositores</string>
     <string name="field_lyricist">Letristas</string>
@@ -33,12 +53,12 @@
     <string name="field_remixer">Remezcla</string>
     <string name="field_performer">Intérpretes</string>
     <string name="field_comment">Comentario</string>
-    <string name="field_bpm">BPM</string>
-    <string name="field_isrc">ISRC</string>
     <string name="field_copyright">Copyright</string>
     <string name="field_label">Sello</string>
     <string name="field_grouping">Agrupación</string>
     <string name="field_lyrics">Letra</string>
+
+    <!-- Editing a field -->
     <string name="field_changed">Modificado</string>
     <string name="field_revert">Deshacer el cambio en %1$s</string>
     <string name="field_add_value">Añadir otro</string>

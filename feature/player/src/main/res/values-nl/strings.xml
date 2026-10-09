@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Controls -->
+    <string name="open_player">De speler openen</string>
+    <string name="next">Volgende</string>
+    <string name="previous">Vorige</string>
+    <string name="repeat_off">Herhalen uit</string>
+    <string name="repeat_all">Alles herhalen</string>
+    <string name="repeat_one">Eén herhalen</string>
+    <string name="nothing_playing">Er wordt niets afgespeeld</string>
+
+    <!-- Queue -->
+    <string name="up_next">Hierna</string>
+    <string name="queue_empty">Verder niets in de wachtrij</string>
+
+    <!-- Lyrics -->
+    <string name="lyrics">Songtekst</string>
+    <string name="no_lyrics">Geen songtekst</string>
+    <string name="no_lyrics_description">Dit nummer heeft geen songtekst in de tags. Schrijf die of zoek die op in de editor.</string>
+    <string name="lyrics_unreadable">De songtekst kon niet worden gelezen</string>
+    <string name="lyrics_unreadable_description">Het bestand kon niet worden geopend.</string>
+    <string name="back_to_current_line">Terug naar de huidige regel</string>
+</resources>

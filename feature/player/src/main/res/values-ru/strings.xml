@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Controls -->
+    <string name="open_player">Открыть плеер</string>
+    <string name="next">Следующая</string>
+    <string name="previous">Предыдущая</string>
+    <string name="repeat_off">Повтор выключен</string>
+    <string name="repeat_all">Повторять все</string>
+    <string name="repeat_one">Повторять одну</string>
+    <string name="nothing_playing">Ничего не играет</string>
+
+    <!-- Queue -->
+    <string name="up_next">Далее</string>
+    <string name="queue_empty">В очереди больше ничего нет</string>
+
+    <!-- Lyrics -->
+    <string name="lyrics">Текст песни</string>
+    <string name="no_lyrics">Нет текста</string>
+    <string name="no_lyrics_description">В тегах этой песни нет текста. Напишите его или найдите в редакторе.</string>
+    <string name="lyrics_unreadable">Не удалось прочитать текст</string>
+    <string name="lyrics_unreadable_description">Не удалось открыть файл.</string>
+    <string name="back_to_current_line">Вернуться к текущей строке</string>
+</resources>

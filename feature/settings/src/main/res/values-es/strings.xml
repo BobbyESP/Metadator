@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="settings">Ajustes</string>
-    <string name="back">Atrás</string>
+    <!-- Sections -->
     <string name="appearance">Apariencia</string>
     <string name="appearance_description">Tema, colores y contraste</string>
     <string name="editor">Editor</string>
@@ -11,6 +10,7 @@
     <string name="about">Acerca de</string>
     <string name="about_description">Versión, código fuente y licencias</string>
 
+    <!-- Appearance -->
     <string name="theme">Tema</string>
     <string name="theme_system">Sistema</string>
     <string name="theme_light">Claro</string>
@@ -34,6 +34,7 @@
     <string name="palette_fidelity">Fidelidad</string>
     <string name="palette_content">Contenido</string>
 
+    <!-- Editor -->
     <string name="multi_values">Varios artistas o géneros</string>
     <string name="multi_separate">Mantenerlos como valores separados</string>
     <string name="multi_separate_description">Lo que esperan los formatos. La mayoría de reproductores los muestran todos.</string>
@@ -48,12 +49,14 @@
     <string name="clear_history_description">Metadator guarda las etiquetas de tus últimos 100 guardados para poder deshacerlos</string>
     <string name="history_cleared">Historial borrado</string>
 
+    <!-- Online sources -->
     <string name="lookup_sources">Fuentes</string>
     <string name="lookup_sources_description">Se consultan a la vez. Solo se envían el título, el artista y el álbum de la canción.</string>
     <string name="provider_musicbrainz_description">La enciclopedia musical abierta, con portadas del Cover Art Archive</string>
     <string name="provider_deezer_description">Gran catálogo de lanzamientos comerciales, portadas de hasta 1000 px</string>
     <string name="provider_other_description">Metadatos en internet</string>
 
+    <!-- About -->
     <string name="version">Versión %1$s</string>
     <string name="source_code">Código fuente</string>
     <string name="source_code_description">Metadator es software libre, con licencia GPL 3.0</string>

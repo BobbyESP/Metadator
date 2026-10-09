@@ -91,6 +91,7 @@ import com.bobbyesp.metadator.core.designsystem.theme.defocused
 import com.bobbyesp.metadator.core.designsystem.theme.dissolved
 import com.bobbyesp.metadator.core.designsystem.theme.resizedTo
 import com.bobbyesp.metadator.core.model.Track
+import com.bobbyesp.metadator.core.ui.R as CoreUiR
 import com.bobbyesp.metadator.core.ui.component.ArtworkImage
 import com.bobbyesp.metadator.player.api.PlaybackState
 import com.bobbyesp.metadator.player.api.PlayerController
@@ -174,10 +175,10 @@ private fun NowPlayingScaffold(
         topBar = {
             TopAppBar(
                 modifier = topBarModifier,
-                title = { Text(stringResource(R.string.now_playing)) },
+                title = { Text(stringResource(CoreUiR.string.now_playing)) },
                 navigationIcon = {
                     IconButton(onClick = onClose, shapes = IconButtonDefaults.shapes()) {
-                        Icon(Icons.Rounded.KeyboardArrowDown, stringResource(R.string.close))
+                        Icon(Icons.Rounded.KeyboardArrowDown, stringResource(CoreUiR.string.close))
                     }
                 },
             )
@@ -267,7 +268,7 @@ internal fun LazyListScope.upNextItems(
                 ),
             leadingContent = { ArtworkImage(next.artworkRef?.uri, null, Modifier.size(44.dp)) },
             supportingContent = {
-                Text(next.artist ?: stringResource(R.string.unknown_artist), maxLines = 1)
+                Text(next.artist ?: stringResource(CoreUiR.string.unknown_artist), maxLines = 1)
             },
         ) {
             Text(next.title, maxLines = 1, overflow = TextOverflow.Ellipsis)
@@ -377,7 +378,7 @@ internal fun TrackName(
         }
         TrackLine(track, artistModifier, follows = true) { shown ->
             Text(
-                shown.artist ?: stringResource(R.string.unknown_artist),
+                shown.artist ?: stringResource(CoreUiR.string.unknown_artist),
                 style = TrackNameDefaults.artistStyle,
                 color = TrackNameDefaults.artistColor,
                 maxLines = 1,
@@ -642,7 +643,7 @@ internal fun SecondaryControls(
         FilledTonalButton(onClick = onEdit, shapes = ButtonDefaults.shapes()) {
             Icon(Icons.Rounded.Edit, null, Modifier.size(ButtonDefaults.IconSize))
             Text(
-                stringResource(R.string.edit_tags),
+                stringResource(CoreUiR.string.edit_tags),
                 Modifier.padding(start = ButtonDefaults.IconSpacing),
             )
         }
@@ -658,7 +659,7 @@ internal fun ShuffleButton(playback: PlaybackState, player: PlayerController) {
         onCheckedChange = player::setShuffle,
         shapes = IconButtonDefaults.toggleableShapes(),
     ) {
-        Icon(Icons.Rounded.Shuffle, stringResource(R.string.shuffle))
+        Icon(Icons.Rounded.Shuffle, stringResource(CoreUiR.string.shuffle))
     }
 }
 

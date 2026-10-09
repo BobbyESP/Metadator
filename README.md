@@ -60,8 +60,10 @@ How the code is organized, and the rules for changing it, are in [AGENTS.md](AGE
 
 ## Translations
 
-English and Spanish are included. Contributions of other languages are welcome: copy
-`src/main/res/values/strings.xml` of each module into `values-<language>/`.
+Metadator is translated into Arabic, Chinese (Simplified), Dutch, English, French, German, Hindi,
+Italian, Japanese, Korean, Portuguese, Russian and Spanish. Corrections and other languages are
+welcome: copy `src/main/res/values/strings.xml` of each module into `values-<language>/`, keeping
+the order and the comments of the English file.
 
 ## License
 

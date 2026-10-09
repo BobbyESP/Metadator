@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Search and menu -->
+    <string name="search_library">Cerca brani, artisti, album</string>
+    <string name="clear_search">Cancella ricerca</string>
+    <string name="open_file">Apri un file</string>
+    <string name="rescan_library">Riscansiona le cartelle musicali</string>
+
+    <!-- Tabs -->
+    <string name="tab_songs">Brani</string>
+    <string name="tab_albums">Album</string>
+    <string name="tab_artists">Artisti</string>
+    <string name="tab_folders">Cartelle</string>
+
+    <!-- Filters and sorting -->
+    <string name="needs_attention_filter">Da sistemare (%1$d)</string>
+    <string name="clear_filters">Cancella filtri</string>
+    <string name="sort_title">Titolo</string>
+    <string name="sort_artist">Artista</string>
+    <string name="sort_album">Album</string>
+    <string name="sort_date_added">Data di aggiunta</string>
+    <string name="sort_date_modified">Data di modifica</string>
+    <string name="sort_duration">Durata</string>
+    <string name="sort_ascending">Crescente</string>
+    <string name="sort_descending">Decrescente</string>
+
+    <!-- Playing -->
+    <string name="shuffle_all">Riproduzione casuale</string>
+    <string name="play_all">Riproduci tutto</string>
+
+    <!-- Selecting songs -->
+    <plurals name="selected_count">
+        <item quantity="one">%1$d selezionato</item>
+        <item quantity="many">%1$d selezionati</item>
+        <item quantity="other">%1$d selezionati</item>
+    </plurals>
+    <string name="edit_together">Modifica insieme</string>
+    <string name="close_selection">Esci dalla selezione</string>
+
+    <!-- Albums, artists and folders -->
+    <plurals name="song_count">
+        <item quantity="one">%1$d brano</item>
+        <item quantity="many">%1$d brani</item>
+        <item quantity="other">%1$d brani</item>
+    </plurals>
+    <string name="collection_edit_all">Modifica tutti</string>
+
+    <!-- Access to the music -->
+    <string name="permission_title">La tua musica, pronta da modificare</string>
+    <string name="permission_description">Metadator deve poter vedere la tua musica per elencarla. Niente lascia il tuo dispositivo e nessun file cambia finché non lo salvi.</string>
+    <string name="permission_grant">Consenti l\'accesso</string>
+    <string name="permission_denied_description">L\'accesso alla tua musica è stato disattivato. Puoi riattivarlo nelle impostazioni dell\'app oppure aprire un singolo file senza concederlo.</string>
+    <string name="permission_open_settings">Apri le impostazioni</string>
+
+    <!-- Empty states -->
+    <string name="empty_library_title">Ancora nessun brano</string>
+    <string name="empty_library_description">Metadator elenca i brani che Android ha trovato sul tuo dispositivo. Copia della musica nella cartella Musica, oppure riscansiona se l\'hai appena fatto.</string>
+    <string name="no_results_title">Nessun risultato</string>
+    <string name="no_results_description">Prova con meno parole o cancella i filtri.</string>
+    <string name="library_load_failed">Impossibile leggere la libreria</string>
+    <string name="no_song_open_title">Scegli un brano</string>
+    <string name="no_song_open_description">I suoi tag si aprono qui, accanto alla tua libreria.</string>
+</resources>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Sections -->
+    <string name="appearance">外観</string>
+    <string name="appearance_description">テーマ、色、コントラスト</string>
+    <string name="editor">エディタ</string>
+    <string name="editor_description">タグの書き込み方法</string>
+    <string name="lookup">オンラインソース</string>
+    <string name="lookup_description">メタデータとカバー画像の取得元</string>
+    <string name="about">このアプリについて</string>
+    <string name="about_description">バージョン、ソースコード、ライセンス</string>
+
+    <!-- Appearance -->
+    <string name="theme">テーマ</string>
+    <string name="theme_system">システム</string>
+    <string name="theme_light">ライト</string>
+    <string name="theme_dark">ダーク</string>
+    <string name="colors">色</string>
+    <string name="dynamic_color">壁紙の色を使用</string>
+    <string name="dynamic_color_description">Material You（Android 12 以降）</string>
+    <string name="pure_black">ピュアブラック</string>
+    <string name="pure_black_description">より暗いダークテーマ。OLED 画面に適しています</string>
+    <string name="color_from_cover">カバー画像の色をエディタに反映</string>
+    <string name="color_from_cover_description">各曲のエディタがカバー画像の色合いになります</string>
+    <string name="seed_color">アクセントカラー</string>
+    <string name="palette_style">パレットのスタイル</string>
+    <string name="palette_tonal_spot">トーナルスポット</string>
+    <string name="palette_neutral">ニュートラル</string>
+    <string name="palette_vibrant">ビビッド</string>
+    <string name="palette_expressive">エクスプレッシブ</string>
+    <string name="palette_rainbow">レインボー</string>
+    <string name="palette_fruit_salad">フルーツサラダ</string>
+    <string name="palette_monochrome">モノクロ</string>
+    <string name="palette_fidelity">フィデリティ</string>
+    <string name="palette_content">コンテンツ</string>
+
+    <!-- Editor -->
+    <string name="multi_values">複数のアーティストやジャンル</string>
+    <string name="multi_separate">別々の値として保持</string>
+    <string name="multi_separate_description">各形式が想定している方法です。ほとんどのプレーヤーですべて表示されます。</string>
+    <string name="multi_joined">1 つの値にまとめる</string>
+    <string name="multi_joined_description">最初のアーティストしか表示しないプレーヤー向け</string>
+    <string name="separator">区切り文字</string>
+    <string name="separator_description">値をまとめるときと、貼り付けた内容を分割するときに使用します</string>
+    <string name="warn_small_cover">小さいカバー画像を警告</string>
+    <string name="warn_small_cover_description">500 × 500 px 未満</string>
+    <string name="history">元に戻す履歴</string>
+    <string name="clear_history">元に戻す履歴を消去</string>
+    <string name="clear_history_description">元に戻せるように、Metadator は直近 100 回の保存のタグを保持します</string>
+    <string name="history_cleared">元に戻す履歴を消去しました</string>
+
+    <!-- Online sources -->
+    <string name="lookup_sources">ソース</string>
+    <string name="lookup_sources_description">まとめて検索されます。送信されるのは曲のタイトル、アーティスト、アルバムのみです。</string>
+    <string name="provider_musicbrainz_description">オープンな音楽百科事典。カバー画像は Cover Art Archive から取得</string>
+    <string name="provider_deezer_description">市販リリースの大規模なカタログ。カバー画像は最大 1000 px</string>
+    <string name="provider_other_description">オンラインのメタデータ</string>
+
+    <!-- About -->
+    <string name="version">バージョン %1$s</string>
+    <string name="source_code">ソースコード</string>
+    <string name="source_code_description">Metadator は GPL 3.0 でライセンスされたフリーソフトウェアです</string>
+    <string name="report_issue">問題を報告</string>
+    <string name="report_issue_description">GitHub で Issue を作成</string>
+    <string name="rate">Metadator を評価</string>
+    <string name="rate_description">Google Play で</string>
+    <string name="credits">使用技術</string>
+    <string name="credits_description">TagLib、Jetpack Compose、Media3、Koin、Ktor、Coil、MaterialKolor、MusicBrainz、Deezer、LRCLIB</string>
+    <string name="made_by">作者: BobbyESP</string>
+</resources>

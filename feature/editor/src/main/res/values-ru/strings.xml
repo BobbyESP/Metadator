@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Saving and undoing -->
+    <string name="save">Сохранить</string>
+    <string name="saving">Сохранение…</string>
+    <string name="saved">Сохранено</string>
+    <string name="saved_some_unsupported">Сохранено. Этот формат не может хранить: %1$s</string>
+    <string name="save_failed">Не удалось сохранить: %1$s</string>
+    <string name="save_failed_restored">Не удалось сохранить, файл остался прежним (%1$s)</string>
+    <string name="write_access_denied">Metadator не получил разрешения изменить этот файл</string>
+    <string name="format_unsupported">Формат этого файла нельзя редактировать</string>
+    <string name="undo">Отменить</string>
+    <string name="undone">Изменения отменены</string>
+    <string name="undo_unavailable">Исходные теги больше недоступны</string>
+    <string name="undo_failed">Не удалось отменить изменения</string>
+    <string name="revert_all">Отменить все изменения</string>
+    <string name="play_unavailable">Воспроизводить можно только песни из медиатеки</string>
+
+    <!-- Sections -->
+    <string name="needs_attention_title">Требует внимания</string>
+    <string name="section_main">Песня</string>
+    <string name="section_track">Трек</string>
+    <string name="section_credits">Авторы и участники</string>
+    <string name="section_more">Дополнительно</string>
+    <string name="section_lyrics">Текст песни</string>
+    <string name="section_all_tags">Все теги</string>
+    <string name="section_file">Файл</string>
+    <string name="all_tags_description">Все остальные теги файла. Они останутся без изменений, если вы не измените их здесь.</string>
+
+    <!-- Cover -->
+    <string name="cover_change">Сменить обложку</string>
+    <string name="cover_remove">Удалить обложку</string>
+    <string name="cover_revert">Оставить исходную обложку</string>
+    <string name="cover_find_online">Найти обложку в интернете</string>
+    <string name="cover_small_warning">Маленькая обложка: на большом экране она может выглядеть размытой</string>
+    <string name="cover_none">Нет обложки</string>
+
+    <!-- Lyrics -->
+    <string name="lyrics_find">Найти текст</string>
+    <string name="lyrics_synced">Синхронизирован</string>
+    <string name="lyrics_found_synced">Добавлен синхронизированный текст</string>
+    <string name="lyrics_found_plain">Текст добавлен</string>
+    <string name="lyrics_not_found">Текст этой песни не найден</string>
+    <string name="lyrics_instrumental">Это инструментальная композиция</string>
+    <string name="lyrics_failed">Не удалось выполнить поиск текста</string>
+    <string name="lyrics_need_title_artist">Сначала укажите название и исполнителя</string>
+    <string name="offline">Нет подключения к интернету</string>
+
+    <!-- Adding a tag -->
+    <string name="add_field">Добавить тег</string>
+    <string name="add_field_name">Имя</string>
+    <string name="add_field_name_hint">Например, MOOD</string>
+    <string name="add_field_value">Значение</string>
+    <string name="add">Добавить</string>
+    <string name="cancel">Отмена</string>
+
+    <!-- File details -->
+    <string name="file_size">Размер</string>
+    <string name="file_duration">Длительность</string>
+    <string name="file_bitrate">Битрейт</string>
+    <string name="file_bitrate_value">%1$d кбит/с</string>
+    <string name="file_sample_rate">Частота дискретизации</string>
+    <string name="file_sample_rate_value">%1$s кГц</string>
+    <string name="file_channels">Каналы</string>
+    <string name="file_channels_mono">Моно</string>
+    <string name="file_channels_stereo">Стерео</string>
+    <string name="file_location">Расположение</string>
+
+    <!-- Leaving with unsaved changes -->
+    <string name="unsaved_title">Отменить изменения?</string>
+    <string name="unsaved_description">Изменения этой песни не сохранены.</string>
+    <string name="unsaved_discard">Не сохранять</string>
+    <string name="unsaved_keep">Продолжить редактирование</string>
+
+    <!-- Files that can't be opened -->
+    <string name="file_gone_title">Файла больше нет</string>
+    <string name="file_gone_description">Он был перемещён или удалён после того, как попал в медиатеку.</string>
+    <string name="access_denied_title">Не удаётся открыть этот файл</string>
+    <string name="access_denied_description">Приложение, которое им поделилось, не разрешило Metadator его прочитать. Попробуйте открыть его из медиатеки или из файлового менеджера.</string>
+    <string name="unsupported_title">Формат не поддерживается</string>
+    <string name="unsupported_description">Metadator не может прочитать теги из файла этого типа.</string>
+    <string name="failed_title">Не удалось открыть этот файл</string>
+    <string name="retry">Повторить</string>
+    <string name="go_back">Вернуться</string>
+
+    <!-- Finding metadata online: searching -->
+    <string name="lookup_title">Поиск метаданных</string>
+    <string name="lookup_find">Найти метаданные</string>
+    <string name="lookup_search">Найти</string>
+    <string name="lookup_searching">Поиск…</string>
+    <string name="lookup_results">Результаты</string>
+    <string name="lookup_no_results">Совпадений нет. Попробуйте сократить запрос.</string>
+    <string name="lookup_no_providers">Все источники отключены. Включите хотя бы один в настройках.</string>
+    <string name="lookup_rate_limited">Источники заняты. Повторите попытку чуть позже.</string>
+    <string name="lookup_failed">Поиск не удался. Повторите попытку.</string>
+    <!-- %1$s is the name of a source, such as MusicBrainz -->
+    <string name="lookup_partial">Нет ответа: %1$s</string>
+    <string name="lookup_confidence_high">Хорошее совпадение</string>
+    <string name="lookup_confidence_medium">Возможное совпадение</string>
+    <string name="lookup_confidence_low">Слабое совпадение</string>
+
+    <!-- Finding metadata online: choosing what to use -->
+    <string name="lookup_compare_title">Выберите, что использовать</string>
+    <!-- %1$s is the field's current value -->
+    <string name="lookup_current">Сейчас: %1$s</string>
+    <string name="lookup_empty_value">пусто</string>
+    <string name="lookup_show_unchanged">Поля, которые уже совпадают (%1$d)</string>
+    <string name="lookup_selected_count">Выбрано: %1$d из %2$d</string>
+    <string name="lookup_select_none">Снять выбор</string>
+    <string name="lookup_use_cover">Использовать эту обложку</string>
+    <string name="lookup_apply">Применить выбранное</string>
+    <string name="lookup_back">Назад к результатам</string>
+    <string name="lookup_applied">Применено. Проверьте и сохраните, когда будете готовы</string>
+</resources>

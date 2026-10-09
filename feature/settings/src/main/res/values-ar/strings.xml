@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Sections -->
+    <string name="appearance">المظهر</string>
+    <string name="appearance_description">المظهر والألوان والتباين</string>
+    <string name="editor">المحرّر</string>
+    <string name="editor_description">طريقة كتابة الوسوم</string>
+    <string name="lookup">المصادر على الإنترنت</string>
+    <string name="lookup_description">مصدر البيانات الوصفية والأغلفة</string>
+    <string name="about">لمحة</string>
+    <string name="about_description">الإصدار والرمز المصدري والتراخيص</string>
+
+    <!-- Appearance -->
+    <string name="theme">المظهر</string>
+    <string name="theme_system">النظام</string>
+    <string name="theme_light">فاتح</string>
+    <string name="theme_dark">داكن</string>
+    <string name="colors">الألوان</string>
+    <string name="dynamic_color">ألوان من الخلفية</string>
+    <string name="dynamic_color_description">Material You، من Android 12</string>
+    <string name="pure_black">أسود خالص</string>
+    <string name="pure_black_description">مظهر داكن أكثر قتامة، أنسب لشاشات OLED</string>
+    <string name="color_from_cover">تلوين المحرّر من الغلاف</string>
+    <string name="color_from_cover_description">يأخذ محرّر كل أغنية درجات ألوان غلافها</string>
+    <string name="seed_color">لون التمييز</string>
+    <string name="palette_style">نمط لوحة الألوان</string>
+    <string name="palette_tonal_spot">درجات متناسقة</string>
+    <string name="palette_neutral">محايد</string>
+    <string name="palette_vibrant">نابض</string>
+    <string name="palette_expressive">معبّر</string>
+    <string name="palette_rainbow">قوس قزح</string>
+    <string name="palette_fruit_salad">سلطة فواكه</string>
+    <string name="palette_monochrome">أحادي اللون</string>
+    <string name="palette_fidelity">مطابق</string>
+    <string name="palette_content">المحتوى</string>
+
+    <!-- Editor -->
+    <string name="multi_values">عدة فنانين أو أنواع</string>
+    <string name="multi_separate">الإبقاء عليها كقيم منفصلة</string>
+    <string name="multi_separate_description">هذا ما تتوقعه التنسيقات. معظم المشغّلات تعرضها كلها.</string>
+    <string name="multi_joined">دمجها في قيمة واحدة</string>
+    <string name="multi_joined_description">للمشغّلات التي لا تعرض سوى الفنان الأول</string>
+    <string name="separator">الفاصل</string>
+    <string name="separator_description">يُستخدم لدمج القيم ولتقسيم ما تلصقه</string>
+    <string name="warn_small_cover">التحذير من الأغلفة الصغيرة</string>
+    <string name="warn_small_cover_description">أقل من 500 × 500 بكسل</string>
+    <string name="history">سجلّ التراجع</string>
+    <string name="clear_history">محو سجلّ التراجع</string>
+    <string name="clear_history_description">يحتفظ Metadator بوسوم آخر 100 عملية حفظ حتى يمكن التراجع عنها</string>
+    <string name="history_cleared">تم محو سجلّ التراجع</string>
+
+    <!-- Online sources -->
+    <string name="lookup_sources">المصادر</string>
+    <string name="lookup_sources_description">يتم البحث فيها معًا. لا يُرسَل سوى عنوان الأغنية وفنانها وألبومها.</string>
+    <string name="provider_musicbrainz_description">موسوعة الموسيقى المفتوحة، مع أغلفة من Cover Art Archive</string>
+    <string name="provider_deezer_description">فهرس واسع من الإصدارات التجارية، وأغلفة حتى 1000 بكسل</string>
+    <string name="provider_other_description">بيانات وصفية من الإنترنت</string>
+
+    <!-- About -->
+    <string name="version">الإصدار %1$s</string>
+    <string name="source_code">الرمز المصدري</string>
+    <string name="source_code_description">Metadator برنامج حر مرخّص بموجب GPL 3.0</string>
+    <string name="report_issue">الإبلاغ عن مشكلة</string>
+    <string name="report_issue_description">فتح بلاغ على GitHub</string>
+    <string name="rate">تقييم Metadator</string>
+    <string name="rate_description">على Google Play</string>
+    <string name="credits">مبنيّ باستخدام</string>
+    <string name="credits_description">TagLib وJetpack Compose وMedia3 وKoin وKtor وCoil وMaterialKolor وMusicBrainz وDeezer وLRCLIB</string>
+    <string name="made_by">من تطوير BobbyESP</string>
+</resources>

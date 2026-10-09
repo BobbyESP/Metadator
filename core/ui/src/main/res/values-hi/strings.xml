@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Actions shared by several screens -->
+    <string name="back">वापस जाएं</string>
+    <string name="close">बंद करें</string>
+    <string name="more_options">ज़्यादा विकल्प</string>
+    <string name="settings">सेटिंग</string>
+    <string name="edit_tags">टैग में बदलाव करें</string>
+    <string name="select">चुनें</string>
+    <string name="selected">चुना गया</string>
+    <string name="select_all">सभी चुनें</string>
+
+    <!-- Playback -->
+    <string name="play">चलाएं</string>
+    <string name="pause">रोकें</string>
+    <string name="shuffle">शफ़ल करें</string>
+    <string name="now_playing">अभी चल रहा है</string>
+
+    <!-- Track rows -->
+    <string name="unknown_artist">अज्ञात कलाकार</string>
+    <string name="unknown_album">अज्ञात एल्बम</string>
+    <!-- %1$s is a list made of the "missing_" names below; the quantity is how many it holds -->
+    <plurals name="missing_tags">
+        <item quantity="one">मौजूद नहीं: %1$s</item>
+        <item quantity="other">मौजूद नहीं: %1$s</item>
+    </plurals>
+    <string name="missing_artist">कलाकार</string>
+    <string name="missing_album">एल्बम</string>
+    <string name="missing_album_artist">एल्बम कलाकार</string>
+    <string name="missing_year">साल</string>
+    <string name="missing_track_number">ट्रैक नंबर</string>
+
+    <!-- Cover -->
+    <string name="cover">कवर</string>
+    <string name="cover_unreadable">वह इमेज पढ़ी नहीं जा सकी</string>
+
+    <!-- Tag fields -->
+    <string name="field_title">टाइटल</string>
+    <string name="field_artist">कलाकार</string>
+    <string name="field_album">एल्बम</string>
+    <string name="field_album_artist">एल्बम कलाकार</string>
+    <string name="field_date">साल या तारीख</string>
+    <string name="field_date_hint">2019 या 2019-05-17</string>
+    <string name="field_genre">शैलियां</string>
+    <string name="field_track">ट्रैक</string>
+    <string name="field_disc">डिस्क</string>
+    <!-- Between two numbers: track 3 of 12 -->
+    <string name="field_of">कुल</string>
+    <string name="field_composer">संगीतकार</string>
+    <string name="field_lyricist">गीतकार</string>
+    <string name="field_conductor">कंडक्टर</string>
+    <string name="field_remixer">रीमिक्सर</string>
+    <string name="field_performer">प्रस्तुतकर्ता</string>
+    <string name="field_comment">टिप्पणी</string>
+    <string name="field_copyright">कॉपीराइट</string>
+    <string name="field_label">लेबल</string>
+    <string name="field_grouping">ग्रुपिंग</string>
+    <string name="field_lyrics">बोल</string>
+
+    <!-- Editing a field -->
+    <string name="field_changed">बदला गया</string>
+    <string name="field_revert">“%1$s” का बदलाव पहले जैसा करें</string>
+    <string name="field_add_value">एक और जोड़ें</string>
+    <string name="field_add_value_hint">टाइप करें और Enter दबाएं</string>
+    <string name="field_remove_value">“%1$s” हटाएं</string>
+</resources>

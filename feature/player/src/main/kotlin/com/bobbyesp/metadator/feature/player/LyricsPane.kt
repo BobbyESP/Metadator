@@ -73,6 +73,7 @@ import androidx.compose.ui.util.lerp
 import com.bobbyesp.metadator.core.designsystem.component.PlaceholderCard
 import com.bobbyesp.metadator.core.designsystem.theme.Spacing
 import com.bobbyesp.metadator.core.domain.lyrics.TrackLyrics
+import com.bobbyesp.metadator.core.ui.R as CoreUiR
 import com.bobbyesp.metadator.lyrics.api.SongLyrics
 import com.bobbyesp.metadator.lyrics.api.TimedLine
 import com.bobbyesp.metadator.lyrics.api.TimedWord
@@ -116,7 +117,7 @@ internal fun LyricsPane(
                             title = stringResource(R.string.no_lyrics),
                             description = stringResource(R.string.no_lyrics_description),
                             icon = Icons.Rounded.Lyrics,
-                            actionText = stringResource(R.string.edit_tags),
+                            actionText = stringResource(CoreUiR.string.edit_tags),
                             actionIcon = Icons.Rounded.Edit,
                             onAction = onEdit,
                         )

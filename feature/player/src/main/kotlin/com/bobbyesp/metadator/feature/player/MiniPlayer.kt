@@ -43,6 +43,7 @@ import androidx.core.content.ContextCompat
 import com.bobbyesp.metadator.core.designsystem.theme.Spacing
 import com.bobbyesp.metadator.core.designsystem.theme.dissolved
 import com.bobbyesp.metadator.core.model.Track
+import com.bobbyesp.metadator.core.ui.R as CoreUiR
 import com.bobbyesp.metadator.player.api.PlaybackState
 import com.bobbyesp.metadator.player.api.PlayerController
 
@@ -112,7 +113,7 @@ internal fun MiniPlayerBar(
                     }
                     TrackLine(track, artistModifier, follows = true) { shown ->
                         Text(
-                            shown.artist ?: stringResource(R.string.unknown_artist),
+                            shown.artist ?: stringResource(CoreUiR.string.unknown_artist),
                             style = TrackNameDefaults.barArtistStyle,
                             color = TrackNameDefaults.artistColor,
                             maxLines = 1,

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Controls -->
+    <string name="open_player">플레이어 열기</string>
+    <string name="next">다음</string>
+    <string name="previous">이전</string>
+    <string name="repeat_off">반복 사용 안함</string>
+    <string name="repeat_all">전체 반복</string>
+    <string name="repeat_one">한 곡 반복</string>
+    <string name="nothing_playing">재생 중인 곡이 없습니다</string>
+
+    <!-- Queue -->
+    <string name="up_next">다음 재생</string>
+    <string name="queue_empty">대기열에 다른 곡이 없습니다</string>
+
+    <!-- Lyrics -->
+    <string name="lyrics">가사</string>
+    <string name="no_lyrics">가사 없음</string>
+    <string name="no_lyrics_description">이 곡의 태그에 가사가 없습니다. 편집기에서 직접 쓰거나 검색하세요.</string>
+    <string name="lyrics_unreadable">가사를 읽을 수 없습니다</string>
+    <string name="lyrics_unreadable_description">파일을 열 수 없습니다.</string>
+    <string name="back_to_current_line">현재 줄로 돌아가기</string>
+</resources>

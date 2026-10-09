@@ -48,6 +48,7 @@ import com.bobbyesp.metadator.core.designsystem.component.ActionButtonGroup
 import com.bobbyesp.metadator.core.designsystem.component.GroupAction
 import com.bobbyesp.metadator.core.designsystem.component.LabelChip
 import com.bobbyesp.metadator.core.designsystem.theme.Spacing
+import com.bobbyesp.metadator.core.ui.R as CoreUiR
 import com.bobbyesp.metadator.core.ui.component.ArtworkImage
 import com.bobbyesp.metadator.feature.editor.ImageInfo
 import com.bobbyesp.metadator.feature.editor.R
@@ -91,7 +92,7 @@ fun CoverCard(
         ) {
             ArtworkImage(
                 model = cover,
-                contentDescription = stringResource(R.string.cover),
+                contentDescription = stringResource(CoreUiR.string.cover),
                 modifier = Modifier.fillMaxWidth().aspectRatio(1f),
                 shape = MaterialTheme.shapes.extraLarge,
             )
@@ -133,7 +134,9 @@ fun CoverCard(
                 Icon(
                     if (isPlaying) Icons.Rounded.Pause else Icons.Rounded.PlayArrow,
                     contentDescription =
-                        stringResource(if (isPlaying) R.string.pause_song else R.string.play_song),
+                        stringResource(
+                            if (isPlaying) CoreUiR.string.pause else CoreUiR.string.play
+                        ),
                 )
             }
         }
@@ -203,7 +206,7 @@ private fun CoverFacts(cover: ByteArray?, info: ImageInfo?, changed: Boolean, wa
                 Icons.Rounded.AspectRatio,
             )
         }
-        if (changed) LabelChip(stringResource(R.string.changed), Icons.Rounded.Edit)
+        if (changed) LabelChip(stringResource(CoreUiR.string.field_changed), Icons.Rounded.Edit)
     }
     if (warnSmall && info?.isSmall == true) {
         Surface(

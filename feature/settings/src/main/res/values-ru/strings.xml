@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Sections -->
+    <string name="appearance">Оформление</string>
+    <string name="appearance_description">Тема, цвета и контраст</string>
+    <string name="editor">Редактор</string>
+    <string name="editor_description">Как записываются теги</string>
+    <string name="lookup">Онлайн-источники</string>
+    <string name="lookup_description">Откуда берутся метаданные и обложки</string>
+    <string name="about">О приложении</string>
+    <string name="about_description">Версия, исходный код и лицензии</string>
+
+    <!-- Appearance -->
+    <string name="theme">Тема</string>
+    <string name="theme_system">Системная</string>
+    <string name="theme_light">Светлая</string>
+    <string name="theme_dark">Тёмная</string>
+    <string name="colors">Цвета</string>
+    <string name="dynamic_color">Цвета обоев</string>
+    <string name="dynamic_color_description">Material You, начиная с Android 12</string>
+    <string name="pure_black">Чистый чёрный</string>
+    <string name="pure_black_description">Более тёмная тёмная тема, бережнее к OLED-экранам</string>
+    <string name="color_from_cover">Окрашивать редактор по обложке</string>
+    <string name="color_from_cover_description">Редактор каждой песни перенимает оттенки её обложки</string>
+    <string name="seed_color">Акцентный цвет</string>
+    <string name="palette_style">Стиль палитры</string>
+    <string name="palette_tonal_spot">Тональный</string>
+    <string name="palette_neutral">Нейтральный</string>
+    <string name="palette_vibrant">Яркий</string>
+    <string name="palette_expressive">Выразительный</string>
+    <string name="palette_rainbow">Радуга</string>
+    <string name="palette_fruit_salad">Фруктовый салат</string>
+    <string name="palette_monochrome">Монохромный</string>
+    <string name="palette_fidelity">Точный</string>
+    <string name="palette_content">По содержимому</string>
+
+    <!-- Editor -->
+    <string name="multi_values">Несколько исполнителей или жанров</string>
+    <string name="multi_separate">Хранить отдельными значениями</string>
+    <string name="multi_separate_description">Так предусмотрено форматами. Большинство плееров показывает их все.</string>
+    <string name="multi_joined">Объединять в одно значение</string>
+    <string name="multi_joined_description">Для плееров, которые показывают только первого исполнителя</string>
+    <string name="separator">Разделитель</string>
+    <string name="separator_description">Им объединяются значения и разделяется вставленный текст</string>
+    <string name="warn_small_cover">Предупреждать о маленьких обложках</string>
+    <string name="warn_small_cover_description">Меньше 500 × 500 пикс.</string>
+    <string name="history">История отмены</string>
+    <string name="clear_history">Очистить историю отмены</string>
+    <string name="clear_history_description">Metadator хранит теги 100 последних сохранений, чтобы их можно было отменить</string>
+    <string name="history_cleared">История отмены очищена</string>
+
+    <!-- Online sources -->
+    <string name="lookup_sources">Источники</string>
+    <string name="lookup_sources_description">Поиск идёт по всем сразу. Отправляются только название, исполнитель и альбом песни.</string>
+    <string name="provider_musicbrainz_description">Открытая музыкальная энциклопедия с обложками из Cover Art Archive</string>
+    <string name="provider_deezer_description">Большой каталог коммерческих релизов, обложки до 1000 пикс.</string>
+    <string name="provider_other_description">Метаданные из интернета</string>
+
+    <!-- About -->
+    <string name="version">Версия %1$s</string>
+    <string name="source_code">Исходный код</string>
+    <string name="source_code_description">Metadator — свободное ПО под лицензией GPL 3.0</string>
+    <string name="report_issue">Сообщить о проблеме</string>
+    <string name="report_issue_description">Создать issue на GitHub</string>
+    <string name="rate">Оценить Metadator</string>
+    <string name="rate_description">В Google Play</string>
+    <string name="credits">Создано с помощью</string>
+    <string name="credits_description">TagLib, Jetpack Compose, Media3, Koin, Ktor, Coil, MaterialKolor, MusicBrainz, Deezer и LRCLIB</string>
+    <string name="made_by">Автор: BobbyESP</string>
+</resources>

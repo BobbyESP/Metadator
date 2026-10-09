@@ -46,6 +46,7 @@ import com.bobbyesp.metadator.core.designsystem.theme.Spacing
 import com.bobbyesp.metadator.core.model.Track
 import com.bobbyesp.metadator.core.model.TrackCollection
 import com.bobbyesp.metadator.core.model.TrackId
+import com.bobbyesp.metadator.core.ui.R as CoreUiR
 import com.bobbyesp.metadator.core.ui.component.ArtworkImage
 import com.bobbyesp.metadator.core.ui.component.TrackListItem
 
@@ -86,7 +87,7 @@ internal fun CollectionScreen(
                         IconButton(onClick = onBack, shapes = IconButtonDefaults.shapes()) {
                             Icon(
                                 Icons.AutoMirrored.Rounded.ArrowBack,
-                                stringResource(R.string.back),
+                                stringResource(CoreUiR.string.back),
                             )
                         }
                     }
@@ -163,7 +164,7 @@ private fun CollectionHeader(
         ActionButtonGroup(
             primary =
                 GroupAction(
-                    label = stringResource(R.string.collection_play),
+                    label = stringResource(CoreUiR.string.play),
                     icon = Icons.Rounded.PlayArrow,
                     onClick = onPlay,
                 ),
@@ -175,7 +176,7 @@ private fun CollectionHeader(
                         onClick = onEditAll,
                     ),
                     GroupAction(
-                        label = stringResource(R.string.collection_shuffle),
+                        label = stringResource(CoreUiR.string.shuffle),
                         icon = Icons.Rounded.Shuffle,
                         labeled = false,
                         onClick = onShuffle,

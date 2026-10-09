@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Saving and undoing -->
+    <string name="save">Enregistrer</string>
+    <string name="saving">Enregistrement…</string>
+    <string name="saved">Enregistré</string>
+    <string name="saved_some_unsupported">Enregistré. Ce format ne peut pas stocker : %1$s</string>
+    <string name="save_failed">Échec de l\'enregistrement : %1$s</string>
+    <string name="save_failed_restored">Échec de l\'enregistrement, le fichier est resté tel quel (%1$s)</string>
+    <string name="write_access_denied">Metadator n\'a pas été autorisé à modifier ce fichier</string>
+    <string name="format_unsupported">Le format de ce fichier ne peut pas être modifié</string>
+    <string name="undo">Annuler</string>
+    <string name="undone">Modifications annulées</string>
+    <string name="undo_unavailable">Les tags d\'origine ne sont plus disponibles</string>
+    <string name="undo_failed">Impossible d\'annuler les modifications</string>
+    <string name="revert_all">Annuler toutes les modifications</string>
+    <string name="play_unavailable">Seuls les morceaux de votre bibliothèque peuvent être lus</string>
+
+    <!-- Sections -->
+    <string name="needs_attention_title">À vérifier</string>
+    <string name="section_main">Morceau</string>
+    <string name="section_track">Piste</string>
+    <string name="section_credits">Crédits</string>
+    <string name="section_more">Plus</string>
+    <string name="section_lyrics">Paroles</string>
+    <string name="section_all_tags">Tous les tags</string>
+    <string name="section_file">Fichier</string>
+    <string name="all_tags_description">Tous les autres tags du fichier. Ils sont conservés tels quels, sauf si vous les modifiez ici.</string>
+
+    <!-- Cover -->
+    <string name="cover_change">Changer la pochette</string>
+    <string name="cover_remove">Supprimer la pochette</string>
+    <string name="cover_revert">Garder la pochette d\'origine</string>
+    <string name="cover_find_online">Chercher une pochette en ligne</string>
+    <string name="cover_small_warning">Petite pochette : elle peut paraître floue sur un grand écran</string>
+    <string name="cover_none">Aucune pochette</string>
+
+    <!-- Lyrics -->
+    <string name="lyrics_find">Chercher les paroles</string>
+    <string name="lyrics_synced">Synchronisées</string>
+    <string name="lyrics_found_synced">Paroles synchronisées ajoutées</string>
+    <string name="lyrics_found_plain">Paroles ajoutées</string>
+    <string name="lyrics_not_found">Aucune parole trouvée pour ce morceau</string>
+    <string name="lyrics_instrumental">Ce morceau est instrumental</string>
+    <string name="lyrics_failed">Impossible de chercher les paroles</string>
+    <string name="lyrics_need_title_artist">Ajoutez d\'abord un titre et un artiste</string>
+    <string name="offline">Vous êtes hors ligne</string>
+
+    <!-- Adding a tag -->
+    <string name="add_field">Ajouter un tag</string>
+    <string name="add_field_name">Nom</string>
+    <string name="add_field_name_hint">Par exemple MOOD</string>
+    <string name="add_field_value">Valeur</string>
+    <string name="add">Ajouter</string>
+    <string name="cancel">Annuler</string>
+
+    <!-- File details -->
+    <string name="file_size">Taille</string>
+    <string name="file_duration">Durée</string>
+    <string name="file_bitrate">Débit</string>
+    <string name="file_bitrate_value">%1$d kbit/s</string>
+    <string name="file_sample_rate">Fréquence d\'échantillonnage</string>
+    <string name="file_sample_rate_value">%1$s kHz</string>
+    <string name="file_channels">Canaux</string>
+    <string name="file_channels_mono">Mono</string>
+    <string name="file_channels_stereo">Stéréo</string>
+    <string name="file_location">Emplacement</string>
+
+    <!-- Leaving with unsaved changes -->
+    <string name="unsaved_title">Abandonner les modifications ?</string>
+    <string name="unsaved_description">Les modifications de ce morceau n\'ont pas été enregistrées.</string>
+    <string name="unsaved_discard">Abandonner</string>
+    <string name="unsaved_keep">Continuer la modification</string>
+
+    <!-- Files that can't be opened -->
+    <string name="file_gone_title">Ce fichier n\'existe plus</string>
+    <string name="file_gone_description">Il a été déplacé ou supprimé après son ajout à la bibliothèque.</string>
+    <string name="access_denied_title">Impossible d\'ouvrir ce fichier</string>
+    <string name="access_denied_description">L\'application qui l\'a partagé n\'a pas autorisé Metadator à le lire. Essayez de l\'ouvrir depuis la bibliothèque ou depuis un gestionnaire de fichiers.</string>
+    <string name="unsupported_title">Format non pris en charge</string>
+    <string name="unsupported_description">Metadator ne peut pas lire les tags de ce type de fichier.</string>
+    <string name="failed_title">Impossible d\'ouvrir ce fichier</string>
+    <string name="retry">Réessayer</string>
+    <string name="go_back">Revenir</string>
+
+    <!-- Finding metadata online: searching -->
+    <string name="lookup_title">Chercher des métadonnées</string>
+    <string name="lookup_find">Chercher des métadonnées</string>
+    <string name="lookup_search">Rechercher</string>
+    <string name="lookup_searching">Recherche…</string>
+    <string name="lookup_results">Résultats</string>
+    <string name="lookup_no_results">Aucun résultat. Essayez avec moins de mots.</string>
+    <string name="lookup_no_providers">Toutes les sources sont désactivées. Activez-en une dans les paramètres.</string>
+    <string name="lookup_rate_limited">Les sources sont occupées. Réessayez dans un instant.</string>
+    <string name="lookup_failed">La recherche a échoué. Réessayez.</string>
+    <!-- %1$s is the name of a source, such as MusicBrainz -->
+    <string name="lookup_partial">%1$s n\'a pas répondu</string>
+    <string name="lookup_confidence_high">Bonne correspondance</string>
+    <string name="lookup_confidence_medium">Correspondance possible</string>
+    <string name="lookup_confidence_low">Correspondance faible</string>
+
+    <!-- Finding metadata online: choosing what to use -->
+    <string name="lookup_compare_title">Choisissez ce qu\'il faut utiliser</string>
+    <!-- %1$s is the field's current value -->
+    <string name="lookup_current">Actuellement : %1$s</string>
+    <string name="lookup_empty_value">vide</string>
+    <string name="lookup_show_unchanged">Champs déjà identiques (%1$d)</string>
+    <string name="lookup_selected_count">%1$d sur %2$d sélectionnés</string>
+    <string name="lookup_select_none">Tout désélectionner</string>
+    <string name="lookup_use_cover">Utiliser cette pochette</string>
+    <string name="lookup_apply">Utiliser la sélection</string>
+    <string name="lookup_back">Revenir aux résultats</string>
+    <string name="lookup_applied">Appliqué. Vérifiez puis enregistrez quand vous voulez</string>
+</resources>

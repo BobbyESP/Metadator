@@ -1,26 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="now_playing">Sonando ahora</string>
+    <!-- Controls -->
     <string name="open_player">Abrir el reproductor</string>
-    <string name="play">Reproducir</string>
-    <string name="pause">Pausar</string>
     <string name="next">Siguiente</string>
     <string name="previous">Anterior</string>
-    <string name="shuffle">Aleatorio</string>
     <string name="repeat_off">Repetición desactivada</string>
     <string name="repeat_all">Repetir todo</string>
     <string name="repeat_one">Repetir una</string>
-    <string name="edit_tags">Editar etiquetas</string>
-    <string name="up_next">A continuación</string>
-    <string name="close">Cerrar</string>
-    <string name="stop">Detener</string>
     <string name="nothing_playing">No suena nada</string>
-    <string name="unknown_artist">Artista desconocido</string>
+
+    <!-- Queue -->
+    <string name="up_next">A continuación</string>
+    <string name="queue_empty">No hay nada más en la cola</string>
+
+    <!-- Lyrics -->
     <string name="lyrics">Letra</string>
     <string name="no_lyrics">Sin letra</string>
     <string name="no_lyrics_description">Esta canción no tiene letra en sus etiquetas. Escríbela o búscala en el editor.</string>
     <string name="lyrics_unreadable">No se pudo leer la letra</string>
     <string name="lyrics_unreadable_description">No se pudo abrir el archivo.</string>
     <string name="back_to_current_line">Volver a la línea actual</string>
-    <string name="queue_empty">No hay nada más en la cola</string>
 </resources>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Controls -->
+    <string name="open_player">प्लेयर खोलें</string>
+    <string name="next">अगला</string>
+    <string name="previous">पिछला</string>
+    <string name="repeat_off">दोहराना बंद है</string>
+    <string name="repeat_all">सभी दोहराएं</string>
+    <string name="repeat_one">एक गाना दोहराएं</string>
+    <string name="nothing_playing">कुछ नहीं चल रहा है</string>
+
+    <!-- Queue -->
+    <string name="up_next">इसके बाद</string>
+    <string name="queue_empty">सूची में और कुछ नहीं है</string>
+
+    <!-- Lyrics -->
+    <string name="lyrics">बोल</string>
+    <string name="no_lyrics">बोल नहीं हैं</string>
+    <string name="no_lyrics_description">इस गाने के टैग में बोल नहीं हैं। उन्हें एडिटर में लिखें या खोजें।</string>
+    <string name="lyrics_unreadable">बोल पढ़े नहीं जा सके</string>
+    <string name="lyrics_unreadable_description">फ़ाइल खोली नहीं जा सकी।</string>
+    <string name="back_to_current_line">मौजूदा लाइन पर वापस जाएं</string>
+</resources>

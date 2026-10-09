@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Saving and undoing -->
+    <string name="save">حفظ</string>
+    <string name="saving">جارٍ الحفظ…</string>
+    <string name="saved">تم الحفظ</string>
+    <string name="saved_some_unsupported">تم الحفظ. لا يمكن لهذا التنسيق تخزين: %1$s</string>
+    <string name="save_failed">تعذّر الحفظ: %1$s</string>
+    <string name="save_failed_restored">تعذّر الحفظ، وبقي الملف كما كان (%1$s)</string>
+    <string name="write_access_denied">لم يُسمح لـ Metadator بتغيير هذا الملف</string>
+    <string name="format_unsupported">لا يمكن تعديل تنسيق هذا الملف</string>
+    <string name="undo">تراجع</string>
+    <string name="undone">تم التراجع عن التغييرات</string>
+    <string name="undo_unavailable">لم تعد الوسوم الأصلية متاحة</string>
+    <string name="undo_failed">تعذّر التراجع عن التغييرات</string>
+    <string name="revert_all">التراجع عن كل التغييرات</string>
+    <string name="play_unavailable">لا يمكن تشغيل سوى الأغاني الموجودة في مكتبتك</string>
+
+    <!-- Sections -->
+    <string name="needs_attention_title">تحتاج إلى مراجعة</string>
+    <string name="section_main">الأغنية</string>
+    <string name="section_track">المقطع</string>
+    <string name="section_credits">المشاركون</string>
+    <string name="section_more">المزيد</string>
+    <string name="section_lyrics">كلمات الأغنية</string>
+    <string name="section_all_tags">كل الوسوم</string>
+    <string name="section_file">الملف</string>
+    <string name="all_tags_description">كل الوسوم الأخرى في الملف. تبقى كما هي ما لم تغيّرها هنا.</string>
+
+    <!-- Cover -->
+    <string name="cover_change">تغيير الغلاف</string>
+    <string name="cover_remove">إزالة الغلاف</string>
+    <string name="cover_revert">الإبقاء على الغلاف الأصلي</string>
+    <string name="cover_find_online">البحث عن غلاف على الإنترنت</string>
+    <string name="cover_small_warning">الغلاف صغير: قد يبدو غير واضح على شاشة كبيرة</string>
+    <string name="cover_none">بلا غلاف</string>
+
+    <!-- Lyrics -->
+    <string name="lyrics_find">البحث عن الكلمات</string>
+    <string name="lyrics_synced">متزامنة</string>
+    <string name="lyrics_found_synced">تمت إضافة الكلمات المتزامنة</string>
+    <string name="lyrics_found_plain">تمت إضافة الكلمات</string>
+    <string name="lyrics_not_found">لم يتم العثور على كلمات لهذه الأغنية</string>
+    <string name="lyrics_instrumental">هذه الأغنية موسيقى بلا كلمات</string>
+    <string name="lyrics_failed">تعذّر البحث عن الكلمات</string>
+    <string name="lyrics_need_title_artist">أضف عنوانًا وفنانًا أولًا</string>
+    <string name="offline">أنت غير متصل بالإنترنت</string>
+
+    <!-- Adding a tag -->
+    <string name="add_field">إضافة وسم</string>
+    <string name="add_field_name">الاسم</string>
+    <string name="add_field_name_hint">مثلًا MOOD</string>
+    <string name="add_field_value">القيمة</string>
+    <string name="add">إضافة</string>
+    <string name="cancel">إلغاء</string>
+
+    <!-- File details -->
+    <string name="file_size">الحجم</string>
+    <string name="file_duration">المدة</string>
+    <string name="file_bitrate">معدل البت</string>
+    <string name="file_bitrate_value">%1$d ك.بت/ث</string>
+    <string name="file_sample_rate">معدل العيّنات</string>
+    <string name="file_sample_rate_value">%1$s كيلوهرتز</string>
+    <string name="file_channels">القنوات</string>
+    <string name="file_channels_mono">أحادي</string>
+    <string name="file_channels_stereo">ستيريو</string>
+    <string name="file_location">الموقع</string>
+
+    <!-- Leaving with unsaved changes -->
+    <string name="unsaved_title">هل تريد تجاهل التغييرات؟</string>
+    <string name="unsaved_description">لم يتم حفظ التغييرات على هذه الأغنية.</string>
+    <string name="unsaved_discard">تجاهل</string>
+    <string name="unsaved_keep">متابعة التعديل</string>
+
+    <!-- Files that can't be opened -->
+    <string name="file_gone_title">هذا الملف لم يعد موجودًا</string>
+    <string name="file_gone_description">تم نقله أو حذفه بعد إدراجه في المكتبة.</string>
+    <string name="access_denied_title">يتعذّر فتح هذا الملف</string>
+    <string name="access_denied_description">التطبيق الذي شاركه لم يسمح لـ Metadator بقراءته. جرّب فتحه من المكتبة أو من مدير الملفات.</string>
+    <string name="unsupported_title">التنسيق غير متوافق</string>
+    <string name="unsupported_description">لا يستطيع Metadator قراءة الوسوم من هذا النوع من الملفات.</string>
+    <string name="failed_title">تعذّر فتح هذا الملف</string>
+    <string name="retry">إعادة المحاولة</string>
+    <string name="go_back">العودة</string>
+
+    <!-- Finding metadata online: searching -->
+    <string name="lookup_title">البحث عن بيانات وصفية</string>
+    <string name="lookup_find">البحث عن بيانات وصفية</string>
+    <string name="lookup_search">بحث</string>
+    <string name="lookup_searching">جارٍ البحث…</string>
+    <string name="lookup_results">النتائج</string>
+    <string name="lookup_no_results">لا توجد نتائج مطابقة. جرّب كلمات أقل.</string>
+    <string name="lookup_no_providers">كل المصادر متوقفة. فعّل أحدها من الإعدادات.</string>
+    <string name="lookup_rate_limited">المصادر مشغولة. أعد المحاولة بعد قليل.</string>
+    <string name="lookup_failed">تعذّر البحث. أعد المحاولة.</string>
+    <!-- %1$s is the name of a source, such as MusicBrainz -->
+    <string name="lookup_partial">لم يستجب %1$s</string>
+    <string name="lookup_confidence_high">تطابق جيد</string>
+    <string name="lookup_confidence_medium">تطابق محتمل</string>
+    <string name="lookup_confidence_low">تطابق ضعيف</string>
+
+    <!-- Finding metadata online: choosing what to use -->
+    <string name="lookup_compare_title">اختر ما تريد استخدامه</string>
+    <!-- %1$s is the field's current value -->
+    <string name="lookup_current">الحالي: %1$s</string>
+    <string name="lookup_empty_value">فارغ</string>
+    <string name="lookup_show_unchanged">الحقول المتطابقة مسبقًا (%1$d)</string>
+    <string name="lookup_selected_count">تم تحديد %1$d من %2$d</string>
+    <string name="lookup_select_none">إلغاء التحديد</string>
+    <string name="lookup_use_cover">استخدام هذا الغلاف</string>
+    <string name="lookup_apply">استخدام المحدَّد</string>
+    <string name="lookup_back">العودة إلى النتائج</string>
+    <string name="lookup_applied">تم التطبيق. راجع ثم احفظ عندما تكون جاهزًا</string>
+</resources>

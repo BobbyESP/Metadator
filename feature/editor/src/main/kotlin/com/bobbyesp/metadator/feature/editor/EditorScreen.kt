@@ -178,7 +178,8 @@ internal fun EditorScreen(
     var confirmDiscard by rememberSaveable { mutableStateOf(false) }
     val isDirty = state.isDirty
     val title =
-        if (state.status == EditorStatus.Ready) state.title else stringResource(R.string.edit_tags)
+        if (state.status == EditorStatus.Ready) state.title
+        else stringResource(CoreUiR.string.edit_tags)
     val leave = {
         if (isDirty) {
             confirmDiscard = true
@@ -376,14 +377,14 @@ private fun EditorTopBar(
             IconButton(onClick = onClose, shapes = IconButtonDefaults.shapes()) {
                 Icon(
                     if (showClose) Icons.Rounded.Close else Icons.AutoMirrored.Rounded.ArrowBack,
-                    contentDescription = stringResource(R.string.close),
+                    contentDescription = stringResource(CoreUiR.string.close),
                 )
             }
         },
         actions = {
             Box {
                 IconButton(onClick = { menuOpen = true }, shapes = IconButtonDefaults.shapes()) {
-                    Icon(Icons.Rounded.MoreVert, stringResource(R.string.more_options))
+                    Icon(Icons.Rounded.MoreVert, stringResource(CoreUiR.string.more_options))
                 }
                 ActionMenu(
                     expanded = menuOpen,

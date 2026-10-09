@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="settings">Settings</string>
-    <string name="back">Back</string>
+    <!-- Sections -->
     <string name="appearance">Appearance</string>
     <string name="appearance_description">Theme, colors and contrast</string>
     <string name="editor">Editor</string>
@@ -11,6 +10,7 @@
     <string name="about">About</string>
     <string name="about_description">Version, source code and licenses</string>
 
+    <!-- Appearance -->
     <string name="theme">Theme</string>
     <string name="theme_system">System</string>
     <string name="theme_light">Light</string>
@@ -34,6 +34,7 @@
     <string name="palette_fidelity">Fidelity</string>
     <string name="palette_content">Content</string>
 
+    <!-- Editor -->
     <string name="multi_values">Several artists or genres</string>
     <string name="multi_separate">Keep them as separate values</string>
     <string name="multi_separate_description">What the formats expect. Most players show all of them.</string>
@@ -48,12 +49,14 @@
     <string name="clear_history_description">Metadator keeps the tags of your last 100 saves so they can be undone</string>
     <string name="history_cleared">Undo history cleared</string>
 
+    <!-- Online sources -->
     <string name="lookup_sources">Sources</string>
     <string name="lookup_sources_description">Searched together. Nothing is sent but the song\'s title, artist and album.</string>
     <string name="provider_musicbrainz_description">The open music encyclopedia, with covers from the Cover Art Archive</string>
     <string name="provider_deezer_description">Large catalogue of commercial releases, covers up to 1000 px</string>
     <string name="provider_other_description">Online metadata</string>
 
+    <!-- About -->
     <string name="version">Version %1$s</string>
     <string name="source_code">Source code</string>
     <string name="source_code_description">Metadator is free software, licensed under the GPL 3.0</string>

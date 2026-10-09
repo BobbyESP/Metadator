@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Saving and undoing -->
+    <string name="save">Speichern</string>
+    <string name="saving">Wird gespeichert…</string>
+    <string name="saved">Gespeichert</string>
+    <string name="saved_some_unsupported">Gespeichert. Dieses Format kann Folgendes nicht speichern: %1$s</string>
+    <string name="save_failed">Speichern fehlgeschlagen: %1$s</string>
+    <string name="save_failed_restored">Speichern fehlgeschlagen, die Datei blieb unverändert (%1$s)</string>
+    <string name="write_access_denied">Metadator durfte diese Datei nicht ändern</string>
+    <string name="format_unsupported">Das Format dieser Datei kann nicht bearbeitet werden</string>
+    <string name="undo">Rückgängig</string>
+    <string name="undone">Änderungen rückgängig gemacht</string>
+    <string name="undo_unavailable">Die ursprünglichen Tags sind nicht mehr verfügbar</string>
+    <string name="undo_failed">Die Änderungen konnten nicht rückgängig gemacht werden</string>
+    <string name="revert_all">Alle Änderungen rückgängig machen</string>
+    <string name="play_unavailable">Nur Songs aus deiner Bibliothek können wiedergegeben werden</string>
+
+    <!-- Sections -->
+    <string name="needs_attention_title">Unvollständig</string>
+    <string name="section_main">Song</string>
+    <string name="section_track">Titelnummer</string>
+    <string name="section_credits">Mitwirkende</string>
+    <string name="section_more">Mehr</string>
+    <string name="section_lyrics">Songtext</string>
+    <string name="section_all_tags">Alle Tags</string>
+    <string name="section_file">Datei</string>
+    <string name="all_tags_description">Alle übrigen Tags der Datei. Sie bleiben unverändert, sofern du sie nicht hier änderst.</string>
+
+    <!-- Cover -->
+    <string name="cover_change">Cover ändern</string>
+    <string name="cover_remove">Cover entfernen</string>
+    <string name="cover_revert">Ursprüngliches Cover behalten</string>
+    <string name="cover_find_online">Cover online suchen</string>
+    <string name="cover_small_warning">Kleines Cover: Auf großen Bildschirmen kann es unscharf wirken</string>
+    <string name="cover_none">Kein Cover</string>
+
+    <!-- Lyrics -->
+    <string name="lyrics_find">Songtext suchen</string>
+    <string name="lyrics_synced">Synchronisiert</string>
+    <string name="lyrics_found_synced">Synchronisierter Songtext hinzugefügt</string>
+    <string name="lyrics_found_plain">Songtext hinzugefügt</string>
+    <string name="lyrics_not_found">Für diesen Song wurde kein Songtext gefunden</string>
+    <string name="lyrics_instrumental">Dieser Song ist instrumental</string>
+    <string name="lyrics_failed">Die Suche nach dem Songtext ist fehlgeschlagen</string>
+    <string name="lyrics_need_title_artist">Füge zuerst einen Titel und einen Interpreten hinzu</string>
+    <string name="offline">Du bist offline</string>
+
+    <!-- Adding a tag -->
+    <string name="add_field">Tag hinzufügen</string>
+    <string name="add_field_name">Name</string>
+    <string name="add_field_name_hint">Zum Beispiel MOOD</string>
+    <string name="add_field_value">Wert</string>
+    <string name="add">Hinzufügen</string>
+    <string name="cancel">Abbrechen</string>
+
+    <!-- File details -->
+    <string name="file_size">Größe</string>
+    <string name="file_duration">Dauer</string>
+    <string name="file_bitrate">Bitrate</string>
+    <string name="file_bitrate_value">%1$d kbit/s</string>
+    <string name="file_sample_rate">Abtastrate</string>
+    <string name="file_sample_rate_value">%1$s kHz</string>
+    <string name="file_channels">Kanäle</string>
+    <string name="file_channels_mono">Mono</string>
+    <string name="file_channels_stereo">Stereo</string>
+    <string name="file_location">Speicherort</string>
+
+    <!-- Leaving with unsaved changes -->
+    <string name="unsaved_title">Änderungen verwerfen?</string>
+    <string name="unsaved_description">Die Änderungen an diesem Song wurden nicht gespeichert.</string>
+    <string name="unsaved_discard">Verwerfen</string>
+    <string name="unsaved_keep">Weiter bearbeiten</string>
+
+    <!-- Files that can't be opened -->
+    <string name="file_gone_title">Diese Datei gibt es nicht mehr</string>
+    <string name="file_gone_description">Sie wurde verschoben oder gelöscht, nachdem die Bibliothek sie erfasst hatte.</string>
+    <string name="access_denied_title">Diese Datei kann nicht geöffnet werden</string>
+    <string name="access_denied_description">Die App, die sie geteilt hat, hat Metadator das Lesen nicht erlaubt. Öffne sie aus der Bibliothek oder aus einem Dateimanager.</string>
+    <string name="unsupported_title">Format nicht unterstützt</string>
+    <string name="unsupported_description">Metadator kann die Tags dieses Dateityps nicht lesen.</string>
+    <string name="failed_title">Diese Datei konnte nicht geöffnet werden</string>
+    <string name="retry">Erneut versuchen</string>
+    <string name="go_back">Zurück</string>
+
+    <!-- Finding metadata online: searching -->
+    <string name="lookup_title">Metadaten suchen</string>
+    <string name="lookup_find">Metadaten suchen</string>
+    <string name="lookup_search">Suchen</string>
+    <string name="lookup_searching">Suche läuft…</string>
+    <string name="lookup_results">Ergebnisse</string>
+    <string name="lookup_no_results">Keine Treffer. Versuche es mit weniger Wörtern.</string>
+    <string name="lookup_no_providers">Alle Quellen sind deaktiviert. Aktiviere eine in den Einstellungen.</string>
+    <string name="lookup_rate_limited">Die Quellen sind ausgelastet. Versuche es gleich noch einmal.</string>
+    <string name="lookup_failed">Die Suche ist fehlgeschlagen. Versuche es noch einmal.</string>
+    <!-- %1$s is the name of a source, such as MusicBrainz -->
+    <string name="lookup_partial">%1$s hat nicht geantwortet</string>
+    <string name="lookup_confidence_high">Guter Treffer</string>
+    <string name="lookup_confidence_medium">Möglicher Treffer</string>
+    <string name="lookup_confidence_low">Schwacher Treffer</string>
+
+    <!-- Finding metadata online: choosing what to use -->
+    <string name="lookup_compare_title">Wähle, was übernommen wird</string>
+    <!-- %1$s is the field's current value -->
+    <string name="lookup_current">Aktuell: %1$s</string>
+    <string name="lookup_empty_value">leer</string>
+    <string name="lookup_show_unchanged">Bereits übereinstimmende Felder (%1$d)</string>
+    <string name="lookup_selected_count">%1$d von %2$d ausgewählt</string>
+    <string name="lookup_select_none">Auswahl aufheben</string>
+    <string name="lookup_use_cover">Dieses Cover verwenden</string>
+    <string name="lookup_apply">Auswahl übernehmen</string>
+    <string name="lookup_back">Zurück zu den Ergebnissen</string>
+    <string name="lookup_applied">Übernommen. Prüfe die Angaben und speichere dann</string>
+</resources>

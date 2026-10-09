@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- The songs being edited -->
+    <plurals name="batch_title">
+        <item quantity="other">%1$d 曲を編集</item>
+    </plurals>
+    <!-- After the first song titles: "One, Two, Three and 4 more" -->
+    <string name="batch_and_more">ほか %1$d 曲</string>
+
+    <!-- Fields -->
+    <string name="batch_fields">すべての曲に設定</string>
+    <string name="batch_fields_description">フィールドをそのままにすると、各曲の値が保持されます。</string>
+    <string name="batch_multiple_values">複数の値</string>
+    <!-- %1$s is the name of a field, such as Album -->
+    <string name="batch_reset_field">各曲の%1$sを維持</string>
+
+    <!-- Cover -->
+    <string name="batch_cover_set">全曲に同じカバー画像を使用</string>
+    <string name="batch_cover_remove">すべてのカバー画像を削除</string>
+    <string name="batch_cover_keep">各曲のカバー画像を維持</string>
+    <string name="batch_cover_will_replace">すべての曲にこのカバー画像が設定されます</string>
+    <string name="batch_cover_will_remove">すべての曲のカバー画像が削除されます</string>
+
+    <!-- Tools -->
+    <string name="batch_tools">ツール</string>
+    <string name="batch_numbering">トラックに番号を付ける</string>
+    <string name="batch_numbering_description">表示順に、トラック N / %1$d として設定</string>
+    <string name="batch_numbering_start">開始番号</string>
+    <string name="batch_pattern">ファイル名からタグを読み取る</string>
+    <!-- The placeholders in braces are typed as they are: don't translate them -->
+    <string name="batch_pattern_description">{title}、{artist}、{album}、{albumartist}、{track}、{disc}、{year}、{genre} を使用できます</string>
+    <string name="batch_pattern_field">パターン</string>
+    <string name="batch_pattern_invalid">各プレースホルダーは 1 回まで、少なくとも 1 つ使用してください</string>
+    <string name="batch_pattern_no_match">一致しません</string>
+
+    <!-- Applying -->
+    <string name="batch_apply">すべてに適用</string>
+    <string name="batch_access_denied">Metadator にこれらのファイルの変更が許可されませんでした</string>
+    <string name="batch_running">%2$d 件中 %1$d 件を保存中</string>
+    <string name="batch_cancel">停止</string>
+
+    <!-- Result -->
+    <string name="batch_done_title">完了</string>
+    <plurals name="batch_saved">
+        <item quantity="other">%1$d 曲を保存しました</item>
+    </plurals>
+    <plurals name="batch_failed">
+        <item quantity="other">%1$d 曲を保存できませんでした</item>
+    </plurals>
+    <plurals name="batch_undone">
+        <item quantity="other">%1$d 曲を復元しました</item>
+    </plurals>
+    <string name="batch_cancelled">停止しました。これまでに保存した曲の変更は保持されます。</string>
+    <string name="batch_undo_all">すべて元に戻す</string>
+    <string name="batch_finish">終了</string>
+    <!-- Why a song couldn't be saved, shown next to its title -->
+    <string name="batch_reason_access">許可されていません</string>
+    <string name="batch_reason_gone">ファイルがありません</string>
+    <string name="batch_reason_unsupported">対応していない形式</string>
+    <string name="batch_reason_failed">書き込みに失敗</string>
+</resources>

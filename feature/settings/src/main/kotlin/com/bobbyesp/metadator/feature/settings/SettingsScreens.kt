@@ -104,6 +104,7 @@ import com.bobbyesp.metadator.core.navigation.EditorSettings
 import com.bobbyesp.metadator.core.navigation.LookupSettings
 import com.bobbyesp.metadator.core.navigation.Navigator
 import com.bobbyesp.metadator.core.navigation.Settings
+import com.bobbyesp.metadator.core.ui.R as CoreUiR
 import com.bobbyesp.metadator.core.ui.viewmodel.LocalSnackbarHostState
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -182,7 +183,7 @@ private fun aboutLinks(isPlayStoreBuild: Boolean): List<SettingsLink<String>> = 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 fun EntryProviderScope<NavKey>.settingsSection(navigator: Navigator) {
     entry<Settings> {
-        SettingsPage(stringResource(R.string.settings), onBack = navigator::goBack) {
+        SettingsPage(stringResource(CoreUiR.string.settings), onBack = navigator::goBack) {
             item(key = "pages", contentType = "pages") {
                 Column(verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap)) {
                     SettingsPages.forEachIndexed { index, page ->
@@ -345,7 +346,10 @@ private fun SettingsPage(title: String, onBack: () -> Unit, content: LazyListSco
                 title = { Text(title) },
                 navigationIcon = {
                     IconButton(onClick = onBack, shapes = IconButtonDefaults.shapes()) {
-                        Icon(Icons.AutoMirrored.Rounded.ArrowBack, stringResource(R.string.back))
+                        Icon(
+                            Icons.AutoMirrored.Rounded.ArrowBack,
+                            stringResource(CoreUiR.string.back),
+                        )
                     }
                 },
                 scrollBehavior = scrollBehavior,

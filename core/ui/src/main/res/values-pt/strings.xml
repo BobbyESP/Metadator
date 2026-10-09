@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Actions shared by several screens -->
+    <string name="back">Voltar</string>
+    <string name="close">Fechar</string>
+    <string name="more_options">Mais opções</string>
+    <string name="settings">Configurações</string>
+    <string name="edit_tags">Editar tags</string>
+    <string name="select">Selecionar</string>
+    <string name="selected">Selecionada</string>
+    <string name="select_all">Selecionar tudo</string>
+
+    <!-- Playback -->
+    <string name="play">Reproduzir</string>
+    <string name="pause">Pausar</string>
+    <string name="shuffle">Aleatório</string>
+    <string name="now_playing">Tocando agora</string>
+
+    <!-- Track rows -->
+    <string name="unknown_artist">Artista desconhecido</string>
+    <string name="unknown_album">Álbum desconhecido</string>
+    <!-- %1$s is a list made of the "missing_" names below; the quantity is how many it holds -->
+    <plurals name="missing_tags">
+        <item quantity="one">Falta: %1$s</item>
+        <item quantity="many">Faltam: %1$s</item>
+        <item quantity="other">Faltam: %1$s</item>
+    </plurals>
+    <string name="missing_artist">artista</string>
+    <string name="missing_album">álbum</string>
+    <string name="missing_album_artist">artista do álbum</string>
+    <string name="missing_year">ano</string>
+    <string name="missing_track_number">número da faixa</string>
+
+    <!-- Cover -->
+    <string name="cover">Capa</string>
+    <string name="cover_unreadable">Não foi possível ler essa imagem</string>
+
+    <!-- Tag fields -->
+    <string name="field_title">Título</string>
+    <string name="field_artist">Artistas</string>
+    <string name="field_album">Álbum</string>
+    <string name="field_album_artist">Artistas do álbum</string>
+    <string name="field_date">Ano ou data</string>
+    <string name="field_date_hint">2019 ou 2019-05-17</string>
+    <string name="field_genre">Gêneros</string>
+    <string name="field_track">Faixa</string>
+    <string name="field_disc">Disco</string>
+    <!-- Between two numbers: track 3 of 12 -->
+    <string name="field_of">de</string>
+    <string name="field_composer">Compositores</string>
+    <string name="field_lyricist">Letristas</string>
+    <string name="field_conductor">Regente</string>
+    <string name="field_remixer">Remixers</string>
+    <string name="field_performer">Intérpretes</string>
+    <string name="field_comment">Comentário</string>
+    <string name="field_copyright">Copyright</string>
+    <string name="field_label">Gravadora</string>
+    <string name="field_grouping">Agrupamento</string>
+    <string name="field_lyrics">Letra</string>
+
+    <!-- Editing a field -->
+    <string name="field_changed">Alterado</string>
+    <string name="field_revert">Desfazer a alteração em %1$s</string>
+    <string name="field_add_value">Adicionar outro</string>
+    <string name="field_add_value_hint">Digite e pressione Enter</string>
+    <string name="field_remove_value">Remover %1$s</string>
+</resources>

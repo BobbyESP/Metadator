@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- The songs being edited -->
+    <plurals name="batch_title">
+        <item quantity="other">编辑 %1$d 首歌曲</item>
+    </plurals>
+    <!-- After the first song titles: "One, Two, Three and 4 more" -->
+    <string name="batch_and_more">以及另外 %1$d 首</string>
+
+    <!-- Fields -->
+    <string name="batch_fields">为每首歌曲设置</string>
+    <string name="batch_fields_description">字段保持不变即可保留每首歌曲各自的值。</string>
+    <string name="batch_multiple_values">多个值</string>
+    <!-- %1$s is the name of a field, such as Album -->
+    <string name="batch_reset_field">保留每首歌曲的“%1$s”</string>
+
+    <!-- Cover -->
+    <string name="batch_cover_set">全部使用同一封面</string>
+    <string name="batch_cover_remove">移除所有封面</string>
+    <string name="batch_cover_keep">保留每首歌曲的封面</string>
+    <string name="batch_cover_will_replace">每首歌曲都将使用此封面</string>
+    <string name="batch_cover_will_remove">每首歌曲的封面都将被移除</string>
+
+    <!-- Tools -->
+    <string name="batch_tools">工具</string>
+    <string name="batch_numbering">为音轨编号</string>
+    <string name="batch_numbering_description">按显示顺序，设为音轨 N / %1$d</string>
+    <string name="batch_numbering_start">起始编号</string>
+    <string name="batch_pattern">从文件名读取标签</string>
+    <!-- The placeholders in braces are typed as they are: don't translate them -->
+    <string name="batch_pattern_description">可使用 {title}、{artist}、{album}、{albumartist}、{track}、{disc}、{year} 和 {genre}</string>
+    <string name="batch_pattern_field">模式</string>
+    <string name="batch_pattern_invalid">每个占位符只能使用一次，且至少使用一个</string>
+    <string name="batch_pattern_no_match">不匹配</string>
+
+    <!-- Applying -->
+    <string name="batch_apply">应用到全部</string>
+    <string name="batch_access_denied">Metadator 未获准更改这些文件</string>
+    <string name="batch_running">正在保存第 %1$d 项，共 %2$d 项</string>
+    <string name="batch_cancel">停止</string>
+
+    <!-- Result -->
+    <string name="batch_done_title">完成</string>
+    <plurals name="batch_saved">
+        <item quantity="other">已保存 %1$d 首歌曲</item>
+    </plurals>
+    <plurals name="batch_failed">
+        <item quantity="other">%1$d 首歌曲无法保存</item>
+    </plurals>
+    <plurals name="batch_undone">
+        <item quantity="other">已恢复 %1$d 首歌曲</item>
+    </plurals>
+    <string name="batch_cancelled">已停止。目前已保存的歌曲会保留其更改。</string>
+    <string name="batch_undo_all">全部撤销</string>
+    <string name="batch_finish">完成</string>
+    <!-- Why a song couldn't be saved, shown next to its title -->
+    <string name="batch_reason_access">未获许可</string>
+    <string name="batch_reason_gone">文件已不存在</string>
+    <string name="batch_reason_unsupported">不支持的格式</string>
+    <string name="batch_reason_failed">写入失败</string>
+</resources>

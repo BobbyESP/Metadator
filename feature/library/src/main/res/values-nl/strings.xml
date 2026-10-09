@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Search and menu -->
+    <string name="search_library">Zoek nummers, artiesten, albums</string>
+    <string name="clear_search">Zoekopdracht wissen</string>
+    <string name="open_file">Een bestand openen</string>
+    <string name="rescan_library">Muziekmappen opnieuw scannen</string>
+
+    <!-- Tabs -->
+    <string name="tab_songs">Nummers</string>
+    <string name="tab_albums">Albums</string>
+    <string name="tab_artists">Artiesten</string>
+    <string name="tab_folders">Mappen</string>
+
+    <!-- Filters and sorting -->
+    <string name="needs_attention_filter">Aandacht nodig (%1$d)</string>
+    <string name="clear_filters">Filters wissen</string>
+    <string name="sort_title">Titel</string>
+    <string name="sort_artist">Artiest</string>
+    <string name="sort_album">Album</string>
+    <string name="sort_date_added">Datum toegevoegd</string>
+    <string name="sort_date_modified">Datum gewijzigd</string>
+    <string name="sort_duration">Duur</string>
+    <string name="sort_ascending">Oplopend</string>
+    <string name="sort_descending">Aflopend</string>
+
+    <!-- Playing -->
+    <string name="shuffle_all">Alles shuffelen</string>
+    <string name="play_all">Alles afspelen</string>
+
+    <!-- Selecting songs -->
+    <plurals name="selected_count">
+        <item quantity="one">%1$d geselecteerd</item>
+        <item quantity="other">%1$d geselecteerd</item>
+    </plurals>
+    <string name="edit_together">Samen bewerken</string>
+    <string name="close_selection">Stoppen met selecteren</string>
+
+    <!-- Albums, artists and folders -->
+    <plurals name="song_count">
+        <item quantity="one">%1$d nummer</item>
+        <item quantity="other">%1$d nummers</item>
+    </plurals>
+    <string name="collection_edit_all">Alles bewerken</string>
+
+    <!-- Access to the music -->
+    <string name="permission_title">Je muziek, klaar om te bewerken</string>
+    <string name="permission_description">Metadator moet je muziek kunnen zien om die te tonen. Niets verlaat je apparaat en geen bestand verandert totdat je het opslaat.</string>
+    <string name="permission_grant">Toegang toestaan</string>
+    <string name="permission_denied_description">De toegang tot je muziek is uitgeschakeld. Je kunt die inschakelen in de instellingen van de app, of zonder toegang één bestand openen.</string>
+    <string name="permission_open_settings">Instellingen openen</string>
+
+    <!-- Empty states -->
+    <string name="empty_library_title">Nog geen nummers</string>
+    <string name="empty_library_description">Metadator toont de nummers die Android op je apparaat heeft gevonden. Kopieer muziek naar de map Muziek, of scan opnieuw als je dat net hebt gedaan.</string>
+    <string name="no_results_title">Geen resultaten</string>
+    <string name="no_results_description">Probeer minder woorden of wis de filters.</string>
+    <string name="library_load_failed">De bibliotheek kon niet worden gelezen</string>
+    <string name="no_song_open_title">Kies een nummer</string>
+    <string name="no_song_open_description">De tags openen hier, naast je bibliotheek.</string>
+</resources>

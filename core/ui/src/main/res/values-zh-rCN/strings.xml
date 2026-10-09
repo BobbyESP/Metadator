@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Actions shared by several screens -->
+    <string name="back">返回</string>
+    <string name="close">关闭</string>
+    <string name="more_options">更多选项</string>
+    <string name="settings">设置</string>
+    <string name="edit_tags">编辑标签</string>
+    <string name="select">选择</string>
+    <string name="selected">已选择</string>
+    <string name="select_all">全选</string>
+
+    <!-- Playback -->
+    <string name="play">播放</string>
+    <string name="pause">暂停</string>
+    <string name="shuffle">随机播放</string>
+    <string name="now_playing">正在播放</string>
+
+    <!-- Track rows -->
+    <string name="unknown_artist">未知艺术家</string>
+    <string name="unknown_album">未知专辑</string>
+    <!-- %1$s is a list made of the "missing_" names below; the quantity is how many it holds -->
+    <plurals name="missing_tags">
+        <item quantity="other">缺少：%1$s</item>
+    </plurals>
+    <string name="missing_artist">艺术家</string>
+    <string name="missing_album">专辑</string>
+    <string name="missing_album_artist">专辑艺术家</string>
+    <string name="missing_year">年份</string>
+    <string name="missing_track_number">音轨号</string>
+
+    <!-- Cover -->
+    <string name="cover">封面</string>
+    <string name="cover_unreadable">无法读取该图片</string>
+
+    <!-- Tag fields -->
+    <string name="field_title">标题</string>
+    <string name="field_artist">艺术家</string>
+    <string name="field_album">专辑</string>
+    <string name="field_album_artist">专辑艺术家</string>
+    <string name="field_date">年份或日期</string>
+    <string name="field_date_hint">2019 或 2019-05-17</string>
+    <string name="field_genre">流派</string>
+    <string name="field_track">音轨</string>
+    <string name="field_disc">碟片</string>
+    <!-- Between two numbers: track 3 of 12 -->
+    <string name="field_of">总数</string>
+    <string name="field_composer">作曲</string>
+    <string name="field_lyricist">作词</string>
+    <string name="field_conductor">指挥</string>
+    <string name="field_remixer">混音</string>
+    <string name="field_performer">演奏者</string>
+    <string name="field_comment">备注</string>
+    <string name="field_copyright">版权</string>
+    <string name="field_label">唱片公司</string>
+    <string name="field_grouping">分组</string>
+    <string name="field_lyrics">歌词</string>
+
+    <!-- Editing a field -->
+    <string name="field_changed">已更改</string>
+    <string name="field_revert">撤销对“%1$s”的更改</string>
+    <string name="field_add_value">再添加一个</string>
+    <string name="field_add_value_hint">输入后按回车键</string>
+    <string name="field_remove_value">移除“%1$s”</string>
+</resources>

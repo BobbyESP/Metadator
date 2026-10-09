@@ -22,6 +22,7 @@ import com.bobbyesp.metadator.core.domain.save.SaveTagChangesUseCase
 import com.bobbyesp.metadator.core.domain.settings.SettingsRepository
 import com.bobbyesp.metadator.core.model.ContentRef
 import com.bobbyesp.metadator.core.model.UserSettings
+import com.bobbyesp.metadator.core.ui.R as CoreUiR
 import com.bobbyesp.metadator.core.ui.viewmodel.BaseViewModel
 import com.bobbyesp.metadator.core.ui.viewmodel.UiMessage
 import com.bobbyesp.metadator.library.api.AccessResult
@@ -222,7 +223,7 @@ class EditorViewModel(
             val picked = source()
             setState { copy(loadingCover = false) }
             if (picked == null) {
-                showMessage(UiMessage(strings.get(R.string.cover_unreadable)))
+                showMessage(UiMessage(strings.get(CoreUiR.string.cover_unreadable)))
                 return@launch
             }
             val (bytes, mime) = picked

@@ -16,6 +16,7 @@ import com.bobbyesp.metadator.core.domain.save.RestoreBackupUseCase
 import com.bobbyesp.metadator.core.domain.save.RestoreOutcome
 import com.bobbyesp.metadator.core.domain.settings.SettingsRepository
 import com.bobbyesp.metadator.core.model.ContentRef
+import com.bobbyesp.metadator.core.ui.R as CoreUiR
 import com.bobbyesp.metadator.core.ui.viewmodel.BaseViewModel
 import com.bobbyesp.metadator.core.ui.viewmodel.UiMessage
 import com.bobbyesp.metadator.library.api.AccessResult
@@ -145,7 +146,7 @@ class BatchViewModel(
                 launch {
                     val image = images.read(intent.uri)
                     if (image == null)
-                        showMessage(UiMessage(strings.get(R.string.batch_cover_unreadable)))
+                        showMessage(UiMessage(strings.get(CoreUiR.string.cover_unreadable)))
                     else
                         setState {
                             copy(

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Saving and undoing -->
+    <string name="save">저장</string>
+    <string name="saving">저장 중…</string>
+    <string name="saved">저장됨</string>
+    <string name="saved_some_unsupported">저장되었습니다. 이 형식으로 저장할 수 없는 항목: %1$s</string>
+    <string name="save_failed">저장할 수 없습니다: %1$s</string>
+    <string name="save_failed_restored">저장할 수 없어 파일을 그대로 두었습니다(%1$s)</string>
+    <string name="write_access_denied">Metadator가 이 파일을 변경할 권한을 받지 못했습니다</string>
+    <string name="format_unsupported">이 파일 형식은 편집할 수 없습니다</string>
+    <string name="undo">실행취소</string>
+    <string name="undone">변경사항을 실행취소했습니다</string>
+    <string name="undo_unavailable">원래 태그를 더 이상 사용할 수 없습니다</string>
+    <string name="undo_failed">변경사항을 실행취소할 수 없습니다</string>
+    <string name="revert_all">모든 변경사항 실행취소</string>
+    <string name="play_unavailable">라이브러리에 있는 곡만 재생할 수 있습니다</string>
+
+    <!-- Sections -->
+    <string name="needs_attention_title">확인 필요</string>
+    <string name="section_main">곡</string>
+    <string name="section_track">트랙</string>
+    <string name="section_credits">크레딧</string>
+    <string name="section_more">더보기</string>
+    <string name="section_lyrics">가사</string>
+    <string name="section_all_tags">모든 태그</string>
+    <string name="section_file">파일</string>
+    <string name="all_tags_description">파일에 있는 그 밖의 모든 태그입니다. 여기서 변경하지 않으면 그대로 유지됩니다.</string>
+
+    <!-- Cover -->
+    <string name="cover_change">커버 변경</string>
+    <string name="cover_remove">커버 삭제</string>
+    <string name="cover_revert">원래 커버 유지</string>
+    <string name="cover_find_online">온라인에서 커버 찾기</string>
+    <string name="cover_small_warning">커버가 작아 큰 화면에서는 흐릿하게 보일 수 있습니다</string>
+    <string name="cover_none">커버 없음</string>
+
+    <!-- Lyrics -->
+    <string name="lyrics_find">가사 찾기</string>
+    <string name="lyrics_synced">싱크 가사</string>
+    <string name="lyrics_found_synced">싱크 가사를 추가했습니다</string>
+    <string name="lyrics_found_plain">가사를 추가했습니다</string>
+    <string name="lyrics_not_found">이 곡의 가사를 찾을 수 없습니다</string>
+    <string name="lyrics_instrumental">이 곡은 연주곡입니다</string>
+    <string name="lyrics_failed">가사를 검색할 수 없습니다</string>
+    <string name="lyrics_need_title_artist">먼저 제목과 아티스트를 추가하세요</string>
+    <string name="offline">오프라인 상태입니다</string>
+
+    <!-- Adding a tag -->
+    <string name="add_field">태그 추가</string>
+    <string name="add_field_name">이름</string>
+    <string name="add_field_name_hint">예: MOOD</string>
+    <string name="add_field_value">값</string>
+    <string name="add">추가</string>
+    <string name="cancel">취소</string>
+
+    <!-- File details -->
+    <string name="file_size">크기</string>
+    <string name="file_duration">길이</string>
+    <string name="file_bitrate">비트 전송률</string>
+    <string name="file_bitrate_value">%1$dkbps</string>
+    <string name="file_sample_rate">샘플링 속도</string>
+    <string name="file_sample_rate_value">%1$skHz</string>
+    <string name="file_channels">채널</string>
+    <string name="file_channels_mono">모노</string>
+    <string name="file_channels_stereo">스테레오</string>
+    <string name="file_location">위치</string>
+
+    <!-- Leaving with unsaved changes -->
+    <string name="unsaved_title">변경사항을 삭제할까요?</string>
+    <string name="unsaved_description">이 곡의 변경사항이 저장되지 않았습니다.</string>
+    <string name="unsaved_discard">삭제</string>
+    <string name="unsaved_keep">계속 편집</string>
+
+    <!-- Files that can't be opened -->
+    <string name="file_gone_title">파일이 없습니다</string>
+    <string name="file_gone_description">라이브러리에 표시된 후 이동되었거나 삭제되었습니다.</string>
+    <string name="access_denied_title">이 파일을 열 수 없습니다</string>
+    <string name="access_denied_description">파일을 공유한 앱이 Metadator의 읽기를 허용하지 않았습니다. 라이브러리나 파일 관리자에서 열어 보세요.</string>
+    <string name="unsupported_title">지원되지 않는 형식</string>
+    <string name="unsupported_description">Metadator가 이 유형의 파일에서 태그를 읽을 수 없습니다.</string>
+    <string name="failed_title">이 파일을 열 수 없습니다</string>
+    <string name="retry">다시 시도</string>
+    <string name="go_back">돌아가기</string>
+
+    <!-- Finding metadata online: searching -->
+    <string name="lookup_title">메타데이터 찾기</string>
+    <string name="lookup_find">메타데이터 찾기</string>
+    <string name="lookup_search">검색</string>
+    <string name="lookup_searching">검색 중…</string>
+    <string name="lookup_results">검색결과</string>
+    <string name="lookup_no_results">일치하는 항목이 없습니다. 단어 수를 줄여 보세요.</string>
+    <string name="lookup_no_providers">모든 소스가 꺼져 있습니다. 설정에서 하나 이상 켜세요.</string>
+    <string name="lookup_rate_limited">소스가 혼잡합니다. 잠시 후 다시 시도하세요.</string>
+    <string name="lookup_failed">검색하지 못했습니다. 다시 시도하세요.</string>
+    <!-- %1$s is the name of a source, such as MusicBrainz -->
+    <string name="lookup_partial">%1$s에서 응답이 없습니다</string>
+    <string name="lookup_confidence_high">일치도 높음</string>
+    <string name="lookup_confidence_medium">일치 가능성 있음</string>
+    <string name="lookup_confidence_low">일치도 낮음</string>
+
+    <!-- Finding metadata online: choosing what to use -->
+    <string name="lookup_compare_title">사용할 항목 선택</string>
+    <!-- %1$s is the field's current value -->
+    <string name="lookup_current">현재: %1$s</string>
+    <string name="lookup_empty_value">비어 있음</string>
+    <string name="lookup_show_unchanged">이미 일치하는 필드(%1$d)</string>
+    <string name="lookup_selected_count">%2$d개 중 %1$d개 선택됨</string>
+    <string name="lookup_select_none">선택 해제</string>
+    <string name="lookup_use_cover">이 커버 사용</string>
+    <string name="lookup_apply">선택 항목 사용</string>
+    <string name="lookup_back">검색결과로 돌아가기</string>
+    <string name="lookup_applied">적용했습니다. 확인한 후 저장하세요</string>
+</resources>

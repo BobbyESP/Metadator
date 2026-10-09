@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Search and menu -->
+    <string name="search_library">Поиск песен, исполнителей, альбомов</string>
+    <string name="clear_search">Очистить поиск</string>
+    <string name="open_file">Открыть файл</string>
+    <string name="rescan_library">Пересканировать папки с музыкой</string>
+
+    <!-- Tabs -->
+    <string name="tab_songs">Песни</string>
+    <string name="tab_albums">Альбомы</string>
+    <string name="tab_artists">Исполнители</string>
+    <string name="tab_folders">Папки</string>
+
+    <!-- Filters and sorting -->
+    <string name="needs_attention_filter">Требуют внимания (%1$d)</string>
+    <string name="clear_filters">Сбросить фильтры</string>
+    <string name="sort_title">Название</string>
+    <string name="sort_artist">Исполнитель</string>
+    <string name="sort_album">Альбом</string>
+    <string name="sort_date_added">Дата добавления</string>
+    <string name="sort_date_modified">Дата изменения</string>
+    <string name="sort_duration">Длительность</string>
+    <string name="sort_ascending">По возрастанию</string>
+    <string name="sort_descending">По убыванию</string>
+
+    <!-- Playing -->
+    <string name="shuffle_all">Перемешать все</string>
+    <string name="play_all">Воспроизвести все</string>
+
+    <!-- Selecting songs -->
+    <plurals name="selected_count">
+        <item quantity="one">Выбрано: %1$d</item>
+        <item quantity="few">Выбрано: %1$d</item>
+        <item quantity="many">Выбрано: %1$d</item>
+        <item quantity="other">Выбрано: %1$d</item>
+    </plurals>
+    <string name="edit_together">Изменить вместе</string>
+    <string name="close_selection">Завершить выбор</string>
+
+    <!-- Albums, artists and folders -->
+    <plurals name="song_count">
+        <item quantity="one">%1$d песня</item>
+        <item quantity="few">%1$d песни</item>
+        <item quantity="many">%1$d песен</item>
+        <item quantity="other">%1$d песни</item>
+    </plurals>
+    <string name="collection_edit_all">Изменить все</string>
+
+    <!-- Access to the music -->
+    <string name="permission_title">Ваша музыка готова к редактированию</string>
+    <string name="permission_description">Чтобы показать вашу музыку, Metadator нужен доступ к ней. Ничего не покидает устройство, и ни один файл не меняется, пока вы его не сохраните.</string>
+    <string name="permission_grant">Разрешить доступ</string>
+    <string name="permission_denied_description">Доступ к музыке отключён. Его можно включить в настройках приложения или открыть отдельный файл без него.</string>
+    <string name="permission_open_settings">Открыть настройки</string>
+
+    <!-- Empty states -->
+    <string name="empty_library_title">Пока нет песен</string>
+    <string name="empty_library_description">Metadator показывает песни, которые Android нашёл на устройстве. Скопируйте музыку в папку «Музыка» или запустите сканирование заново, если только что это сделали.</string>
+    <string name="no_results_title">Ничего не найдено</string>
+    <string name="no_results_description">Попробуйте сократить запрос или сбросить фильтры.</string>
+    <string name="library_load_failed">Не удалось прочитать медиатеку</string>
+    <string name="no_song_open_title">Выберите песню</string>
+    <string name="no_song_open_description">Её теги откроются здесь, рядом с медиатекой.</string>
+</resources>

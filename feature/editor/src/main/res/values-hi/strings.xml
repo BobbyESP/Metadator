@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Saving and undoing -->
+    <string name="save">सेव करें</string>
+    <string name="saving">सेव हो रहा है…</string>
+    <string name="saved">सेव हो गया</string>
+    <string name="saved_some_unsupported">सेव हो गया। यह फ़ॉर्मैट इन्हें सेव नहीं कर सकता: %1$s</string>
+    <string name="save_failed">सेव नहीं हो सका: %1$s</string>
+    <string name="save_failed_restored">सेव नहीं हो सका, फ़ाइल को पहले जैसा छोड़ दिया गया (%1$s)</string>
+    <string name="write_access_denied">Metadator को यह फ़ाइल बदलने की अनुमति नहीं मिली</string>
+    <string name="format_unsupported">इस फ़ाइल के फ़ॉर्मैट में बदलाव नहीं किया जा सकता</string>
+    <string name="undo">पहले जैसा करें</string>
+    <string name="undone">बदलाव पहले जैसे किए गए</string>
+    <string name="undo_unavailable">मूल टैग अब उपलब्ध नहीं हैं</string>
+    <string name="undo_failed">बदलाव पहले जैसे नहीं किए जा सके</string>
+    <string name="revert_all">सभी बदलाव पहले जैसे करें</string>
+    <string name="play_unavailable">सिर्फ़ आपकी लाइब्रेरी के गाने चलाए जा सकते हैं</string>
+
+    <!-- Sections -->
+    <string name="needs_attention_title">ध्यान देने की ज़रूरत</string>
+    <string name="section_main">गाना</string>
+    <string name="section_track">ट्रैक</string>
+    <string name="section_credits">क्रेडिट</string>
+    <string name="section_more">ज़्यादा</string>
+    <string name="section_lyrics">बोल</string>
+    <string name="section_all_tags">सभी टैग</string>
+    <string name="section_file">फ़ाइल</string>
+    <string name="all_tags_description">फ़ाइल के बाकी सभी टैग। जब तक आप इन्हें यहां नहीं बदलते, ये जैसे हैं वैसे ही रहते हैं।</string>
+
+    <!-- Cover -->
+    <string name="cover_change">कवर बदलें</string>
+    <string name="cover_remove">कवर हटाएं</string>
+    <string name="cover_revert">मूल कवर रखें</string>
+    <string name="cover_find_online">ऑनलाइन कवर खोजें</string>
+    <string name="cover_small_warning">छोटा कवर: बड़ी स्क्रीन पर यह धुंधला दिख सकता है</string>
+    <string name="cover_none">कोई कवर नहीं</string>
+
+    <!-- Lyrics -->
+    <string name="lyrics_find">बोल खोजें</string>
+    <string name="lyrics_synced">सिंक किए गए</string>
+    <string name="lyrics_found_synced">सिंक किए गए बोल जोड़े गए</string>
+    <string name="lyrics_found_plain">बोल जोड़े गए</string>
+    <string name="lyrics_not_found">इस गाने के बोल नहीं मिले</string>
+    <string name="lyrics_instrumental">यह गाना इंस्ट्रुमेंटल है</string>
+    <string name="lyrics_failed">बोल खोजे नहीं जा सके</string>
+    <string name="lyrics_need_title_artist">पहले टाइटल और कलाकार जोड़ें</string>
+    <string name="offline">आप ऑफ़लाइन हैं</string>
+
+    <!-- Adding a tag -->
+    <string name="add_field">टैग जोड़ें</string>
+    <string name="add_field_name">नाम</string>
+    <string name="add_field_name_hint">उदाहरण के लिए MOOD</string>
+    <string name="add_field_value">वैल्यू</string>
+    <string name="add">जोड़ें</string>
+    <string name="cancel">रद्द करें</string>
+
+    <!-- File details -->
+    <string name="file_size">साइज़</string>
+    <string name="file_duration">अवधि</string>
+    <string name="file_bitrate">बिटरेट</string>
+    <string name="file_bitrate_value">%1$d kbps</string>
+    <string name="file_sample_rate">सैंपल रेट</string>
+    <string name="file_sample_rate_value">%1$s kHz</string>
+    <string name="file_channels">चैनल</string>
+    <string name="file_channels_mono">मोनो</string>
+    <string name="file_channels_stereo">स्टीरियो</string>
+    <string name="file_location">जगह</string>
+
+    <!-- Leaving with unsaved changes -->
+    <string name="unsaved_title">बदलाव खारिज करें?</string>
+    <string name="unsaved_description">इस गाने में किए गए बदलाव सेव नहीं हुए हैं।</string>
+    <string name="unsaved_discard">खारिज करें</string>
+    <string name="unsaved_keep">बदलाव जारी रखें</string>
+
+    <!-- Files that can't be opened -->
+    <string name="file_gone_title">यह फ़ाइल अब मौजूद नहीं है</string>
+    <string name="file_gone_description">लाइब्रेरी में दिखने के बाद इसे दूसरी जगह ले जाया गया या मिटा दिया गया।</string>
+    <string name="access_denied_title">यह फ़ाइल नहीं खोली जा सकती</string>
+    <string name="access_denied_description">जिस ऐप्लिकेशन ने इसे शेयर किया, उसने Metadator को इसे पढ़ने की अनुमति नहीं दी। इसे लाइब्रेरी या किसी फ़ाइल मैनेजर से खोलकर देखें।</string>
+    <string name="unsupported_title">फ़ॉर्मैट काम नहीं करता</string>
+    <string name="unsupported_description">Metadator इस तरह की फ़ाइल से टैग नहीं पढ़ सकता।</string>
+    <string name="failed_title">यह फ़ाइल खोली नहीं जा सकी</string>
+    <string name="retry">फिर से कोशिश करें</string>
+    <string name="go_back">वापस जाएं</string>
+
+    <!-- Finding metadata online: searching -->
+    <string name="lookup_title">मेटाडेटा खोजें</string>
+    <string name="lookup_find">मेटाडेटा खोजें</string>
+    <string name="lookup_search">खोजें</string>
+    <string name="lookup_searching">खोजा जा रहा है…</string>
+    <string name="lookup_results">नतीजे</string>
+    <string name="lookup_no_results">कोई मिलान नहीं मिला। कम शब्द आज़माएं।</string>
+    <string name="lookup_no_providers">सभी सोर्स बंद हैं। सेटिंग में कोई एक चालू करें।</string>
+    <string name="lookup_rate_limited">सोर्स व्यस्त हैं। कुछ देर में फिर से कोशिश करें।</string>
+    <string name="lookup_failed">खोज नहीं हो सकी। फिर से कोशिश करें।</string>
+    <!-- %1$s is the name of a source, such as MusicBrainz -->
+    <string name="lookup_partial">%1$s से जवाब नहीं मिला</string>
+    <string name="lookup_confidence_high">अच्छा मिलान</string>
+    <string name="lookup_confidence_medium">संभावित मिलान</string>
+    <string name="lookup_confidence_low">कमज़ोर मिलान</string>
+
+    <!-- Finding metadata online: choosing what to use -->
+    <string name="lookup_compare_title">चुनें कि क्या इस्तेमाल करना है</string>
+    <!-- %1$s is the field's current value -->
+    <string name="lookup_current">अभी: %1$s</string>
+    <string name="lookup_empty_value">खाली</string>
+    <string name="lookup_show_unchanged">पहले से मेल खाने वाले फ़ील्ड (%1$d)</string>
+    <string name="lookup_selected_count">%2$d में से %1$d चुने गए</string>
+    <string name="lookup_select_none">चुनाव हटाएं</string>
+    <string name="lookup_use_cover">यह कवर इस्तेमाल करें</string>
+    <string name="lookup_apply">चुने हुए इस्तेमाल करें</string>
+    <string name="lookup_back">नतीजों पर वापस जाएं</string>
+    <string name="lookup_applied">लागू हो गया। तैयार होने पर जांचें और सेव करें</string>
+</resources>

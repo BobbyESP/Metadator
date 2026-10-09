@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Search and menu -->
+    <string name="search_library">ابحث عن أغانٍ أو فنانين أو ألبومات</string>
+    <string name="clear_search">محو البحث</string>
+    <string name="open_file">فتح ملف</string>
+    <string name="rescan_library">إعادة فحص مجلدات الموسيقى</string>
+
+    <!-- Tabs -->
+    <string name="tab_songs">الأغاني</string>
+    <string name="tab_albums">الألبومات</string>
+    <string name="tab_artists">الفنانون</string>
+    <string name="tab_folders">المجلدات</string>
+
+    <!-- Filters and sorting -->
+    <string name="needs_attention_filter">تحتاج إلى مراجعة (%1$d)</string>
+    <string name="clear_filters">محو عوامل التصفية</string>
+    <string name="sort_title">العنوان</string>
+    <string name="sort_artist">الفنان</string>
+    <string name="sort_album">الألبوم</string>
+    <string name="sort_date_added">تاريخ الإضافة</string>
+    <string name="sort_date_modified">تاريخ التعديل</string>
+    <string name="sort_duration">المدة</string>
+    <string name="sort_ascending">تصاعدي</string>
+    <string name="sort_descending">تنازلي</string>
+
+    <!-- Playing -->
+    <string name="shuffle_all">تشغيل الكل عشوائيًا</string>
+    <string name="play_all">تشغيل الكل</string>
+
+    <!-- Selecting songs -->
+    <plurals name="selected_count">
+        <item quantity="zero">لم يتم تحديد أي أغنية</item>
+        <item quantity="one">تم تحديد أغنية واحدة</item>
+        <item quantity="two">تم تحديد أغنيتين</item>
+        <item quantity="few">تم تحديد %1$d أغانٍ</item>
+        <item quantity="many">تم تحديد %1$d أغنية</item>
+        <item quantity="other">تم تحديد %1$d أغنية</item>
+    </plurals>
+    <string name="edit_together">تعديلها معًا</string>
+    <string name="close_selection">إنهاء التحديد</string>
+
+    <!-- Albums, artists and folders -->
+    <plurals name="song_count">
+        <item quantity="zero">لا توجد أغانٍ</item>
+        <item quantity="one">أغنية واحدة</item>
+        <item quantity="two">أغنيتان</item>
+        <item quantity="few">%1$d أغانٍ</item>
+        <item quantity="many">%1$d أغنية</item>
+        <item quantity="other">%1$d أغنية</item>
+    </plurals>
+    <string name="collection_edit_all">تعديل الكل</string>
+
+    <!-- Access to the music -->
+    <string name="permission_title">موسيقاك جاهزة للتعديل</string>
+    <string name="permission_description">يحتاج Metadator إلى الوصول إلى موسيقاك لعرضها. لا شيء يغادر جهازك، ولا يتغيّر أي ملف إلى أن تحفظه.</string>
+    <string name="permission_grant">السماح بالوصول</string>
+    <string name="permission_denied_description">تم إيقاف الوصول إلى موسيقاك. يمكنك تفعيله من إعدادات التطبيق، أو فتح ملف واحد بدونه.</string>
+    <string name="permission_open_settings">فتح الإعدادات</string>
+
+    <!-- Empty states -->
+    <string name="empty_library_title">لا توجد أغانٍ بعد</string>
+    <string name="empty_library_description">يعرض Metadator الأغاني التي عثر عليها Android على جهازك. انسخ بعض الموسيقى إلى مجلد «الموسيقى»، أو أعد الفحص إن كنت قد فعلت ذلك للتو.</string>
+    <string name="no_results_title">لا توجد نتائج مطابقة</string>
+    <string name="no_results_description">جرّب كلمات أقل، أو امحُ عوامل التصفية.</string>
+    <string name="library_load_failed">تعذّرت قراءة المكتبة</string>
+    <string name="no_song_open_title">اختر أغنية</string>
+    <string name="no_song_open_description">تُفتح وسومها هنا، بجانب مكتبتك.</string>
+</resources>

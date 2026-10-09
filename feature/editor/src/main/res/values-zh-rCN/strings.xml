@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Saving and undoing -->
+    <string name="save">保存</string>
+    <string name="saving">正在保存…</string>
+    <string name="saved">已保存</string>
+    <string name="saved_some_unsupported">已保存。此格式无法存储：%1$s</string>
+    <string name="save_failed">无法保存：%1$s</string>
+    <string name="save_failed_restored">无法保存，文件保持原样（%1$s）</string>
+    <string name="write_access_denied">Metadator 未获准更改此文件</string>
+    <string name="format_unsupported">此文件的格式无法编辑</string>
+    <string name="undo">撤销</string>
+    <string name="undone">已撤销更改</string>
+    <string name="undo_unavailable">原始标签已不可用</string>
+    <string name="undo_failed">无法撤销更改</string>
+    <string name="revert_all">撤销所有更改</string>
+    <string name="play_unavailable">只能播放音乐库中的歌曲</string>
+
+    <!-- Sections -->
+    <string name="needs_attention_title">需要处理</string>
+    <string name="section_main">歌曲</string>
+    <string name="section_track">音轨</string>
+    <string name="section_credits">制作人员</string>
+    <string name="section_more">更多</string>
+    <string name="section_lyrics">歌词</string>
+    <string name="section_all_tags">所有标签</string>
+    <string name="section_file">文件</string>
+    <string name="all_tags_description">文件中的其他所有标签。除非你在这里更改，否则会保持原样。</string>
+
+    <!-- Cover -->
+    <string name="cover_change">更换封面</string>
+    <string name="cover_remove">移除封面</string>
+    <string name="cover_revert">保留原始封面</string>
+    <string name="cover_find_online">在线查找封面</string>
+    <string name="cover_small_warning">封面较小：在大屏幕上可能显得模糊</string>
+    <string name="cover_none">无封面</string>
+
+    <!-- Lyrics -->
+    <string name="lyrics_find">查找歌词</string>
+    <string name="lyrics_synced">同步歌词</string>
+    <string name="lyrics_found_synced">已添加同步歌词</string>
+    <string name="lyrics_found_plain">已添加歌词</string>
+    <string name="lyrics_not_found">未找到这首歌曲的歌词</string>
+    <string name="lyrics_instrumental">这首歌曲是纯音乐</string>
+    <string name="lyrics_failed">无法查找歌词</string>
+    <string name="lyrics_need_title_artist">请先添加标题和艺术家</string>
+    <string name="offline">你处于离线状态</string>
+
+    <!-- Adding a tag -->
+    <string name="add_field">添加标签</string>
+    <string name="add_field_name">名称</string>
+    <string name="add_field_name_hint">例如 MOOD</string>
+    <string name="add_field_value">值</string>
+    <string name="add">添加</string>
+    <string name="cancel">取消</string>
+
+    <!-- File details -->
+    <string name="file_size">大小</string>
+    <string name="file_duration">时长</string>
+    <string name="file_bitrate">比特率</string>
+    <string name="file_bitrate_value">%1$d kbps</string>
+    <string name="file_sample_rate">采样率</string>
+    <string name="file_sample_rate_value">%1$s kHz</string>
+    <string name="file_channels">声道</string>
+    <string name="file_channels_mono">单声道</string>
+    <string name="file_channels_stereo">立体声</string>
+    <string name="file_location">位置</string>
+
+    <!-- Leaving with unsaved changes -->
+    <string name="unsaved_title">要舍弃更改吗？</string>
+    <string name="unsaved_description">对这首歌曲的更改尚未保存。</string>
+    <string name="unsaved_discard">舍弃</string>
+    <string name="unsaved_keep">继续编辑</string>
+
+    <!-- Files that can't be opened -->
+    <string name="file_gone_title">此文件已不存在</string>
+    <string name="file_gone_description">它在被音乐库列出之后被移动或删除了。</string>
+    <string name="access_denied_title">无法打开此文件</string>
+    <string name="access_denied_description">分享该文件的应用不允许 Metadator 读取它。请尝试从音乐库或文件管理器中打开。</string>
+    <string name="unsupported_title">不支持的格式</string>
+    <string name="unsupported_description">Metadator 无法读取此类文件的标签。</string>
+    <string name="failed_title">无法打开此文件</string>
+    <string name="retry">重试</string>
+    <string name="go_back">返回</string>
+
+    <!-- Finding metadata online: searching -->
+    <string name="lookup_title">查找元数据</string>
+    <string name="lookup_find">查找元数据</string>
+    <string name="lookup_search">搜索</string>
+    <string name="lookup_searching">正在搜索…</string>
+    <string name="lookup_results">结果</string>
+    <string name="lookup_no_results">没有匹配项。请尝试减少字词。</string>
+    <string name="lookup_no_providers">所有来源均已关闭。请在“设置”中开启一个。</string>
+    <string name="lookup_rate_limited">来源繁忙。请稍后重试。</string>
+    <string name="lookup_failed">搜索失败。请重试。</string>
+    <!-- %1$s is the name of a source, such as MusicBrainz -->
+    <string name="lookup_partial">%1$s 没有响应</string>
+    <string name="lookup_confidence_high">匹配度高</string>
+    <string name="lookup_confidence_medium">可能匹配</string>
+    <string name="lookup_confidence_low">匹配度低</string>
+
+    <!-- Finding metadata online: choosing what to use -->
+    <string name="lookup_compare_title">选择要使用的内容</string>
+    <!-- %1$s is the field's current value -->
+    <string name="lookup_current">当前：%1$s</string>
+    <string name="lookup_empty_value">空</string>
+    <string name="lookup_show_unchanged">已一致的字段（%1$d）</string>
+    <string name="lookup_selected_count">已选择 %1$d 项，共 %2$d 项</string>
+    <string name="lookup_select_none">取消全选</string>
+    <string name="lookup_use_cover">使用此封面</string>
+    <string name="lookup_apply">使用所选内容</string>
+    <string name="lookup_back">返回结果</string>
+    <string name="lookup_applied">已应用。确认无误后保存即可</string>
+</resources>

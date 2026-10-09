@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Sections -->
+    <string name="appearance">Weergave</string>
+    <string name="appearance_description">Thema, kleuren en contrast</string>
+    <string name="editor">Editor</string>
+    <string name="editor_description">Hoe tags worden geschreven</string>
+    <string name="lookup">Onlinebronnen</string>
+    <string name="lookup_description">Waar metadata en hoezen vandaan komen</string>
+    <string name="about">Over</string>
+    <string name="about_description">Versie, broncode en licenties</string>
+
+    <!-- Appearance -->
+    <string name="theme">Thema</string>
+    <string name="theme_system">Systeem</string>
+    <string name="theme_light">Licht</string>
+    <string name="theme_dark">Donker</string>
+    <string name="colors">Kleuren</string>
+    <string name="dynamic_color">Kleuren van de achtergrond</string>
+    <string name="dynamic_color_description">Material You, vanaf Android 12</string>
+    <string name="pure_black">Puur zwart</string>
+    <string name="pure_black_description">Donkerder donker thema, prettiger op OLED-schermen</string>
+    <string name="color_from_cover">De editor kleuren naar de hoes</string>
+    <string name="color_from_cover_description">De editor van elk nummer neemt de tinten van de hoes over</string>
+    <string name="seed_color">Accentkleur</string>
+    <string name="palette_style">Paletstijl</string>
+    <string name="palette_tonal_spot">Tonaal</string>
+    <string name="palette_neutral">Neutraal</string>
+    <string name="palette_vibrant">Levendig</string>
+    <string name="palette_expressive">Expressief</string>
+    <string name="palette_rainbow">Regenboog</string>
+    <string name="palette_fruit_salad">Fruitsalade</string>
+    <string name="palette_monochrome">Monochroom</string>
+    <string name="palette_fidelity">Kleurgetrouw</string>
+    <string name="palette_content">Inhoud</string>
+
+    <!-- Editor -->
+    <string name="multi_values">Meerdere artiesten of genres</string>
+    <string name="multi_separate">Als aparte waarden bewaren</string>
+    <string name="multi_separate_description">Wat de formaten verwachten. De meeste spelers tonen ze allemaal.</string>
+    <string name="multi_joined">Samenvoegen tot één waarde</string>
+    <string name="multi_joined_description">Voor spelers die alleen de eerste artiest tonen</string>
+    <string name="separator">Scheidingsteken</string>
+    <string name="separator_description">Gebruikt om waarden samen te voegen en om te splitsen wat je plakt</string>
+    <string name="warn_small_cover">Waarschuwen voor kleine hoezen</string>
+    <string name="warn_small_cover_description">Kleiner dan 500 × 500 px</string>
+    <string name="history">Geschiedenis voor ongedaan maken</string>
+    <string name="clear_history">Geschiedenis voor ongedaan maken wissen</string>
+    <string name="clear_history_description">Metadator bewaart de tags van je laatste 100 keer opslaan, zodat ze ongedaan kunnen worden gemaakt</string>
+    <string name="history_cleared">Geschiedenis voor ongedaan maken gewist</string>
+
+    <!-- Online sources -->
+    <string name="lookup_sources">Bronnen</string>
+    <string name="lookup_sources_description">Worden tegelijk doorzocht. Er wordt niets verzonden behalve de titel, de artiest en het album van het nummer.</string>
+    <string name="provider_musicbrainz_description">De open muziekencyclopedie, met hoezen uit het Cover Art Archive</string>
+    <string name="provider_deezer_description">Grote catalogus van commerciële releases, hoezen tot 1000 px</string>
+    <string name="provider_other_description">Onlinemetadata</string>
+
+    <!-- About -->
+    <string name="version">Versie %1$s</string>
+    <string name="source_code">Broncode</string>
+    <string name="source_code_description">Metadator is vrije software, gelicentieerd onder de GPL 3.0</string>
+    <string name="report_issue">Een probleem melden</string>
+    <string name="report_issue_description">Open een issue op GitHub</string>
+    <string name="rate">Metadator beoordelen</string>
+    <string name="rate_description">Op Google Play</string>
+    <string name="credits">Gemaakt met</string>
+    <string name="credits_description">TagLib, Jetpack Compose, Media3, Koin, Ktor, Coil, MaterialKolor, MusicBrainz, Deezer en LRCLIB</string>
+    <string name="made_by">Gemaakt door BobbyESP</string>
+</resources>

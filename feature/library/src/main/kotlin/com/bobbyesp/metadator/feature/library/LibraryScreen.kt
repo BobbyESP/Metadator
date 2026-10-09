@@ -125,6 +125,7 @@ import com.bobbyesp.metadator.core.model.Track
 import com.bobbyesp.metadator.core.model.TrackCollection
 import com.bobbyesp.metadator.core.model.TrackId
 import com.bobbyesp.metadator.core.model.TrackSort
+import com.bobbyesp.metadator.core.ui.R as CoreUiR
 import com.bobbyesp.metadator.core.ui.component.ArtworkImage
 import com.bobbyesp.metadator.core.ui.component.CollectionCard
 import com.bobbyesp.metadator.core.ui.component.TrackListItem
@@ -273,7 +274,7 @@ private fun SearchTopBar(
                         ) {
                             Icon(
                                 Icons.Rounded.MoreVert,
-                                contentDescription = stringResource(R.string.more_options),
+                                contentDescription = stringResource(CoreUiR.string.more_options),
                             )
                         }
                         ActionMenu(
@@ -293,7 +294,7 @@ private fun SearchTopBar(
                                         )
                                         .takeIf { enabled },
                                     MenuAction(
-                                        stringResource(R.string.settings),
+                                        stringResource(CoreUiR.string.settings),
                                         Icons.Rounded.Settings,
                                         onClick = onOpenSettings,
                                     ),
@@ -341,7 +342,7 @@ private fun SelectionTopBar(count: Int, onClose: () -> Unit, onSelectAll: () -> 
             IconButton(onClick = onSelectAll, shapes = IconButtonDefaults.shapes()) {
                 Icon(
                     Icons.Rounded.SelectAll,
-                    contentDescription = stringResource(R.string.select_all),
+                    contentDescription = stringResource(CoreUiR.string.select_all),
                 )
             }
         },
@@ -394,7 +395,7 @@ private fun SelectionToolbar(
             IconButton(onClick = onPlay, shapes = IconButtonDefaults.shapes()) {
                 Icon(
                     Icons.Rounded.PlayArrow,
-                    contentDescription = stringResource(R.string.play_selection),
+                    contentDescription = stringResource(CoreUiR.string.play),
                 )
             }
         }

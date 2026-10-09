@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Sections -->
+    <string name="appearance">दिखावट</string>
+    <string name="appearance_description">थीम, रंग और कंट्रास्ट</string>
+    <string name="editor">एडिटर</string>
+    <string name="editor_description">टैग कैसे लिखे जाते हैं</string>
+    <string name="lookup">ऑनलाइन सोर्स</string>
+    <string name="lookup_description">मेटाडेटा और कवर कहां से आते हैं</string>
+    <string name="about">ऐप्लिकेशन के बारे में</string>
+    <string name="about_description">वर्शन, सोर्स कोड और लाइसेंस</string>
+
+    <!-- Appearance -->
+    <string name="theme">थीम</string>
+    <string name="theme_system">सिस्टम</string>
+    <string name="theme_light">हल्की</string>
+    <string name="theme_dark">गहरी</string>
+    <string name="colors">रंग</string>
+    <string name="dynamic_color">वॉलपेपर के रंग</string>
+    <string name="dynamic_color_description">Material You, Android 12 और उसके बाद के वर्शन पर</string>
+    <string name="pure_black">पूरा काला</string>
+    <string name="pure_black_description">और गहरी थीम, OLED स्क्रीन के लिए बेहतर</string>
+    <string name="color_from_cover">एडिटर को कवर के रंग दें</string>
+    <string name="color_from_cover_description">हर गाने का एडिटर उसके कवर के रंग ले लेता है</string>
+    <string name="seed_color">एक्सेंट रंग</string>
+    <string name="palette_style">पैलेट की स्टाइल</string>
+    <string name="palette_tonal_spot">टोनल स्पॉट</string>
+    <string name="palette_neutral">न्यूट्रल</string>
+    <string name="palette_vibrant">चटकीला</string>
+    <string name="palette_expressive">एक्सप्रेसिव</string>
+    <string name="palette_rainbow">इंद्रधनुष</string>
+    <string name="palette_fruit_salad">फ़्रूट सैलड</string>
+    <string name="palette_monochrome">मोनोक्रोम</string>
+    <string name="palette_fidelity">फ़िडेलिटी</string>
+    <string name="palette_content">कॉन्टेंट</string>
+
+    <!-- Editor -->
+    <string name="multi_values">कई कलाकार या शैलियां</string>
+    <string name="multi_separate">उन्हें अलग-अलग वैल्यू के तौर पर रखें</string>
+    <string name="multi_separate_description">फ़ॉर्मैट यही चाहते हैं। ज़्यादातर प्लेयर सभी को दिखाते हैं।</string>
+    <string name="multi_joined">उन्हें एक वैल्यू में जोड़ें</string>
+    <string name="multi_joined_description">उन प्लेयर के लिए जो सिर्फ़ पहला कलाकार दिखाते हैं</string>
+    <string name="separator">सेपरेटर</string>
+    <string name="separator_description">वैल्यू जोड़ने और चिपकाए गए टेक्स्ट को बांटने के लिए इस्तेमाल होता है</string>
+    <string name="warn_small_cover">छोटे कवर के बारे में चेतावनी दें</string>
+    <string name="warn_small_cover_description">500 × 500 px से कम</string>
+    <string name="history">पहले जैसा करने का इतिहास</string>
+    <string name="clear_history">पहले जैसा करने का इतिहास मिटाएं</string>
+    <string name="clear_history_description">Metadator आपके पिछले 100 सेव के टैग रखता है, ताकि उन्हें पहले जैसा किया जा सके</string>
+    <string name="history_cleared">पहले जैसा करने का इतिहास मिटा दिया गया</string>
+
+    <!-- Online sources -->
+    <string name="lookup_sources">सोर्स</string>
+    <string name="lookup_sources_description">इनमें एक साथ खोजा जाता है। गाने के टाइटल, कलाकार और एल्बम के अलावा कुछ नहीं भेजा जाता।</string>
+    <string name="provider_musicbrainz_description">संगीत का खुला विश्वकोश, Cover Art Archive के कवर के साथ</string>
+    <string name="provider_deezer_description">व्यावसायिक रिलीज़ का बड़ा कैटलॉग, 1000 px तक के कवर</string>
+    <string name="provider_other_description">ऑनलाइन मेटाडेटा</string>
+
+    <!-- About -->
+    <string name="version">वर्शन %1$s</string>
+    <string name="source_code">सोर्स कोड</string>
+    <string name="source_code_description">Metadator एक फ़्री सॉफ़्टवेयर है, जिसे GPL 3.0 के तहत लाइसेंस मिला है</string>
+    <string name="report_issue">समस्या की शिकायत करें</string>
+    <string name="report_issue_description">GitHub पर इशू खोलें</string>
+    <string name="rate">Metadator को रेटिंग दें</string>
+    <string name="rate_description">Google Play पर</string>
+    <string name="credits">इनसे बनाया गया</string>
+    <string name="credits_description">TagLib, Jetpack Compose, Media3, Koin, Ktor, Coil, MaterialKolor, MusicBrainz, Deezer और LRCLIB</string>
+    <string name="made_by">BobbyESP ने बनाया</string>
+</resources>

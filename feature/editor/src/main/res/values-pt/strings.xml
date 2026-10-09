@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Saving and undoing -->
+    <string name="save">Salvar</string>
+    <string name="saving">Salvando…</string>
+    <string name="saved">Salvo</string>
+    <string name="saved_some_unsupported">Salvo. Este formato não pode armazenar: %1$s</string>
+    <string name="save_failed">Não foi possível salvar: %1$s</string>
+    <string name="save_failed_restored">Não foi possível salvar; o arquivo ficou como estava (%1$s)</string>
+    <string name="write_access_denied">O Metadator não teve permissão para alterar este arquivo</string>
+    <string name="format_unsupported">O formato deste arquivo não pode ser editado</string>
+    <string name="undo">Desfazer</string>
+    <string name="undone">Alterações desfeitas</string>
+    <string name="undo_unavailable">As tags originais não estão mais disponíveis</string>
+    <string name="undo_failed">Não foi possível desfazer as alterações</string>
+    <string name="revert_all">Desfazer todas as alterações</string>
+    <string name="play_unavailable">Só é possível reproduzir músicas da sua biblioteca</string>
+
+    <!-- Sections -->
+    <string name="needs_attention_title">Precisa de atenção</string>
+    <string name="section_main">Música</string>
+    <string name="section_track">Faixa</string>
+    <string name="section_credits">Créditos</string>
+    <string name="section_more">Mais</string>
+    <string name="section_lyrics">Letra</string>
+    <string name="section_all_tags">Todas as tags</string>
+    <string name="section_file">Arquivo</string>
+    <string name="all_tags_description">Todas as outras tags do arquivo. Ficam como estão, a menos que você as altere aqui.</string>
+
+    <!-- Cover -->
+    <string name="cover_change">Trocar capa</string>
+    <string name="cover_remove">Remover capa</string>
+    <string name="cover_revert">Manter a capa original</string>
+    <string name="cover_find_online">Buscar uma capa online</string>
+    <string name="cover_small_warning">Capa pequena: pode ficar borrada em uma tela grande</string>
+    <string name="cover_none">Sem capa</string>
+
+    <!-- Lyrics -->
+    <string name="lyrics_find">Buscar letra</string>
+    <string name="lyrics_synced">Sincronizada</string>
+    <string name="lyrics_found_synced">Letra sincronizada adicionada</string>
+    <string name="lyrics_found_plain">Letra adicionada</string>
+    <string name="lyrics_not_found">Nenhuma letra encontrada para esta música</string>
+    <string name="lyrics_instrumental">Esta música é instrumental</string>
+    <string name="lyrics_failed">Não foi possível buscar a letra</string>
+    <string name="lyrics_need_title_artist">Adicione primeiro um título e um artista</string>
+    <string name="offline">Você está offline</string>
+
+    <!-- Adding a tag -->
+    <string name="add_field">Adicionar uma tag</string>
+    <string name="add_field_name">Nome</string>
+    <string name="add_field_name_hint">Por exemplo, MOOD</string>
+    <string name="add_field_value">Valor</string>
+    <string name="add">Adicionar</string>
+    <string name="cancel">Cancelar</string>
+
+    <!-- File details -->
+    <string name="file_size">Tamanho</string>
+    <string name="file_duration">Duração</string>
+    <string name="file_bitrate">Taxa de bits</string>
+    <string name="file_bitrate_value">%1$d kbps</string>
+    <string name="file_sample_rate">Taxa de amostragem</string>
+    <string name="file_sample_rate_value">%1$s kHz</string>
+    <string name="file_channels">Canais</string>
+    <string name="file_channels_mono">Mono</string>
+    <string name="file_channels_stereo">Estéreo</string>
+    <string name="file_location">Local</string>
+
+    <!-- Leaving with unsaved changes -->
+    <string name="unsaved_title">Descartar alterações?</string>
+    <string name="unsaved_description">As alterações nesta música não foram salvas.</string>
+    <string name="unsaved_discard">Descartar</string>
+    <string name="unsaved_keep">Continuar editando</string>
+
+    <!-- Files that can't be opened -->
+    <string name="file_gone_title">Este arquivo não existe mais</string>
+    <string name="file_gone_description">Ele foi movido ou excluído depois de ser listado na biblioteca.</string>
+    <string name="access_denied_title">Não é possível abrir este arquivo</string>
+    <string name="access_denied_description">O app que o compartilhou não permitiu que o Metadator o lesse. Tente abri-lo pela biblioteca ou por um gerenciador de arquivos.</string>
+    <string name="unsupported_title">Formato não compatível</string>
+    <string name="unsupported_description">O Metadator não consegue ler as tags deste tipo de arquivo.</string>
+    <string name="failed_title">Não foi possível abrir este arquivo</string>
+    <string name="retry">Tentar novamente</string>
+    <string name="go_back">Voltar</string>
+
+    <!-- Finding metadata online: searching -->
+    <string name="lookup_title">Buscar metadados</string>
+    <string name="lookup_find">Buscar metadados</string>
+    <string name="lookup_search">Buscar</string>
+    <string name="lookup_searching">Buscando…</string>
+    <string name="lookup_results">Resultados</string>
+    <string name="lookup_no_results">Nenhuma correspondência. Tente menos palavras.</string>
+    <string name="lookup_no_providers">Todas as fontes estão desativadas. Ative uma nas Configurações.</string>
+    <string name="lookup_rate_limited">As fontes estão ocupadas. Tente novamente em instantes.</string>
+    <string name="lookup_failed">A busca falhou. Tente novamente.</string>
+    <!-- %1$s is the name of a source, such as MusicBrainz -->
+    <string name="lookup_partial">%1$s não respondeu</string>
+    <string name="lookup_confidence_high">Boa correspondência</string>
+    <string name="lookup_confidence_medium">Possível correspondência</string>
+    <string name="lookup_confidence_low">Correspondência fraca</string>
+
+    <!-- Finding metadata online: choosing what to use -->
+    <string name="lookup_compare_title">Escolha o que usar</string>
+    <!-- %1$s is the field's current value -->
+    <string name="lookup_current">Agora: %1$s</string>
+    <string name="lookup_empty_value">vazio</string>
+    <string name="lookup_show_unchanged">Campos que já coincidem (%1$d)</string>
+    <string name="lookup_selected_count">%1$d de %2$d selecionados</string>
+    <string name="lookup_select_none">Limpar seleção</string>
+    <string name="lookup_use_cover">Usar esta capa</string>
+    <string name="lookup_apply">Usar selecionados</string>
+    <string name="lookup_back">Voltar aos resultados</string>
+    <string name="lookup_applied">Aplicado. Revise e salve quando quiser</string>
+</resources>

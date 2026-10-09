@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Controls -->
+    <string name="open_player">فتح المشغّل</string>
+    <string name="next">التالي</string>
+    <string name="previous">السابق</string>
+    <string name="repeat_off">التكرار متوقف</string>
+    <string name="repeat_all">تكرار الكل</string>
+    <string name="repeat_one">تكرار أغنية واحدة</string>
+    <string name="nothing_playing">لا يوجد شيء قيد التشغيل</string>
+
+    <!-- Queue -->
+    <string name="up_next">التالي في قائمة الانتظار</string>
+    <string name="queue_empty">لا شيء آخر في قائمة الانتظار</string>
+
+    <!-- Lyrics -->
+    <string name="lyrics">كلمات الأغنية</string>
+    <string name="no_lyrics">لا توجد كلمات</string>
+    <string name="no_lyrics_description">لا توجد كلمات لهذه الأغنية في وسومها. اكتبها أو ابحث عنها في المحرّر.</string>
+    <string name="lyrics_unreadable">تعذّرت قراءة الكلمات</string>
+    <string name="lyrics_unreadable_description">تعذّر فتح الملف.</string>
+    <string name="back_to_current_line">العودة إلى السطر الحالي</string>
+</resources>

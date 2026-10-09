@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Sections -->
+    <string name="appearance">Apparence</string>
+    <string name="appearance_description">Thème, couleurs et contraste</string>
+    <string name="editor">Éditeur</string>
+    <string name="editor_description">Comment les tags sont écrits</string>
+    <string name="lookup">Sources en ligne</string>
+    <string name="lookup_description">D\'où viennent les métadonnées et les pochettes</string>
+    <string name="about">À propos</string>
+    <string name="about_description">Version, code source et licences</string>
+
+    <!-- Appearance -->
+    <string name="theme">Thème</string>
+    <string name="theme_system">Système</string>
+    <string name="theme_light">Clair</string>
+    <string name="theme_dark">Sombre</string>
+    <string name="colors">Couleurs</string>
+    <string name="dynamic_color">Couleurs du fond d\'écran</string>
+    <string name="dynamic_color_description">Material You, à partir d\'Android 12</string>
+    <string name="pure_black">Noir pur</string>
+    <string name="pure_black_description">Thème sombre plus profond, idéal pour les écrans OLED</string>
+    <string name="color_from_cover">Colorer l\'éditeur d\'après la pochette</string>
+    <string name="color_from_cover_description">L\'éditeur de chaque morceau reprend les tons de sa pochette</string>
+    <string name="seed_color">Couleur d\'accentuation</string>
+    <string name="palette_style">Style de palette</string>
+    <string name="palette_tonal_spot">Ton sur ton</string>
+    <string name="palette_neutral">Neutre</string>
+    <string name="palette_vibrant">Vif</string>
+    <string name="palette_expressive">Expressif</string>
+    <string name="palette_rainbow">Arc-en-ciel</string>
+    <string name="palette_fruit_salad">Salade de fruits</string>
+    <string name="palette_monochrome">Monochrome</string>
+    <string name="palette_fidelity">Fidélité</string>
+    <string name="palette_content">Contenu</string>
+
+    <!-- Editor -->
+    <string name="multi_values">Plusieurs artistes ou genres</string>
+    <string name="multi_separate">Les garder en valeurs séparées</string>
+    <string name="multi_separate_description">Ce que les formats attendent. La plupart des lecteurs les affichent tous.</string>
+    <string name="multi_joined">Les réunir en une seule valeur</string>
+    <string name="multi_joined_description">Pour les lecteurs qui n\'affichent que le premier artiste</string>
+    <string name="separator">Séparateur</string>
+    <string name="separator_description">Sert à réunir les valeurs et à découper ce que vous collez</string>
+    <string name="warn_small_cover">Signaler les petites pochettes</string>
+    <string name="warn_small_cover_description">En dessous de 500 × 500 px</string>
+    <string name="history">Historique d\'annulation</string>
+    <string name="clear_history">Effacer l\'historique d\'annulation</string>
+    <string name="clear_history_description">Metadator conserve les tags de vos 100 derniers enregistrements pour pouvoir les annuler</string>
+    <string name="history_cleared">Historique d\'annulation effacé</string>
+
+    <!-- Online sources -->
+    <string name="lookup_sources">Sources</string>
+    <string name="lookup_sources_description">Interrogées ensemble. Seuls le titre, l\'artiste et l\'album du morceau sont envoyés.</string>
+    <string name="provider_musicbrainz_description">L\'encyclopédie musicale libre, avec les pochettes de Cover Art Archive</string>
+    <string name="provider_deezer_description">Vaste catalogue de sorties commerciales, pochettes jusqu\'à 1000 px</string>
+    <string name="provider_other_description">Métadonnées en ligne</string>
+
+    <!-- About -->
+    <string name="version">Version %1$s</string>
+    <string name="source_code">Code source</string>
+    <string name="source_code_description">Metadator est un logiciel libre, sous licence GPL 3.0</string>
+    <string name="report_issue">Signaler un problème</string>
+    <string name="report_issue_description">Ouvrir un ticket sur GitHub</string>
+    <string name="rate">Noter Metadator</string>
+    <string name="rate_description">Sur Google Play</string>
+    <string name="credits">Conçu avec</string>
+    <string name="credits_description">TagLib, Jetpack Compose, Media3, Koin, Ktor, Coil, MaterialKolor, MusicBrainz, Deezer et LRCLIB</string>
+    <string name="made_by">Créé par BobbyESP</string>
+</resources>

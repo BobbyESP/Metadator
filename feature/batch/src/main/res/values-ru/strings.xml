@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- The songs being edited -->
+    <plurals name="batch_title">
+        <item quantity="one">Изменить %1$d песню</item>
+        <item quantity="few">Изменить %1$d песни</item>
+        <item quantity="many">Изменить %1$d песен</item>
+        <item quantity="other">Изменить %1$d песни</item>
+    </plurals>
+    <!-- After the first song titles: "One, Two, Three and 4 more" -->
+    <string name="batch_and_more">и ещё %1$d</string>
+
+    <!-- Fields -->
+    <string name="batch_fields">Задать для всех песен</string>
+    <string name="batch_fields_description">Оставьте поле как есть, чтобы у каждой песни сохранилось своё значение.</string>
+    <string name="batch_multiple_values">Разные значения</string>
+    <!-- %1$s is the name of a field, such as Album -->
+    <string name="batch_reset_field">Оставить у каждой песни: %1$s</string>
+
+    <!-- Cover -->
+    <string name="batch_cover_set">Одна обложка для всех</string>
+    <string name="batch_cover_remove">Удалить все обложки</string>
+    <string name="batch_cover_keep">Оставить обложку каждой песни</string>
+    <string name="batch_cover_will_replace">Все песни получат эту обложку</string>
+    <string name="batch_cover_will_remove">Обложки всех песен будут удалены</string>
+
+    <!-- Tools -->
+    <string name="batch_tools">Инструменты</string>
+    <string name="batch_numbering">Пронумеровать треки</string>
+    <string name="batch_numbering_description">В показанном порядке, как трек N из %1$d</string>
+    <string name="batch_numbering_start">Начать с</string>
+    <string name="batch_pattern">Прочитать теги из имён файлов</string>
+    <!-- The placeholders in braces are typed as they are: don't translate them -->
+    <string name="batch_pattern_description">Используйте {title}, {artist}, {album}, {albumartist}, {track}, {disc}, {year} и {genre}</string>
+    <string name="batch_pattern_field">Шаблон</string>
+    <string name="batch_pattern_invalid">Используйте каждую метку не более одного раза и хотя бы одну</string>
+    <string name="batch_pattern_no_match">Не совпадает</string>
+
+    <!-- Applying -->
+    <string name="batch_apply">Применить ко всем</string>
+    <string name="batch_access_denied">Metadator не получил разрешения изменить эти файлы</string>
+    <string name="batch_running">Сохранение: %1$d из %2$d</string>
+    <string name="batch_cancel">Остановить</string>
+
+    <!-- Result -->
+    <string name="batch_done_title">Готово</string>
+    <plurals name="batch_saved">
+        <item quantity="one">Сохранена %1$d песня</item>
+        <item quantity="few">Сохранены %1$d песни</item>
+        <item quantity="many">Сохранено %1$d песен</item>
+        <item quantity="other">Сохранено %1$d песни</item>
+    </plurals>
+    <plurals name="batch_failed">
+        <item quantity="one">Не удалось сохранить %1$d песню</item>
+        <item quantity="few">Не удалось сохранить %1$d песни</item>
+        <item quantity="many">Не удалось сохранить %1$d песен</item>
+        <item quantity="other">Не удалось сохранить %1$d песни</item>
+    </plurals>
+    <plurals name="batch_undone">
+        <item quantity="one">Восстановлена %1$d песня</item>
+        <item quantity="few">Восстановлены %1$d песни</item>
+        <item quantity="many">Восстановлено %1$d песен</item>
+        <item quantity="other">Восстановлено %1$d песни</item>
+    </plurals>
+    <string name="batch_cancelled">Остановлено. Уже сохранённые песни остаются с изменениями.</string>
+    <string name="batch_undo_all">Отменить все</string>
+    <string name="batch_finish">Завершить</string>
+    <!-- Why a song couldn't be saved, shown next to its title -->
+    <string name="batch_reason_access">нет разрешения</string>
+    <string name="batch_reason_gone">файла больше нет</string>
+    <string name="batch_reason_unsupported">формат не поддерживается</string>
+    <string name="batch_reason_failed">ошибка записи</string>
+</resources>

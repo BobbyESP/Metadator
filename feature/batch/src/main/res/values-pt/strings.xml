@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- The songs being edited -->
+    <plurals name="batch_title">
+        <item quantity="one">Editar %1$d música</item>
+        <item quantity="many">Editar %1$d músicas</item>
+        <item quantity="other">Editar %1$d músicas</item>
+    </plurals>
+    <!-- After the first song titles: "One, Two, Three and 4 more" -->
+    <string name="batch_and_more">e mais %1$d</string>
+
+    <!-- Fields -->
+    <string name="batch_fields">Definir em todas as músicas</string>
+    <string name="batch_fields_description">Deixe um campo como está para manter o valor de cada música.</string>
+    <string name="batch_multiple_values">Vários valores</string>
+    <!-- %1$s is the name of a field, such as Album -->
+    <string name="batch_reset_field">Manter %1$s de cada música</string>
+
+    <!-- Cover -->
+    <string name="batch_cover_set">Usar uma capa para todas</string>
+    <string name="batch_cover_remove">Remover todas as capas</string>
+    <string name="batch_cover_keep">Manter a capa de cada música</string>
+    <string name="batch_cover_will_replace">Todas as músicas receberão esta capa</string>
+    <string name="batch_cover_will_remove">A capa de todas as músicas será removida</string>
+
+    <!-- Tools -->
+    <string name="batch_tools">Ferramentas</string>
+    <string name="batch_numbering">Numerar as faixas</string>
+    <string name="batch_numbering_description">Na ordem exibida, como faixa N de %1$d</string>
+    <string name="batch_numbering_start">Começar em</string>
+    <string name="batch_pattern">Ler tags dos nomes dos arquivos</string>
+    <!-- The placeholders in braces are typed as they are: don't translate them -->
+    <string name="batch_pattern_description">Use {title}, {artist}, {album}, {albumartist}, {track}, {disc}, {year} e {genre}</string>
+    <string name="batch_pattern_field">Padrão</string>
+    <string name="batch_pattern_invalid">Use cada marcador uma única vez, e pelo menos um</string>
+    <string name="batch_pattern_no_match">Não corresponde</string>
+
+    <!-- Applying -->
+    <string name="batch_apply">Aplicar a todas</string>
+    <string name="batch_access_denied">O Metadator não teve permissão para alterar estes arquivos</string>
+    <string name="batch_running">Salvando %1$d de %2$d</string>
+    <string name="batch_cancel">Parar</string>
+
+    <!-- Result -->
+    <string name="batch_done_title">Concluído</string>
+    <plurals name="batch_saved">
+        <item quantity="one">%1$d música salva</item>
+        <item quantity="many">%1$d músicas salvas</item>
+        <item quantity="other">%1$d músicas salvas</item>
+    </plurals>
+    <plurals name="batch_failed">
+        <item quantity="one">Não foi possível salvar %1$d música</item>
+        <item quantity="many">Não foi possível salvar %1$d músicas</item>
+        <item quantity="other">Não foi possível salvar %1$d músicas</item>
+    </plurals>
+    <plurals name="batch_undone">
+        <item quantity="one">%1$d música restaurada</item>
+        <item quantity="many">%1$d músicas restauradas</item>
+        <item quantity="other">%1$d músicas restauradas</item>
+    </plurals>
+    <string name="batch_cancelled">Interrompido. As músicas salvas até agora mantêm as alterações.</string>
+    <string name="batch_undo_all">Desfazer tudo</string>
+    <string name="batch_finish">Concluir</string>
+    <!-- Why a song couldn't be saved, shown next to its title -->
+    <string name="batch_reason_access">sem permissão</string>
+    <string name="batch_reason_gone">o arquivo não existe mais</string>
+    <string name="batch_reason_unsupported">formato não compatível</string>
+    <string name="batch_reason_failed">falha na gravação</string>
+</resources>

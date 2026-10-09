@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Controls -->
+    <string name="open_player">Abrir o player</string>
+    <string name="next">Próxima</string>
+    <string name="previous">Anterior</string>
+    <string name="repeat_off">Repetição desativada</string>
+    <string name="repeat_all">Repetir tudo</string>
+    <string name="repeat_one">Repetir uma</string>
+    <string name="nothing_playing">Nada tocando</string>
+
+    <!-- Queue -->
+    <string name="up_next">A seguir</string>
+    <string name="queue_empty">Nada mais na fila</string>
+
+    <!-- Lyrics -->
+    <string name="lyrics">Letra</string>
+    <string name="no_lyrics">Sem letra</string>
+    <string name="no_lyrics_description">Esta música não tem letra nas tags. Escreva-a ou busque-a no editor.</string>
+    <string name="lyrics_unreadable">Não foi possível ler a letra</string>
+    <string name="lyrics_unreadable_description">Não foi possível abrir o arquivo.</string>
+    <string name="back_to_current_line">Voltar para a linha atual</string>
+</resources>

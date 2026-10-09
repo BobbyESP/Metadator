@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Search and menu -->
+    <string name="search_library">搜索歌曲、艺术家、专辑</string>
+    <string name="clear_search">清除搜索内容</string>
+    <string name="open_file">打开文件</string>
+    <string name="rescan_library">重新扫描音乐文件夹</string>
+
+    <!-- Tabs -->
+    <string name="tab_songs">歌曲</string>
+    <string name="tab_albums">专辑</string>
+    <string name="tab_artists">艺术家</string>
+    <string name="tab_folders">文件夹</string>
+
+    <!-- Filters and sorting -->
+    <string name="needs_attention_filter">需要处理（%1$d）</string>
+    <string name="clear_filters">清除筛选条件</string>
+    <string name="sort_title">标题</string>
+    <string name="sort_artist">艺术家</string>
+    <string name="sort_album">专辑</string>
+    <string name="sort_date_added">添加日期</string>
+    <string name="sort_date_modified">修改日期</string>
+    <string name="sort_duration">时长</string>
+    <string name="sort_ascending">升序</string>
+    <string name="sort_descending">降序</string>
+
+    <!-- Playing -->
+    <string name="shuffle_all">全部随机播放</string>
+    <string name="play_all">全部播放</string>
+
+    <!-- Selecting songs -->
+    <plurals name="selected_count">
+        <item quantity="other">已选择 %1$d 项</item>
+    </plurals>
+    <string name="edit_together">一起编辑</string>
+    <string name="close_selection">退出选择</string>
+
+    <!-- Albums, artists and folders -->
+    <plurals name="song_count">
+        <item quantity="other">%1$d 首歌曲</item>
+    </plurals>
+    <string name="collection_edit_all">全部编辑</string>
+
+    <!-- Access to the music -->
+    <string name="permission_title">你的音乐，随时可编辑</string>
+    <string name="permission_description">Metadator 需要访问你的音乐才能将其列出。任何数据都不会离开你的设备，在你保存之前也不会更改任何文件。</string>
+    <string name="permission_grant">允许访问</string>
+    <string name="permission_denied_description">访问音乐的权限已关闭。你可以在应用设置中开启，也可以在没有该权限的情况下打开单个文件。</string>
+    <string name="permission_open_settings">打开设置</string>
+
+    <!-- Empty states -->
+    <string name="empty_library_title">还没有歌曲</string>
+    <string name="empty_library_description">Metadator 会列出 Android 在你设备上找到的歌曲。请将音乐复制到“Music”文件夹；如果刚刚复制过，请重新扫描。</string>
+    <string name="no_results_title">没有匹配项</string>
+    <string name="no_results_description">请尝试减少字词，或清除筛选条件。</string>
+    <string name="library_load_failed">无法读取音乐库</string>
+    <string name="no_song_open_title">选择一首歌曲</string>
+    <string name="no_song_open_description">它的标签会在这里打开，就在音乐库旁边。</string>
+</resources>

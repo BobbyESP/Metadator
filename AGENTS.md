@@ -118,8 +118,12 @@ Versions are in `gradle/libs.versions.toml`; the app's version in the root `buil
 
 ## 4. Conventions
 
-- Everything is in English: code, comments, docs, commits. The app ships English and Spanish
-  strings; a new string needs both.
+- Everything is in English: code, comments, docs, commits. The app ships English, Arabic, Chinese
+  (Simplified), Dutch, French, German, Hindi, Italian, Japanese, Korean, Portuguese, Russian and
+  Spanish strings; a new string needs all of them.
+- A string lives in the module that shows it, under the section comment it belongs to, in the same
+  place in every language. One that several features show lives in `:core:ui`: a name is defined
+  in one module only, since the app merges them all.
 - Commits follow `type(scope): summary`; the body explains why.
 - Comments and KDoc say why, not what.
 - Docs describe the app as it is now. When code changes, update the doc that describes it.

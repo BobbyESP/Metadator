@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Controls -->
+    <string name="open_player">打开播放器</string>
+    <string name="next">下一首</string>
+    <string name="previous">上一首</string>
+    <string name="repeat_off">关闭循环</string>
+    <string name="repeat_all">列表循环</string>
+    <string name="repeat_one">单曲循环</string>
+    <string name="nothing_playing">当前没有播放内容</string>
+
+    <!-- Queue -->
+    <string name="up_next">接下来播放</string>
+    <string name="queue_empty">队列中没有其他内容</string>
+
+    <!-- Lyrics -->
+    <string name="lyrics">歌词</string>
+    <string name="no_lyrics">无歌词</string>
+    <string name="no_lyrics_description">这首歌曲的标签中没有歌词。请在编辑器中填写或查找。</string>
+    <string name="lyrics_unreadable">无法读取歌词</string>
+    <string name="lyrics_unreadable_description">无法打开文件。</string>
+    <string name="back_to_current_line">回到当前行</string>
+</resources>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Sections -->
+    <string name="appearance">Darstellung</string>
+    <string name="appearance_description">Design, Farben und Kontrast</string>
+    <string name="editor">Editor</string>
+    <string name="editor_description">Wie Tags geschrieben werden</string>
+    <string name="lookup">Onlinequellen</string>
+    <string name="lookup_description">Woher Metadaten und Cover stammen</string>
+    <string name="about">Info</string>
+    <string name="about_description">Version, Quellcode und Lizenzen</string>
+
+    <!-- Appearance -->
+    <string name="theme">Design</string>
+    <string name="theme_system">System</string>
+    <string name="theme_light">Hell</string>
+    <string name="theme_dark">Dunkel</string>
+    <string name="colors">Farben</string>
+    <string name="dynamic_color">Farben des Hintergrundbilds</string>
+    <string name="dynamic_color_description">Material You, ab Android 12</string>
+    <string name="pure_black">Reines Schwarz</string>
+    <string name="pure_black_description">Dunkleres dunkles Design, schont OLED-Displays</string>
+    <string name="color_from_cover">Editor nach dem Cover einfärben</string>
+    <string name="color_from_cover_description">Der Editor jedes Songs übernimmt die Farbtöne seines Covers</string>
+    <string name="seed_color">Akzentfarbe</string>
+    <string name="palette_style">Palettenstil</string>
+    <string name="palette_tonal_spot">Tonal</string>
+    <string name="palette_neutral">Neutral</string>
+    <string name="palette_vibrant">Lebhaft</string>
+    <string name="palette_expressive">Expressiv</string>
+    <string name="palette_rainbow">Regenbogen</string>
+    <string name="palette_fruit_salad">Obstsalat</string>
+    <string name="palette_monochrome">Monochrom</string>
+    <string name="palette_fidelity">Farbtreu</string>
+    <string name="palette_content">Inhalt</string>
+
+    <!-- Editor -->
+    <string name="multi_values">Mehrere Interpreten oder Genres</string>
+    <string name="multi_separate">Als getrennte Werte behalten</string>
+    <string name="multi_separate_description">Was die Formate erwarten. Die meisten Player zeigen alle an.</string>
+    <string name="multi_joined">Zu einem Wert zusammenfügen</string>
+    <string name="multi_joined_description">Für Player, die nur den ersten Interpreten anzeigen</string>
+    <string name="separator">Trennzeichen</string>
+    <string name="separator_description">Verbindet Werte und trennt, was du einfügst</string>
+    <string name="warn_small_cover">Vor kleinen Covern warnen</string>
+    <string name="warn_small_cover_description">Unter 500 × 500 px</string>
+    <string name="history">Rückgängig-Verlauf</string>
+    <string name="clear_history">Rückgängig-Verlauf löschen</string>
+    <string name="clear_history_description">Metadator bewahrt die Tags deiner letzten 100 Speichervorgänge auf, damit sie rückgängig gemacht werden können</string>
+    <string name="history_cleared">Rückgängig-Verlauf gelöscht</string>
+
+    <!-- Online sources -->
+    <string name="lookup_sources">Quellen</string>
+    <string name="lookup_sources_description">Werden gemeinsam durchsucht. Gesendet werden nur Titel, Interpret und Album des Songs.</string>
+    <string name="provider_musicbrainz_description">Die offene Musikenzyklopädie, mit Covern aus dem Cover Art Archive</string>
+    <string name="provider_deezer_description">Großer Katalog kommerzieller Veröffentlichungen, Cover bis 1000 px</string>
+    <string name="provider_other_description">Online-Metadaten</string>
+
+    <!-- About -->
+    <string name="version">Version %1$s</string>
+    <string name="source_code">Quellcode</string>
+    <string name="source_code_description">Metadator ist freie Software, lizenziert unter der GPL 3.0</string>
+    <string name="report_issue">Problem melden</string>
+    <string name="report_issue_description">Ein Issue auf GitHub öffnen</string>
+    <string name="rate">Metadator bewerten</string>
+    <string name="rate_description">Bei Google Play</string>
+    <string name="credits">Erstellt mit</string>
+    <string name="credits_description">TagLib, Jetpack Compose, Media3, Koin, Ktor, Coil, MaterialKolor, MusicBrainz, Deezer und LRCLIB</string>
+    <string name="made_by">Entwickelt von BobbyESP</string>
+</resources>

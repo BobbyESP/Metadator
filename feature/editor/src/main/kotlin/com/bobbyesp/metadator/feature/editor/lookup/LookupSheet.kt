@@ -551,7 +551,7 @@ private fun ComparisonStage(
                             Text(
                                 stringResource(
                                     if (allChecked) R.string.lookup_select_none
-                                    else R.string.lookup_select_all
+                                    else CoreUiR.string.select_all
                                 )
                             )
                         }

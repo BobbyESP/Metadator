@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Saving and undoing -->
+    <string name="save">Opslaan</string>
+    <string name="saving">Opslaan…</string>
+    <string name="saved">Opgeslagen</string>
+    <string name="saved_some_unsupported">Opgeslagen. Dit formaat kan het volgende niet bewaren: %1$s</string>
+    <string name="save_failed">Opslaan mislukt: %1$s</string>
+    <string name="save_failed_restored">Opslaan mislukt, het bestand is gelaten zoals het was (%1$s)</string>
+    <string name="write_access_denied">Metadator mocht dit bestand niet wijzigen</string>
+    <string name="format_unsupported">Het formaat van dit bestand kan niet worden bewerkt</string>
+    <string name="undo">Ongedaan maken</string>
+    <string name="undone">Wijzigingen ongedaan gemaakt</string>
+    <string name="undo_unavailable">De oorspronkelijke tags zijn niet meer beschikbaar</string>
+    <string name="undo_failed">De wijzigingen konden niet ongedaan worden gemaakt</string>
+    <string name="revert_all">Alle wijzigingen ongedaan maken</string>
+    <string name="play_unavailable">Alleen nummers uit je bibliotheek kunnen worden afgespeeld</string>
+
+    <!-- Sections -->
+    <string name="needs_attention_title">Aandacht nodig</string>
+    <string name="section_main">Nummer</string>
+    <string name="section_track">Track</string>
+    <string name="section_credits">Credits</string>
+    <string name="section_more">Meer</string>
+    <string name="section_lyrics">Songtekst</string>
+    <string name="section_all_tags">Alle tags</string>
+    <string name="section_file">Bestand</string>
+    <string name="all_tags_description">Alle andere tags in het bestand. Ze blijven zoals ze zijn, tenzij je ze hier wijzigt.</string>
+
+    <!-- Cover -->
+    <string name="cover_change">Hoes wijzigen</string>
+    <string name="cover_remove">Hoes verwijderen</string>
+    <string name="cover_revert">Oorspronkelijke hoes behouden</string>
+    <string name="cover_find_online">Online een hoes zoeken</string>
+    <string name="cover_small_warning">Kleine hoes: die kan er wazig uitzien op een groot scherm</string>
+    <string name="cover_none">Geen hoes</string>
+
+    <!-- Lyrics -->
+    <string name="lyrics_find">Songtekst zoeken</string>
+    <string name="lyrics_synced">Gesynchroniseerd</string>
+    <string name="lyrics_found_synced">Gesynchroniseerde songtekst toegevoegd</string>
+    <string name="lyrics_found_plain">Songtekst toegevoegd</string>
+    <string name="lyrics_not_found">Geen songtekst gevonden voor dit nummer</string>
+    <string name="lyrics_instrumental">Dit nummer is instrumentaal</string>
+    <string name="lyrics_failed">Zoeken naar de songtekst is mislukt</string>
+    <string name="lyrics_need_title_artist">Voeg eerst een titel en een artiest toe</string>
+    <string name="offline">Je bent offline</string>
+
+    <!-- Adding a tag -->
+    <string name="add_field">Een tag toevoegen</string>
+    <string name="add_field_name">Naam</string>
+    <string name="add_field_name_hint">Bijvoorbeeld MOOD</string>
+    <string name="add_field_value">Waarde</string>
+    <string name="add">Toevoegen</string>
+    <string name="cancel">Annuleren</string>
+
+    <!-- File details -->
+    <string name="file_size">Grootte</string>
+    <string name="file_duration">Duur</string>
+    <string name="file_bitrate">Bitsnelheid</string>
+    <string name="file_bitrate_value">%1$d kbps</string>
+    <string name="file_sample_rate">Samplefrequentie</string>
+    <string name="file_sample_rate_value">%1$s kHz</string>
+    <string name="file_channels">Kanalen</string>
+    <string name="file_channels_mono">Mono</string>
+    <string name="file_channels_stereo">Stereo</string>
+    <string name="file_location">Locatie</string>
+
+    <!-- Leaving with unsaved changes -->
+    <string name="unsaved_title">Wijzigingen weggooien?</string>
+    <string name="unsaved_description">De wijzigingen in dit nummer zijn niet opgeslagen.</string>
+    <string name="unsaved_discard">Weggooien</string>
+    <string name="unsaved_keep">Verder bewerken</string>
+
+    <!-- Files that can't be opened -->
+    <string name="file_gone_title">Dit bestand is er niet meer</string>
+    <string name="file_gone_description">Het is verplaatst of verwijderd nadat het in de bibliotheek was opgenomen.</string>
+    <string name="access_denied_title">Dit bestand kan niet worden geopend</string>
+    <string name="access_denied_description">De app die het deelde, stond Metadator niet toe het te lezen. Probeer het te openen vanuit de bibliotheek of een bestandsbeheerder.</string>
+    <string name="unsupported_title">Formaat niet ondersteund</string>
+    <string name="unsupported_description">Metadator kan geen tags lezen uit dit soort bestand.</string>
+    <string name="failed_title">Dit bestand kon niet worden geopend</string>
+    <string name="retry">Opnieuw proberen</string>
+    <string name="go_back">Ga terug</string>
+
+    <!-- Finding metadata online: searching -->
+    <string name="lookup_title">Metadata zoeken</string>
+    <string name="lookup_find">Metadata zoeken</string>
+    <string name="lookup_search">Zoeken</string>
+    <string name="lookup_searching">Zoeken…</string>
+    <string name="lookup_results">Resultaten</string>
+    <string name="lookup_no_results">Geen overeenkomsten. Probeer minder woorden.</string>
+    <string name="lookup_no_providers">Alle bronnen zijn uitgeschakeld. Schakel er een in via Instellingen.</string>
+    <string name="lookup_rate_limited">De bronnen zijn bezet. Probeer het zo meteen opnieuw.</string>
+    <string name="lookup_failed">Het zoeken is mislukt. Probeer het opnieuw.</string>
+    <!-- %1$s is the name of a source, such as MusicBrainz -->
+    <string name="lookup_partial">%1$s gaf geen antwoord</string>
+    <string name="lookup_confidence_high">Goede overeenkomst</string>
+    <string name="lookup_confidence_medium">Mogelijke overeenkomst</string>
+    <string name="lookup_confidence_low">Zwakke overeenkomst</string>
+
+    <!-- Finding metadata online: choosing what to use -->
+    <string name="lookup_compare_title">Kies wat je wilt gebruiken</string>
+    <!-- %1$s is the field's current value -->
+    <string name="lookup_current">Nu: %1$s</string>
+    <string name="lookup_empty_value">leeg</string>
+    <string name="lookup_show_unchanged">Velden die al overeenkomen (%1$d)</string>
+    <string name="lookup_selected_count">%1$d van %2$d geselecteerd</string>
+    <string name="lookup_select_none">Selectie wissen</string>
+    <string name="lookup_use_cover">Deze hoes gebruiken</string>
+    <string name="lookup_apply">Selectie gebruiken</string>
+    <string name="lookup_back">Terug naar de resultaten</string>
+    <string name="lookup_applied">Toegepast. Controleer en sla op wanneer je klaar bent</string>
+</resources>

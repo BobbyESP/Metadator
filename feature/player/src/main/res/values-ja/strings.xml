@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Controls -->
+    <string name="open_player">プレーヤーを開く</string>
+    <string name="next">次へ</string>
+    <string name="previous">前へ</string>
+    <string name="repeat_off">リピートオフ</string>
+    <string name="repeat_all">すべてリピート</string>
+    <string name="repeat_one">1 曲リピート</string>
+    <string name="nothing_playing">再生中の曲はありません</string>
+
+    <!-- Queue -->
+    <string name="up_next">次に再生</string>
+    <string name="queue_empty">キューにはほかに何もありません</string>
+
+    <!-- Lyrics -->
+    <string name="lyrics">歌詞</string>
+    <string name="no_lyrics">歌詞なし</string>
+    <string name="no_lyrics_description">この曲のタグには歌詞がありません。エディタで入力するか、検索してください。</string>
+    <string name="lyrics_unreadable">歌詞を読み込めませんでした</string>
+    <string name="lyrics_unreadable_description">ファイルを開けませんでした。</string>
+    <string name="back_to_current_line">現在の行に戻る</string>
+</resources>

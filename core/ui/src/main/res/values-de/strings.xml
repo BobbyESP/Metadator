@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Actions shared by several screens -->
+    <string name="back">Zurück</string>
+    <string name="close">Schließen</string>
+    <string name="more_options">Weitere Optionen</string>
+    <string name="settings">Einstellungen</string>
+    <string name="edit_tags">Tags bearbeiten</string>
+    <string name="select">Auswählen</string>
+    <string name="selected">Ausgewählt</string>
+    <string name="select_all">Alle auswählen</string>
+
+    <!-- Playback -->
+    <string name="play">Wiedergeben</string>
+    <string name="pause">Pausieren</string>
+    <string name="shuffle">Zufallswiedergabe</string>
+    <string name="now_playing">Aktuelle Wiedergabe</string>
+
+    <!-- Track rows -->
+    <string name="unknown_artist">Unbekannter Interpret</string>
+    <string name="unknown_album">Unbekanntes Album</string>
+    <!-- %1$s is a list made of the "missing_" names below; the quantity is how many it holds -->
+    <plurals name="missing_tags">
+        <item quantity="one">Fehlt: %1$s</item>
+        <item quantity="other">Fehlen: %1$s</item>
+    </plurals>
+    <string name="missing_artist">Interpret</string>
+    <string name="missing_album">Album</string>
+    <string name="missing_album_artist">Albuminterpret</string>
+    <string name="missing_year">Jahr</string>
+    <string name="missing_track_number">Titelnummer</string>
+
+    <!-- Cover -->
+    <string name="cover">Cover</string>
+    <string name="cover_unreadable">Das Bild konnte nicht gelesen werden</string>
+
+    <!-- Tag fields -->
+    <string name="field_title">Titel</string>
+    <string name="field_artist">Interpreten</string>
+    <string name="field_album">Album</string>
+    <string name="field_album_artist">Albuminterpreten</string>
+    <string name="field_date">Jahr oder Datum</string>
+    <string name="field_date_hint">2019 oder 2019-05-17</string>
+    <string name="field_genre">Genres</string>
+    <string name="field_track">Titelnummer</string>
+    <string name="field_disc">Disc</string>
+    <!-- Between two numbers: track 3 of 12 -->
+    <string name="field_of">von</string>
+    <string name="field_composer">Komponisten</string>
+    <string name="field_lyricist">Textdichter</string>
+    <string name="field_conductor">Dirigent</string>
+    <string name="field_remixer">Remixer</string>
+    <string name="field_performer">Mitwirkende</string>
+    <string name="field_comment">Kommentar</string>
+    <string name="field_copyright">Copyright</string>
+    <string name="field_label">Label</string>
+    <string name="field_grouping">Gruppierung</string>
+    <string name="field_lyrics">Songtext</string>
+
+    <!-- Editing a field -->
+    <string name="field_changed">Geändert</string>
+    <string name="field_revert">Änderung an „%1$s“ rückgängig machen</string>
+    <string name="field_add_value">Weiteren Wert hinzufügen</string>
+    <string name="field_add_value_hint">Eingeben und Enter drücken</string>
+    <string name="field_remove_value">%1$s entfernen</string>
+</resources>

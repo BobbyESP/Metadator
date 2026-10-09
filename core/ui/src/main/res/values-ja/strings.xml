@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Actions shared by several screens -->
+    <string name="back">戻る</string>
+    <string name="close">閉じる</string>
+    <string name="more_options">その他のオプション</string>
+    <string name="settings">設定</string>
+    <string name="edit_tags">タグを編集</string>
+    <string name="select">選択</string>
+    <string name="selected">選択中</string>
+    <string name="select_all">すべて選択</string>
+
+    <!-- Playback -->
+    <string name="play">再生</string>
+    <string name="pause">一時停止</string>
+    <string name="shuffle">シャッフル</string>
+    <string name="now_playing">再生中</string>
+
+    <!-- Track rows -->
+    <string name="unknown_artist">不明なアーティスト</string>
+    <string name="unknown_album">不明なアルバム</string>
+    <!-- %1$s is a list made of the "missing_" names below; the quantity is how many it holds -->
+    <plurals name="missing_tags">
+        <item quantity="other">未入力: %1$s</item>
+    </plurals>
+    <string name="missing_artist">アーティスト</string>
+    <string name="missing_album">アルバム</string>
+    <string name="missing_album_artist">アルバムアーティスト</string>
+    <string name="missing_year">年</string>
+    <string name="missing_track_number">トラック番号</string>
+
+    <!-- Cover -->
+    <string name="cover">カバー画像</string>
+    <string name="cover_unreadable">この画像を読み込めませんでした</string>
+
+    <!-- Tag fields -->
+    <string name="field_title">タイトル</string>
+    <string name="field_artist">アーティスト</string>
+    <string name="field_album">アルバム</string>
+    <string name="field_album_artist">アルバムアーティスト</string>
+    <string name="field_date">年または日付</string>
+    <string name="field_date_hint">2019 または 2019-05-17</string>
+    <string name="field_genre">ジャンル</string>
+    <string name="field_track">トラック</string>
+    <string name="field_disc">ディスク</string>
+    <!-- Between two numbers: track 3 of 12 -->
+    <string name="field_of">合計</string>
+    <string name="field_composer">作曲者</string>
+    <string name="field_lyricist">作詞者</string>
+    <string name="field_conductor">指揮者</string>
+    <string name="field_remixer">リミキサー</string>
+    <string name="field_performer">演奏者</string>
+    <string name="field_comment">コメント</string>
+    <string name="field_copyright">著作権</string>
+    <string name="field_label">レーベル</string>
+    <string name="field_grouping">グループ</string>
+    <string name="field_lyrics">歌詞</string>
+
+    <!-- Editing a field -->
+    <string name="field_changed">変更あり</string>
+    <string name="field_revert">%1$sの変更を元に戻す</string>
+    <string name="field_add_value">さらに追加</string>
+    <string name="field_add_value_hint">入力して Enter を押す</string>
+    <string name="field_remove_value">%1$sを削除</string>
+</resources>
