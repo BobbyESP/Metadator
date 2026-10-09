@@ -16,7 +16,6 @@
     <string name="format_unsupported">This file\'s format can\'t be edited</string>
     <string name="more_options">More options</string>
     <string name="revert_all">Undo all changes</string>
-    <string name="revert_field">Undo change to %1$s</string>
     <string name="changed">Changed</string>
     <string name="play_song">Play</string>
     <string name="pause_song">Pause</string>
@@ -32,9 +31,6 @@
     <string name="section_file">File</string>
     <string name="all_tags_description">Every other tag in the file. Kept as it is unless you change it here.</string>
 
-    <string name="add_value">Add another</string>
-    <string name="add_value_hint">Type and press enter</string>
-    <string name="remove_value">Remove %1$s</string>
 
     <string name="cover">Cover</string>
     <string name="cover_change">Change cover</string>

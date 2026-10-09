@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.Undo
@@ -66,6 +67,7 @@ import com.bobbyesp.metadator.core.domain.batch.FileNamePattern
 import com.bobbyesp.metadator.core.domain.batch.TrackNumbering
 import com.bobbyesp.metadator.core.domain.save.SaveOutcome
 import com.bobbyesp.metadator.core.ui.component.ArtworkImage
+import com.bobbyesp.metadator.core.ui.component.TagChipsField
 import com.bobbyesp.metadator.core.ui.component.fieldLabel
 import com.bobbyesp.metadator.tags.api.ArtworkChange
 import com.bobbyesp.metadator.tags.api.TagField
@@ -208,23 +210,32 @@ private fun BatchField(
     onIntent: (BatchIntent) -> Unit,
 ) {
     val label = fieldLabel(field.key)
-    val shown =
-        edited?.joinToString(separator)
-            ?: (common as? CommonValue.Same)?.values?.joinToString(separator).orEmpty()
+    val values = edited ?: (common as? CommonValue.Same)?.values.orEmpty()
+    val mixed =
+        if (common == CommonValue.Mixed && edited == null)
+            stringResource(R.string.batch_multiple_values)
+        else null
+    val fieldModifier = Modifier.readableWidth().padding(bottom = Spacing.small)
+    if (field.multiValue) {
+        TagChipsField(
+            label = label,
+            values = values,
+            onValuesChange = { onIntent(BatchIntent.SetField(field.key, it)) },
+            changed = edited != null,
+            onRevert = { onIntent(BatchIntent.ResetField(field.key)) },
+            separator = separator,
+            modifier = fieldModifier,
+            shape = RoundedCornerShape(MaterialTheme.shapes.large.topStart),
+            placeholder = mixed,
+            revertDescription = stringResource(R.string.batch_reset_field, label),
+        )
+        return
+    }
     TonalTextField(
-        value = shown,
-        onValueChange = { text ->
-            val values =
-                if (field.multiValue)
-                    text.split(separator.trim()).map { it.trim() }.filter { it.isNotEmpty() }
-                else listOf(text)
-            onIntent(BatchIntent.SetField(field.key, values))
-        },
+        value = values.joinToString(separator),
+        onValueChange = { text -> onIntent(BatchIntent.SetField(field.key, listOf(text))) },
         label = label,
-        placeholder =
-            if (common == CommonValue.Mixed && edited == null)
-                stringResource(R.string.batch_multiple_values)
-            else null,
+        placeholder = mixed,
         emphasized = edited != null,
         trailingIcon =
             if (edited != null) {
@@ -241,7 +252,7 @@ private fun BatchField(
                 }
             } else null,
         singleLine = field != TagField.Comment,
-        modifier = Modifier.readableWidth().padding(bottom = Spacing.small),
+        modifier = fieldModifier,
     )
 }
 

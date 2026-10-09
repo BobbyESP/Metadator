@@ -39,4 +39,9 @@
     <string name="field_label">Sello</string>
     <string name="field_grouping">Agrupación</string>
     <string name="field_lyrics">Letra</string>
+    <string name="field_changed">Modificado</string>
+    <string name="field_revert">Deshacer el cambio en %1$s</string>
+    <string name="field_add_value">Añadir otro</string>
+    <string name="field_add_value_hint">Escribe y pulsa intro</string>
+    <string name="field_remove_value">Quitar %1$s</string>
 </resources>

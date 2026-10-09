@@ -16,7 +16,6 @@
     <string name="format_unsupported">El formato de este archivo no se puede editar</string>
     <string name="more_options">Más opciones</string>
     <string name="revert_all">Deshacer todos los cambios</string>
-    <string name="revert_field">Deshacer el cambio en %1$s</string>
     <string name="changed">Modificado</string>
     <string name="play_song">Reproducir</string>
     <string name="pause_song">Pausar</string>
@@ -32,9 +31,6 @@
     <string name="section_file">Archivo</string>
     <string name="all_tags_description">El resto de etiquetas del archivo. Se mantienen tal cual salvo que las cambies aquí.</string>
 
-    <string name="add_value">Añadir otro</string>
-    <string name="add_value_hint">Escribe y pulsa intro</string>
-    <string name="remove_value">Quitar %1$s</string>
 
     <string name="cover">Portada</string>
     <string name="cover_change">Cambiar portada</string>

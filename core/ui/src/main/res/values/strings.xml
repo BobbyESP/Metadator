@@ -39,4 +39,9 @@
     <string name="field_label">Label</string>
     <string name="field_grouping">Grouping</string>
     <string name="field_lyrics">Lyrics</string>
+    <string name="field_changed">Changed</string>
+    <string name="field_revert">Undo change to %1$s</string>
+    <string name="field_add_value">Add another</string>
+    <string name="field_add_value_hint">Type and press enter</string>
+    <string name="field_remove_value">Remove %1$s</string>
 </resources>

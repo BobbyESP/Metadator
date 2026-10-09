@@ -32,9 +32,9 @@ difference, `TagChanges`: changed keys (an empty list removes a key) and an `Art
 
 Undo (`RestoreBackupUseCase`) writes a backup back and rescans.
 
-Multi-value fields are lists from the file to the chips in the editor and back. The only place
-values are joined is the user's choice in Settings ("Join them into one value"), applied to the
-fields they changed, just before writing.
+Multi-value fields are lists from the file to the chips in the editor, and in the batch editor, and
+back. The only place values are joined is the user's choice in Settings ("Join them into one
+value"), applied to the fields they changed, just before writing.
 
 Track and disc totals follow the format: `3/12` in one field for ID3 and MP4, a separate
 `TRACKTOTAL` for Vorbis comments (FLAC, Ogg, Opus), or whatever key the file already uses

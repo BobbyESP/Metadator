@@ -111,11 +111,11 @@ import com.bobbyesp.metadator.core.designsystem.theme.blurHalo
 import com.bobbyesp.metadator.core.domain.editor.Position
 import com.bobbyesp.metadator.core.domain.editor.TagDraft
 import com.bobbyesp.metadator.core.ui.R as CoreUiR
+import com.bobbyesp.metadator.core.ui.component.TagChipsField
 import com.bobbyesp.metadator.core.ui.component.fieldLabel
 import com.bobbyesp.metadator.feature.editor.components.CoverCard
 import com.bobbyesp.metadator.feature.editor.components.FileInfoCard
 import com.bobbyesp.metadator.feature.editor.components.PositionField
-import com.bobbyesp.metadator.feature.editor.components.TagChipsField
 import com.bobbyesp.metadator.feature.editor.components.TagTextField
 import com.bobbyesp.metadator.lyrics.api.Lrc
 import com.bobbyesp.metadator.tags.api.FieldKind
