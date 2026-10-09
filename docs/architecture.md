@@ -195,10 +195,12 @@ and what would go out of focus is only dimmed, and more.
 ## The player
 
 `PlaybackService` is a Media3 `MediaSessionService` with ExoPlayer: background playback, the
-system's media notification and lock-screen controls. `Media3PlayerController` connects to it on
-first use and exposes a `StateFlow<PlaybackState>`. It is driven from the main thread, as Media3
-requires. Both players show the position as a wave that lies flat while paused; in the full player
-it is the slider's track.
+system's media notification and lock-screen controls. Its player is built with the audio renderer
+and the audio containers only (FLAC, WAV, MP4, AMR, Ogg, Matroska, ADTS, AC-3, AC-4, MP3), so R8
+drops the rest of Media3; a new container is one more line there. `Media3PlayerController`
+connects to it on first use and exposes a `StateFlow<PlaybackState>`. It is driven from the main
+thread, as Media3 requires. Both players show the position as a wave that lies flat while paused;
+in the full player it is the slider's track.
 
 ### One surface, two sizes
 
