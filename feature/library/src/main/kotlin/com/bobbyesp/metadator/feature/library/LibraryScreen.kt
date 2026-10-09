@@ -150,7 +150,6 @@ internal fun LibraryScreen(
     }
     BackHandler(enabled = state.selecting) { onIntent(LibraryIntent.ClearSelection) }
 
-    // The lists, recorded for the selection toolbar that floats over them.
     val haze = rememberHazeState()
     val latestState by rememberUpdatedState(state)
 
@@ -178,7 +177,6 @@ internal fun LibraryScreen(
         },
     ) { padding ->
         Box(Modifier.fillMaxSize().padding(padding)) {
-            // A sibling of the toolbar, never around it: it would blur itself.
             Box(Modifier.fillMaxSize().hazeSource(haze)) {
                 when {
                     permission.status != PermissionStatus.Granted ->
@@ -232,8 +230,6 @@ private fun SearchTopBar(
     Box(
         modifier =
             Modifier.fillMaxWidth()
-                // An app bar's insets, since this is one: the status bar above, and at the sides
-                // the camera's cutout when the phone is held sideways.
                 .windowInsetsPadding(TopAppBarDefaults.windowInsets)
                 .padding(horizontal = Spacing.screen, vertical = Spacing.small)
     ) {
@@ -375,11 +371,7 @@ private fun SelectionToolbar(
         modifier =
             modifier
                 .navigationBarsPadding()
-                // Above the mini player when one is showing.
                 .padding(bottom = if (playerActive) 104.dp else Spacing.large)
-                // On the visibility, not inside it: its slide and fade would move and clip the
-                // halo with the toolbar. And only while there is one to draw: the lists are
-                // recorded for as long as something blurs them.
                 .then(
                     if (selecting || halo > 0f) {
                         Modifier.blurHalo(
