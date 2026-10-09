@@ -14,6 +14,7 @@ import androidx.media3.common.Player
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import com.bobbyesp.metadator.core.model.Track
+import com.bobbyesp.metadator.player.api.PlayQueue
 import com.bobbyesp.metadator.player.api.PlaybackState
 import com.bobbyesp.metadator.player.api.PlayerController
 import com.bobbyesp.metadator.player.api.RepeatMode
@@ -44,7 +45,7 @@ class Media3PlayerController(
     private var controller: MediaController? = null
     private var connecting = false
     private val pending = ArrayDeque<(MediaController) -> Unit>()
-    private var queue: List<Track> = emptyList()
+    private var queue = PlayQueue.Empty
     private var ticker: Job? = null
 
     private val listener =
@@ -81,14 +82,16 @@ class Media3PlayerController(
 
     override fun play(tracks: List<Track>, startIndex: Int, shuffle: Boolean) {
         if (tracks.isEmpty()) return
-        queue = tracks
+        val ordered = PlayQueue.of(tracks)
+        val playing = if (shuffle) ordered.shuffled() else ordered
+        queue = playing
         withController { player ->
+            player.shuffleModeEnabled = false
             player.setMediaItems(
-                tracks.map { it.toMediaItem() },
-                startIndex.coerceIn(tracks.indices),
+                playing.tracks.map { it.toMediaItem() },
+                if (shuffle) 0 else startIndex.coerceIn(tracks.indices),
                 0L,
             )
-            player.shuffleModeEnabled = shuffle
             player.prepare()
             player.play()
         }
@@ -110,7 +113,22 @@ class Media3PlayerController(
 
     override fun skipToQueueItem(index: Int) = withController { it.seekToDefaultPosition(index) }
 
-    override fun setShuffle(enabled: Boolean) = withController { it.shuffleModeEnabled = enabled }
+    /**
+     * The player's own shuffle mode keeps its order to itself, so the queue shown would not be the
+     * one played. The queue is reordered instead, around the song that plays, which goes on.
+     */
+    override fun setShuffle(enabled: Boolean) = withController { player ->
+        if (enabled == queue.isShuffled || player.mediaItemCount == 0) return@withController
+        val current = player.currentMediaItemIndex
+        val reordered = if (enabled) queue.shuffled(first = current) else queue.unshuffled()
+        val index = if (enabled) 0 else queue.sourceIndex(current)
+        val others = reordered.tracks.filterIndexed { position, _ -> position != index }
+        player.moveMediaItem(current, 0)
+        player.replaceMediaItems(1, player.mediaItemCount, others.map { it.toMediaItem() })
+        player.moveMediaItem(0, index)
+        queue = reordered
+        publish()
+    }
 
     override fun setRepeatMode(mode: RepeatMode) = withController {
         it.repeatMode =
@@ -124,22 +142,23 @@ class Media3PlayerController(
     override fun stop() = withController { player ->
         player.stop()
         player.clearMediaItems()
-        queue = emptyList()
+        queue = PlayQueue.Empty
     }
 
     private fun publish() {
         val player = controller ?: return
         val index = if (player.mediaItemCount == 0) -1 else player.currentMediaItemIndex
-        val current = queue.getOrNull(index)
+        val tracks = queue.tracks
+        val current = tracks.getOrNull(index)
         _state.value =
             PlaybackState(
-                queue = if (player.mediaItemCount == 0) emptyList() else queue,
+                queue = if (player.mediaItemCount == 0) emptyList() else tracks,
                 currentIndex = index,
                 isPlaying = player.isPlaying,
                 isBuffering = player.playbackState == Player.STATE_BUFFERING,
                 positionMs = player.currentPosition.coerceAtLeast(0),
                 durationMs = player.duration.takeIf { it > 0 } ?: current?.durationMs ?: 0L,
-                shuffle = player.shuffleModeEnabled,
+                shuffle = queue.isShuffled,
                 repeatMode =
                     when (player.repeatMode) {
                         Player.REPEAT_MODE_ONE -> RepeatMode.One
