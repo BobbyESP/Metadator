@@ -151,6 +151,16 @@ private val MoreFields =
         TagField.Grouping,
     )
 
+private val PositionFields = listOf(TagField.TrackNumber, TagField.DiscNumber)
+
+/** What an item of the list is made of: one scrolled away is reused by the next of its kind. */
+private enum class FieldsContent {
+    Header,
+    Text,
+    Chips,
+    Position,
+}
+
 /** Keys with a place of their own; everything else is under "All tags". */
 private val KnownKeys: Set<String> =
     TagField.entries.map { it.key }.toSet() + TagField.TrackTotalKeys + TagField.DiscTotalKeys
@@ -166,8 +176,11 @@ internal fun EditorScreen(
     modifier: Modifier = Modifier,
 ) {
     var confirmDiscard by rememberSaveable { mutableStateOf(false) }
+    val isDirty = state.isDirty
+    val title =
+        if (state.status == EditorStatus.Ready) state.title else stringResource(R.string.edit_tags)
     val leave = {
-        if (state.isDirty) {
+        if (isDirty) {
             confirmDiscard = true
         } else {
             onClose()
@@ -176,7 +189,7 @@ internal fun EditorScreen(
 
     NavigationBackHandler(
         state = rememberNavigationEventState(currentInfo = NavigationEventInfo.None),
-        isBackEnabled = state.isDirty,
+        isBackEnabled = isDirty,
         onBackCompleted = { confirmDiscard = true },
     )
 
@@ -192,11 +205,9 @@ internal fun EditorScreen(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             EditorTopBar(
-                title =
-                    if (state.status == EditorStatus.Ready) state.title
-                    else stringResource(R.string.edit_tags),
+                title = title,
                 showClose = showClose,
-                canRevert = state.isDirty,
+                canRevert = isDirty,
                 onClose = leave,
                 onRevertAll = { onIntent(EditorIntent.RevertAll) },
                 scrollBehavior = scrollBehavior,
@@ -250,6 +261,15 @@ internal fun EditorScreen(
                             )
                         }
 
+                    val lyrics = draft.tags.first(TagField.Lyrics.key).orEmpty()
+                    val syncedLyrics = remember(lyrics) { Lrc.isSynced(lyrics) }
+                    val tagKeys = draft.tags.keys
+                    val originalKeys = draft.original.tags.keys
+                    val otherKeys =
+                        remember(tagKeys, originalKeys) {
+                            (tagKeys + originalKeys).filter { it !in KnownKeys }.sorted()
+                        }
+
                     BoxWithConstraints(Modifier.fillMaxSize().imePadding().hazeSource(haze)) {
                         if (maxWidth >= TwoColumnWidth) {
                             Row(Modifier.fillMaxSize().padding(horizontal = Spacing.extraLarge)) {
@@ -268,7 +288,7 @@ internal fun EditorScreen(
                                     contentPadding =
                                         PaddingValues(bottom = Spacing.floatingClearance),
                                 ) {
-                                    fields(state, draft, onIntent)
+                                    fields(state, draft, otherKeys, syncedLyrics, onIntent)
                                 }
                             }
                         } else {
@@ -281,20 +301,20 @@ internal fun EditorScreen(
                                         bottom = Spacing.floatingClearance,
                                     ),
                             ) {
-                                item(key = "cover") {
+                                item(key = "cover", contentType = "cover") {
                                     cover(Modifier.padding(vertical = Spacing.large))
                                 }
-                                fields(state, draft, onIntent)
-                                item(key = "file-header") {
+                                fields(state, draft, otherKeys, syncedLyrics, onIntent)
+                                item(key = "file-header", contentType = FieldsContent.Header) {
                                     SectionHeader(stringResource(R.string.section_file))
                                 }
-                                item(key = "file") { FileInfoCard(loaded) }
+                                item(key = "file", contentType = "file") { FileInfoCard(loaded) }
                             }
                         }
                     }
 
                     EditorToolbar(
-                        dirty = state.isDirty,
+                        dirty = isDirty,
                         saving = state.saving,
                         findingLyrics = state.findingLyrics,
                         onSave = { onIntent(EditorIntent.Save) },
@@ -432,20 +452,28 @@ private fun EditorToolbar(
 private fun LazyListScope.fields(
     state: EditorState,
     draft: TagDraft,
+    otherKeys: List<String>,
+    syncedLyrics: Boolean,
     onIntent: (EditorIntent) -> Unit,
 ) {
     val separator = state.settings.multiValueSeparator
     val missing = draft.missingEssentials()
     if (missing.isNotEmpty()) {
-        item(key = "attention") { AttentionNotice(missing, Modifier.animateItem()) }
+        item(key = "attention", contentType = "attention") {
+            AttentionNotice(missing, Modifier.animateItem())
+        }
     }
-    item(key = "main-header") { SectionHeader(stringResource(R.string.section_main)) }
+    item(key = "main-header", contentType = FieldsContent.Header) {
+        SectionHeader(stringResource(R.string.section_main))
+    }
     fieldGroup(MainFields, draft, separator, onIntent)
 
-    item(key = "track-header") { SectionHeader(stringResource(R.string.section_track)) }
-    val positions = listOf(TagField.TrackNumber, TagField.DiscNumber)
+    item(key = "track-header", contentType = FieldsContent.Header) {
+        SectionHeader(stringResource(R.string.section_track))
+    }
+    val positions = PositionFields
     positions.forEachIndexed { index, field ->
-        item(key = field.key) {
+        item(key = field.key, contentType = FieldsContent.Position) {
             val position = state.position(field)
             val keys =
                 listOf(field.key) +
@@ -467,14 +495,18 @@ private fun LazyListScope.fields(
         }
     }
 
-    item(key = "credits-header") { SectionHeader(stringResource(R.string.section_credits)) }
+    item(key = "credits-header", contentType = FieldsContent.Header) {
+        SectionHeader(stringResource(R.string.section_credits))
+    }
     fieldGroup(CreditFields, draft, separator, onIntent)
 
-    item(key = "more-header") { SectionHeader(stringResource(R.string.section_more)) }
+    item(key = "more-header", contentType = FieldsContent.Header) {
+        SectionHeader(stringResource(R.string.section_more))
+    }
     fieldGroup(MoreFields, draft, separator, onIntent)
 
     val lyrics = draft.tags.first(TagField.Lyrics.key).orEmpty()
-    item(key = "lyrics-header") {
+    item(key = "lyrics-header", contentType = "lyrics-header") {
         SectionHeader(
             stringResource(R.string.section_lyrics),
             trailing = {
@@ -492,14 +524,14 @@ private fun LazyListScope.fields(
             },
         )
     }
-    if (Lrc.isSynced(lyrics)) {
-        item(key = "lyrics-synced") {
+    if (syncedLyrics) {
+        item(key = "lyrics-synced", contentType = "lyrics-synced") {
             Box(Modifier.padding(bottom = Spacing.small).animateItem()) {
                 LabelChip(stringResource(R.string.lyrics_synced), Icons.Rounded.Schedule)
             }
         }
     }
-    item(key = TagField.Lyrics.key) {
+    item(key = TagField.Lyrics.key, contentType = FieldsContent.Text) {
         TagTextField(
             label = fieldLabel(TagField.Lyrics.key),
             value = lyrics,
@@ -512,9 +544,7 @@ private fun LazyListScope.fields(
         )
     }
 
-    val otherKeys =
-        (draft.tags.keys + draft.original.tags.keys).filter { it !in KnownKeys }.distinct().sorted()
-    item(key = "all-header") {
+    item(key = "all-header", contentType = "all-header") {
         var adding by rememberSaveable { mutableStateOf(false) }
         SectionHeader(
             stringResource(R.string.section_all_tags),
@@ -537,7 +567,7 @@ private fun LazyListScope.fields(
             )
         }
     }
-    item(key = "all-description") {
+    item(key = "all-description", contentType = "all-description") {
         Text(
             stringResource(R.string.all_tags_description),
             style = MaterialTheme.typography.bodySmall,
@@ -551,7 +581,7 @@ private fun LazyListScope.fields(
         )
     }
     otherKeys.forEachIndexed { index, key ->
-        item(key = "raw:$key") {
+        item(key = "raw:$key", contentType = FieldsContent.Chips) {
             TagChipsField(
                 label = key,
                 values = draft.tags[key],
@@ -646,8 +676,18 @@ private fun LazyListScope.fieldGroup(
     onIntent: (EditorIntent) -> Unit,
 ) {
     fields.forEachIndexed { index, field ->
-        item(key = field.key) {
-            FieldInput(field, draft, separator, GroupShapes.itemShape(index, fields.size), onIntent)
+        item(
+            key = field.key,
+            contentType = if (field.multiValue) FieldsContent.Chips else FieldsContent.Text,
+        ) {
+            FieldInput(
+                field = field,
+                values = draft.tags[field.key],
+                changed = draft.isChanged(field.key),
+                separator = separator,
+                shape = GroupShapes.itemShape(index, fields.size),
+                onIntent = onIntent,
+            )
         }
     }
 }
@@ -655,18 +695,18 @@ private fun LazyListScope.fieldGroup(
 @Composable
 private fun FieldInput(
     field: TagField,
-    draft: TagDraft,
+    values: List<String>,
+    changed: Boolean,
     separator: String,
     shape: RoundedCornerShape,
     onIntent: (EditorIntent) -> Unit,
 ) {
     val label = fieldLabel(field.key)
-    val changed = draft.isChanged(field.key)
     val revert = { onIntent(EditorIntent.Revert(listOf(field.key))) }
     if (field.multiValue) {
         TagChipsField(
             label = label,
-            values = draft.tags[field.key],
+            values = values,
             onValuesChange = { onIntent(EditorIntent.SetField(field.key, it)) },
             changed = changed,
             onRevert = revert,
@@ -677,7 +717,7 @@ private fun FieldInput(
     } else {
         TagTextField(
             label = label,
-            value = draft.tags.first(field.key).orEmpty(),
+            value = values.firstOrNull().orEmpty(),
             onValueChange = { onIntent(EditorIntent.SetField(field.key, listOf(it))) },
             changed = changed,
             onRevert = revert,

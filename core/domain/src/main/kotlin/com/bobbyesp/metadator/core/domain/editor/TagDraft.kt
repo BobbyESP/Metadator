@@ -19,8 +19,9 @@ data class TagDraft(
     val tags: TagMap = original.tags,
     val artwork: ArtworkChange = ArtworkChange.Unchanged,
 ) {
-    val changes: TagChanges
-        get() = TagChanges(fields = diff(original.tags, tags), artwork = artwork)
+    val changes: TagChanges by lazy {
+        TagChanges(fields = diff(original.tags, tags), artwork = artwork)
+    }
 
     val isDirty: Boolean
         get() = !changes.isEmpty
