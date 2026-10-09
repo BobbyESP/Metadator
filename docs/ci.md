@@ -42,8 +42,9 @@ added or renamed, and a job that was skipped or cancelled does not count as pass
 ## Release (`release.yml`)
 
 Started by hand from the Actions tab, on the branch or tag to release. It runs the CI workflow
-first, then builds `:app:assembleFossRelease` and `:app:assemblePlaystoreRelease` and keeps the
-APKs as the `metadator-release` artifact.
+first, then builds `:app:assembleFossRelease` and `:app:bundlePlaystoreRelease` and keeps the FOSS
+APK and the playstore app bundle (`.aab`, the only format Google Play takes) as the
+`metadator-release` artifact.
 
 | Secret | What |
 |---|---|
@@ -64,10 +65,10 @@ CLI. It checks the password with `keytool` first and reads the alias from the ke
 key whose password is not the keystore's, and `-PrintOnly` prints the values instead of setting
 them.
 
-The workflow stops before building when a signing secret is missing, and fails when an APK comes
-out unsigned: without a keystore Gradle builds unsigned APKs and reports success. Without
-`GOOGLE_SERVICES_JSON_BASE64` it warns and builds the playstore APK without Crashlytics, as a fork
-would.
+The workflow stops before building when a signing secret is missing, and fails when the APK or the
+bundle comes out unsigned: without a keystore Gradle builds them unsigned and reports success.
+Without `GOOGLE_SERVICES_JSON_BASE64` it warns and builds the playstore bundle without Crashlytics,
+as a fork would.
 
 ## Changing a workflow
 

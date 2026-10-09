@@ -1,6 +1,7 @@
 name: Release
 
-# Builds the signed release APKs of the chosen branch or tag and keeps them as an artifact.
+# Builds the signed release of the chosen branch or tag, the FOSS APK and the Google Play app
+# bundle, and keeps them as an artifact.
 # Needs the secrets SIGNING_KEY_STORE_BASE64, SIGNING_STORE_PASSWORD, SIGNING_KEY_ALIAS and
 # SIGNING_KEY_PASSWORD, and optionally GOOGLE_SERVICES_JSON_BASE64 for the playstore flavor.
 on:
@@ -20,7 +21,7 @@ jobs:
     uses: ./.github/workflows/ci.yml
 
   release:
-    name: Signed release APKs
+    name: Signed release
     needs: checks
     runs-on: ubuntu-24.04
     timeout-minutes: 45
@@ -30,7 +31,7 @@ jobs:
       SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
       SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
     steps:
-      # Without a keystore the build succeeds and leaves unsigned APKs: stop before that.
+      # Without a keystore the build succeeds and leaves them unsigned: stop before that.
       - name: Check the signing secrets
         run: |
           missing=0
@@ -62,23 +63,32 @@ jobs:
           if [ -n "$GOOGLE_SERVICES_JSON_BASE64" ]; then
             base64 -d <<< "$GOOGLE_SERVICES_JSON_BASE64" > app/google-services.json
           else
-            echo "::warning::GOOGLE_SERVICES_JSON_BASE64 is not set: the playstore APK is built without Crashlytics."
+            echo "::warning::GOOGLE_SERVICES_JSON_BASE64 is not set: the playstore bundle is built without Crashlytics."
           fi
 
+      # Google Play only takes an app bundle.
       - name: Build
-        run: ./gradlew :app:assembleFossRelease :app:assemblePlaystoreRelease
+        run: ./gradlew :app:assembleFossRelease :app:bundlePlaystoreRelease
 
-      - name: Check that the APKs are signed
+      # An unsigned bundle keeps its name, so it is told apart by its missing signature file.
+      - name: Check that the APK and the bundle are signed
         run: |
           unsigned=$(find app/build/outputs/apk -name '*-unsigned.apk')
+          while IFS= read -r bundle; do
+            if ! unzip -Z1 "$bundle" | grep -qE '^META-INF/.+\.(RSA|DSA|EC)$'; then
+              unsigned="$unsigned $bundle"
+            fi
+          done < <(find app/build/outputs/bundle -name '*.aab')
           if [ -n "$unsigned" ]; then
-            echo "::error::Unsigned APKs: $unsigned"
+            echo "::error::Unsigned: $unsigned"
             exit 1
           fi
 
-      - name: Upload the APKs
+      - name: Upload the APK and the bundle
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: metadator-release
-          path: app/build/outputs/apk/*/release/*.apk
+          path: |
+            app/build/outputs/apk/foss/release/*.apk
+            app/build/outputs/bundle/playstoreRelease/*.aab
           if-no-files-found: error
