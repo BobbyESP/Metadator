@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.Undo
@@ -133,9 +134,14 @@ internal fun BatchScreen(state: BatchState, onIntent: (BatchIntent) -> Unit, onC
                     modifier = Modifier.readableWidth().padding(bottom = Spacing.small),
                 )
             }
-            BatchViewModel.EditableFields.forEach { field ->
-                item(key = field.key) { BatchField(field, state, onIntent) }
+            items(
+                items = BatchViewModel.EditableFields,
+                key = { it.key },
+                contentType = { "batch_field" },
+            ) { field ->
+                BatchField(field, state, onIntent)
             }
+
             item { SectionHeader(stringResource(R.string.batch_cover), Modifier.readableWidth()) }
             item {
                 CoverChoice(
@@ -233,11 +239,13 @@ private fun CoverChoice(
                     ArtworkImage(cover.picture.data, null, Modifier.size(72.dp))
                     Text(stringResource(R.string.batch_cover_will_replace), Modifier.weight(1f))
                 }
+
             ArtworkChange.Remove ->
                 Text(
                     stringResource(R.string.batch_cover_will_remove),
                     color = MaterialTheme.colorScheme.error,
                 )
+
             ArtworkChange.Unchanged -> Unit
         }
         FlowRow(horizontalArrangement = Arrangement.spacedBy(Spacing.small)) {
@@ -311,7 +319,6 @@ private fun Tools(state: BatchState, onIntent: (BatchIntent) -> Unit) {
                 }
             }
             state.patternPreview.forEach { (name, parsed) ->
-                // Labels first: a composable cannot be called from joinToString's lambda.
                 val described =
                     parsed?.entries?.map { (key, values) ->
                         fieldLabel(key) to values.joinToString()

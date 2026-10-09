@@ -66,11 +66,10 @@ fun MetadatorApp(onExit: () -> Unit) {
     val listDetail = rememberListDetailSceneStrategy<NavKey>(directive = paneDirective())
     val strategies =
         remember(overlay, listDetail) { listOf(overlay, listDetail.sharingTheWindow()) }
-    // Remembered: entries are equal only while their content is the same instance, and a back
-    // gesture let go is finished only if the scene it was showing still equals the one it ends on.
+
     val entries =
         remember(navigator) {
-            entryProvider<NavKey> {
+            entryProvider {
                 librarySection(navigator)
                 editorSection(navigator)
                 batchSection(navigator)
@@ -79,7 +78,7 @@ fun MetadatorApp(onExit: () -> Unit) {
         }
     val snackbarHostState = LocalSnackbarHostState.current
 
-    // The player belongs to browsing; the editors have their own controls and need the room.
+    // the player belongs to browsing. the editors have their own controls and need the room.
     val top = backStack.lastOrNull()
     val showPlayer = top == Library || top is Collection
     val playback by koinInject<PlayerController>().state.collectAsStateWithLifecycle()
@@ -91,25 +90,20 @@ fun MetadatorApp(onExit: () -> Unit) {
             label = "SnackbarClearance",
         )
 
-    // The player is not a destination, so it is not told how much room it has as one is: the shell
-    // measures the window for it.
     val window = LocalWindowInfo.current.containerSize
     val playerLayout =
         with(LocalDensity.current) {
             PlayerLayout.forWindow(width = window.width.toDp(), height = window.height.toDp())
         }
     val playerExpansion = rememberPlayerSheetExpansion()
-    // The screens, recorded for what floats over all of them to blur: their menus, and the bar of
-    // the player, which is their sibling here.
+
     val backdrop = rememberHazeState()
-    // Nothing once the player covers the screen: it is opaque, and what is behind it would be
-    // blurred again on every frame for nobody to see.
+
     val behindPlayer =
         remember(playerExpansion) { { playerExpansion.fraction.let { if (it < 1f) it else 0f } } }
 
     Surface(color = MaterialTheme.colorScheme.surface) {
         Box(Modifier.fillMaxSize()) {
-            // Everything the player opens over goes out of focus as it does.
             Box(Modifier.fillMaxSize().outOfFocus(behindPlayer, MaterialTheme.colorScheme.scrim)) {
                 CompositionLocalProvider(LocalBackdropHaze provides backdrop) {
                     MetadatorNavDisplay(
@@ -128,7 +122,7 @@ fun MetadatorApp(onExit: () -> Unit) {
                             .padding(bottom = snackbarClearance),
                 )
             }
-            // Last, so that opened it covers everything, the snackbar included.
+
             PlayerSheet(
                 visible = showPlayer,
                 onEdit = { uri -> navigator.goTo(Editor(uri)) },

@@ -174,7 +174,6 @@ internal fun EditorScreen(
         }
     }
 
-    // Back with unsaved changes asks first; without them it leaves as usual.
     NavigationBackHandler(
         state = rememberNavigationEventState(currentInfo = NavigationEventInfo.None),
         isBackEnabled = state.isDirty,
@@ -253,7 +252,6 @@ internal fun EditorScreen(
 
                     BoxWithConstraints(Modifier.fillMaxSize().imePadding().hazeSource(haze)) {
                         if (maxWidth >= TwoColumnWidth) {
-                            // Wide: the cover and the file stay in view while the fields scroll.
                             Row(Modifier.fillMaxSize().padding(horizontal = Spacing.extraLarge)) {
                                 Column(
                                     Modifier.width(320.dp)
@@ -496,7 +494,6 @@ private fun LazyListScope.fields(
     }
     if (Lrc.isSynced(lyrics)) {
         item(key = "lyrics-synced") {
-            // Said, not pressed: a label, where a chip would ask to be tapped.
             Box(Modifier.padding(bottom = Spacing.small).animateItem()) {
                 LabelChip(stringResource(R.string.lyrics_synced), Icons.Rounded.Schedule)
             }
@@ -562,8 +559,6 @@ private fun LazyListScope.fields(
                 changed = draft.isChanged(key),
                 onRevert = { onIntent(EditorIntent.Revert(listOf(key))) },
                 separator = separator,
-                // No placement animation: a focused field stays composed out of view, and scrolled
-                // back to, it would travel to its place from wherever it was kept.
                 modifier = GroupGap.animateItem(placementSpec = null),
                 shape = GroupShapes.itemShape(index, otherKeys.size),
             )

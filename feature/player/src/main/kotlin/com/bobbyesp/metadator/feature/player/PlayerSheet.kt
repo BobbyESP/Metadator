@@ -155,8 +155,7 @@ fun PlayerSheet(
     }
 
     val motion = MaterialTheme.motionScheme
-    // The halo is the bar's alone: it goes as soon as the bar starts to open, since nothing blurs
-    // while the shared elements travel, and comes back once the bar is at rest again.
+
     val haloed = backdrop != null && MetadatorBlurDefaults.isHaloSupported
     val barAtRest by remember(sheet) { derivedStateOf { sheet.fraction == 0f } }
     val haloStrength by
@@ -208,8 +207,6 @@ fun PlayerSheet(
             val transition = rememberTransition(sheet.transition, label = "PlayerSheet")
             transition.AnimatedContent(
                 modifier = Modifier.fillMaxSize(),
-                // Nothing of its own: every pixel that moves is a shared element, and the content
-                // that is leaving has to stay until they have arrived.
                 transitionSpec = {
                     EnterTransition.None togetherWith ExitTransition.KeepUntilTransitionsFinished
                 },
@@ -217,13 +214,9 @@ fun PlayerSheet(
             ) { value ->
                 val scope = this
                 val isBar = value == PlayerSheetValue.Collapsed
-                // Whether this content is the one arriving. It is drawn over the one leaving, which
-                // stays solid underneath, so the surface is never see-through.
+
                 val arriving = scope.transition.targetState == EnterExitState.Visible
-                // Shapes are not animated by shared elements; a value of the same transition is.
-                // Each
-                // content asks what the sheet as a whole looks like at this point, whichever of the
-                // two it is: round while a bar, square once the screen.
+
                 val corner by
                     scope.transition.animateDp(
                         transitionSpec = {
@@ -250,9 +243,6 @@ fun PlayerSheet(
                     Modifier.sharedBounds(
                         sharedContentState = rememberSharedContentState(SharedKey.Container),
                         animatedVisibilityScope = scope,
-                        // The surface only: what is on it has a pace of its own. The screen's shows
-                        // up during the first half of the way up and holds through the first half
-                        // of the way down; the bar's takes the other half.
                         enter =
                             fadeIn(
                                 tween(
@@ -262,15 +252,11 @@ fun PlayerSheet(
                                 )
                             ),
                         exit = ExitTransition.None,
-                        // Linear: the surface's edge is what the finger holds.
                         boundsTransform = { _, _ -> timeline() },
                         zIndexInOverlay = if (arriving) 1f else 0f,
                         resizeMode = SharedTransitionScope.ResizeMode.RemeasureToBounds,
-                        // Also the clip of every shared element inside, which is their default.
                         clipInOverlayDuringTransition = OverlayClip(shape),
                     )
-                // The same picture in both: a shared element, of which only the arriving one is
-                // drawn.
                 val artwork =
                     Modifier.sharedElement(
                             sharedContentState = rememberSharedContentState(SharedKey.Artwork),
@@ -283,11 +269,6 @@ fun PlayerSheet(
                             scaleX = scale
                             scaleY = scale
                         }
-                // A line of text is scaled, not laid out again: it would wrap or cut differently
-                // at every width. By its height, from its start: the two are the same text at two
-                // sizes, so at the same height they are the same glyphs, and from the same edge
-                // they coincide for as long as both say the same, even where the bar's is cut
-                // short.
                 val text =
                     SharedTransitionScope.ResizeMode.scaleToBounds(
                         contentScale = ContentScale.FillHeight,
@@ -295,8 +276,6 @@ fun PlayerSheet(
                     )
                 val title = travellingText(SharedKey.Title, scope, text)
                 val artist = travellingText(SharedKey.Artist, scope, text)
-                // The button fills whatever bounds it is given, so the screen's laid out in the
-                // bar's bounds is the bar's: a shared element, as the cover is.
                 val playButton =
                     Modifier.sharedElement(
                         sharedContentState = rememberSharedContentState(SharedKey.PlayButton),
@@ -308,8 +287,6 @@ fun PlayerSheet(
                 when (value) {
                     PlayerSheetValue.Collapsed ->
                         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
-                            // The bar's place, which the halo is drawn around: outside the bar's
-                            // own way in and out, which would slide and fade the halo with it.
                             Box(
                                 Modifier.navigationBarsPadding()
                                     .padding(bottom = Spacing.medium)
@@ -317,8 +294,6 @@ fun PlayerSheet(
                                     .fillMaxWidth()
                                     .padding(horizontal = Spacing.medium)
                                     .then(
-                                        // Only while there is a halo to draw: the screens are
-                                        // recorded for as long as something blurs them.
                                         if (backdrop != null && (available || haloStrength > 0f)) {
                                             Modifier.blurHalo(
                                                 state = backdrop,
@@ -362,8 +337,6 @@ fun PlayerSheet(
                             }
                         }
                     PlayerSheetValue.Expanded -> {
-                        // Laid out for the whole screen from the start and kept where it will be:
-                        // the container's bounds open over it like a window.
                         val content =
                             container
                                 .skipToLookaheadSize()
