@@ -96,4 +96,29 @@ class LibraryQueriesTest {
         val albums = tracks.albums()
         assertEquals(listOf("Abbey Road", "Album"), albums.map { it.title })
     }
+
+    @Test
+    fun `an untagged folder album shared by several artists gives each artist its own key`() {
+        val download =
+            listOf(
+                track(1, "One", artist = "Artist A", album = "Download"),
+                track(2, "Two", artist = "Artist B", album = "Download"),
+                track(3, "Three", artist = "Artist A", album = "download"),
+            )
+        val albums = download.albums()
+        assertEquals(2, albums.size)
+        assertEquals(albums.size, albums.map { it.key }.distinct().size)
+    }
+
+    @Test
+    fun `a separator inside a name cannot make two albums share a key`() {
+        val albums =
+            listOf(
+                    track(1, "One", artist = "A:", album = "B"),
+                    track(2, "Two", artist = "A", album = ":B"),
+                )
+                .albums()
+        assertEquals(2, albums.size)
+        assertEquals(albums.size, albums.map { it.key }.distinct().size)
+    }
 }

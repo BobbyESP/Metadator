@@ -97,6 +97,9 @@ Versions are in `gradle/libs.versions.toml`; the app's version in the root `buil
 - No deprecated API: the build has no deprecation warnings, keep it so. Animate with the theme's
   `motionScheme`, not hand-written tweens. The player sheet and predictive back are the
   exceptions, and say why.
+- A lazy list item whose key is built from data gets it from `ItemKey.of` (`:core:model`), from
+  the same values the item is told apart by (for a collection, what it is grouped by). Never join
+  names into a key by hand: two items with the same key crash the list.
 - Regular expressions run on Android's engine (ICU), stricter than the JVM's the tests use: escape
   every literal `}` and `]`.
 

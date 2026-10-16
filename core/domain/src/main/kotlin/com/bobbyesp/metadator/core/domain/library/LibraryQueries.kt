@@ -4,6 +4,7 @@
 package com.bobbyesp.metadator.core.domain.library
 
 import com.bobbyesp.metadator.core.common.normalizedForComparison
+import com.bobbyesp.metadator.core.model.ItemKey
 import com.bobbyesp.metadator.core.model.SortOrder
 import com.bobbyesp.metadator.core.model.Track
 import com.bobbyesp.metadator.core.model.TrackCollection
@@ -71,16 +72,20 @@ fun List<Track>.sorted(order: SortOrder, locale: Locale = Locale.getDefault()): 
     return sortedWith(if (order.ascending) comparator else comparator.reversed())
 }
 
-/** Albums by album artist and title, so two albums called "Greatest Hits" stay apart. */
+/**
+ * Albums by album artist and title, so two albums called "Greatest Hits" stay apart. MediaStore
+ * names an untagged album after its folder and gives it one id for every artist in it, so neither
+ * the id nor the title alone tells albums apart.
+ */
 fun List<Track>.albums(): List<TrackCollection.Album> = filter {
     !it.album.isNullOrBlank()
 }
-    .groupBy { (it.albumArtist ?: it.artist).orEmpty().lowercase() to it.album!!.lowercase() }
-    .map { (_, tracks) ->
+    .groupBy { albumKey(it) }
+    .map { (key, tracks) ->
         val ordered = tracks.sortedWith(compareBy({ it.discNumber ?: 0 }, { it.trackNumber ?: 0 }))
         val first = ordered.first()
         TrackCollection.Album(
-            key = "album:${first.albumId}:${first.album}",
+            key = key,
             title = first.album!!,
             artist = first.albumArtist ?: first.artist,
             year = ordered.firstNotNullOfOrNull { it.year },
@@ -89,6 +94,13 @@ fun List<Track>.albums(): List<TrackCollection.Album> = filter {
     }
     .sortedWith(compareBy(Collator.getInstance()) { it.title })
 
+private fun albumKey(track: Track): String =
+    ItemKey.of(
+        "album",
+        (track.albumArtist ?: track.artist).orEmpty().lowercase(),
+        track.album!!.lowercase(),
+    )
+
 /** Artists by album artist when there is one, so features do not split an album's artist. */
 fun List<Track>.artists(): List<TrackCollection.Artist> = filter {
     !(it.albumArtist ?: it.artist).isNullOrBlank()
@@ -96,7 +108,7 @@ fun List<Track>.artists(): List<TrackCollection.Artist> = filter {
     .groupBy { (it.albumArtist ?: it.artist)!!.trim() }
     .map { (name, tracks) ->
         TrackCollection.Artist(
-            key = "artist:$name",
+            key = ItemKey.of("artist", name),
             title = name,
             tracks = tracks.sorted(SortOrder(TrackSort.Album)),
         )
@@ -108,7 +120,7 @@ fun List<Track>.folders(): List<TrackCollection.Folder> = groupBy {
 }
     .map { (folder, tracks) ->
         TrackCollection.Folder(
-            key = "folder:$folder",
+            key = ItemKey.of("folder", folder),
             title = folder.trimEnd('/').substringAfterLast('/').ifEmpty { folder.ifEmpty { "/" } },
             tracks = tracks.sorted(SortOrder(TrackSort.Title)),
         )

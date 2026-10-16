@@ -85,6 +85,7 @@ import com.bobbyesp.metadator.core.designsystem.component.TonalTextField
 import com.bobbyesp.metadator.core.designsystem.theme.GroupShapes
 import com.bobbyesp.metadator.core.designsystem.theme.Spacing
 import com.bobbyesp.metadator.core.domain.lookup.FieldProposal
+import com.bobbyesp.metadator.core.model.ItemKey
 import com.bobbyesp.metadator.core.ui.R as CoreUiR
 import com.bobbyesp.metadator.core.ui.component.ArtworkImage
 import com.bobbyesp.metadator.core.ui.component.fieldLabel
@@ -212,7 +213,7 @@ private fun SearchStage(
                 }
                 itemsIndexed(
                     status.candidates,
-                    key = { _, it -> it.providerId + it.id },
+                    key = { _, it -> ItemKey.of("candidate", it.providerId, it.id) },
                     contentType = { _, _ -> "candidate" },
                 ) { index, candidate ->
                     CandidateItem(
