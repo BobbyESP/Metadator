@@ -44,10 +44,10 @@
     <string name="separator_description">يُستخدم لدمج القيم ولتقسيم ما تلصقه</string>
     <string name="warn_small_cover">التحذير من الأغلفة الصغيرة</string>
     <string name="warn_small_cover_description">أقل من 500 × 500 بكسل</string>
-    <string name="history">سجلّ التراجع</string>
-    <string name="clear_history">محو سجلّ التراجع</string>
-    <string name="clear_history_description">يحتفظ Metadator بوسوم آخر 100 عملية حفظ حتى يمكن التراجع عنها</string>
-    <string name="history_cleared">تم محو سجلّ التراجع</string>
+    <string name="history">سجلّ التعديلات</string>
+    <string name="clear_history">محو سجلّ التعديلات</string>
+    <string name="clear_history_description">يحتفظ Metadator بوسوم آخر 100 عملية حفظ. تجد سجلّ كل أغنية في قائمة المحرّر</string>
+    <string name="history_cleared">تم محو سجلّ التعديلات</string>
 
     <!-- Online sources -->
     <string name="lookup_sources">المصادر</string>

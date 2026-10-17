@@ -111,4 +111,29 @@
     <string name="lookup_apply">चुने हुए इस्तेमाल करें</string>
     <string name="lookup_back">नतीजों पर वापस जाएं</string>
     <string name="lookup_applied">लागू हो गया। तैयार होने पर जांचें और सेव करें</string>
+
+    <!-- Edit history -->
+    <string name="history_title">बदलावों का इतिहास</string>
+    <string name="history_description">हर सेव से पहले, Metadator गाने की एक कॉपी रखता है, जैसा वह था। आप इनमें से किसी पर भी वापस जा सकते हैं।</string>
+    <string name="history_loading_failed">इतिहास लोड नहीं हो सका</string>
+    <string name="history_empty">अभी तक कुछ सेव नहीं हुआ। जब भी आप यह गाना सेव करेंगे, उससे पहले वह कैसा था, यहां दिखेगा।</string>
+    <string name="history_today">आज</string>
+    <string name="history_yesterday">कल</string>
+    <string name="history_cover">कवर</string>
+    <string name="history_cover_added">कवर जोड़ा गया</string>
+    <string name="history_cover_replaced">कवर बदला गया</string>
+    <string name="history_cover_removed">कवर हटाया गया</string>
+    <string name="history_no_changes">कोई बदलाव नहीं</string>
+    <string name="history_expanded">खुला हुआ</string>
+    <string name="history_collapsed">बंद</string>
+    <string name="history_changed_to">बदलकर</string>
+    <string name="history_restore">इस सेव से पहले जैसा करें</string>
+    <string name="history_restoring">वापस लाया जा रहा है…</string>
+    <string name="history_restore_title">इस सेव से पहले जैसा करें?</string>
+    <!-- %1$s is the date and time of the save -->
+    <string name="history_restore_description">टैग और कवर वैसे ही हो जाएंगे जैसे %1$s के सेव से पहले थे। उसके बाद के सेव भी पहले जैसे हो जाएंगे, और इसे भी आप इतिहास से पहले जैसा कर सकते हैं।</string>
+    <string name="history_restore_unsaved">आपके बिना सेव किए बदलाव खो जाएंगे।</string>
+    <string name="history_restore_confirm">पहले जैसा करें</string>
+    <string name="history_restored">पिछला वर्शन वापस लाया गया</string>
+    <string name="history_restore_failed">वह वर्शन वापस नहीं लाया जा सका</string>
 </resources>

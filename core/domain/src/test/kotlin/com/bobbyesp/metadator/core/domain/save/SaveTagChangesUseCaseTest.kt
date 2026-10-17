@@ -161,9 +161,9 @@ class SaveTagChangesUseCaseTest {
             )
                 as SaveOutcome.Saved
 
-        val restore = RestoreBackupUseCase(backups, files, indexer)
-        assertEquals(RestoreOutcome.Restored, restore(outcome.backupId))
+        val restore = RestoreBackupUseCase(backups, files, files, indexer)
+        assertTrue(restore(outcome.backupId) is RestoreOutcome.Restored)
         assertEquals(original, files.files.getValue(ref))
-        assertTrue(backups.backups.isEmpty())
+        assertTrue(outcome.backupId !in backups.backups)
     }
 }

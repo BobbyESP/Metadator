@@ -44,10 +44,10 @@
     <string name="separator_description">値をまとめるときと、貼り付けた内容を分割するときに使用します</string>
     <string name="warn_small_cover">小さいカバー画像を警告</string>
     <string name="warn_small_cover_description">500 × 500 px 未満</string>
-    <string name="history">元に戻す履歴</string>
-    <string name="clear_history">元に戻す履歴を消去</string>
-    <string name="clear_history_description">元に戻せるように、Metadator は直近 100 回の保存のタグを保持します</string>
-    <string name="history_cleared">元に戻す履歴を消去しました</string>
+    <string name="history">編集履歴</string>
+    <string name="clear_history">編集履歴を消去</string>
+    <string name="clear_history_description">Metadator は直近 100 回の保存のタグを保持します。各曲の履歴はエディタのメニューにあります</string>
+    <string name="history_cleared">編集履歴を消去しました</string>
 
     <!-- Online sources -->
     <string name="lookup_sources">ソース</string>

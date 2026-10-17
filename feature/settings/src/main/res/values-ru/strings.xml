@@ -44,10 +44,10 @@
     <string name="separator_description">Им объединяются значения и разделяется вставленный текст</string>
     <string name="warn_small_cover">Предупреждать о маленьких обложках</string>
     <string name="warn_small_cover_description">Меньше 500 × 500 пикс.</string>
-    <string name="history">История отмены</string>
-    <string name="clear_history">Очистить историю отмены</string>
-    <string name="clear_history_description">Metadator хранит теги 100 последних сохранений, чтобы их можно было отменить</string>
-    <string name="history_cleared">История отмены очищена</string>
+    <string name="history">История изменений</string>
+    <string name="clear_history">Очистить историю изменений</string>
+    <string name="clear_history_description">Metadator хранит теги 100 последних сохранений. История каждой песни — в меню редактора</string>
+    <string name="history_cleared">История изменений очищена</string>
 
     <!-- Online sources -->
     <string name="lookup_sources">Источники</string>

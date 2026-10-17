@@ -238,7 +238,7 @@ class BatchViewModel(
     private fun undoAll() {
         val backups = currentState.progress?.backups.orEmpty()
         launch {
-            val restored = backups.count { restore(it) == RestoreOutcome.Restored }
+            val restored = backups.count { restore(it) is RestoreOutcome.Restored }
             showMessage(UiMessage(strings.plural(R.plurals.batch_undone, restored, restored)))
             runner.clear()
             sendEffect(BatchEffect.Close)

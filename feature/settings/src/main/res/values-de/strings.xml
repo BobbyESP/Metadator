@@ -44,10 +44,10 @@
     <string name="separator_description">Verbindet Werte und trennt, was du einfügst</string>
     <string name="warn_small_cover">Vor kleinen Covern warnen</string>
     <string name="warn_small_cover_description">Unter 500 × 500 px</string>
-    <string name="history">Rückgängig-Verlauf</string>
-    <string name="clear_history">Rückgängig-Verlauf löschen</string>
-    <string name="clear_history_description">Metadator bewahrt die Tags deiner letzten 100 Speichervorgänge auf, damit sie rückgängig gemacht werden können</string>
-    <string name="history_cleared">Rückgängig-Verlauf gelöscht</string>
+    <string name="history">Bearbeitungsverlauf</string>
+    <string name="clear_history">Bearbeitungsverlauf löschen</string>
+    <string name="clear_history_description">Metadator bewahrt die Tags deiner letzten 100 Speichervorgänge auf. Den Verlauf jedes Songs findest du im Menü des Editors</string>
+    <string name="history_cleared">Bearbeitungsverlauf gelöscht</string>
 
     <!-- Online sources -->
     <string name="lookup_sources">Quellen</string>

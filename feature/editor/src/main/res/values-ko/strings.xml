@@ -111,4 +111,29 @@
     <string name="lookup_apply">선택 항목 사용</string>
     <string name="lookup_back">검색결과로 돌아가기</string>
     <string name="lookup_applied">적용했습니다. 확인한 후 저장하세요</string>
+
+    <!-- Edit history -->
+    <string name="history_title">편집 기록</string>
+    <string name="history_description">Metadator는 저장할 때마다 저장 전 곡의 사본을 보관합니다. 언제든 그 상태로 되돌릴 수 있습니다.</string>
+    <string name="history_loading_failed">기록을 불러오지 못했습니다</string>
+    <string name="history_empty">아직 저장한 적이 없습니다. 이 곡을 저장할 때마다 저장 전 상태가 여기에 표시됩니다.</string>
+    <string name="history_today">오늘</string>
+    <string name="history_yesterday">어제</string>
+    <string name="history_cover">커버</string>
+    <string name="history_cover_added">커버 추가됨</string>
+    <string name="history_cover_replaced">커버 변경됨</string>
+    <string name="history_cover_removed">커버 삭제됨</string>
+    <string name="history_no_changes">변경사항 없음</string>
+    <string name="history_expanded">펼침</string>
+    <string name="history_collapsed">접힘</string>
+    <string name="history_changed_to">에서 변경:</string>
+    <string name="history_restore">이 저장 이전으로 되돌리기</string>
+    <string name="history_restoring">복원 중…</string>
+    <string name="history_restore_title">이 저장 이전으로 되돌릴까요?</string>
+    <!-- %1$s is the date and time of the save -->
+    <string name="history_restore_description">태그와 커버가 %1$s 저장 이전 상태로 돌아갑니다. 이후의 저장도 취소되며, 이 작업도 기록에서 취소할 수 있습니다.</string>
+    <string name="history_restore_unsaved">저장하지 않은 변경사항은 사라집니다.</string>
+    <string name="history_restore_confirm">되돌리기</string>
+    <string name="history_restored">이전 버전을 복원했습니다</string>
+    <string name="history_restore_failed">해당 버전을 복원하지 못했습니다</string>
 </resources>

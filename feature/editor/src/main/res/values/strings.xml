@@ -112,4 +112,31 @@
     <string name="lookup_apply">Use selected</string>
     <string name="lookup_back">Back to results</string>
     <string name="lookup_applied">Applied. Review and save when ready</string>
+
+    <!-- Edit history -->
+    <string name="history_title">Edit history</string>
+    <string name="history_description">Before every save, Metadator keeps a copy of the song as it was. You can go back to any of them.</string>
+    <string name="history_loading_failed">Couldn\'t load the history</string>
+    <string name="history_empty">No saves yet. Each time you save this song, how it was before shows up here.</string>
+    <string name="history_today">Today</string>
+    <string name="history_yesterday">Yesterday</string>
+    <string name="history_cover">Cover</string>
+    <string name="history_cover_added">Cover added</string>
+    <string name="history_cover_replaced">Cover replaced</string>
+    <string name="history_cover_removed">Cover removed</string>
+    <!-- The first fields a save changed, then how many more it changed -->
+    <string name="history_more" translatable="false">%1$s +%2$d</string>
+    <string name="history_no_changes">Nothing changed</string>
+    <string name="history_expanded">Expanded</string>
+    <string name="history_collapsed">Collapsed</string>
+    <string name="history_changed_to">changed to</string>
+    <string name="history_restore">Go back to before this save</string>
+    <string name="history_restoring">Restoring…</string>
+    <string name="history_restore_title">Go back to before this save?</string>
+    <!-- %1$s is the date and time of the save -->
+    <string name="history_restore_description">The tags and cover return to how they were before the save of %1$s. Later saves are undone too, and you can undo this from the history as well.</string>
+    <string name="history_restore_unsaved">Your unsaved changes will be lost.</string>
+    <string name="history_restore_confirm">Go back</string>
+    <string name="history_restored">Earlier version restored</string>
+    <string name="history_restore_failed">Couldn\'t restore that version</string>
 </resources>

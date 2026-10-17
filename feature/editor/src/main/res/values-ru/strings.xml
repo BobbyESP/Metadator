@@ -111,4 +111,29 @@
     <string name="lookup_apply">Применить выбранное</string>
     <string name="lookup_back">Назад к результатам</string>
     <string name="lookup_applied">Применено. Проверьте и сохраните, когда будете готовы</string>
+
+    <!-- Edit history -->
+    <string name="history_title">История изменений</string>
+    <string name="history_description">Перед каждым сохранением Metadator хранит копию песни в прежнем виде. К любой из них можно вернуться.</string>
+    <string name="history_loading_failed">Не удалось загрузить историю</string>
+    <string name="history_empty">Сохранений пока нет. Каждый раз, когда вы сохраняете эту песню, здесь появляется её прежний вид.</string>
+    <string name="history_today">Сегодня</string>
+    <string name="history_yesterday">Вчера</string>
+    <string name="history_cover">Обложка</string>
+    <string name="history_cover_added">Обложка добавлена</string>
+    <string name="history_cover_replaced">Обложка заменена</string>
+    <string name="history_cover_removed">Обложка удалена</string>
+    <string name="history_no_changes">Без изменений</string>
+    <string name="history_expanded">Развёрнуто</string>
+    <string name="history_collapsed">Свёрнуто</string>
+    <string name="history_changed_to">изменено на</string>
+    <string name="history_restore">Вернуть как было до этого сохранения</string>
+    <string name="history_restoring">Восстановление…</string>
+    <string name="history_restore_title">Вернуть как было до этого сохранения?</string>
+    <!-- %1$s is the date and time of the save -->
+    <string name="history_restore_description">Теги и обложка станут такими, какими были до сохранения %1$s. Более поздние сохранения тоже отменятся, а это действие можно отменить из истории.</string>
+    <string name="history_restore_unsaved">Несохранённые изменения будут потеряны.</string>
+    <string name="history_restore_confirm">Вернуть</string>
+    <string name="history_restored">Предыдущая версия восстановлена</string>
+    <string name="history_restore_failed">Не удалось восстановить эту версию</string>
 </resources>

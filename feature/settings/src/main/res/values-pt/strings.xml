@@ -44,10 +44,10 @@
     <string name="separator_description">Usado para juntar valores e para dividir o que você cola</string>
     <string name="warn_small_cover">Avisar sobre capas pequenas</string>
     <string name="warn_small_cover_description">Abaixo de 500 × 500 px</string>
-    <string name="history">Histórico de desfazer</string>
-    <string name="clear_history">Limpar o histórico de desfazer</string>
-    <string name="clear_history_description">O Metadator guarda as tags dos seus últimos 100 salvamentos para que possam ser desfeitos</string>
-    <string name="history_cleared">Histórico de desfazer limpo</string>
+    <string name="history">Histórico de edições</string>
+    <string name="clear_history">Limpar o histórico de edições</string>
+    <string name="clear_history_description">O Metadator guarda as tags dos seus últimos 100 salvamentos. O histórico de cada música está no menu do editor</string>
+    <string name="history_cleared">Histórico de edições limpo</string>
 
     <!-- Online sources -->
     <string name="lookup_sources">Fontes</string>

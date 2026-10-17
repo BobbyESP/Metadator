@@ -44,10 +44,10 @@
     <string name="separator_description">Serve a unire i valori e a dividere ciò che incolli</string>
     <string name="warn_small_cover">Avvisa per le copertine piccole</string>
     <string name="warn_small_cover_description">Sotto i 500 × 500 px</string>
-    <string name="history">Cronologia degli annullamenti</string>
-    <string name="clear_history">Cancella la cronologia degli annullamenti</string>
-    <string name="clear_history_description">Metadator conserva i tag dei tuoi ultimi 100 salvataggi per poterli annullare</string>
-    <string name="history_cleared">Cronologia degli annullamenti cancellata</string>
+    <string name="history">Cronologia modifiche</string>
+    <string name="clear_history">Cancella la cronologia modifiche</string>
+    <string name="clear_history_description">Metadator conserva i tag dei tuoi ultimi 100 salvataggi. La cronologia di ogni brano è nel menu dell\'editor</string>
+    <string name="history_cleared">Cronologia modifiche cancellata</string>
 
     <!-- Online sources -->
     <string name="lookup_sources">Fonti</string>

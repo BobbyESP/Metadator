@@ -111,4 +111,29 @@
     <string name="lookup_apply">Usar lo seleccionado</string>
     <string name="lookup_back">Volver a los resultados</string>
     <string name="lookup_applied">Aplicado. Revisa y guarda cuando quieras</string>
+
+    <!-- Edit history -->
+    <string name="history_title">Historial de edición</string>
+    <string name="history_description">Antes de cada guardado, Metadator guarda una copia de la canción tal como estaba. Puedes volver a cualquiera de ellas.</string>
+    <string name="history_loading_failed">No se pudo cargar el historial</string>
+    <string name="history_empty">Aún no hay guardados. Cada vez que guardes esta canción, aquí aparecerá cómo estaba antes.</string>
+    <string name="history_today">Hoy</string>
+    <string name="history_yesterday">Ayer</string>
+    <string name="history_cover">Portada</string>
+    <string name="history_cover_added">Portada añadida</string>
+    <string name="history_cover_replaced">Portada cambiada</string>
+    <string name="history_cover_removed">Portada quitada</string>
+    <string name="history_no_changes">Sin cambios</string>
+    <string name="history_expanded">Desplegado</string>
+    <string name="history_collapsed">Plegado</string>
+    <string name="history_changed_to">cambió a</string>
+    <string name="history_restore">Volver a antes de este guardado</string>
+    <string name="history_restoring">Restaurando…</string>
+    <string name="history_restore_title">¿Volver a antes de este guardado?</string>
+    <!-- %1$s is the date and time of the save -->
+    <string name="history_restore_description">Las etiquetas y la portada vuelven a como estaban antes del guardado del %1$s. Los guardados posteriores también se deshacen, y esto también se puede deshacer desde el historial.</string>
+    <string name="history_restore_unsaved">Se perderán los cambios sin guardar.</string>
+    <string name="history_restore_confirm">Volver</string>
+    <string name="history_restored">Versión anterior restaurada</string>
+    <string name="history_restore_failed">No se pudo restaurar esa versión</string>
 </resources>

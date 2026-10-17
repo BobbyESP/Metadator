@@ -111,4 +111,29 @@
     <string name="lookup_apply">Auswahl übernehmen</string>
     <string name="lookup_back">Zurück zu den Ergebnissen</string>
     <string name="lookup_applied">Übernommen. Prüfe die Angaben und speichere dann</string>
+
+    <!-- Edit history -->
+    <string name="history_title">Bearbeitungsverlauf</string>
+    <string name="history_description">Vor jedem Speichern bewahrt Metadator eine Kopie des Songs auf, wie er war. Du kannst zu jeder davon zurückkehren.</string>
+    <string name="history_loading_failed">Verlauf konnte nicht geladen werden</string>
+    <string name="history_empty">Noch nichts gespeichert. Jedes Mal, wenn du diesen Song speicherst, erscheint hier, wie er vorher war.</string>
+    <string name="history_today">Heute</string>
+    <string name="history_yesterday">Gestern</string>
+    <string name="history_cover">Cover</string>
+    <string name="history_cover_added">Cover hinzugefügt</string>
+    <string name="history_cover_replaced">Cover ersetzt</string>
+    <string name="history_cover_removed">Cover entfernt</string>
+    <string name="history_no_changes">Keine Änderungen</string>
+    <string name="history_expanded">Ausgeklappt</string>
+    <string name="history_collapsed">Eingeklappt</string>
+    <string name="history_changed_to">geändert zu</string>
+    <string name="history_restore">Zum Stand vor diesem Speichern</string>
+    <string name="history_restoring">Wird wiederhergestellt…</string>
+    <string name="history_restore_title">Zum Stand vor diesem Speichern zurückkehren?</string>
+    <!-- %1$s is the date and time of the save -->
+    <string name="history_restore_description">Tags und Cover werden wieder so, wie sie vor dem Speichern am %1$s waren. Spätere Speichervorgänge werden ebenfalls rückgängig gemacht, und auch das kannst du im Verlauf rückgängig machen.</string>
+    <string name="history_restore_unsaved">Deine nicht gespeicherten Änderungen gehen verloren.</string>
+    <string name="history_restore_confirm">Zurückkehren</string>
+    <string name="history_restored">Frühere Version wiederhergestellt</string>
+    <string name="history_restore_failed">Diese Version konnte nicht wiederhergestellt werden</string>
 </resources>

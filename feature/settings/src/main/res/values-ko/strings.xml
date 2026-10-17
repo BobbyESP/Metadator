@@ -44,10 +44,10 @@
     <string name="separator_description">값을 합칠 때와 붙여넣은 내용을 나눌 때 사용됩니다</string>
     <string name="warn_small_cover">작은 커버 경고</string>
     <string name="warn_small_cover_description">500 × 500px 미만</string>
-    <string name="history">실행취소 기록</string>
-    <string name="clear_history">실행취소 기록 지우기</string>
-    <string name="clear_history_description">Metadator는 실행취소할 수 있도록 최근 100회 저장분의 태그를 보관합니다</string>
-    <string name="history_cleared">실행취소 기록을 지웠습니다</string>
+    <string name="history">편집 기록</string>
+    <string name="clear_history">편집 기록 지우기</string>
+    <string name="clear_history_description">Metadator는 최근 100회 저장분의 태그를 보관합니다. 각 곡의 기록은 편집기 메뉴에 있습니다</string>
+    <string name="history_cleared">편집 기록을 지웠습니다</string>
 
     <!-- Online sources -->
     <string name="lookup_sources">소스</string>

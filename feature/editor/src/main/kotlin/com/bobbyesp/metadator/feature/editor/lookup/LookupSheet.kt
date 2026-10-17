@@ -78,7 +78,6 @@ import com.bobbyesp.metadator.core.common.formatDuration
 import com.bobbyesp.metadator.core.designsystem.component.ItemIcon
 import com.bobbyesp.metadator.core.designsystem.component.LabelChip
 import com.bobbyesp.metadator.core.designsystem.component.SectionHeader
-import com.bobbyesp.metadator.core.designsystem.component.ShapedIcon
 import com.bobbyesp.metadator.core.designsystem.component.ToggleChip
 import com.bobbyesp.metadator.core.designsystem.component.TonalFieldDefaults
 import com.bobbyesp.metadator.core.designsystem.component.TonalTextField
@@ -90,6 +89,7 @@ import com.bobbyesp.metadator.core.ui.R as CoreUiR
 import com.bobbyesp.metadator.core.ui.component.ArtworkImage
 import com.bobbyesp.metadator.core.ui.component.fieldLabel
 import com.bobbyesp.metadator.feature.editor.R
+import com.bobbyesp.metadator.feature.editor.components.StateMessage
 import com.bobbyesp.metadator.lookup.api.LookupCandidate
 import com.bobbyesp.metadator.lookup.api.MatchConfidence
 
@@ -353,35 +353,6 @@ private fun SheetButton(
         Icon(icon, null, Modifier.size(ButtonDefaults.iconSizeFor(height)))
         Spacer(Modifier.width(ButtonDefaults.iconSpacingFor(height)))
         Text(text, style = ButtonDefaults.textStyleFor(height))
-    }
-}
-
-/** Why there are no results, under the shape the app's empty screens use. */
-@Composable
-private fun StateMessage(
-    icon: ImageVector,
-    text: String,
-    modifier: Modifier = Modifier,
-    isError: Boolean = false,
-) {
-    val colors = MaterialTheme.colorScheme
-    Column(
-        modifier = modifier.fillMaxWidth().padding(vertical = Spacing.extraLarge),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(Spacing.large),
-    ) {
-        ShapedIcon(
-            icon = icon,
-            size = 88.dp,
-            containerColor = if (isError) colors.errorContainer else colors.primaryContainer,
-            contentColor = if (isError) colors.onErrorContainer else colors.onPrimaryContainer,
-        )
-        Text(
-            text,
-            style = MaterialTheme.typography.bodyLarge,
-            color = colors.onSurfaceVariant,
-            textAlign = TextAlign.Center,
-        )
     }
 }
 

@@ -44,10 +44,10 @@
     <string name="separator_description">Used to join values and to split what you paste</string>
     <string name="warn_small_cover">Warn about small covers</string>
     <string name="warn_small_cover_description">Below 500 × 500 px</string>
-    <string name="history">Undo history</string>
-    <string name="clear_history">Clear undo history</string>
-    <string name="clear_history_description">Metadator keeps the tags of your last 100 saves so they can be undone</string>
-    <string name="history_cleared">Undo history cleared</string>
+    <string name="history">Edit history</string>
+    <string name="clear_history">Clear edit history</string>
+    <string name="clear_history_description">Metadator keeps the tags of your last 100 saves. Each song\'s history is in the editor\'s menu</string>
+    <string name="history_cleared">Edit history cleared</string>
 
     <!-- Online sources -->
     <string name="lookup_sources">Sources</string>

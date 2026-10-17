@@ -44,10 +44,10 @@
     <string name="separator_description">Gebruikt om waarden samen te voegen en om te splitsen wat je plakt</string>
     <string name="warn_small_cover">Waarschuwen voor kleine hoezen</string>
     <string name="warn_small_cover_description">Kleiner dan 500 × 500 px</string>
-    <string name="history">Geschiedenis voor ongedaan maken</string>
-    <string name="clear_history">Geschiedenis voor ongedaan maken wissen</string>
-    <string name="clear_history_description">Metadator bewaart de tags van je laatste 100 keer opslaan, zodat ze ongedaan kunnen worden gemaakt</string>
-    <string name="history_cleared">Geschiedenis voor ongedaan maken gewist</string>
+    <string name="history">Bewerkingsgeschiedenis</string>
+    <string name="clear_history">Bewerkingsgeschiedenis wissen</string>
+    <string name="clear_history_description">Metadator bewaart de tags van je laatste 100 keer opslaan. De geschiedenis van elk nummer staat in het menu van de editor</string>
+    <string name="history_cleared">Bewerkingsgeschiedenis gewist</string>
 
     <!-- Online sources -->
     <string name="lookup_sources">Bronnen</string>

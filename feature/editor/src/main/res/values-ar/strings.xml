@@ -111,4 +111,29 @@
     <string name="lookup_apply">استخدام المحدَّد</string>
     <string name="lookup_back">العودة إلى النتائج</string>
     <string name="lookup_applied">تم التطبيق. راجع ثم احفظ عندما تكون جاهزًا</string>
+
+    <!-- Edit history -->
+    <string name="history_title">سجلّ التعديلات</string>
+    <string name="history_description">قبل كل حفظ، يحتفظ Metadator بنسخة من الأغنية كما كانت. يمكنك العودة إلى أيٍّ منها.</string>
+    <string name="history_loading_failed">تعذّر تحميل السجلّ</string>
+    <string name="history_empty">لا توجد عمليات حفظ بعد. في كل مرة تحفظ فيها هذه الأغنية، تظهر هنا حالتها السابقة.</string>
+    <string name="history_today">اليوم</string>
+    <string name="history_yesterday">أمس</string>
+    <string name="history_cover">الغلاف</string>
+    <string name="history_cover_added">تمت إضافة الغلاف</string>
+    <string name="history_cover_replaced">تم استبدال الغلاف</string>
+    <string name="history_cover_removed">تمت إزالة الغلاف</string>
+    <string name="history_no_changes">لا تغييرات</string>
+    <string name="history_expanded">موسّع</string>
+    <string name="history_collapsed">مطويّ</string>
+    <string name="history_changed_to">تغيّر إلى</string>
+    <string name="history_restore">العودة إلى ما قبل هذا الحفظ</string>
+    <string name="history_restoring">جارٍ الاستعادة…</string>
+    <string name="history_restore_title">هل تريد العودة إلى ما قبل هذا الحفظ؟</string>
+    <!-- %1$s is the date and time of the save -->
+    <string name="history_restore_description">ستعود الوسوم والغلاف إلى ما كانت عليه قبل الحفظ في %1$s. كما سيتم التراجع عن عمليات الحفظ اللاحقة، ويمكنك التراجع عن ذلك من السجلّ أيضًا.</string>
+    <string name="history_restore_unsaved">ستفقد التغييرات غير المحفوظة.</string>
+    <string name="history_restore_confirm">عودة</string>
+    <string name="history_restored">تمت استعادة الإصدار السابق</string>
+    <string name="history_restore_failed">تعذّرت استعادة هذا الإصدار</string>
 </resources>

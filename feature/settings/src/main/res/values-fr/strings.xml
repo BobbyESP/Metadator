@@ -44,10 +44,10 @@
     <string name="separator_description">Sert à réunir les valeurs et à découper ce que vous collez</string>
     <string name="warn_small_cover">Signaler les petites pochettes</string>
     <string name="warn_small_cover_description">En dessous de 500 × 500 px</string>
-    <string name="history">Historique d\'annulation</string>
-    <string name="clear_history">Effacer l\'historique d\'annulation</string>
-    <string name="clear_history_description">Metadator conserve les tags de vos 100 derniers enregistrements pour pouvoir les annuler</string>
-    <string name="history_cleared">Historique d\'annulation effacé</string>
+    <string name="history">Historique des modifications</string>
+    <string name="clear_history">Effacer l\'historique des modifications</string>
+    <string name="clear_history_description">Metadator conserve les tags de vos 100 derniers enregistrements. L\'historique de chaque morceau se trouve dans le menu de l\'éditeur</string>
+    <string name="history_cleared">Historique des modifications effacé</string>
 
     <!-- Online sources -->
     <string name="lookup_sources">Sources</string>
