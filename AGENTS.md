@@ -99,7 +99,9 @@ Versions are in `gradle/libs.versions.toml`; the app's version in the root `buil
   exceptions, and say why.
 - A lazy list item whose key is built from data gets it from `ItemKey.of` (`:core:model`), from
   the same values the item is told apart by (for a collection, what it is grouped by). Never join
-  names into a key by hand: two items with the same key crash the list.
+  names into a key by hand: two items with the same key crash the list. Items that come from
+  outside the app (a network response) are made distinct by that key where they enter the domain:
+  services repeat items (MusicBrainz lists a release once per disc a recording is on).
 - Regular expressions run on Android's engine (ICU), stricter than the JVM's the tests use: escape
   every literal `}` and `]`.
 

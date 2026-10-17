@@ -109,7 +109,10 @@ class MusicBrainzProvider(
                             .thenByDescending { it.releaseGroup?.primaryType == "Album" }
                             .thenBy { it.releaseGroup?.secondaryTypes?.size ?: 0 }
                             .thenBy { it.date ?: "9999" }
+                            .thenBy { it.media.firstOrNull()?.position ?: Int.MAX_VALUE }
                     )
+                    // The search lists a release once per medium the recording is on.
+                    .distinctBy { it.id }
                     .take(RELEASES_PER_RECORDING)
 
             if (releases.isEmpty()) {

@@ -60,6 +60,42 @@ class MusicBrainzProviderTest {
     }
 
     @Test
+    fun `a release with the recording on several media gives one candidate`() = runTest {
+        val landspace =
+            """
+            {"recordings":[{"id":"ab7be9dd","title":"crossing field (CM SPOT)",
+              "artist-credit":[{"name":"LiSA"}],
+              "releases":[
+                {"id":"b5fe1a0e","title":"LANDSPACE","status":"Official",
+                 "media":[{"position":3,"format":"DVD-Video","track":[{"id":"t-dvd","number":"7"}]}]},
+                {"id":"b5fe1a0e","title":"LANDSPACE","status":"Official",
+                 "media":[{"position":2,"format":"Blu-ray","track":[{"id":"t-bd","number":"7"}]}]},
+                {"id":"other","title":"Other","status":"Official",
+                 "media":[{"position":1,"track":[{"id":"t-o","number":"1"}]}]}
+              ]}]}
+            """
+                .trimIndent()
+        val engine = MockEngine {
+            respond(
+                landspace,
+                HttpStatusCode.OK,
+                headersOf(HttpHeaders.ContentType, "application/json"),
+            )
+        }
+        val provider = MusicBrainzProvider(HttpClientFactory.create("test", engine))
+
+        val result =
+            provider.search(LookupQuery("crossing field (CM SPOT)", "LiSA")) as LookupResult.Success
+
+        assertEquals(
+            listOf("ab7be9dd/b5fe1a0e", "ab7be9dd/other"),
+            result.candidates.map { it.id }.sorted(),
+        )
+        val landspaceCandidate = result.candidates.first { it.album == "LANDSPACE" }
+        assertEquals(2, landspaceCandidate.discNumber)
+    }
+
+    @Test
     fun `quotes in queries are escaped`() {
         assertEquals(
             "recording:\"Say \\\"Hi\\\"\"",

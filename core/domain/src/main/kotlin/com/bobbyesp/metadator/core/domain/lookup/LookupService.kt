@@ -34,9 +34,11 @@ class LookupService(
         val results = coroutineScope {
             active.map { provider -> async { provider to provider.search(query) } }.awaitAll()
         }
-        val candidates = results.flatMap { (_, result) ->
-            (result as? LookupResult.Success)?.candidates.orEmpty()
-        }
+        // The results list is keyed by provider and id: a repeated one would crash it.
+        val candidates =
+            results
+                .flatMap { (_, result) -> (result as? LookupResult.Success)?.candidates.orEmpty() }
+                .distinctBy { it.providerId to it.id }
         val failed = results.filter { (_, result) -> result !is LookupResult.Success }
 
         return when {
