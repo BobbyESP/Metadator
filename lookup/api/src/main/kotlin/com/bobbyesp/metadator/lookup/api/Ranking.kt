@@ -65,6 +65,7 @@ private class QueryReading(
             .ifEmpty { listOfNotNull(artist) }
     val albumCore = album?.let(::albumCore)
     val variants = this.title.variants + markersIn(album) + markersIn(artist)
+    val detailWords = detailWords(this.title.decorations)
     val compilation = isCompilation(album, emptyList())
 }
 
@@ -76,9 +77,18 @@ private class CandidateView(val candidate: LookupCandidate) {
             it.normalizedForComparison()
         }
     val albumCore = candidate.album?.let(::albumCore)
+    /** What the provider says the recording is, as opposed to the release it is on. */
+    val recordingVariants = title.variants + versionVariants(candidate.version)
     val variants =
-        title.variants + markersIn(candidate.album) + candidate.artists.flatMap(::markersIn)
-    val compilation = isCompilation(candidate.album, candidate.albumArtists)
+        recordingVariants +
+            releaseVariants(
+                candidate.releaseTypes,
+                recordingDescribed = candidate.version != null,
+            ) +
+            markersIn(candidate.album) +
+            candidate.artists.flatMap(::markersIn)
+    val compilation = isCompilation(candidate.album, candidate.albumArtists, candidate.releaseTypes)
+    val detailWords = detailWords(title.decorations + candidate.version + candidate.album)
     val richness =
         with(candidate) {
             listOf(
@@ -153,6 +163,15 @@ private fun match(query: QueryReading, candidate: CandidateView): Double {
         add(ALBUM_WEIGHT, albumMatch)
     }
 
+    // Which performance: "Live From Radio City Music Hall" is not any live recording.
+    if (query.detailWords.isNotEmpty()) {
+        add(
+            DETAIL_WEIGHT,
+            query.detailWords.count { it in candidate.detailWords }.toDouble() /
+                query.detailWords.size,
+        )
+    }
+
     var factor = variantFactor(query.variants, candidate.variants)
 
     val queryDuration = query.durationMs
@@ -213,7 +232,7 @@ private fun sameRecording(a: CandidateView, b: CandidateView): Boolean {
     val isrcA = a.candidate.isrc
     val isrcB = b.candidate.isrc
     if (isrcA != null && isrcB != null) return isrcA.equals(isrcB, ignoreCase = true)
-    if (a.coreKey != b.coreKey || a.title.variants != b.title.variants) return false
+    if (a.coreKey != b.coreKey || a.recordingVariants != b.recordingVariants) return false
     val artistA = a.artists.firstOrNull() ?: return false
     val artistB = b.artists.firstOrNull() ?: return false
     if (artistSimilarity(artistA, artistB) < SAME_ARTIST) return false
@@ -228,6 +247,7 @@ private const val TITLE_WEIGHT = 0.45
 private const val ARTIST_WEIGHT = 0.3
 private const val ALBUM_WEIGHT = 0.1
 private const val DURATION_WEIGHT = 0.15
+private const val DETAIL_WEIGHT = 0.1
 
 /** A candidate without an album is neither the album asked for nor a different one. */
 private const val UNKNOWN_ALBUM = 0.5

@@ -52,6 +52,14 @@ providers listing the same recording (same ISRC, or same title, artist and durat
 no artist is also read as "Artist - Title", and a leading track number is ignored. Ties go to the
 candidate with more metadata, then to the earliest release.
 
+The version is read from the title and from the candidate's `version`, which a provider fills when
+the title does not say it: MusicBrainz gives every recording of a song the same title and tells
+them apart in `disambiguation` ("live, 2024-10: Radio City Music Hall", "Dolby Atmos mix"). Its
+release types count too (`Spokenword`, `DJ-mix`, `Compilation`), and `Live`, `Remix` and `Demo`
+only for a recording that does not describe itself. When the query names a performance, its words
+are looked for in the candidate's version and album, so "(Live From Radio City Music Hall)" finds
+that concert before any other live recording. The results sheet shows `version` under the title.
+
 Results, not exceptions: everything the user can cause or fix (no permission, file gone, format
 not supported, offline) is a sealed result the UI can explain.
 

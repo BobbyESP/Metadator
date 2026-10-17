@@ -384,6 +384,16 @@ private fun CandidateItem(
         trailingContent = { Icon(Icons.Rounded.ChevronRight, contentDescription = null) },
         supportingContent = {
             Column(verticalArrangement = Arrangement.spacedBy(Spacing.small)) {
+                // Several recordings can share a title; this is what tells them apart.
+                candidate.version?.let {
+                    Text(
+                        it,
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.primary,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                }
                 Text(candidate.summary(), maxLines = 2, overflow = TextOverflow.Ellipsis)
                 CandidateLabels(candidate)
             }

@@ -19,6 +19,8 @@ class RankingTest {
         isrc: String? = null,
         date: String? = null,
         artists: List<String> = listOf(artist),
+        version: String? = null,
+        releaseTypes: List<String> = emptyList(),
     ) =
         LookupCandidate(
             providerId = provider,
@@ -31,6 +33,8 @@ class RankingTest {
             durationMs = durationMs,
             isrc = isrc,
             date = date,
+            version = version,
+            releaseTypes = releaseTypes,
         )
 
     private fun ids(query: LookupQuery, vararg candidates: LookupCandidate) =
@@ -283,6 +287,128 @@ class RankingTest {
                 ),
             )
         assertTrue(ranked.all { it.score in 0.0..1.0 })
+    }
+
+    @Test
+    fun `the provider's version tells recordings with the same title apart`() {
+        val ranked =
+            ids(
+                LookupQuery(title = "Risk", artist = "Gracie Abrams"),
+                candidate(
+                    "live",
+                    "Risk",
+                    "Gracie Abrams",
+                    version = "live, 2024-10-04, Radio City Music Hall",
+                ),
+                candidate("video", "Risk", "Gracie Abrams", version = "music video"),
+                candidate("atmos", "Risk", "Gracie Abrams", version = "Dolby Atmos mix"),
+                candidate("studio", "Risk", "Gracie Abrams"),
+            )
+        assertEquals(listOf("studio", "atmos", "video", "live"), ranked)
+    }
+
+    @Test
+    fun `a Dolby Atmos mix is not a remix`() {
+        val atmos =
+            score(
+                LookupQuery("Risk", "Gracie Abrams"),
+                candidate("1", "Risk", "Gracie Abrams", version = "Dolby Atmos mix"),
+            )
+        assertTrue(atmos > 0.9)
+    }
+
+    @Test
+    fun `release types count, but a recording that describes itself wins`() {
+        val query = LookupQuery("Risk", "Gracie Abrams")
+        val interview =
+            candidate("1", "Risk", "Gracie Abrams", releaseTypes = listOf("Other", "Spokenword"))
+        val onLiveSingle =
+            candidate(
+                "2",
+                "Risk",
+                "Gracie Abrams",
+                version = "official lyric video",
+                releaseTypes = listOf("Single", "Live"),
+            )
+        val undescribedLive =
+            candidate("3", "Risk", "Gracie Abrams", releaseTypes = listOf("Album", "Live"))
+        val compilation =
+            candidate(
+                "4",
+                "Risk",
+                "Gracie Abrams",
+                album = "Cozy",
+                releaseTypes = listOf("Album", "Compilation"),
+            )
+
+        assertTrue(score(query, interview) < 0.5)
+        assertEquals(0.9, score(query, onLiveSingle), 0.001)
+        assertEquals(0.75, score(query, undescribedLive), 0.001)
+        assertEquals(0.92, score(query, compilation), 0.001)
+    }
+
+    @Test
+    fun `the details of a version pick the right performance`() {
+        val ranked =
+            ids(
+                LookupQuery("That's So True (Live From Radio City Music Hall)", "Gracie Abrams"),
+                candidate(
+                    "snl",
+                    "That's So True",
+                    "Gracie Abrams",
+                    version = "live: 2024-12-14, Saturday Night Live",
+                ),
+                candidate(
+                    "red-rocks",
+                    "That's So True (Apple Music Live)",
+                    "Gracie Abrams",
+                    album = "Apple Music Live: Gracie Abrams",
+                ),
+                candidate(
+                    "radio-city",
+                    "That's So True",
+                    "Gracie Abrams",
+                    version = "live, 2024-10: Radio City Music Hall, New York, USA",
+                ),
+            )
+        assertEquals("radio-city", ranked.first())
+    }
+
+    @Test
+    fun `covers credited in the title or the album are recognised`() {
+        val query = LookupQuery("That's So True", "Gracie Abrams")
+        listOf(
+                candidate(
+                    "1",
+                    "That's So True (Originally by Gracie Abrams) (Instrumental)",
+                    "StudiOke",
+                ),
+                candidate(
+                    "2",
+                    "That’s So True (By Gracie Abrams) (Instrumental Karaoke Version)",
+                    "ZZang KARAOKE",
+                ),
+                candidate(
+                    "3",
+                    "That's So True (Lower Key) [Originally Performed by Gracie Abrams] (Karaoke Version)",
+                    "karaoke SESH",
+                ),
+                candidate(
+                    "4",
+                    "That's So True",
+                    "Piano Dreamers",
+                    album = "Piano Dreamers Perform Gracie Abrams (Instrumental)",
+                ),
+                candidate(
+                    "5",
+                    "That's So True",
+                    "Acoustic Heartstrings",
+                    album = "Acoustic Guitar Renditions of Gracie Abrams",
+                ),
+            )
+            .forEach {
+                assertEquals(it.title, MatchConfidence.Low, MatchConfidence.of(score(query, it)))
+            }
     }
 
     @Test

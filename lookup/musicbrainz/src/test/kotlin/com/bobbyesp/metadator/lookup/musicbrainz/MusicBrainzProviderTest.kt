@@ -4,8 +4,10 @@
 package com.bobbyesp.metadator.lookup.musicbrainz
 
 import com.bobbyesp.metadator.core.network.HttpClientFactory
+import com.bobbyesp.metadator.lookup.api.LookupCandidate
 import com.bobbyesp.metadator.lookup.api.LookupQuery
 import com.bobbyesp.metadator.lookup.api.LookupResult
+import com.bobbyesp.metadator.lookup.api.MatchConfidence
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.respond
 import io.ktor.http.HttpHeaders
@@ -93,6 +95,93 @@ class MusicBrainzProviderTest {
         )
         val landspaceCandidate = result.candidates.first { it.album == "LANDSPACE" }
         assertEquals(2, landspaceCandidate.discNumber)
+    }
+
+    private suspend fun searchFixture(name: String, query: LookupQuery): List<LookupCandidate> {
+        val fixture = javaClass.getResource("/$name.json")!!.readText()
+        val engine = MockEngine {
+            respond(
+                fixture,
+                HttpStatusCode.OK,
+                headersOf(HttpHeaders.ContentType, "application/json"),
+            )
+        }
+        val provider = MusicBrainzProvider(HttpClientFactory.create("test", engine))
+        return (provider.search(query) as LookupResult.Success).candidates
+    }
+
+    // Fixtures are real MusicBrainz answers (October 2026), trimmed to the fields the app reads.
+
+    @Test
+    fun `the studio recording ranks above live, video and DJ-mix ones with the same title`() =
+        runTest {
+            val ranked =
+                searchFixture(
+                    "gracie-abrams-thats-so-true",
+                    LookupQuery("That's So True", "Gracie Abrams"),
+                )
+
+            assertEquals("explicit", ranked.first().version)
+            assertEquals(listOf("Album"), ranked.first().releaseTypes)
+            val studio = ranked.indexOfLast {
+                it.version == "explicit" && "Compilation" !in it.releaseTypes
+            }
+            val firstLive = ranked.indexOfFirst {
+                it.version.orEmpty().contains("live", ignoreCase = true)
+            }
+            assertTrue(studio < firstLive)
+            assertTrue(
+                ranked.filter { it.version.orEmpty().startsWith("live") }.all { it.score < 0.85 }
+            )
+            val djMix = ranked.first { it.album == "2025 MegaMix" }
+            assertEquals(listOf("Album", "DJ-mix"), djMix.releaseTypes)
+            assertTrue(djMix.score < 0.85)
+        }
+
+    @Test
+    fun `a live query finds that performance first`() = runTest {
+        val ranked =
+            searchFixture(
+                "gracie-abrams-thats-so-true",
+                LookupQuery("That's So True (Live From Radio City Music Hall)", "Gracie Abrams"),
+            )
+
+        val radioCity = ranked.indexOfLast { it.version.orEmpty().contains("Radio City") }
+        val redRocks = ranked.indexOfFirst { it.version.orEmpty().contains("Red Rocks") }
+        assertTrue(ranked.first().version.orEmpty().contains("Radio City"))
+        assertTrue(radioCity < redRocks)
+        assertTrue(ranked.take(redRocks).none { it.version == "explicit" })
+    }
+
+    @Test
+    fun `a live recording without a duration is still told apart`() = runTest {
+        val ranked =
+            searchFixture(
+                "gracie-abrams-i-love-you-im-sorry",
+                LookupQuery("I Love You, I'm Sorry", "Gracie Abrams", durationMs = 157_000),
+            )
+
+        assertEquals("explicit", ranked.first().version)
+        val fireAid = ranked.first { it.album.orEmpty().contains("FireAid") }
+        assertEquals(null, fireAid.durationMs)
+        assertTrue(MatchConfidence.of(fireAid.score) != MatchConfidence.High)
+        assertTrue(ranked.filter { it.version == "explicit" }.all { it.score > fireAid.score })
+    }
+
+    @Test
+    fun `one release of each name per recording`() = runTest {
+        val ranked =
+            searchFixture(
+                "gracie-abrams-thats-so-true",
+                LookupQuery("That's So True", "Gracie Abrams"),
+            )
+
+        val perRecording = ranked.groupBy { it.id.substringBefore('/') }
+        assertTrue(
+            perRecording.values.all { releases ->
+                releases.map { it.album }.distinct().size == releases.size
+            }
+        )
     }
 
     @Test

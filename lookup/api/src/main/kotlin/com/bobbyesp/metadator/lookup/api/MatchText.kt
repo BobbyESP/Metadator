@@ -32,7 +32,18 @@ private val ARTIST_SEPARATORS =
 
 /** A kind of recording that is not the one a plain title names, and how far it is from it. */
 internal enum class Variant(val penalty: Double, val phrases: List<String>) {
-    Karaoke(0.5, listOf("karaoke", "backing track", "minus one")),
+    Spoken(0.4, listOf("interview", "commentary", "spokenword", "spoken word", "audiobook")),
+    Karaoke(
+        0.5,
+        listOf(
+            "karaoke",
+            "backing track",
+            "backing tracks",
+            "minus one",
+            "lower key",
+            "higher key",
+        ),
+    ),
     Cover(
         0.55,
         listOf(
@@ -42,6 +53,12 @@ internal enum class Variant(val penalty: Double, val phrases: List<String>) {
             "as made famous",
             "in the style of",
             "originally performed by",
+            "originally by",
+            "covers",
+            "rendition",
+            "renditions",
+            "perform",
+            "performs",
         ),
     ),
     Altered(
@@ -62,7 +79,19 @@ internal enum class Variant(val penalty: Double, val phrases: List<String>) {
     Live(0.75, listOf("live", "en vivo", "en directo", "ao vivo", "dal vivo", "concert")),
     Remix(
         0.75,
-        listOf("remix", "remixed", "rmx", "club mix", "dub mix", "bootleg", "rework", "mix"),
+        listOf(
+            "remix",
+            "remixed",
+            "rmx",
+            "club mix",
+            "dub mix",
+            "dj mix",
+            "megamix",
+            "mashup",
+            "bootleg",
+            "rework",
+            "mix",
+        ),
     ),
     Acoustic(0.8, listOf("acoustic", "acustico", "acustica", "unplugged", "stripped")),
     Demo(
@@ -92,6 +121,25 @@ internal enum class Variant(val penalty: Double, val phrases: List<String>) {
             "short version",
         ),
     ),
+    Video(
+        0.9,
+        listOf(
+            "video",
+            "music video",
+            "lyric video",
+            "official video",
+            "official music video",
+            "official lyric video",
+            "visualizer",
+        ),
+    ),
+    /** Same performance, mixed for other speakers: a stereo file is not it. */
+    Spatial(
+        0.95,
+        listOf("dolby atmos", "dolby atmos mix", "atmos", "atmos mix", "spatial audio", "binaural"),
+    ),
+    /** A clean cut is rarely the one in a library: the album version is. */
+    Clean(0.95, listOf("clean", "clean version", "clean edit", "radio clean")),
     Mono(0.95, listOf("mono")),
     Remaster(
         0.97,
@@ -112,9 +160,10 @@ private val NEUTRAL_PHRASES =
         "main version",
         "explicit",
         "explicit version",
-        "clean",
-        "clean version",
+        "stereo",
         "bonus track",
+        "prod by",
+        "produced by",
     )
 
 /** Longest first, so "radio edit" is read before "edit" and "original mix" before "mix". */
@@ -123,7 +172,7 @@ private val PHRASES: List<Pair<String, Variant?>> =
             NEUTRAL_PHRASES.map { it to null })
         .sortedByDescending { it.first.length }
 
-private val STRONG_MARKERS = setOf(Variant.Karaoke, Variant.Cover, Variant.Altered)
+private val STRONG_MARKERS = setOf(Variant.Spoken, Variant.Karaoke, Variant.Cover, Variant.Altered)
 
 /**
  * The variants a decoration ("Live at Wembley", "2011 Remaster") names, or null when it is not a
@@ -131,7 +180,12 @@ private val STRONG_MARKERS = setOf(Variant.Karaoke, Variant.Cover, Variant.Alter
  */
 private fun classify(decoration: String): Set<Variant>? {
     var rest = " ${decoration.normalizedForComparison()} "
-    if (rest.startsWith(" from ")) return emptySet()
+
+    when {
+        rest.startsWith(" from ") -> return emptySet()
+        // "(By Gracie Abrams)" credits who a cover is of.
+        rest.startsWith(" by ") -> return setOf(Variant.Cover)
+    }
     val found = mutableSetOf<Variant>()
     var recognized = false
     for ((phrase, variant) in PHRASES) {
@@ -145,6 +199,30 @@ private fun classify(decoration: String): Set<Variant>? {
     if (found.isEmpty() && " version " in rest) found += Variant.Other
     return if (found.isEmpty() && !recognized) null else found
 }
+
+/** The variants a provider's own description of a recording names ("live, 2024-10-04: …"). */
+internal fun versionVariants(version: String?): Set<Variant> =
+    version?.takeIf { it.isNotBlank() }?.let(::classify).orEmpty()
+
+/**
+ * What a release's types say about its recordings. Whole-release kinds count always; "Live",
+ * "Remix" and "Demo" only for a recording that does not describe itself, since such releases often
+ * carry a studio cut too.
+ */
+internal fun releaseVariants(types: List<String>, recordingDescribed: Boolean): Set<Variant> =
+    types.mapNotNullTo(mutableSetOf()) { type ->
+        when (type.normalizedForComparison()) {
+            "spokenword",
+            "interview",
+            "audiobook",
+            "audio drama" -> Variant.Spoken
+            "dj mix" -> Variant.Remix
+            "live" -> Variant.Live.takeUnless { recordingDescribed }
+            "remix" -> Variant.Remix.takeUnless { recordingDescribed }
+            "demo" -> Variant.Demo.takeUnless { recordingDescribed }
+            else -> null
+        }
+    }
 
 /**
  * Karaoke, tribute and sped-up uploads often say so only in the album or the artist ("Ameritz
@@ -164,11 +242,14 @@ internal class TitleParts(
     val core: String,
     val variants: Set<Variant>,
     val featured: List<String>,
+    /** What was stripped as a version: "Live From Radio City Music Hall". */
+    val decorations: List<String>,
 )
 
 internal fun parseTitle(title: String): TitleParts {
     val variants = mutableSetOf<Variant>()
     val featured = mutableListOf<String>()
+    val decorations = mutableListOf<String>()
 
     fun strip(decoration: String): Boolean {
         FEATURING.matchEntire(decoration.trim())?.let {
@@ -176,6 +257,7 @@ internal fun parseTitle(title: String): TitleParts {
             return true
         }
         variants += classify(decoration) ?: return false
+        decorations += decoration
         return true
     }
 
@@ -190,8 +272,18 @@ internal fun parseTitle(title: String): TitleParts {
         featured += splitArtists(it.groupValues[1])
         core = core.substring(0, it.range.first)
     }
-    return TitleParts(title, core.trim().ifEmpty { title }, variants, featured)
+    return TitleParts(title, core.trim().ifEmpty { title }, variants, featured, decorations)
 }
+
+/** The words that say which performance or edition something is, without the filler. */
+internal fun detailWords(texts: List<String?>): Set<String> =
+    texts
+        .filterNotNull()
+        .flatMap { it.normalizedForComparison().split(' ') }
+        .filterTo(mutableSetOf()) { it.isNotEmpty() && it !in FILLER_WORDS }
+
+private val FILLER_WORDS =
+    setOf("the", "a", "an", "at", "from", "of", "in", "on", "and", "de", "en", "version")
 
 /** The album's name without its edition: "MAYHEM (Deluxe)" is "MAYHEM". */
 internal fun albumCore(album: String): String {
@@ -209,7 +301,12 @@ internal fun albumCore(album: String): String {
     return core.trim().ifEmpty { album }
 }
 
-internal fun isCompilation(album: String?, albumArtists: List<String>): Boolean {
+internal fun isCompilation(
+    album: String?,
+    albumArtists: List<String>,
+    releaseTypes: List<String> = emptyList(),
+): Boolean {
+    if (releaseTypes.any { it.normalizedForComparison() == "compilation" }) return true
     if (albumArtists.any { it.normalizedForComparison() in VARIOUS_ARTISTS }) return true
     if (album.isNullOrBlank()) return false
     val padded = " ${album.normalizedForComparison()} "

@@ -101,6 +101,7 @@ class MusicBrainzProvider(
 
         internal fun Recording.toCandidates(): List<LookupCandidate> {
             val artists = artistCredit.map { it.name }
+            val version = disambiguation?.takeIf { it.isNotBlank() }
             val genres = tags.sortedByDescending { it.count }.take(3).map { it.name.toTitleCase() }
             val releases =
                 releases
@@ -111,8 +112,10 @@ class MusicBrainzProvider(
                             .thenBy { it.date ?: "9999" }
                             .thenBy { it.media.firstOrNull()?.position ?: Int.MAX_VALUE }
                     )
-                    // The search lists a release once per medium the recording is on.
+                    // The search lists a release once per medium the recording is on, and the
+                    // same edition once per country or format: one of each name is enough.
                     .distinctBy { it.id }
+                    .distinctBy { it.title.trim().lowercase() }
                     .take(RELEASES_PER_RECORDING)
 
             if (releases.isEmpty()) {
@@ -122,6 +125,7 @@ class MusicBrainzProvider(
                         providerName = "MusicBrainz",
                         id = id,
                         title = title,
+                        version = version,
                         artists = artists,
                         date = firstReleaseDate,
                         genres = genres,
@@ -141,8 +145,12 @@ class MusicBrainzProvider(
                     providerName = "MusicBrainz",
                     id = "$id/${release.id}",
                     title = title,
+                    version = version,
                     artists = artists,
                     album = release.title,
+                    releaseTypes =
+                        listOfNotNull(release.releaseGroup?.primaryType) +
+                            release.releaseGroup?.secondaryTypes.orEmpty(),
                     albumArtists = release.artistCredit.map { it.name }.ifEmpty { artists },
                     date = release.date ?: firstReleaseDate,
                     trackNumber = track?.number?.toIntOrNull() ?: medium?.trackOffset?.plus(1),

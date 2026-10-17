@@ -12,6 +12,7 @@ import kotlinx.serialization.Serializable
 internal data class Recording(
     val id: String,
     val title: String,
+    val disambiguation: String? = null,
     val length: Long? = null,
     @SerialName("first-release-date") val firstReleaseDate: String? = null,
     @SerialName("artist-credit") val artistCredit: List<ArtistCredit> = emptyList(),

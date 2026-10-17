@@ -63,6 +63,13 @@ data class LookupCandidate(
     val artworkThumbnailUrl: String? = null,
     /** Provider ids worth keeping in the file, by tag key (MUSICBRAINZ_TRACKID…). */
     val identifiers: Map<String, String> = emptyMap(),
+    /**
+     * What sets this recording apart from others of the same song when the title does not say it:
+     * "live, 2024-10-04: Radio City Music Hall", "Dolby Atmos mix", "clean".
+     */
+    val version: String? = null,
+    /** What kind of release [album] is, in the provider's words: "Album", "Live", "Compilation". */
+    val releaseTypes: List<String> = emptyList(),
     /** How well this matches the query, from 0 to 1. Filled by [rank]. */
     val score: Double = 0.0,
 ) {
