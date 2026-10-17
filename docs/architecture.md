@@ -44,6 +44,14 @@ modification date and size. MediaStore's values always win; the file only fills 
 list, each candidate once by provider and id: the results sheet keys its rows by them, and a
 provider can repeat one (MusicBrainz lists a release once per disc the recording is on).
 
+Ranking (`rank`, `lookup:api`) only weighs what every provider can tell, so none is favoured:
+title, artist and album compared without their decorations ("(Remastered)", "(Deluxe Edition)",
+"feat. …"), every credited artist, duration, the version a title names (live, remix, karaoke,
+cover… against a song that is not one), compilations against the original release, and other
+providers listing the same recording (same ISRC, or same title, artist and duration). A query with
+no artist is also read as "Artist - Title", and a leading track number is ignored. Ties go to the
+candidate with more metadata, then to the earliest release.
+
 Results, not exceptions: everything the user can cause or fix (no permission, file gone, format
 not supported, offline) is a sealed result the UI can explain.
 

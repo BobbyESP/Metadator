@@ -54,6 +54,37 @@ class DeezerProviderTest {
     }
 
     @Test
+    fun `the search is plain words, with and without the album`() {
+        assertEquals(
+            listOf("Abracadabra Lady Gaga MAYHEM", "Abracadabra Lady Gaga"),
+            DeezerProvider.searchTexts(LookupQuery("Abracadabra", "Lady Gaga", "MAYHEM")),
+        )
+        assertEquals(listOf("Halo"), DeezerProvider.searchTexts(LookupQuery("Halo")))
+    }
+
+    @Test
+    fun `an empty search is retried with the title alone`() = runTest {
+        val queries = mutableListOf<String?>()
+        val engine = MockEngine { request ->
+            val q = request.url.parameters["q"]
+            queries += q
+            val body =
+                if (q == "us.")
+                    """{"data":[{"id":3,"title":"us.","artist":{"name":"Gracie Abrams"}}]}"""
+                else """{"data":[],"total":0}"""
+            respond(body, HttpStatusCode.OK, json)
+        }
+        val provider = DeezerProvider(HttpClientFactory.create("test", engine))
+
+        val result =
+            provider.search(LookupQuery("us.", "Gracie Abrams feat. Taylor Swift"))
+                as LookupResult.Success
+
+        assertEquals(listOf("us. Gracie Abrams feat. Taylor Swift", "us."), queries.filterNotNull())
+        assertEquals("3", result.candidates.single().id)
+    }
+
+    @Test
     fun `quota errors are rate limiting`() = runTest {
         val engine = MockEngine {
             respond(
