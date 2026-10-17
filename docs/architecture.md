@@ -25,7 +25,7 @@ or on another feature fails the build.
 ## Layers
 
 - **Domain** (`core:domain`): use cases and pure logic. `SaveTagChangesUseCase`,
-  `RestoreBackupUseCase`, `LoadTrackUseCase`, `LookupService`, `BatchRunner`, `TrackPositions`,
+  `RestoreBackupUseCase`, `LoadEditHistoryUseCase`, `LoadTrackUseCase`, `LookupService`, `BatchRunner`, `TrackPositions`,
   `FileNamePattern`, library filtering and grouping.
 - **Ports** (`*:api`): `TagReader`, `TagWriter`, `TagBackupStore`, `AudioLibrary`, `TrackTagCache`,
   `AudioFileOpener`, `AudioFileInfo`, `WriteAccess`, `MediaIndexer`, `MetadataProvider`,

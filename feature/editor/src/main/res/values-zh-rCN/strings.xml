@@ -111,4 +111,29 @@
     <string name="lookup_apply">使用所选内容</string>
     <string name="lookup_back">返回结果</string>
     <string name="lookup_applied">已应用。确认无误后保存即可</string>
+
+    <!-- Edit history -->
+    <string name="history_title">编辑记录</string>
+    <string name="history_description">每次保存前，Metadator 都会保留一份歌曲原先的副本。你可以回到其中任意一个。</string>
+    <string name="history_loading_failed">无法加载记录</string>
+    <string name="history_empty">还没有保存过。每次保存这首歌曲时，保存前的样子都会显示在这里。</string>
+    <string name="history_today">今天</string>
+    <string name="history_yesterday">昨天</string>
+    <string name="history_cover">封面</string>
+    <string name="history_cover_added">已添加封面</string>
+    <string name="history_cover_replaced">已更换封面</string>
+    <string name="history_cover_removed">已移除封面</string>
+    <string name="history_no_changes">没有变化</string>
+    <string name="history_expanded">已展开</string>
+    <string name="history_collapsed">已收起</string>
+    <string name="history_changed_to">改为</string>
+    <string name="history_restore">回到这次保存之前</string>
+    <string name="history_restoring">正在恢复…</string>
+    <string name="history_restore_title">要回到这次保存之前吗？</string>
+    <!-- %1$s is the date and time of the save -->
+    <string name="history_restore_description">标签和封面会恢复为 %1$s 保存之前的样子。之后的保存也会被撤销，你也可以在记录中撤销此操作。</string>
+    <string name="history_restore_unsaved">未保存的更改将会丢失。</string>
+    <string name="history_restore_confirm">回到之前</string>
+    <string name="history_restored">已恢复较早的版本</string>
+    <string name="history_restore_failed">无法恢复该版本</string>
 </resources>

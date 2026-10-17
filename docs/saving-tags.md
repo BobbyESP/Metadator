@@ -30,7 +30,18 @@ difference, `TagChanges`: changed keys (an empty list removes a key) and an `Art
 6. Reads again and reports changed keys the format did not store (`SaveOutcome.Saved.notStored`).
 7. Asks MediaStore to rescan the file, so the library and other players see the new tags.
 
-Undo (`RestoreBackupUseCase`) writes a backup back and rescans.
+## Undo and the edit history
+
+`RestoreBackupUseCase` writes a backup back and rescans. Restoring is a write like any other: the
+file as it is now is backed up first, so a restore can be undone too, and the backup restored is
+then dropped. Write access is asked for first, as for a save. Three places restore:
+- *Undo* in the snackbar after a save, or after a batch (every file of it).
+- *Edit history* in the editor's menu. `LoadEditHistoryUseCase` lists the song's backups, newest
+  first; since a backup is the file before a save, what that save changed is its difference to the
+  next version (the next backup, or the file now). The sheet shows the cover the song had, the
+  fields before and after, and whether the cover was added, replaced or removed. Going back to
+  before a save restores that backup, which undoes every later save as well; the dialog says so.
+- Settings only clears the history (*Clear edit history*).
 
 Multi-value fields are lists from the file to the chips in the editor, and in the batch editor, and
 back. The only place values are joined is the user's choice in Settings ("Join them into one

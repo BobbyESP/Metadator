@@ -111,4 +111,29 @@
     <string name="lookup_apply">Utiliser la sélection</string>
     <string name="lookup_back">Revenir aux résultats</string>
     <string name="lookup_applied">Appliqué. Vérifiez puis enregistrez quand vous voulez</string>
+
+    <!-- Edit history -->
+    <string name="history_title">Historique des modifications</string>
+    <string name="history_description">Avant chaque enregistrement, Metadator garde une copie du morceau tel qu\'il était. Vous pouvez revenir à n\'importe laquelle.</string>
+    <string name="history_loading_failed">Impossible de charger l\'historique</string>
+    <string name="history_empty">Aucun enregistrement pour l\'instant. Chaque fois que vous enregistrez ce morceau, son état précédent apparaît ici.</string>
+    <string name="history_today">Aujourd\'hui</string>
+    <string name="history_yesterday">Hier</string>
+    <string name="history_cover">Pochette</string>
+    <string name="history_cover_added">Pochette ajoutée</string>
+    <string name="history_cover_replaced">Pochette remplacée</string>
+    <string name="history_cover_removed">Pochette supprimée</string>
+    <string name="history_no_changes">Aucun changement</string>
+    <string name="history_expanded">Développé</string>
+    <string name="history_collapsed">Réduit</string>
+    <string name="history_changed_to">devient</string>
+    <string name="history_restore">Revenir avant cet enregistrement</string>
+    <string name="history_restoring">Restauration…</string>
+    <string name="history_restore_title">Revenir avant cet enregistrement ?</string>
+    <!-- %1$s is the date and time of the save -->
+    <string name="history_restore_description">Les tags et la pochette reviennent à leur état d\'avant l\'enregistrement du %1$s. Les enregistrements suivants sont aussi annulés, et vous pourrez annuler ceci depuis l\'historique.</string>
+    <string name="history_restore_unsaved">Vos modifications non enregistrées seront perdues.</string>
+    <string name="history_restore_confirm">Revenir</string>
+    <string name="history_restored">Version précédente restaurée</string>
+    <string name="history_restore_failed">Impossible de restaurer cette version</string>
 </resources>

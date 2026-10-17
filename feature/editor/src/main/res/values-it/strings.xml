@@ -111,4 +111,29 @@
     <string name="lookup_apply">Usa i selezionati</string>
     <string name="lookup_back">Torna ai risultati</string>
     <string name="lookup_applied">Applicato. Controlla e salva quando vuoi</string>
+
+    <!-- Edit history -->
+    <string name="history_title">Cronologia modifiche</string>
+    <string name="history_description">Prima di ogni salvataggio, Metadator conserva una copia del brano com\'era. Puoi tornare a una qualsiasi di esse.</string>
+    <string name="history_loading_failed">Impossibile caricare la cronologia</string>
+    <string name="history_empty">Ancora nessun salvataggio. Ogni volta che salvi questo brano, qui comparirà com\'era prima.</string>
+    <string name="history_today">Oggi</string>
+    <string name="history_yesterday">Ieri</string>
+    <string name="history_cover">Copertina</string>
+    <string name="history_cover_added">Copertina aggiunta</string>
+    <string name="history_cover_replaced">Copertina sostituita</string>
+    <string name="history_cover_removed">Copertina rimossa</string>
+    <string name="history_no_changes">Nessuna modifica</string>
+    <string name="history_expanded">Espanso</string>
+    <string name="history_collapsed">Compresso</string>
+    <string name="history_changed_to">diventa</string>
+    <string name="history_restore">Torna a prima di questo salvataggio</string>
+    <string name="history_restoring">Ripristino…</string>
+    <string name="history_restore_title">Tornare a prima di questo salvataggio?</string>
+    <!-- %1$s is the date and time of the save -->
+    <string name="history_restore_description">I tag e la copertina tornano com\'erano prima del salvataggio del %1$s. Anche i salvataggi successivi vengono annullati, e potrai annullare questa operazione dalla cronologia.</string>
+    <string name="history_restore_unsaved">Le modifiche non salvate andranno perse.</string>
+    <string name="history_restore_confirm">Torna indietro</string>
+    <string name="history_restored">Versione precedente ripristinata</string>
+    <string name="history_restore_failed">Impossibile ripristinare quella versione</string>
 </resources>

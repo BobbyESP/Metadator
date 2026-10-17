@@ -44,10 +44,10 @@
     <string name="separator_description">वैल्यू जोड़ने और चिपकाए गए टेक्स्ट को बांटने के लिए इस्तेमाल होता है</string>
     <string name="warn_small_cover">छोटे कवर के बारे में चेतावनी दें</string>
     <string name="warn_small_cover_description">500 × 500 px से कम</string>
-    <string name="history">पहले जैसा करने का इतिहास</string>
-    <string name="clear_history">पहले जैसा करने का इतिहास मिटाएं</string>
-    <string name="clear_history_description">Metadator आपके पिछले 100 सेव के टैग रखता है, ताकि उन्हें पहले जैसा किया जा सके</string>
-    <string name="history_cleared">पहले जैसा करने का इतिहास मिटा दिया गया</string>
+    <string name="history">बदलावों का इतिहास</string>
+    <string name="clear_history">बदलावों का इतिहास मिटाएं</string>
+    <string name="clear_history_description">Metadator आपके पिछले 100 सेव के टैग रखता है। हर गाने का इतिहास एडिटर के मेन्यू में है</string>
+    <string name="history_cleared">बदलावों का इतिहास मिटा दिया गया</string>
 
     <!-- Online sources -->
     <string name="lookup_sources">सोर्स</string>

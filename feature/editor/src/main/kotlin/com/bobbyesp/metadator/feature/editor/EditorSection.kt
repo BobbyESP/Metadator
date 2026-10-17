@@ -3,9 +3,11 @@
  */
 package com.bobbyesp.metadator.feature.editor
 
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.navigation3.ListDetailSceneStrategy
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -21,6 +23,8 @@ import com.bobbyesp.metadator.core.navigation.Navigator
 import com.bobbyesp.metadator.core.navigation.pane.LocalPaneContext
 import com.bobbyesp.metadator.core.ui.viewmodel.CollectEffects
 import com.bobbyesp.metadator.core.ui.viewmodel.ShowMessages
+import com.bobbyesp.metadator.feature.editor.history.HistorySheet
+import com.bobbyesp.metadator.feature.editor.history.rememberHistorySheetState
 import com.bobbyesp.metadator.feature.editor.lookup.LookupSheet
 import com.bobbyesp.metadator.feature.editor.lookup.LookupViewModel
 import com.bobbyesp.metadator.tags.api.TagField
@@ -36,6 +40,7 @@ fun EntryProviderScope<NavKey>.editorSection(navigator: Navigator) {
 }
 
 /** The editor for [uri], for any host: the main activity's stack or the external editor's. */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditorDestination(uri: String, onClose: () -> Unit) {
     val viewModel: EditorViewModel = koinViewModel(key = uri) { parametersOf(ContentRef(uri)) }
@@ -43,11 +48,28 @@ fun EditorDestination(uri: String, onClose: () -> Unit) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val lookupState by lookup.state.collectAsStateWithLifecycle()
     var showLookup by rememberSaveable(uri) { mutableStateOf(false) }
+    var showHistory by rememberSaveable(uri) { mutableStateOf(false) }
+    val historySheet = rememberHistorySheetState()
+
+    // Loaded when shown, and again once the song is, if the history outlived the process.
+    val canLoadHistory = state.loaded != null
+    LaunchedEffect(showHistory, canLoadHistory) {
+        when {
+            !showHistory -> viewModel.onIntent(EditorIntent.CloseHistory)
+            canLoadHistory -> viewModel.onIntent(EditorIntent.OpenHistory)
+        }
+    }
 
     ShowMessages(viewModel.messages)
     viewModel.effects.CollectEffects { effect ->
         when (effect) {
             EditorEffect.Close -> onClose()
+            EditorEffect.CloseHistory ->
+                try {
+                    historySheet.hide()
+                } finally {
+                    showHistory = false
+                }
         }
     }
 
@@ -76,9 +98,20 @@ fun EditorDestination(uri: String, onClose: () -> Unit) {
                     )
                 }
             },
+            onOpenHistory = { showHistory = true },
             onClose = onClose,
             showClose = !LocalPaneContext.current.isSolePane,
         )
+
+        if (showHistory) {
+            HistorySheet(
+                history = state.history,
+                hasUnsavedChanges = state.isDirty,
+                onRestore = { viewModel.onIntent(EditorIntent.RestoreVersion(it)) },
+                onDismiss = { showHistory = false },
+                sheetState = historySheet,
+            )
+        }
 
         if (showLookup) {
             LookupSheet(

@@ -111,4 +111,29 @@
     <string name="lookup_apply">Selectie gebruiken</string>
     <string name="lookup_back">Terug naar de resultaten</string>
     <string name="lookup_applied">Toegepast. Controleer en sla op wanneer je klaar bent</string>
+
+    <!-- Edit history -->
+    <string name="history_title">Bewerkingsgeschiedenis</string>
+    <string name="history_description">Voor elke keer opslaan bewaart Metadator een kopie van het nummer zoals het was. Je kunt naar elk daarvan terug.</string>
+    <string name="history_loading_failed">Kan de geschiedenis niet laden</string>
+    <string name="history_empty">Nog niets opgeslagen. Telkens als je dit nummer opslaat, verschijnt hier hoe het ervoor was.</string>
+    <string name="history_today">Vandaag</string>
+    <string name="history_yesterday">Gisteren</string>
+    <string name="history_cover">Hoes</string>
+    <string name="history_cover_added">Hoes toegevoegd</string>
+    <string name="history_cover_replaced">Hoes vervangen</string>
+    <string name="history_cover_removed">Hoes verwijderd</string>
+    <string name="history_no_changes">Geen wijzigingen</string>
+    <string name="history_expanded">Uitgevouwen</string>
+    <string name="history_collapsed">Samengevouwen</string>
+    <string name="history_changed_to">gewijzigd in</string>
+    <string name="history_restore">Terug naar vóór dit opslaan</string>
+    <string name="history_restoring">Herstellen…</string>
+    <string name="history_restore_title">Terug naar vóór dit opslaan?</string>
+    <!-- %1$s is the date and time of the save -->
+    <string name="history_restore_description">De tags en de hoes worden weer zoals ze waren vóór het opslaan van %1$s. Latere keren opslaan worden ook ongedaan gemaakt, en ook dit kun je vanuit de geschiedenis ongedaan maken.</string>
+    <string name="history_restore_unsaved">Je niet-opgeslagen wijzigingen gaan verloren.</string>
+    <string name="history_restore_confirm">Terug</string>
+    <string name="history_restored">Eerdere versie hersteld</string>
+    <string name="history_restore_failed">Kan die versie niet herstellen</string>
 </resources>

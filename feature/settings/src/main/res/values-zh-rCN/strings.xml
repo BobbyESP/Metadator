@@ -44,10 +44,10 @@
     <string name="separator_description">用于合并多个值，以及拆分你粘贴的内容</string>
     <string name="warn_small_cover">封面较小时提醒</string>
     <string name="warn_small_cover_description">小于 500 × 500 像素</string>
-    <string name="history">撤销记录</string>
-    <string name="clear_history">清除撤销记录</string>
-    <string name="clear_history_description">Metadator 会保留你最近 100 次保存的标签，以便撤销</string>
-    <string name="history_cleared">已清除撤销记录</string>
+    <string name="history">编辑记录</string>
+    <string name="clear_history">清除编辑记录</string>
+    <string name="clear_history_description">Metadator 会保留你最近 100 次保存的标签。每首歌曲的记录都在编辑器菜单中</string>
+    <string name="history_cleared">已清除编辑记录</string>
 
     <!-- Online sources -->
     <string name="lookup_sources">来源</string>

@@ -111,4 +111,29 @@
     <string name="lookup_apply">Usar selecionados</string>
     <string name="lookup_back">Voltar aos resultados</string>
     <string name="lookup_applied">Aplicado. Revise e salve quando quiser</string>
+
+    <!-- Edit history -->
+    <string name="history_title">Histórico de edições</string>
+    <string name="history_description">Antes de cada salvamento, o Metadator guarda uma cópia da música como estava. Você pode voltar a qualquer uma delas.</string>
+    <string name="history_loading_failed">Não foi possível carregar o histórico</string>
+    <string name="history_empty">Nenhum salvamento ainda. Cada vez que você salvar esta música, como ela estava antes aparece aqui.</string>
+    <string name="history_today">Hoje</string>
+    <string name="history_yesterday">Ontem</string>
+    <string name="history_cover">Capa</string>
+    <string name="history_cover_added">Capa adicionada</string>
+    <string name="history_cover_replaced">Capa substituída</string>
+    <string name="history_cover_removed">Capa removida</string>
+    <string name="history_no_changes">Nenhuma alteração</string>
+    <string name="history_expanded">Expandido</string>
+    <string name="history_collapsed">Recolhido</string>
+    <string name="history_changed_to">mudou para</string>
+    <string name="history_restore">Voltar para antes deste salvamento</string>
+    <string name="history_restoring">Restaurando…</string>
+    <string name="history_restore_title">Voltar para antes deste salvamento?</string>
+    <!-- %1$s is the date and time of the save -->
+    <string name="history_restore_description">As tags e a capa voltam a ser como eram antes do salvamento de %1$s. Os salvamentos posteriores também são desfeitos, e você pode desfazer isso pelo histórico.</string>
+    <string name="history_restore_unsaved">As alterações não salvas serão perdidas.</string>
+    <string name="history_restore_confirm">Voltar</string>
+    <string name="history_restored">Versão anterior restaurada</string>
+    <string name="history_restore_failed">Não foi possível restaurar essa versão</string>
 </resources>

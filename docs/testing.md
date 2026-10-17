@@ -29,7 +29,8 @@ and a tablet, on Android 8, 10 and the latest version:
   check and the next automated test to write (instrumented, `tags/taglib/src/androidTest`).
 - Write access: a song from the library on Android 10 and 11+, a batch of 20 songs (one prompt on
   11+), a file opened from a file manager, a file shared read-only.
-- Undo after a save and after a batch.
+- Undo after a save and after a batch; going back to an older save from the edit history, and
+  undoing that.
 - Process death in the editor with unsaved changes ("Don't keep activities").
 - The list-detail layout on a tablet or a foldable, TalkBack on the library and the editor.
 - Playback in the background, the media notification, and stopping when the app is swiped away

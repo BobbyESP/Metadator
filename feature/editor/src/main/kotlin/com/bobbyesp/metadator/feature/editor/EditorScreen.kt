@@ -38,6 +38,7 @@ import androidx.compose.material.icons.rounded.CalendarMonth
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Error
 import androidx.compose.material.icons.rounded.Groups
+import androidx.compose.material.icons.rounded.History
 import androidx.compose.material.icons.rounded.Lyrics
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material.icons.rounded.Numbers
@@ -171,6 +172,7 @@ internal fun EditorScreen(
     state: EditorState,
     onIntent: (EditorIntent) -> Unit,
     onFindMetadata: () -> Unit,
+    onOpenHistory: () -> Unit,
     onClose: () -> Unit,
     showClose: Boolean,
     modifier: Modifier = Modifier,
@@ -209,8 +211,10 @@ internal fun EditorScreen(
                 title = title,
                 showClose = showClose,
                 canRevert = isDirty,
+                canOpenHistory = state.status == EditorStatus.Ready,
                 onClose = leave,
                 onRevertAll = { onIntent(EditorIntent.RevertAll) },
+                onOpenHistory = onOpenHistory,
                 scrollBehavior = scrollBehavior,
             )
         },
@@ -366,8 +370,10 @@ private fun EditorTopBar(
     title: String,
     showClose: Boolean,
     canRevert: Boolean,
+    canOpenHistory: Boolean,
     onClose: () -> Unit,
     onRevertAll: () -> Unit,
+    onOpenHistory: () -> Unit,
     scrollBehavior: TopAppBarScrollBehavior,
 ) {
     var menuOpen by remember { mutableStateOf(false) }
@@ -396,7 +402,13 @@ private fun EditorTopBar(
                                 Icons.AutoMirrored.Rounded.Undo,
                                 enabled = canRevert,
                                 onClick = onRevertAll,
-                            )
+                            ),
+                            MenuAction(
+                                stringResource(R.string.history_title),
+                                Icons.Rounded.History,
+                                enabled = canOpenHistory,
+                                onClick = onOpenHistory,
+                            ),
                         ),
                 )
             }

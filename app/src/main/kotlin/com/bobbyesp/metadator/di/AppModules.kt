@@ -20,6 +20,7 @@ import com.bobbyesp.metadator.core.domain.library.TagCompletedAudioLibrary
 import com.bobbyesp.metadator.core.domain.lookup.LookupService
 import com.bobbyesp.metadator.core.domain.lyrics.FindLyricsUseCase
 import com.bobbyesp.metadator.core.domain.lyrics.LoadLyricsUseCase
+import com.bobbyesp.metadator.core.domain.save.LoadEditHistoryUseCase
 import com.bobbyesp.metadator.core.domain.save.RestoreBackupUseCase
 import com.bobbyesp.metadator.core.domain.save.SaveTagChangesUseCase
 import com.bobbyesp.metadator.core.domain.settings.SettingsRepository
@@ -133,7 +134,8 @@ private val engineModule = module {
 private val domainModule = module {
     factory { LoadTrackUseCase(get(), get(), get()) }
     factory { SaveTagChangesUseCase(get(), get(), get(), get()) }
-    factory { RestoreBackupUseCase(get(), get(), get()) }
+    factory { RestoreBackupUseCase(get(), get(), get(), get()) }
+    factory { LoadEditHistoryUseCase(get()) }
     factory { FindLyricsUseCase(get()) }
     factory { LoadLyricsUseCase(get(), get()) }
     single { LookupService(listOf(get<MusicBrainzProvider>(), get<DeezerProvider>()), get()) }

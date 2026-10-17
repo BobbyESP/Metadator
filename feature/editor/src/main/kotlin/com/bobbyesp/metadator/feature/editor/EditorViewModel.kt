@@ -15,6 +15,8 @@ import com.bobbyesp.metadator.core.domain.editor.TagDraft
 import com.bobbyesp.metadator.core.domain.editor.TrackPositions
 import com.bobbyesp.metadator.core.domain.editor.withMultiValueMode
 import com.bobbyesp.metadator.core.domain.lyrics.FindLyricsUseCase
+import com.bobbyesp.metadator.core.domain.save.EditHistoryEntry
+import com.bobbyesp.metadator.core.domain.save.LoadEditHistoryUseCase
 import com.bobbyesp.metadator.core.domain.save.RestoreBackupUseCase
 import com.bobbyesp.metadator.core.domain.save.RestoreOutcome
 import com.bobbyesp.metadator.core.domain.save.SaveOutcome
@@ -35,6 +37,7 @@ import com.bobbyesp.metadator.tags.api.BackupId
 import com.bobbyesp.metadator.tags.api.EmbeddedPicture
 import com.bobbyesp.metadator.tags.api.PictureType
 import com.bobbyesp.metadator.tags.api.TagField
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -69,6 +72,8 @@ data class EditorState(
     val loadingCover: Boolean = false,
     val settings: UserSettings = UserSettings(),
     val isPlayingThis: Boolean = false,
+    /** The song's saves while the history is open; null when it is closed. */
+    val history: HistoryState? = null,
 ) {
     val isDirty: Boolean
         get() = draft?.isDirty == true
@@ -85,6 +90,14 @@ data class EditorState(
     fun position(field: TagField): Position =
         draft?.let { TrackPositions.read(it.tags, field) } ?: Position()
 }
+
+/** The editor's history: [entries] is null while loading. */
+data class HistoryState(
+    val entries: List<EditHistoryEntry>? = null,
+    val failed: Boolean = false,
+    /** The version being restored, while it is. */
+    val restoring: BackupId? = null,
+)
 
 sealed interface EditorIntent {
     data object Reload : EditorIntent
@@ -111,10 +124,19 @@ sealed interface EditorIntent {
         EditorIntent
 
     data object Play : EditorIntent
+
+    data object OpenHistory : EditorIntent
+
+    data object CloseHistory : EditorIntent
+
+    data class RestoreVersion(val id: BackupId) : EditorIntent
 }
 
 sealed interface EditorEffect {
     data object Close : EditorEffect
+
+    /** Hides the history: a version was restored, or the file is gone. */
+    data object CloseHistory : EditorEffect
 }
 
 class EditorViewModel(
@@ -122,6 +144,7 @@ class EditorViewModel(
     private val loadTrack: LoadTrackUseCase,
     private val saveChanges: SaveTagChangesUseCase,
     private val restoreBackup: RestoreBackupUseCase,
+    private val loadEditHistory: LoadEditHistoryUseCase,
     private val writeAccess: WriteAccess,
     private val findLyricsUseCase: FindLyricsUseCase,
     private val artworkDownloader: ArtworkDownloader,
@@ -172,8 +195,16 @@ class EditorViewModel(
             EditorIntent.FindLyrics -> findLyrics()
             is EditorIntent.ApplyLookup -> applyLookup(intent)
             EditorIntent.Play -> play()
+            EditorIntent.OpenHistory -> loadHistory()
+            EditorIntent.CloseHistory -> {
+                historyJob?.cancel()
+                setState { copy(history = null) }
+            }
+            is EditorIntent.RestoreVersion -> restoreVersion(intent.id)
         }
     }
+
+    private var historyJob: Job? = null
 
     private fun load(restorePending: Boolean) =
         launch(
@@ -256,10 +287,7 @@ class EditorViewModel(
                     settings.multiValueSeparator,
                 )
 
-            if (
-                !writeAccess.canWrite(listOf(ref)) &&
-                    writeAccess.request(listOf(ref)) != AccessResult.Granted
-            ) {
+            if (!hasWriteAccess()) {
                 setState { copy(saving = false) }
                 showMessage(UiMessage(strings.get(R.string.write_access_denied), long = true))
                 return@launch
@@ -342,10 +370,27 @@ class EditorViewModel(
         inspectCover()
     }
 
+    private suspend fun hasWriteAccess(): Boolean =
+        writeAccess.canWrite(listOf(ref)) ||
+            writeAccess.request(listOf(ref)) == AccessResult.Granted
+
+    private suspend fun restoreWithAccess(id: BackupId): RestoreOutcome {
+        if (!hasWriteAccess()) return RestoreOutcome.NeedsAccess
+        val outcome = restoreBackup(id)
+        // Android 10 only offers its prompt after refusing a write.
+        return if (
+            outcome == RestoreOutcome.NeedsAccess &&
+                writeAccess.request(listOf(ref)) == AccessResult.Granted
+        ) {
+            restoreBackup(id)
+        } else outcome
+    }
+
     private fun undo(backupId: BackupId) = launch {
         val message =
-            when (restoreBackup(backupId)) {
-                RestoreOutcome.Restored -> {
+            when (restoreWithAccess(backupId)) {
+                is RestoreOutcome.Restored -> {
+                    clearPendingFields()
                     reloadAfterWrite()
                     R.string.undone
                 }
@@ -355,6 +400,69 @@ class EditorViewModel(
                 is RestoreOutcome.Failed -> R.string.undo_failed
             }
         showMessage(UiMessage(strings.get(message)))
+    }
+
+    private fun loadHistory() {
+        val current = currentState.loaded?.snapshot ?: return
+        historyJob?.cancel()
+        // Opened again (a new window size, say), it keeps what it shows while it loads.
+        setState { copy(history = history?.copy(failed = false) ?: HistoryState()) }
+        historyJob =
+            launch(onError = { setState { copy(history = history?.copy(failed = true)) } }) {
+                val entries = loadEditHistory(ref, current)
+                setState { copy(history = history?.copy(entries = entries)) }
+            }
+    }
+
+    private fun restoreVersion(id: BackupId) {
+        if (currentState.history?.restoring != null) return
+        fun setRestoring(value: BackupId?) = setState {
+            copy(history = history?.copy(restoring = value))
+        }
+        launch(
+            onError = {
+                setRestoring(null)
+                showMessage(UiMessage(strings.get(R.string.history_restore_failed), long = true))
+            }
+        ) {
+            setRestoring(id)
+            when (val outcome = restoreWithAccess(id)) {
+                is RestoreOutcome.Restored -> {
+                    clearPendingFields()
+                    reloadAfterWrite()
+                    setRestoring(null)
+                    sendEffect(EditorEffect.CloseHistory)
+                    val previous = outcome.previous
+                    showMessage(
+                        UiMessage(
+                            text = strings.get(R.string.history_restored),
+                            actionLabel = previous?.let { strings.get(R.string.undo) },
+                            onAction = previous?.let { { undo(it) } },
+                        )
+                    )
+                }
+                RestoreOutcome.BackupGone -> {
+                    setRestoring(null)
+                    showMessage(UiMessage(strings.get(R.string.undo_unavailable)))
+                    loadHistory()
+                }
+                RestoreOutcome.NeedsAccess -> {
+                    setRestoring(null)
+                    showMessage(UiMessage(strings.get(R.string.write_access_denied), long = true))
+                }
+                RestoreOutcome.FileGone -> {
+                    setRestoring(null)
+                    setState { copy(status = EditorStatus.NotFound) }
+                    sendEffect(EditorEffect.CloseHistory)
+                }
+                is RestoreOutcome.Failed -> {
+                    setRestoring(null)
+                    showMessage(
+                        UiMessage(strings.get(R.string.history_restore_failed), long = true)
+                    )
+                }
+            }
+        }
     }
 
     private fun findLyrics() {

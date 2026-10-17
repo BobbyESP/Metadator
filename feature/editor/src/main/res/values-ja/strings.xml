@@ -111,4 +111,29 @@
     <string name="lookup_apply">選択した項目を使用</string>
     <string name="lookup_back">検索結果に戻る</string>
     <string name="lookup_applied">適用しました。確認してから保存してください</string>
+
+    <!-- Edit history -->
+    <string name="history_title">編集履歴</string>
+    <string name="history_description">Metadator は保存のたびに、保存前の曲のコピーを残します。どの時点にも戻せます。</string>
+    <string name="history_loading_failed">履歴を読み込めませんでした</string>
+    <string name="history_empty">まだ保存していません。この曲を保存するたびに、保存前の状態がここに表示されます。</string>
+    <string name="history_today">今日</string>
+    <string name="history_yesterday">昨日</string>
+    <string name="history_cover">カバー画像</string>
+    <string name="history_cover_added">カバー画像を追加</string>
+    <string name="history_cover_replaced">カバー画像を変更</string>
+    <string name="history_cover_removed">カバー画像を削除</string>
+    <string name="history_no_changes">変更なし</string>
+    <string name="history_expanded">展開</string>
+    <string name="history_collapsed">折りたたみ</string>
+    <string name="history_changed_to">から変更:</string>
+    <string name="history_restore">この保存の前に戻す</string>
+    <string name="history_restoring">復元しています…</string>
+    <string name="history_restore_title">この保存の前に戻しますか？</string>
+    <!-- %1$s is the date and time of the save -->
+    <string name="history_restore_description">タグとカバー画像が %1$s の保存前の状態に戻ります。それ以降の保存も取り消されます。この操作も履歴から取り消せます。</string>
+    <string name="history_restore_unsaved">保存していない変更は失われます。</string>
+    <string name="history_restore_confirm">戻す</string>
+    <string name="history_restored">以前のバージョンを復元しました</string>
+    <string name="history_restore_failed">そのバージョンを復元できませんでした</string>
 </resources>
