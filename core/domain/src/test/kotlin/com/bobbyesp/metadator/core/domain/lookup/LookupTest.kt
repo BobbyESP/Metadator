@@ -48,6 +48,29 @@ class LookupTest {
     }
 
     @Test
+    fun `a candidate a provider repeats is listed once`() = runTest {
+        val repeated = candidate("deezer", "Bohemian Rhapsody")
+        val service =
+            LookupService(
+                listOf(
+                    Provider("deezer", LookupResult.Success(listOf(repeated, repeated.copy()))),
+                    Provider(
+                        "musicbrainz",
+                        LookupResult.Success(listOf(candidate("musicbrainz", "Bohemian Rhapsody"))),
+                    ),
+                ),
+                FakeSettings(),
+            )
+
+        val outcome =
+            service.search(LookupQuery("Bohemian Rhapsody", "Queen")) as LookupOutcome.Results
+
+        val keys = outcome.candidates.map { it.providerId to it.id }
+        assertEquals(2, keys.size)
+        assertEquals(keys.size, keys.distinct().size)
+    }
+
+    @Test
     fun `offline everywhere is offline`() = runTest {
         val service =
             LookupService(

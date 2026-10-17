@@ -40,6 +40,10 @@ for has its tags read once, and what was read is cached in Room (`track_tags`) a
 modification date and size. MediaStore's values always win; the file only fills the gaps, so
 "Needs attention" means the file itself lacks the field.
 
+`LookupService` asks every enabled provider at once and merges their candidates into one ranked
+list, each candidate once by provider and id: the results sheet keys its rows by them, and a
+provider can repeat one (MusicBrainz lists a release once per disc the recording is on).
+
 Results, not exceptions: everything the user can cause or fix (no permission, file gone, format
 not supported, offline) is a sealed result the UI can explain.
 
