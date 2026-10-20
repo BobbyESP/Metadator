@@ -133,3 +133,68 @@ Versions are in `gradle/libs.versions.toml`; the app's version in the root `buil
 - Commits follow `type(scope): summary`; the body explains why.
 - Comments and KDoc say why, not what.
 - Docs describe the app as it is now. When code changes, update the doc that describes it.
+
+## 5. Release notes
+
+Asked for a version's notes, write both, from what changed since the previous tag
+(`git log <previous tag>..HEAD`, with the bodies, and `git diff --stat`), and from what the user can
+notice: one line for a change with no visible effect belongs with the feature it serves. Look at
+the last releases (`gh release view v2.0.1`) for the tone: short, concrete, no commit jargon.
+
+Save them in one Markdown file in the Windows temp folder
+(`$env:TEMP\metadator-<version>-release-notes.md`): the GitHub notes first, then `---`, then the
+Play block in a single `text` fence. Then give PowerShell to copy each part to the clipboard:
+
+```powershell
+# The GitHub notes (everything before the first ---)
+(Get-Content "$env:TEMP\metadator-<version>-release-notes.md" -Raw -Encoding UTF8) -split '(?m)^---\s*$' | Select-Object -First 1 | Set-Clipboard
+# The Play block (the text fence, tags included)
+$t = Get-Content "$env:TEMP\metadator-<version>-release-notes.md" -Raw -Encoding UTF8
+[regex]::Match($t, '(?s)\x60{3}text\r?\n(.*?)\r?\n\x60{3}').Groups[1].Value | Set-Clipboard
+```
+
+### GitHub release
+
+English only. The title is `# Metadator <version>`, then one sentence saying what kind of release
+it is. Sections, in this order and only the ones that apply: `## Highlights` (a big release, with
+`###` groups), `## New`, `## Improved`, `## Fixed`, `## Breaking changes`. Each item is a bullet that
+starts with a bold phrase naming the change, then what the user sees. A bug fix says when it
+happened. End with the issues link and the changelog link:
+
+```markdown
+# Metadator 2.0.1
+
+A bug fix release.
+
+## Fixed
+- **Crash in the library and in online search.** Opening the Albums tab could close the app when a name contained a colon (`:`). …
+
+Found a problem? [Open an issue](https://github.com/BobbyESP/Metadator/issues).
+
+**Full Changelog**: https://github.com/BobbyESP/Metadator/compare/v2.0.0...v2.0.1
+```
+
+### Google Play "What's new"
+
+Written in every language the app ships, English included, one tag per language, all in one block
+that is pasted as it is into Play Console:
+
+```text
+<en-US>
+• New: …
+• Fixed …
+</en-US>
+<ar>
+…
+</ar>
+```
+
+- Tags, in this order: `en-US`, `ar`, `zh-CN`, `nl-NL`, `fr-FR`, `de-DE`, `hi-IN`, `it-IT`,
+  `ja-JP`, `ko-KR`, `pt-BR`, `ru-RU`, `es-ES`.
+- At most **500 characters per language**, tags not counted. Check each one (PowerShell
+  `.Length`); French and Spanish run longest.
+- Three or four bullets starting with `• `: the main change, the other improvements, the fix. Much
+  shorter than the GitHub notes: no sections, no bold, no technical detail.
+- Name a screen or an action as the app does: copy it from that language's `strings.xml`
+  (`history_title`, `lookup_title`, …), never translate it again.
+- Say in the reply that the translations are not reviewed by a native speaker.
