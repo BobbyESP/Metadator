@@ -1,6 +1,6 @@
 [versions]
 # Tooling
-androidGradlePlugin = "9.4.0"
+androidGradlePlugin = "9.5.0"
 kotlin = "2.4.21"
 ksp = "2.3.12"
 spotless = "8.10.4"
