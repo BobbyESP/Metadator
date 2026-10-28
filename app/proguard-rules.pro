@@ -1,6 +1,11 @@
 # No keep rules: every library that needs reflection or JNI ships its own, and a rule here can
 # only stop R8 from shrinking more.
 
+# Crash reports name the right class and line only with the line table kept; without it R8 merges
+# frames and Crashlytics pins crashes on unrelated classes.
+-keepattributes SourceFile,LineNumberTable
+-renamesourcefileattribute SourceFile
+
 # Kotlin checks each non-null parameter and platform value on entry. Without the checks a null from
 # Java fails where it is first used, not at the call.
 -assumenosideeffects class kotlin.jvm.internal.Intrinsics {

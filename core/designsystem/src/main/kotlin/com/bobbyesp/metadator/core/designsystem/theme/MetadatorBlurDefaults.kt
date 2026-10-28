@@ -213,7 +213,7 @@ fun Modifier.outOfFocus(fraction: () -> Float, scrim: Color): Modifier {
     val blurred =
         if (blurring) {
             blur {
-                radius =
+                blurRadiusSpec =
                     BlurRadiusSpec.uniform(
                         MetadatorBlurDefaults.BehindOverlayRadius * fraction().coerceIn(0f, 1f)
                     )
@@ -262,7 +262,7 @@ fun Modifier.defocused(amount: () -> Float, bounded: Boolean = false): Modifier 
         }
     if (!blurring) return this
     return blur {
-        radius =
+        blurRadiusSpec =
             BlurRadiusSpec.uniform(MetadatorBlurDefaults.DissolveRadius * amount().coerceIn(0f, 1f))
         edgeTreatment =
             if (bounded) BlurredEdgeTreatment.Rectangle else BlurredEdgeTreatment.Unbounded

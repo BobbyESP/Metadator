@@ -426,7 +426,7 @@ private fun PlayerBackdrop(track: Track, modifier: Modifier = Modifier) {
                             scaleX = scale
                             scaleY = scale
                         }
-                        .blur { radius = BlurRadiusSpec.uniform(BackdropBlur) },
+                        .blur { blurRadiusSpec = BlurRadiusSpec.uniform(BackdropBlur) },
                 shape = RectangleShape,
                 cacheKey = shown.artworkCacheKey,
             )
