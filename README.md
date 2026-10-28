@@ -1,7 +1,9 @@
 <div align="center">
-    <img src="./assets/app_logo.png" alt="Metadator icon" width="100" height="100"/>
+    <picture>
+        <source media="(prefers-color-scheme: dark)" srcset="./assets/logo_dark.svg">
+        <img src="./assets/logo_light.svg" alt="Metadator" width="320"/>
+    </picture>
 </div>
-<h1 align="center"><b>Metadator</b></h1>
 <div align="center">
 
 **Fix your music's tags, covers and lyrics. On your device, without losing a thing.**

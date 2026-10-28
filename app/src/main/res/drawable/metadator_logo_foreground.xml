@@ -1,13 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The "steady pulse" glyph: a file's frame and five beats of a waveform. Also the monochrome
+     icon and the splash icon, so it stays a single opaque color. It is drawn at 82 % around the
+     center: at full size its corners reach the edge of a round mask. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="48dp"
-    android:height="48dp"
-    android:viewportWidth="48"
-    android:viewportHeight="48">
-    <path
-        android:pathData="M14.857,18.921L14.857,17.905C14.857,16.222 16.222,14.857 17.905,14.857L30.095,14.857C31.778,14.857 33.143,16.222 33.143,17.905L33.143,18.921M28.063,20.952L28.063,27.048M32.127,21.968L32.127,26.032M24,19.429L24,28.571M19.937,20.952L19.937,27.048M15.873,21.968L15.873,26.032M14.857,29.079L14.857,30.095C14.857,31.778 16.222,33.143 17.905,33.143L30.095,33.143C31.778,33.143 33.143,31.778 33.143,30.095L33.143,29.079"
-        android:strokeLineJoin="round"
-        android:strokeWidth="2"
-        android:fillColor="#00000000"
-        android:strokeColor="#FFFFF0"
-        android:strokeLineCap="round" />
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <group
+        android:pivotX="54"
+        android:pivotY="54"
+        android:scaleX="0.82"
+        android:scaleY="0.82">
+        <path
+            android:pathData="M30.667,40V37.667C30.667,33.8 33.8,30.667 37.667,30.667H70.333C74.2,30.667 77.333,33.8 77.333,37.667V40M30.667,68V70.333C30.667,74.2 33.8,77.333 37.667,77.333H70.333C74.2,77.333 77.333,74.2 77.333,70.333V68"
+            android:strokeWidth="4.667"
+            android:strokeColor="@color/brand_lavender"
+            android:strokeLineCap="round"
+            android:strokeLineJoin="round" />
+        <path
+            android:pathData="M33,58.667V49.333M43.5,63.333V44.667M54,68V40M64.5,64.5V43.5M75,59.833V48.167"
+            android:strokeWidth="4.667"
+            android:strokeColor="@color/brand_lavender"
+            android:strokeLineCap="round" />
+    </group>
 </vector>

@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="background">#FFF8F9FC</color>
+    <!-- The brand's two colors, for what the system draws before the app does: the launcher icon
+         and the splash screen. The app itself is colored by its theme. -->
+    <color name="brand_violet">#FF381080</color>
+    <color name="brand_lavender">#FFF1E9FF</color>
 </resources>

@@ -18,8 +18,11 @@ data class UserSettings(
     val successfulSaves: Int = 0,
 ) {
     companion object {
-        /** The 1.x seed, so a user who never touched it keeps the same colors. */
-        const val DEFAULT_SEED_COLOR: Int = 0xFF415F76.toInt()
+        /** The brand's violet (`BrandColors.Violet`). */
+        const val DEFAULT_SEED_COLOR: Int = 0xFF381080.toInt()
+
+        /** The seed until 2.x, still offered for whoever prefers the old colors. */
+        const val LEGACY_SEED_COLOR: Int = 0xFF415F76.toInt()
 
         const val PROVIDER_MUSICBRAINZ = "musicbrainz"
         const val PROVIDER_DEEZER = "deezer"

@@ -35,7 +35,6 @@ import androidx.compose.material.icons.rounded.EditNote
 import androidx.compose.material.icons.rounded.Image
 import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.LightMode
-import androidx.compose.material.icons.rounded.MusicNote
 import androidx.compose.material.icons.rounded.Palette
 import androidx.compose.material.icons.rounded.Public
 import androidx.compose.material.icons.rounded.Star
@@ -92,6 +91,8 @@ import com.bobbyesp.metadator.core.designsystem.component.TonalTextField
 import com.bobbyesp.metadator.core.designsystem.component.readableWidth
 import com.bobbyesp.metadator.core.designsystem.component.sidesOf
 import com.bobbyesp.metadator.core.designsystem.theme.GroupShapes
+import com.bobbyesp.metadator.core.designsystem.theme.LogotypeStyle
+import com.bobbyesp.metadator.core.designsystem.theme.MetadatorGlyph
 import com.bobbyesp.metadator.core.designsystem.theme.Spacing
 import com.bobbyesp.metadator.core.designsystem.theme.isDynamicColorSupported
 import com.bobbyesp.metadator.core.model.MultiValueMode
@@ -118,6 +119,7 @@ private const val PLAY_URL = "https://play.google.com/store/apps/details?id=com.
 private val SeedColors =
     listOf(
         UserSettings.DEFAULT_SEED_COLOR,
+        UserSettings.LEGACY_SEED_COLOR,
         0xFF6750A4.toInt(),
         0xFF006A6A.toInt(),
         0xFF8B5000.toInt(),
@@ -280,12 +282,12 @@ fun EntryProviderScope<NavKey>.settingsSection(navigator: Navigator) {
                     verticalArrangement = Arrangement.spacedBy(Spacing.small),
                 ) {
                     ShapedIcon(
-                        icon = Icons.Rounded.MusicNote,
+                        icon = MetadatorGlyph,
                         size = 120.dp,
                         polygon = MaterialShapes.Cookie12Sided,
                         modifier = Modifier.padding(bottom = Spacing.small),
                     )
-                    Text(APP_NAME, style = MaterialTheme.typography.headlineMediumEmphasized)
+                    Text(APP_NAME, style = LogotypeStyle)
                     Text(
                         stringResource(R.string.version, info.versionName),
                         style = MaterialTheme.typography.titleMedium,

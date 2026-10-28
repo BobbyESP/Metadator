@@ -123,6 +123,17 @@ for the settings before composing, so the default theme is never shown in place 
 
 Settings keep the 1.x DataStore file name and theme keys, so an update keeps the user's theme.
 
+The type is Instrument Sans, the brand's typeface, bundled as two variable fonts (upright and
+italic, weights 400 to 700). `MetadatorTypography` sets every role in it; the display roles and the
+two largest headlines are italic, as the brand sets its headlines, and everything read at length
+stays upright. `LogotypeStyle` is the wordmark's style, for the app's name where it stands as a
+brand (the About page).
+
+The brand's colors are in `BrandColors`: violet, lavender and an acid accent. The app does not use
+them directly: it is colored by its theme. Violet is the default seed, and it and lavender color what
+the system draws before the app does (the launcher icon and the splash screen, in `:app`'s
+resources). The brand guide, logo and exports live in the Figma file *Metadator — Branding*.
+
 ### Shared components
 
 `:core:designsystem` holds what more than one screen uses, so the expressive vocabulary is the
@@ -150,7 +161,8 @@ same everywhere:
   primary action keeps its label; the others fall back to their icon where the row is narrow. The
   primary one is filled unless the screen's main action is elsewhere (`prominent = false`: the
   editor's cover, on a screen that saves from its toolbar).
-- `ShapedIcon`: an icon on a slowly turning Material shape, for empty states and the About page.
+- `ShapedIcon`: an icon on a slowly turning Material shape, for empty states and the About page
+  (there, the brand glyph, `MetadatorGlyph`).
 - `PlayingBars`: the three bars on the row of the song that is playing; still while paused.
 - `SectionHeader`, `NavigationItem`, `SwitchItem`, `RadioItem`, `PlaceholderCard`: grouped lists
   and what a screen shows instead of content.

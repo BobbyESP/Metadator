@@ -5,7 +5,7 @@
     </style>
 
     <style name="Theme.Metadator.Starting" parent="Theme.SplashScreen">
-        <item name="windowSplashScreenBackground">@color/background</item>
+        <item name="windowSplashScreenBackground">@color/brand_violet</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/metadator_logo_foreground</item>
         <item name="postSplashScreenTheme">@style/Theme.Metadator</item>
     </style>
