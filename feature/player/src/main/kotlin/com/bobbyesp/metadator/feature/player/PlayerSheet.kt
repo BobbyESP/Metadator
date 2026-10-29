@@ -129,7 +129,6 @@ object PlayerSheetDefaults {
  * @param backdrop what is recorded of the screens under the player, which the bar is lifted off
  *   with a blur halo; without it, or where the device cannot draw one, with a shadow
  */
-@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun PlayerSheet(
     visible: Boolean,
