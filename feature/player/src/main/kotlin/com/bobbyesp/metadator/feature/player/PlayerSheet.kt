@@ -63,6 +63,7 @@ import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.keepScreenOn
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
@@ -198,6 +199,7 @@ fun PlayerSheet(
             modifier =
                 modifier
                     .fillMaxSize()
+                    .then(if (playback.isPlaying) Modifier.keepScreenOn() else Modifier)
                     .onSizeChanged { sheet.travel = it.height.toFloat() }
                     // The bounce. The transition stops dead at either end, so what the spring does
                     // beyond them is shown on everything at once: the screen swells a little past
