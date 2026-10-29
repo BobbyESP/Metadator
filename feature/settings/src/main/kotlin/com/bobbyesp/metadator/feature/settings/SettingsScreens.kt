@@ -339,7 +339,6 @@ fun EntryProviderScope<NavKey>.settingsSection(navigator: Navigator) {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun SettingsPage(title: String, onBack: () -> Unit, content: LazyListScope.() -> Unit) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
@@ -460,7 +459,6 @@ private fun LazyListScope.appearance(
     }
 }
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun SeedColorPicker(selected: Int, onSelect: (Int) -> Unit) {
     FlowRow(
@@ -515,7 +513,6 @@ private fun SeedColor(color: Int, selected: Boolean, onClick: () -> Unit) {
     }
 }
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun PaletteStylePicker(selected: PaletteStyle, onSelect: (PaletteStyle) -> Unit) {
     FlowRow(

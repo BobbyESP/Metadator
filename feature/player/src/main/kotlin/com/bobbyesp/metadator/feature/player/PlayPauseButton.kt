@@ -38,7 +38,6 @@ import com.bobbyesp.metadator.core.ui.R as CoreUiR
  * it would be Material's 40 dp container inside a 48 dp touch target, and jump to fill the target
  * the moment a transition laid it out.
  */
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 internal fun PlayPauseButton(
     isPlaying: Boolean,

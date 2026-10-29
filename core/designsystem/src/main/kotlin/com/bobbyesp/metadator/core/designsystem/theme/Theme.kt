@@ -56,7 +56,6 @@ fun isDynamicColorSupported(): Boolean = Build.VERSION.SDK_INT >= Build.VERSION_
  * scheme recomposes everything under the theme. The first one is built in composition, because the
  * first frame needs it.
  */
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun MetadatorTheme(settings: UserSettings = UserSettings(), content: @Composable () -> Unit) {
     val isDark = settings.themeMode.isDark()

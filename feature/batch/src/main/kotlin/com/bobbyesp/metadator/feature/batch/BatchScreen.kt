@@ -73,7 +73,6 @@ import com.bobbyesp.metadator.core.ui.component.fieldLabel
 import com.bobbyesp.metadator.tags.api.ArtworkChange
 import com.bobbyesp.metadator.tags.api.TagField
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 internal fun BatchScreen(state: BatchState, onIntent: (BatchIntent) -> Unit, onClose: () -> Unit) {
     val pickCover =
@@ -257,7 +256,6 @@ private fun BatchField(
     )
 }
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun CoverChoice(
     cover: ArtworkChange,
@@ -300,7 +298,6 @@ private fun CoverChoice(
     }
 }
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun Tools(
     fileCount: Int,
@@ -387,7 +384,6 @@ private fun Tools(
     }
 }
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun ProgressDialog(
     progress: com.bobbyesp.metadator.core.domain.batch.BatchProgress,

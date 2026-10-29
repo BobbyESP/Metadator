@@ -51,7 +51,6 @@ import com.bobbyesp.metadator.core.ui.component.ArtworkImage
 import com.bobbyesp.metadator.core.ui.component.TrackListItem
 
 /** The songs of one album, artist or folder, with what to do with all of them at once. */
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 internal fun CollectionScreen(
     title: String,
@@ -140,7 +139,6 @@ internal fun CollectionScreen(
     }
 }
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun CollectionHeader(
     collection: TrackCollection,

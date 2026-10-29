@@ -162,7 +162,6 @@ internal fun NowPlayingWideContent(
 }
 
 /** The song: its cover and its name, and under them its controls where they fit. */
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun SongColumn(
     track: Track,
@@ -220,7 +219,6 @@ private enum class SidePane {
 }
 
 /** The lyrics or the queue, whichever is chosen, and over them the controls when [compact]. */
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun SidePanel(
     playback: PlaybackState,
@@ -305,7 +303,6 @@ private fun SidePanel(
     }
 }
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun UpNextPane(playback: PlaybackState, player: PlayerController, bottomClearance: Dp) {
     if (!playback.hasUpNext) {
@@ -338,7 +335,6 @@ private fun UpNextPane(playback: PlaybackState, player: PlayerController, bottom
  *
  * @param frost whether to frost it now; otherwise it is its container color, solid
  */
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun FloatingControls(
     playback: PlaybackState,
@@ -398,7 +394,6 @@ private fun FloatingControls(
  * cover fades in over the last one's. Where the device cannot blur, the theme's colors do, which
  * the cover has already tinted.
  */
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun PlayerBackdrop(track: Track, modifier: Modifier = Modifier) {
     val colors = MaterialTheme.colorScheme

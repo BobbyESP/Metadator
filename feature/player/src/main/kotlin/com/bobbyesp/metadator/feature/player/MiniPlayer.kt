@@ -60,7 +60,6 @@ import com.bobbyesp.metadator.player.api.PlayerController
  * @param ownContentPresence how much of what only the bar has (next, the progress) is there, from 0
  *   to 1, read while drawing so that a transition does not recompose the bar
  */
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 internal fun MiniPlayerBar(
     track: Track,
@@ -94,7 +93,6 @@ internal fun MiniPlayerBar(
             },
     ) {
         Column(contentModifier) {
-            // The cover's corners are the bar's, less this padding: the two curves stay parallel.
             Row(
                 modifier = Modifier.padding(Spacing.medium),
                 verticalAlignment = Alignment.CenterVertically,

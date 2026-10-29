@@ -133,7 +133,6 @@ import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 internal fun LibraryScreen(
     state: LibraryState,
@@ -326,7 +325,6 @@ private fun SearchTopBar(
 /** Material's widest search bar. */
 private val SearchBarMaxWidth = 720.dp
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SelectionTopBar(count: Int, onClose: () -> Unit, onSelectAll: () -> Unit) {
     TopAppBar(

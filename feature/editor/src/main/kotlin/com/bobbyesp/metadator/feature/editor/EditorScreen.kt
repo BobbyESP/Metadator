@@ -166,7 +166,6 @@ private enum class FieldsContent {
 private val KnownKeys: Set<String> =
     TagField.entries.map { it.key }.toSet() + TagField.TrackTotalKeys + TagField.DiscTotalKeys
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 internal fun EditorScreen(
     state: EditorState,
@@ -365,7 +364,6 @@ internal fun EditorScreen(
 
 private val TwoColumnWidth = 760.dp
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun EditorTopBar(
     title: String,

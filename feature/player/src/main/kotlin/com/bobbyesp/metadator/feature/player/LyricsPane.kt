@@ -80,6 +80,7 @@ import com.bobbyesp.metadator.lyrics.api.TimedWord
 import com.bobbyesp.metadator.player.api.PlaybackState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
+import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * The lyrics of the song that is playing, as its file has them: following the song where they are
@@ -186,7 +187,6 @@ private fun PlainLyrics(text: String, compact: Boolean, bottomClearance: Dp) {
  * one there. Scrolling it by hand stops that, so the lyrics can be read ahead, until the user asks
  * to go back or leaves them alone for a while. Tapping a line plays from it.
  */
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun SyncedLyrics(
     lines: List<TimedLine>,
@@ -211,7 +211,7 @@ private fun SyncedLyrics(
                 is DragInteraction.Start -> following = false
                 is DragInteraction.Stop,
                 is DragInteraction.Cancel -> {
-                    delay(RESUME_FOLLOWING_MS)
+                    delay(RESUME_FOLLOWING_MS.milliseconds)
                     following = true
                 }
             }
@@ -290,7 +290,6 @@ private fun SyncedLyrics(
  * the rest step back. Where its words are timed, the color also moves across it with the song and
  * each word glows as it is sung: see [drawSweep].
  */
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun LyricLine(
     line: TimedLine,

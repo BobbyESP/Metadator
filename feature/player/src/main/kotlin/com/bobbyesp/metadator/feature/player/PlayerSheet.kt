@@ -377,7 +377,7 @@ fun PlayerSheet(
                                 playback = playback,
                                 positionMs = positionMs,
                                 player = player,
-                                // Not the last song's, for the moment before this one's are asked
+                                // Not the last song's, for the moment before this ones are asked
                                 // for.
                                 lyrics = nowPlaying.lyrics.takeIf { nowPlaying.ref == track.ref },
                                 compact = layout == PlayerLayout.SideBySideCompact,

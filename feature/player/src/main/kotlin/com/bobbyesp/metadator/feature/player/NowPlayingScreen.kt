@@ -111,7 +111,6 @@ import kotlinx.coroutines.delay
  *   play button) is there, from 0 to 1, read while drawing: it comes into focus once the sheet has
  *   opened some way. The surface itself is not part of it, and is always solid.
  */
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 internal fun NowPlayingContent(
     playback: PlaybackState,
@@ -151,7 +150,6 @@ internal fun NowPlayingContent(
 }
 
 /** What is on the full player's surface, which is drawn apart so that this can come and go. */
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun NowPlayingScaffold(
     playback: PlaybackState,
@@ -245,7 +243,6 @@ internal val PlaybackState.hasUpNext: Boolean
     get() = currentIndex < queue.lastIndex
 
 /** What plays after the current song, as one group of rows; tapping one jumps to it. */
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 internal fun LazyListScope.upNextItems(
     playback: PlaybackState,
     player: PlayerController,
@@ -358,7 +355,6 @@ internal fun Cover(
  *
  * @param settled whether the sheet is at rest, open, which is when the album first shows
  */
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 internal fun TrackName(
     track: Track,
@@ -454,7 +450,6 @@ private const val FOLLOW_MS = 140
  * How the song's name is set in the full player, and in the bar: the same styles at the size of the
  * bar's roles in the type scale.
  */
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 internal object TrackNameDefaults {
     /** No lighter than semibold: the title is what the eye should land on in either player. */
     val titleStyle: TextStyle
@@ -483,7 +478,6 @@ internal object TrackNameDefaults {
  * @param positionMs where the song is, which [playback] does not say: read here, so that only this
  *   follows it
  */
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 internal fun SeekBar(
     playback: PlaybackState,
@@ -553,7 +547,6 @@ private const val SEEK_TIMEOUT_MS = 1_500L
  * Previous, play and next as one button group: pressing one squeezes its neighbors, which is the
  * whole point of putting them in a group.
  */
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 internal fun TransportControls(
     playback: PlaybackState,
@@ -627,7 +620,6 @@ private val TransportHeight = 80.dp
 private val TransportIconSize = 32.dp
 
 /** What changes how the queue plays, and the way out to the editor. */
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 internal fun SecondaryControls(
     playback: PlaybackState,
@@ -651,7 +643,6 @@ internal fun SecondaryControls(
     }
 }
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 internal fun ShuffleButton(playback: PlaybackState, player: PlayerController) {
     FilledTonalIconToggleButton(
@@ -663,7 +654,6 @@ internal fun ShuffleButton(playback: PlaybackState, player: PlayerController) {
     }
 }
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 internal fun RepeatButton(playback: PlaybackState, player: PlayerController) {
     FilledTonalIconToggleButton(

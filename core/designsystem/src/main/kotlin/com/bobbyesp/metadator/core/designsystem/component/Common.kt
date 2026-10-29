@@ -30,7 +30,6 @@ import androidx.compose.ui.unit.sp
 import com.bobbyesp.metadator.core.designsystem.theme.Spacing
 
 /** A section title over a group: small, upper case, quiet. */
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun SectionHeader(
     title: String,
