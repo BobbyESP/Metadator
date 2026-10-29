@@ -39,13 +39,16 @@ fun sniffMimeType(bytes: ByteArray): String? =
             bytes[0] == 0xFF.toByte() &&
             bytes[1] == 0xD8.toByte() &&
             bytes[2] == 0xFF.toByte() -> "image/jpeg"
+
         bytes.size >= 8 &&
             bytes[0] == 0x89.toByte() &&
             bytes[1] == 'P'.code.toByte() &&
             bytes[2] == 'N'.code.toByte() &&
             bytes[3] == 'G'.code.toByte() -> "image/png"
+
         bytes.size >= 12 &&
             String(bytes, 0, 4, Charsets.US_ASCII) == "RIFF" &&
             String(bytes, 8, 4, Charsets.US_ASCII) == "WEBP" -> "image/webp"
+
         else -> null
     }

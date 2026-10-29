@@ -16,8 +16,6 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStoreFile
 import com.bobbyesp.metadator.core.domain.settings.SettingsRepository
-import com.bobbyesp.metadator.core.model.MultiValueMode
-import com.bobbyesp.metadator.core.model.PaletteStyle
 import com.bobbyesp.metadator.core.model.ThemeMode
 import com.bobbyesp.metadator.core.model.UserSettings
 import java.io.IOException

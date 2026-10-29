@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- The "steady pulse" glyph: a file's frame and five beats of a waveform. Also the monochrome
+<?xml version="1.0" encoding="utf-8"?><!-- The "steady pulse" glyph: a file's frame and five beats of a waveform. Also the monochrome
      icon and the splash icon, so it stays a single opaque color. It is drawn at 82 % around the
      center: at full size its corners reach the edge of a round mask. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"

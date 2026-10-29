@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <full-backup-content>
-    <exclude domain="database" path="metadator.db" />
-    <exclude domain="file" path="backups/" />
+    <exclude
+        domain="database"
+        path="metadator.db" />
+    <exclude
+        domain="file"
+        path="backups/" />
 </full-backup-content>

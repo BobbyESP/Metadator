@@ -16,6 +16,7 @@ import com.bobbyesp.metadator.core.designsystem.R
 object BrandColors {
     val Violet = Color(0xFF381080)
     val Lavender = Color(0xFFF1E9FF)
+
     /** An accent for marketing and small touches only: it is not readable on lavender. */
     val Acid = Color(0xFFDFFF00)
 }

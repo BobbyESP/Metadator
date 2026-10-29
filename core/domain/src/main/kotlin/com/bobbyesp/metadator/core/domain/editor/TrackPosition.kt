@@ -31,6 +31,7 @@ object TrackPositions {
         when {
             (TagField.TrackTotalKeys + TagField.DiscTotalKeys).any { it in tags } ->
                 PositionStyle.Separate
+
             fileExtension?.lowercase() in VorbisExtensions -> PositionStyle.Separate
             else -> PositionStyle.Combined
         }
@@ -71,6 +72,7 @@ object TrackPositions {
                     )
                     keys.filter { it in tags }.forEach { put(it, emptyList()) }
                 }
+
             PositionStyle.Separate ->
                 buildMap {
                     put(field.key, listOfNotNull(number.ifEmpty { null }))

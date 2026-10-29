@@ -51,6 +51,7 @@ interface WriteAccess {
 enum class AccessResult {
     Granted,
     Denied,
+
     /** No screen could show the prompt (the app is in the background). */
     Unavailable,
 }

@@ -133,11 +133,13 @@ internal enum class Variant(val penalty: Double, val phrases: List<String>) {
             "visualizer",
         ),
     ),
+
     /** Same performance, mixed for other speakers: a stereo file is not it. */
     Spatial(
         0.95,
         listOf("dolby atmos", "dolby atmos mix", "atmos", "atmos mix", "spatial audio", "binaural"),
     ),
+
     /** A clean cut is rarely the one in a library: the album version is. */
     Clean(0.95, listOf("clean", "clean version", "clean edit", "radio clean")),
     Mono(0.95, listOf("mono")),
@@ -145,6 +147,7 @@ internal enum class Variant(val penalty: Double, val phrases: List<String>) {
         0.97,
         listOf("remaster", "remastered", "remasterizado", "remasterizada", "remasterise"),
     ),
+
     /** A version the app cannot name, like "Taylor's Version". */
     Other(0.9, emptyList()),
 }
@@ -216,6 +219,7 @@ internal fun releaseVariants(types: List<String>, recordingDescribed: Boolean): 
             "interview",
             "audiobook",
             "audio drama" -> Variant.Spoken
+
             "dj mix" -> Variant.Remix
             "live" -> Variant.Live.takeUnless { recordingDescribed }
             "remix" -> Variant.Remix.takeUnless { recordingDescribed }

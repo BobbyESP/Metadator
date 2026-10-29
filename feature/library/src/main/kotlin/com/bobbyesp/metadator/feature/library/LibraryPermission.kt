@@ -33,8 +33,10 @@ internal val AudioPermission: String =
 
 internal enum class PermissionStatus {
     Granted,
+
     /** Never asked, or asked once and refused: the system will still show its dialog. */
     Askable,
+
     /** Refused for good: only the app's settings page can grant it now. */
     PermanentlyDenied,
 }
@@ -100,5 +102,6 @@ private fun currentStatus(
         // Refused, and the system no longer wants to explain why: it will not ask again.
         askedOnce && activity?.shouldShowRequestPermissionRationale(AudioPermission) == false ->
             PermissionStatus.PermanentlyDenied
+
         else -> PermissionStatus.Askable
     }

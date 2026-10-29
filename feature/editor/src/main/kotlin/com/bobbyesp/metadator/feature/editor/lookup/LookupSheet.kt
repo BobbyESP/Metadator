@@ -194,6 +194,7 @@ private fun SearchStage(
                         )
                     }
                 }
+
             is LookupStatus.Results -> {
                 if (status.candidates.isEmpty()) {
                     item(key = "state", contentType = "state") {
@@ -241,6 +242,7 @@ private fun SearchStage(
                     }
                 }
             }
+
             LookupStatus.NoProviders ->
                 item(key = "state", contentType = "state") {
                     StateMessage(
@@ -249,6 +251,7 @@ private fun SearchStage(
                         Modifier.animateItem(),
                     )
                 }
+
             LookupStatus.Offline ->
                 item(key = "state", contentType = "state") {
                     StateMessage(
@@ -258,6 +261,7 @@ private fun SearchStage(
                         isError = true,
                     )
                 }
+
             LookupStatus.RateLimited ->
                 item(key = "state", contentType = "state") {
                     StateMessage(
@@ -266,6 +270,7 @@ private fun SearchStage(
                         Modifier.animateItem(),
                     )
                 }
+
             LookupStatus.Failed ->
                 item(key = "state", contentType = "state") {
                     StateMessage(

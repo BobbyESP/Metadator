@@ -58,6 +58,7 @@ class LoadTrackUseCase(
                 LoadTrackResult.Loaded(
                     LoadedTrack(ref, track.await(), file.await(), read.snapshot, audio.await())
                 )
+
             TagReadResult.NotFound -> LoadTrackResult.NotFound
             TagReadResult.AccessDenied -> LoadTrackResult.AccessDenied
             TagReadResult.Unsupported -> LoadTrackResult.Unsupported

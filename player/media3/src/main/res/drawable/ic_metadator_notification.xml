@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- The brand glyph at 24 dp for the status bar: white on transparent, the system tints it. -->
+<?xml version="1.0" encoding="utf-8"?><!-- The brand glyph at 24 dp for the status bar: white on transparent, the system tints it. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="24dp"
     android:height="24dp"

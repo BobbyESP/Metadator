@@ -9,7 +9,6 @@ import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.EnterExitState
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
-import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.core.ArcAnimationSpec
@@ -344,6 +343,7 @@ fun PlayerSheet(
                                 }
                             }
                         }
+
                     PlayerSheetValue.Expanded -> {
                         val content =
                             container
@@ -520,7 +520,6 @@ private fun arcTraveller(): FiniteAnimationSpec<Rect> =
  *
  * @param resizeMode how the text is scaled into the bounds
  */
-@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 private fun SharedTransitionScope.travellingText(
     key: SharedKey,

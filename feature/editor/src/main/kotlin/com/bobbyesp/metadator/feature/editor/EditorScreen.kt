@@ -230,6 +230,7 @@ internal fun EditorScreen(
                     onClose = onClose,
                     modifier = Modifier.padding(padding),
                 )
+
             else ->
                 Box(
                     Modifier.fillMaxSize()
@@ -801,7 +802,10 @@ private fun EditorProblem(
     onClose: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Box(modifier.fillMaxSize().padding(Spacing.extraLarge), contentAlignment = Alignment.Center) {
+    Box(
+        modifier.fillMaxSize().padding(Spacing.extraLarge),
+        contentAlignment = Alignment.Center,
+    ) {
         when (status) {
             EditorStatus.NotFound ->
                 PlaceholderCard(
@@ -812,6 +816,7 @@ private fun EditorProblem(
                     actionText = stringResource(R.string.go_back),
                     onAction = onClose,
                 )
+
             EditorStatus.AccessDenied ->
                 PlaceholderCard(
                     title = stringResource(R.string.access_denied_title),
@@ -821,6 +826,7 @@ private fun EditorProblem(
                     actionText = stringResource(R.string.go_back),
                     onAction = onClose,
                 )
+
             EditorStatus.Unsupported ->
                 PlaceholderCard(
                     title = stringResource(R.string.unsupported_title),
@@ -830,6 +836,7 @@ private fun EditorProblem(
                     actionText = stringResource(R.string.go_back),
                     onAction = onClose,
                 )
+
             is EditorStatus.Failed ->
                 PlaceholderCard(
                     title = stringResource(R.string.failed_title),
@@ -841,6 +848,7 @@ private fun EditorProblem(
                     secondaryActionText = stringResource(R.string.go_back),
                     onSecondaryAction = onClose,
                 )
+
             else -> Unit
         }
     }

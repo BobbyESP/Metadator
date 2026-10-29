@@ -114,7 +114,10 @@ internal fun NowPlayingWideContent(
     val haze = rememberHazeState()
     Surface(modifier = modifier.fillMaxSize(), color = MaterialTheme.colorScheme.surface) {
         Box(Modifier.fillMaxSize()) {
-            PlayerBackdrop(track, Modifier.matchParentSize().hazeSource(haze))
+            PlayerBackdrop(
+                track,
+                Modifier.matchParentSize().hazeSource(haze),
+            )
             Row(
                 modifier =
                     Modifier.fillMaxSize()
@@ -283,6 +286,7 @@ private fun SidePanel(
                             bottomClearance = bottomClearance,
                             modifier = Modifier.fillMaxSize(),
                         )
+
                     SidePane.UpNext -> UpNextPane(playback, player, bottomClearance)
                 }
             }
@@ -305,7 +309,10 @@ private fun SidePanel(
 @Composable
 private fun UpNextPane(playback: PlaybackState, player: PlayerController, bottomClearance: Dp) {
     if (!playback.hasUpNext) {
-        Box(Modifier.fillMaxSize().padding(bottom = bottomClearance), Alignment.Center) {
+        Box(
+            Modifier.fillMaxSize().padding(bottom = bottomClearance),
+            Alignment.Center,
+        ) {
             Text(
                 stringResource(R.string.queue_empty),
                 style = MaterialTheme.typography.titleMedium,

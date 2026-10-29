@@ -15,8 +15,6 @@ import com.bobbyesp.metadator.tags.api.TagSnapshot
 import java.io.File
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 /** Picture bytes of each backup, in `files/backups/<id>/`. */

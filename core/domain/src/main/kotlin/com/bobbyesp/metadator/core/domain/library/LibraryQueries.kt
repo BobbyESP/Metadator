@@ -61,10 +61,12 @@ fun List<Track>.sorted(order: SortOrder, locale: Locale = Locale.getDefault()): 
                     .thenBy(text) { it.album }
                     .thenBy { it.discNumber ?: 0 }
                     .thenBy { it.trackNumber ?: 0 }
+
             TrackSort.Album ->
                 compareBy<Track, String?>(text) { it.album }
                     .thenBy { it.discNumber ?: 0 }
                     .thenBy { it.trackNumber ?: 0 }
+
             TrackSort.DateAdded -> compareBy { it.dateAddedEpochSeconds }
             TrackSort.DateModified -> compareBy { it.dateModifiedEpochSeconds }
             TrackSort.Duration -> compareBy { it.durationMs }

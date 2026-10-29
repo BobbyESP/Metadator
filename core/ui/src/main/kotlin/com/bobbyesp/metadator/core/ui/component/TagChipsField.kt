@@ -263,6 +263,7 @@ fun TagChipsField(
                                         when {
                                             values.isNotEmpty() ->
                                                 stringResource(R.string.field_add_value)
+
                                             placeholder != null && !focused -> placeholder
                                             else -> stringResource(R.string.field_add_value_hint)
                                         },

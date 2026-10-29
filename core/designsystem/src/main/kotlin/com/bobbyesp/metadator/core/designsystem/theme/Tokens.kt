@@ -120,6 +120,7 @@ object GroupShapes {
         if (fraction == 0f) return shape
         val density = LocalDensity.current
         val round = shapes.largeIncreased
+
         // The spring overshoots, and a corner cannot be less than square.
         fun corner(from: CornerSize, to: CornerSize): CornerSize {
             val rest = from.toPx(Size.Zero, density)

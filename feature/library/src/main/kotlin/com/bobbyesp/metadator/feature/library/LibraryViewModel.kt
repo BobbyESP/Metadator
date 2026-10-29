@@ -137,12 +137,15 @@ class LibraryViewModel(
                 savedState[KEY_SEARCH] = intent.query
                 updateQuery { copy(filter = filter.copy(search = intent.query)) }
             }
+
             is LibraryIntent.SelectTab -> {
                 savedState[KEY_TAB] = intent.tab.name
                 setState { copy(tab = intent.tab, selection = emptySet()) }
             }
+
             LibraryIntent.ToggleNeedsAttention ->
                 updateQuery { copy(filter = filter.copy(needsAttention = !filter.needsAttention)) }
+
             is LibraryIntent.ToggleFormat ->
                 updateQuery {
                     val formats = filter.formats
@@ -155,11 +158,14 @@ class LibraryViewModel(
                             )
                     )
                 }
+
             is LibraryIntent.Sort -> updateQuery { copy(sort = sort.copy(sort = intent.sort)) }
             LibraryIntent.ToggleSortDirection ->
                 updateQuery { copy(sort = sort.copy(ascending = !sort.ascending)) }
+
             LibraryIntent.ClearFilters ->
                 updateQuery { copy(filter = LibraryFilter(search = filter.search)) }
+
             is LibraryIntent.ToggleSelection ->
                 setState {
                     copy(
@@ -168,16 +174,20 @@ class LibraryViewModel(
                             else selection + intent.id
                     )
                 }
+
             LibraryIntent.SelectAll ->
                 setState { copy(selection = tracks.mapTo(mutableSetOf()) { it.id }) }
+
             LibraryIntent.ClearSelection -> setState { copy(selection = emptySet()) }
             LibraryIntent.Refresh -> refresh()
             is LibraryIntent.Play -> {
                 val queue = currentState.tracks
                 player.play(queue, startIndex = queue.indexOf(intent.track).coerceAtLeast(0))
             }
+
             is LibraryIntent.PlayAll ->
                 player.play(currentState.tracks, 0, shuffle = intent.shuffle)
+
             LibraryIntent.PlaySelection -> {
                 player.play(currentState.selectedTracks)
                 setState { copy(selection = emptySet()) }

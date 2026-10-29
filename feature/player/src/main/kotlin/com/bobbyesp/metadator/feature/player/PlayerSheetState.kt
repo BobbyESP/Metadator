@@ -164,6 +164,7 @@ internal class PlayerSheetState(
                 when {
                     position == from.progress ->
                         if (transition.targetState != from) transition.snapTo(from)
+
                     position == from.other.progress && !moving -> transition.snapTo(from.other)
                     else -> transition.seekTo(abs(position - from.progress), from.other)
                 }

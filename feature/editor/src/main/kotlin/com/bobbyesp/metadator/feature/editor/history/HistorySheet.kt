@@ -149,6 +149,7 @@ private fun HistoryList(history: HistoryState?, onRestore: (EditHistoryEntry) ->
                         isError = true,
                     )
                 }
+
             days == null ->
                 item(key = "loading", contentType = "loading") {
                     ContainedLoadingIndicator(
@@ -158,6 +159,7 @@ private fun HistoryList(history: HistoryState?, onRestore: (EditHistoryEntry) ->
                             .wrapContentWidth(Alignment.CenterHorizontally)
                     )
                 }
+
             days.isEmpty() ->
                 item(key = "state", contentType = "state") {
                     StateMessage(
@@ -166,6 +168,7 @@ private fun HistoryList(history: HistoryState?, onRestore: (EditHistoryEntry) ->
                         itemMotion(),
                     )
                 }
+
             else ->
                 days.forEach { (day, dayEntries) ->
                     item(key = ItemKey.of("day", day.toString()), contentType = "day") {

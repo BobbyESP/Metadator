@@ -49,6 +49,7 @@ enum class FieldKind {
     LongText,
     Number,
     Date,
+
     /** A position and an optional total: track 3 of 12. */
     Position,
 }

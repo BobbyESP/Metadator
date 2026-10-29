@@ -81,6 +81,7 @@ class ExternalEditorActivity : ComponentActivity() {
                 } else {
                     @Suppress("DEPRECATION") getParcelableExtra<Uri>(Intent.EXTRA_STREAM)
                 }
+
             else -> data
         }
 }

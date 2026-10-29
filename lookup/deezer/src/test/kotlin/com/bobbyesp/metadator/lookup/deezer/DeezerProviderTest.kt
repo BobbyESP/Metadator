@@ -29,6 +29,7 @@ class DeezerProviderTest {
                         HttpStatusCode.OK,
                         json,
                     )
+
                 "/track/7" ->
                     respond(
                         """{"id":7,"title":"Halo","duration":261,"isrc":"USSM10804556","track_position":2,
@@ -38,6 +39,7 @@ class DeezerProviderTest {
                         HttpStatusCode.OK,
                         json,
                     )
+
                 else -> respond("", HttpStatusCode.NotFound)
             }
         }

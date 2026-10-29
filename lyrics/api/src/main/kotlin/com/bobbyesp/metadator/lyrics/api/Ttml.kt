@@ -52,6 +52,7 @@ object Ttml {
             when (unit) {
                 "",
                 "s" -> 1000.0
+
                 "ms" -> 1.0
                 "m" -> 60_000.0
                 "h" -> 3_600_000.0
@@ -107,6 +108,7 @@ object Ttml {
                 when {
                     child.nodeType == Node.TEXT_NODE || child.nodeType == Node.CDATA_SECTION_NODE ->
                         append(child.nodeValue.orEmpty())
+
                     child !is Element -> Unit
                     child.name == "br" -> append(" ")
                     child.attribute("role") in NOT_SUNG -> Unit

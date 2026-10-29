@@ -99,7 +99,11 @@ internal fun MiniPlayerBar(
                 modifier = Modifier.padding(Spacing.medium),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                TrackArtwork(track, artworkShape, Modifier.size(48.dp).then(artworkModifier))
+                TrackArtwork(
+                    track,
+                    artworkShape,
+                    Modifier.size(48.dp).then(artworkModifier),
+                )
                 // Each line as wide as its text and no wider: those are the bounds it travels from.
                 // Set as the full player sets them, only smaller, so that each grows into its own.
                 Column(Modifier.weight(1f).padding(horizontal = Spacing.large)) {

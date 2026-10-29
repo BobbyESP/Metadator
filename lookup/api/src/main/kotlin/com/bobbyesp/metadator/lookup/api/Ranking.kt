@@ -77,6 +77,7 @@ private class CandidateView(val candidate: LookupCandidate) {
             it.normalizedForComparison()
         }
     val albumCore = candidate.album?.let(::albumCore)
+
     /** What the provider says the recording is, as opposed to the release it is on. */
     val recordingVariants = title.variants + versionVariants(candidate.version)
     val variants =
@@ -259,6 +260,7 @@ private const val ARTIST_IN_TITLE_TRUST = 0.95
 
 private const val CORROBORATION_BONUS = 0.03
 private const val MAX_CORROBORATIONS = 2
+
 /** Agreement lifts good matches; it does not rescue poor ones. */
 private const val CORROBORATION_FLOOR = 0.5
 private const val SAME_ARTIST = 0.9

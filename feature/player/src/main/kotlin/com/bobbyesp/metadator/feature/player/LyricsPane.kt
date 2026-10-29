@@ -122,6 +122,7 @@ internal fun LyricsPane(
                             onAction = onEdit,
                         )
                     }
+
                 TrackLyrics.Unreadable ->
                     Notice(bottomClearance) {
                         PlaceholderCard(
@@ -131,6 +132,7 @@ internal fun LyricsPane(
                             isError = true,
                         )
                     }
+
                 is TrackLyrics.Available ->
                     when (val song = shown.lyrics) {
                         is SongLyrics.Plain -> PlainLyrics(song.text, compact, bottomClearance)
@@ -239,9 +241,11 @@ private fun SyncedLyrics(
                 ),
             verticalArrangement = Arrangement.spacedBy(Spacing.extraSmall),
         ) {
-            itemsIndexed(lines, key = { index, _ -> index }, contentType = { _, _ -> "line" }) {
-                index,
-                line ->
+            itemsIndexed(
+                lines,
+                key = { index, _ -> index },
+                contentType = { _, _ -> "line" },
+            ) { index, line ->
                 LyricLine(
                     line = line,
                     active = index == activeIndex,

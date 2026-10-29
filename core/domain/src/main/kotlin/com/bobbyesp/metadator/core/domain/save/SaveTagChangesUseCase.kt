@@ -66,10 +66,12 @@ class SaveTagChangesUseCase(
                 backups.delete(backupId)
                 return SaveOutcome.NeedsAccess
             }
+
             TagWriteResult.NotFound -> {
                 backups.delete(backupId)
                 return SaveOutcome.FileGone
             }
+
             is TagWriteResult.Failed -> {
                 val restored =
                     writer.write(ref, current.tags, current.pictures) == TagWriteResult.Written

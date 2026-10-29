@@ -187,6 +187,7 @@ internal fun LibraryScreen(
                             onGrant = permission::request,
                             onOpenFile = onOpenFile,
                         )
+
                     state.loading -> LoadingScreen()
                     else ->
                         LibraryContent(
@@ -408,7 +409,10 @@ private fun PermissionNeeded(
     onGrant: () -> Unit,
     onOpenFile: () -> Unit,
 ) {
-    Box(Modifier.fillMaxSize().padding(Spacing.extraLarge), contentAlignment = Alignment.Center) {
+    Box(
+        Modifier.fillMaxSize().padding(Spacing.extraLarge),
+        contentAlignment = Alignment.Center,
+    ) {
         PlaceholderCard(
             title = stringResource(R.string.permission_title),
             description =
@@ -480,6 +484,7 @@ private fun LibraryContent(
                             onAction = { onIntent(LibraryIntent.Refresh) },
                         )
                     }
+
                 state.tracks.isEmpty() ->
                     CenteredPlaceholder {
                         PlaceholderCard(
@@ -493,6 +498,7 @@ private fun LibraryContent(
                             },
                         )
                     }
+
                 else ->
                     AnimatedContent(
                         targetState = state.tab,
@@ -517,6 +523,7 @@ private fun LibraryContent(
                                     onIntent = onIntent,
                                     onOpenTrack = onOpenTrack,
                                 )
+
                             LibraryTab.Albums -> AlbumGrid(state.albums, onOpenCollection)
                             LibraryTab.Artists ->
                                 CollectionList(
@@ -524,6 +531,7 @@ private fun LibraryContent(
                                     Icons.Rounded.Person,
                                     onOpenCollection,
                                 )
+
                             LibraryTab.Folders ->
                                 CollectionList(
                                     state.folders,

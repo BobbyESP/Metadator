@@ -68,6 +68,7 @@ class AndroidImageSource(
             bytes.size > 3 && bytes[0] == 0xFF.toByte() && bytes[1] == 0xD8.toByte() -> "image/jpeg"
             bytes.size > 8 && bytes[0] == 0x89.toByte() && bytes[1] == 'P'.code.toByte() ->
                 "image/png"
+
             else -> null
         }
 

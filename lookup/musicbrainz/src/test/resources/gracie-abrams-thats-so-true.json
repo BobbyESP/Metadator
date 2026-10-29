@@ -1,1435 +1,1435 @@
 {
- "recordings": [
-  {
-   "id": "ba5cfe3c-069e-43c5-99c9-6413c21b85f2",
-   "title": "That’s So True",
-   "disambiguation": "Dolby Atmos mix",
-   "length": 166000,
-   "first-release-date": "2024-10-18",
-   "isrcs": [
-    "USUG12406907"
-   ],
-   "artist-credit": [
+  "recordings": [
     {
-     "name": "Gracie Abrams",
-     "joinphrase": "",
-     "artist": {
-      "id": "f7441bc7-d7de-4813-a2fc-31a4033d396d",
-      "name": "Gracie Abrams"
-     }
-    }
-   ],
-   "releases": [
-    {
-     "id": "41ca53f6-ed84-4ba0-b5fd-895b563ecca8",
-     "title": "The Secret of Us (deluxe)",
-     "status": "Official",
-     "release-group": {
-      "id": "b6923fdb-2f07-49f0-9adc-3dc2275af0da",
-      "primary-type": "Album"
-     },
-     "media": [
-      {
-       "position": 1,
-       "format": "Digital Media",
-       "track-count": 20,
-       "track-offset": 14,
-       "track": [
+      "id": "ba5cfe3c-069e-43c5-99c9-6413c21b85f2",
+      "title": "That’s So True",
+      "disambiguation": "Dolby Atmos mix",
+      "length": 166000,
+      "first-release-date": "2024-10-18",
+      "isrcs": [
+        "USUG12406907"
+      ],
+      "artist-credit": [
         {
-         "id": "429832d9-e525-44c9-9710-f52e7b0d2b63",
-         "number": "15",
-         "title": "That’s So True",
-         "length": 166000
+          "name": "Gracie Abrams",
+          "joinphrase": "",
+          "artist": {
+            "id": "f7441bc7-d7de-4813-a2fc-31a4033d396d",
+            "name": "Gracie Abrams"
+          }
         }
-       ]
-      }
-     ]
-    }
-   ]
-  },
-  {
-   "id": "34c777fc-f544-417e-8c8f-d742bf33d1ae",
-   "title": "That’s So True",
-   "disambiguation": "live, 2024-10: Radio City Music Hall, New York, USA",
-   "length": 217000,
-   "first-release-date": "2024-11-03",
-   "isrcs": [
-    "USUMV2403959"
-   ],
-   "artist-credit": [
-    {
-     "name": "Gracie Abrams",
-     "joinphrase": "",
-     "artist": {
-      "id": "f7441bc7-d7de-4813-a2fc-31a4033d396d",
-      "name": "Gracie Abrams"
-     }
-    }
-   ],
-   "releases": [
-    {
-     "id": "615f357e-59e9-4e3e-8e5c-a4174b56a67c",
-     "title": "That’s So True (live from Radio City Music Hall)",
-     "status": "Official",
-     "release-group": {
-      "id": "01bbe92f-84a6-4d8a-834d-21acdbf650e0",
-      "primary-type": "Single",
-      "secondary-types": [
-       "Live"
+      ],
+      "releases": [
+        {
+          "id": "41ca53f6-ed84-4ba0-b5fd-895b563ecca8",
+          "title": "The Secret of Us (deluxe)",
+          "status": "Official",
+          "release-group": {
+            "id": "b6923fdb-2f07-49f0-9adc-3dc2275af0da",
+            "primary-type": "Album"
+          },
+          "media": [
+            {
+              "position": 1,
+              "format": "Digital Media",
+              "track-count": 20,
+              "track-offset": 14,
+              "track": [
+                {
+                  "id": "429832d9-e525-44c9-9710-f52e7b0d2b63",
+                  "number": "15",
+                  "title": "That’s So True",
+                  "length": 166000
+                }
+              ]
+            }
+          ]
+        }
       ]
-     },
-     "media": [
-      {
-       "position": 1,
-       "format": "Digital Media",
-       "track-count": 1,
-       "track-offset": 0,
-       "track": [
-        {
-         "id": "696d5d0c-ac8f-458c-bc82-499c54129ed7",
-         "number": "1",
-         "title": "That’s So True",
-         "length": 217000
-        }
-       ]
-      }
-     ]
     },
     {
-     "id": "78ab0acf-b829-4388-898a-2aa79d6b080b",
-     "title": "That’s So True (live from Radio City Music Hall)",
-     "status": "Official",
-     "release-group": {
-      "id": "01bbe92f-84a6-4d8a-834d-21acdbf650e0",
-      "primary-type": "Single",
-      "secondary-types": [
-       "Live"
-      ]
-     },
-     "media": [
-      {
-       "position": 1,
-       "format": "Digital Media",
-       "track-count": 4,
-       "track-offset": 2,
-       "track": [
+      "id": "34c777fc-f544-417e-8c8f-d742bf33d1ae",
+      "title": "That’s So True",
+      "disambiguation": "live, 2024-10: Radio City Music Hall, New York, USA",
+      "length": 217000,
+      "first-release-date": "2024-11-03",
+      "isrcs": [
+        "USUMV2403959"
+      ],
+      "artist-credit": [
         {
-         "id": "6154a4cd-1fc6-4104-95b4-434534526bd4",
-         "number": "3",
-         "title": "That’s So True",
-         "length": 217856
+          "name": "Gracie Abrams",
+          "joinphrase": "",
+          "artist": {
+            "id": "f7441bc7-d7de-4813-a2fc-31a4033d396d",
+            "name": "Gracie Abrams"
+          }
         }
-       ]
-      }
-     ]
+      ],
+      "releases": [
+        {
+          "id": "615f357e-59e9-4e3e-8e5c-a4174b56a67c",
+          "title": "That’s So True (live from Radio City Music Hall)",
+          "status": "Official",
+          "release-group": {
+            "id": "01bbe92f-84a6-4d8a-834d-21acdbf650e0",
+            "primary-type": "Single",
+            "secondary-types": [
+              "Live"
+            ]
+          },
+          "media": [
+            {
+              "position": 1,
+              "format": "Digital Media",
+              "track-count": 1,
+              "track-offset": 0,
+              "track": [
+                {
+                  "id": "696d5d0c-ac8f-458c-bc82-499c54129ed7",
+                  "number": "1",
+                  "title": "That’s So True",
+                  "length": 217000
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "78ab0acf-b829-4388-898a-2aa79d6b080b",
+          "title": "That’s So True (live from Radio City Music Hall)",
+          "status": "Official",
+          "release-group": {
+            "id": "01bbe92f-84a6-4d8a-834d-21acdbf650e0",
+            "primary-type": "Single",
+            "secondary-types": [
+              "Live"
+            ]
+          },
+          "media": [
+            {
+              "position": 1,
+              "format": "Digital Media",
+              "track-count": 4,
+              "track-offset": 2,
+              "track": [
+                {
+                  "id": "6154a4cd-1fc6-4104-95b4-434534526bd4",
+                  "number": "3",
+                  "title": "That’s So True",
+                  "length": 217856
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "4fceb2c2-0ecf-42f8-b58b-185fda1497ed",
+      "title": "That’s So True",
+      "disambiguation": "live, 2025-08-11: Red Rocks Amphitheatre, Morrison, CO, USA",
+      "length": 225000,
+      "first-release-date": "2025-10-29",
+      "isrcs": [
+        "USUG12509332"
+      ],
+      "artist-credit": [
+        {
+          "name": "Gracie Abrams",
+          "joinphrase": "",
+          "artist": {
+            "id": "f7441bc7-d7de-4813-a2fc-31a4033d396d",
+            "name": "Gracie Abrams"
+          }
+        }
+      ],
+      "releases": [
+        {
+          "id": "297bc70b-a8eb-4931-ac17-1a4dff08b5a2",
+          "title": "Apple Music Live: Gracie Abrams",
+          "status": "Official",
+          "release-group": {
+            "id": "b62219ab-be78-474f-a0ec-75e80ef30870",
+            "primary-type": "Album",
+            "secondary-types": [
+              "Live"
+            ]
+          },
+          "media": [
+            {
+              "position": 1,
+              "format": "Digital Media",
+              "track-count": 17,
+              "track-offset": 15,
+              "track": [
+                {
+                  "id": "5cf02b4a-7e1c-4d8d-9a4b-58a44af7d34b",
+                  "number": "16",
+                  "title": "That’s So True (Apple Music Live)",
+                  "length": 225000
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "a6ff57e9-5ba8-4a32-8ac3-e5e8c42796dc",
+      "title": "That’s So True",
+      "disambiguation": "explicit",
+      "length": 166300,
+      "first-release-date": "2024-06-21",
+      "isrcs": [
+        "USUG12406903"
+      ],
+      "artist-credit": [
+        {
+          "name": "Gracie Abrams",
+          "joinphrase": "",
+          "artist": {
+            "id": "f7441bc7-d7de-4813-a2fc-31a4033d396d",
+            "name": "Gracie Abrams"
+          }
+        }
+      ],
+      "releases": [
+        {
+          "id": "27595d14-f4ee-4b1b-971f-f31ce483e8f9",
+          "title": "The Dome, Vol. 110",
+          "status": "Official",
+          "date": "2025-03-21",
+          "release-group": {
+            "id": "6fc7a1d7-481a-4aa5-92a9-d56fdc2314a4",
+            "primary-type": "Album",
+            "secondary-types": [
+              "Compilation"
+            ]
+          },
+          "media": [
+            {
+              "position": 1,
+              "format": "CD",
+              "track-count": 24,
+              "track-offset": 0,
+              "track": [
+                {
+                  "id": "813ae335-6e0b-4354-aa8c-f84211bc73a4",
+                  "number": "1",
+                  "title": "That’s So True",
+                  "length": 166347
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "ddeb287c-2fe0-4477-a28a-1711a9bac082",
+          "title": "Now That's What WE Call Music! (25)",
+          "status": "Bootleg",
+          "date": "2025-08-31",
+          "release-group": {
+            "id": "8bc12fe7-e5ec-45b7-bcac-a796db7a667f",
+            "primary-type": "Album",
+            "secondary-types": [
+              "Compilation"
+            ]
+          },
+          "media": [
+            {
+              "position": 1,
+              "format": "CD-R",
+              "track-count": 20,
+              "track-offset": 6,
+              "track": [
+                {
+                  "id": "cc8f573e-5f7a-4a4a-a5c1-afffa126df1e",
+                  "number": "7",
+                  "title": "That's So True",
+                  "length": 167000
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "7c9d8cb3-06b8-4729-b3c0-5eb48915ac70",
+          "title": "Die Ultimative Chartshow: Die erfolgreichsten Hits 2025 & Die besten Discofox Tracks",
+          "status": "Official",
+          "date": "2025-11-21",
+          "release-group": {
+            "id": "f0dcc311-eeed-405d-bf30-58ee21ebca6b",
+            "primary-type": "Album",
+            "secondary-types": [
+              "Compilation"
+            ]
+          },
+          "media": [
+            {
+              "position": 1,
+              "format": "CD",
+              "track-count": 24,
+              "track-offset": 0,
+              "track": [
+                {
+                  "id": "c0824a1a-b061-4611-b3f7-7d4329560438",
+                  "number": "1",
+                  "title": "That’s So True",
+                  "length": 164906
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "e06cc7f8-f0a5-4307-8c0c-4d1dcd0b0abe",
+          "title": "That’s So True / I Love You I’m Sorry",
+          "status": "Official",
+          "date": "2025-09-26",
+          "release-group": {
+            "id": "26498e60-de7a-4bd3-9b74-2dfaab507e0a",
+            "primary-type": "Single"
+          },
+          "media": [
+            {
+              "position": 1,
+              "format": "Vinyl",
+              "track-count": 2,
+              "track-offset": 0,
+              "track": [
+                {
+                  "id": "33af298b-b554-4ac0-8f99-d12ab6d40ccd",
+                  "number": "A",
+                  "title": "That’s So True"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "03d345e8-a7a0-4f15-9cf4-ad976de696e9",
+          "title": "Bravo: The Hits 2025",
+          "status": "Official",
+          "date": "2025-11-07",
+          "release-group": {
+            "id": "33d1d2a7-f9ed-4b52-992a-9fe5bf89256c",
+            "primary-type": "Album",
+            "secondary-types": [
+              "Compilation"
+            ]
+          },
+          "media": [
+            {
+              "position": 2,
+              "format": "CD",
+              "track-count": 24,
+              "track-offset": 19,
+              "track": [
+                {
+                  "id": "da8fa08a-b4d3-4f68-8994-80c72cc6eeee",
+                  "number": "2-20",
+                  "title": "That's So True",
+                  "length": 164546
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "f2c3f7ce-7cdd-45ae-b48b-5f8b5c9a8666",
+          "title": "NRJ Music Awards 2025",
+          "status": "Official",
+          "release-group": {
+            "id": "105cdc30-da9f-4913-9b46-202603bc1256",
+            "primary-type": "Album",
+            "secondary-types": [
+              "Compilation"
+            ]
+          },
+          "media": [
+            {
+              "position": 3,
+              "format": "CD",
+              "track-count": 20,
+              "track-offset": 15,
+              "track": [
+                {
+                  "id": "8e541454-ad59-4ee0-aedf-e159466eddfc",
+                  "number": "16",
+                  "title": "That’s So True",
+                  "length": 166000
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "2029f031-7d75-406a-bf44-27232a5852d1",
+          "title": "The Secret Of Us Deluxe (Japan Edition)",
+          "status": "Official",
+          "date": "2025-03-14",
+          "release-group": {
+            "id": "b6923fdb-2f07-49f0-9adc-3dc2275af0da",
+            "primary-type": "Album"
+          },
+          "media": [
+            {
+              "position": 1,
+              "format": "CD",
+              "track-count": 22,
+              "track-offset": 14,
+              "track": [
+                {
+                  "id": "64644ba6-8f1c-4e39-b833-37b910c287f9",
+                  "number": "15",
+                  "title": "That’s So True",
+                  "length": 166300
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "15090faf-e8c8-4243-99d7-380db1d757db",
+          "title": "Bravo Hits 128",
+          "status": "Official",
+          "date": "2025-02-14",
+          "release-group": {
+            "id": "44bad47b-e9bb-4d8b-95c6-720d55c0bc16",
+            "primary-type": "Album",
+            "secondary-types": [
+              "Compilation"
+            ]
+          },
+          "media": [
+            {
+              "position": 1,
+              "format": "CD",
+              "track-count": 24,
+              "track-offset": 1,
+              "track": [
+                {
+                  "id": "a3623416-e9a7-4e4d-835f-9af66f170dfc",
+                  "number": "2",
+                  "title": "That’s So True",
+                  "length": 166320
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "3f82a087-2dac-4aa6-904a-67a3e68921f5",
+          "title": "The Secret of Us (deluxe)",
+          "status": "Official",
+          "date": "2024-10-18",
+          "release-group": {
+            "id": "b6923fdb-2f07-49f0-9adc-3dc2275af0da",
+            "primary-type": "Album"
+          },
+          "media": [
+            {
+              "position": 1,
+              "format": "CD",
+              "track-count": 17,
+              "track-offset": 14,
+              "track": [
+                {
+                  "id": "93a861a9-2790-4e3f-955e-53082d4fc6d4",
+                  "number": "15",
+                  "title": "That’s So True",
+                  "length": 166306
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "9400153b-6f3f-4757-b449-60316ff4cd83",
+          "title": "Megahits 2025: Die Erste",
+          "status": "Official",
+          "date": "2025-01-10",
+          "release-group": {
+            "id": "69135d12-3af1-4c35-9664-cc972ba6cab0",
+            "primary-type": "Album",
+            "secondary-types": [
+              "Compilation"
+            ]
+          },
+          "media": [
+            {
+              "position": 1,
+              "format": "CD",
+              "track-count": 24,
+              "track-offset": 0,
+              "track": [
+                {
+                  "id": "2e640cad-85bb-4fd9-9137-3175f53834e9",
+                  "number": "1",
+                  "title": "That’s So True",
+                  "length": 163000
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "e0dd5ec4-5e00-4848-94d3-47bc61ecdd41",
+          "title": "That’s So True",
+          "status": "Official",
+          "date": "2024-11-06",
+          "release-group": {
+            "id": "01bbe92f-84a6-4d8a-834d-21acdbf650e0",
+            "primary-type": "Single",
+            "secondary-types": [
+              "Live"
+            ]
+          },
+          "media": [
+            {
+              "position": 1,
+              "format": "12\" Vinyl",
+              "track-count": 2,
+              "track-offset": 0,
+              "track": [
+                {
+                  "id": "f206b2ce-7a54-4636-ad51-8736ade29845",
+                  "number": "A",
+                  "title": "That’s So True"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "88696370-1a73-411b-b181-751f33d450bd",
+          "title": "That’s So True (live from Radio City Music Hall)",
+          "status": "Official",
+          "date": "2024-11-06",
+          "release-group": {
+            "id": "01bbe92f-84a6-4d8a-834d-21acdbf650e0",
+            "primary-type": "Single",
+            "secondary-types": [
+              "Live"
+            ]
+          },
+          "media": [
+            {
+              "position": 1,
+              "format": "Digital Media",
+              "track-count": 2,
+              "track-offset": 1,
+              "track": [
+                {
+                  "id": "da0a44f1-13ab-4418-9e33-2606f2702e5e",
+                  "number": "2",
+                  "title": "That’s So True",
+                  "length": 166300
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "78ab0acf-b829-4388-898a-2aa79d6b080b",
+          "title": "That’s So True (live from Radio City Music Hall)",
+          "status": "Official",
+          "release-group": {
+            "id": "01bbe92f-84a6-4d8a-834d-21acdbf650e0",
+            "primary-type": "Single",
+            "secondary-types": [
+              "Live"
+            ]
+          },
+          "media": [
+            {
+              "position": 1,
+              "format": "Digital Media",
+              "track-count": 4,
+              "track-offset": 1,
+              "track": [
+                {
+                  "id": "6b2576f6-f011-41eb-9f4d-32d3fe30a5ec",
+                  "number": "2",
+                  "title": "That’s So True",
+                  "length": 166300
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "8ab146c0-6ae6-4eaa-b27e-c449f7352cfe",
+          "title": "The Secret of Us (deluxe)",
+          "status": "Official",
+          "release-group": {
+            "id": "b6923fdb-2f07-49f0-9adc-3dc2275af0da",
+            "primary-type": "Album"
+          },
+          "media": [
+            {
+              "position": 1,
+              "format": "Digital Media",
+              "track-count": 22,
+              "track-offset": 14,
+              "track": [
+                {
+                  "id": "115586fc-3950-460c-b2aa-8c2c0992c658",
+                  "number": "15",
+                  "title": "That’s So True",
+                  "length": 166300
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "2aa4069a-f4ea-4ed5-8dd6-4587d1d62a8d",
+          "title": "The Secret of Us (deluxe)",
+          "status": "Official",
+          "release-group": {
+            "id": "b6923fdb-2f07-49f0-9adc-3dc2275af0da",
+            "primary-type": "Album"
+          },
+          "media": [
+            {
+              "position": 1,
+              "format": "Digital Media",
+              "track-count": 20,
+              "track-offset": 14,
+              "track": [
+                {
+                  "id": "b5976c39-f607-4489-a1d8-ae0aa4310167",
+                  "number": "15",
+                  "title": "That’s So True",
+                  "length": 166000
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "3041efbc-682d-438d-ab48-fbd5aacdcec7",
+          "title": "The Secret of Us (deluxe)",
+          "status": "Official",
+          "release-group": {
+            "id": "b6923fdb-2f07-49f0-9adc-3dc2275af0da",
+            "primary-type": "Album"
+          },
+          "media": [
+            {
+              "position": 1,
+              "format": "Digital Media",
+              "track-count": 20,
+              "track-offset": 14,
+              "track": [
+                {
+                  "id": "7a21d090-4498-4533-9002-0dd3c92d270f",
+                  "number": "15",
+                  "title": "That’s So True",
+                  "length": 166300
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "6a0d4cb6-7d0b-45d6-9a50-b0a579a5a5e4",
+          "title": "The Secret of Us (deluxe)",
+          "status": "Official",
+          "date": "2024-10-18",
+          "release-group": {
+            "id": "b6923fdb-2f07-49f0-9adc-3dc2275af0da",
+            "primary-type": "Album"
+          },
+          "media": [
+            {
+              "position": 2,
+              "format": "12\" Vinyl",
+              "track-count": 4,
+              "track-offset": 1,
+              "track": [
+                {
+                  "id": "26c3364d-b80f-4dfa-9885-9f7836bf8422",
+                  "number": "C15",
+                  "title": "That’s So True"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "9949992c-e8e3-4cc3-8623-6cc1d6920d32",
+          "title": "The Secret of Us (deluxe)",
+          "status": "Official",
+          "date": "2024-10-18",
+          "release-group": {
+            "id": "b6923fdb-2f07-49f0-9adc-3dc2275af0da",
+            "primary-type": "Album"
+          },
+          "media": [
+            {
+              "position": 2,
+              "format": "12\" Vinyl",
+              "track-count": 4,
+              "track-offset": 1,
+              "track": [
+                {
+                  "id": "757a00d3-e1ff-4dc2-912a-b3b434765cf8",
+                  "number": "C15",
+                  "title": "That’s So True"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "5a415b07-fdeb-49cf-88c6-7d577acfdd2f",
+          "title": "The Secret of Us (deluxe)",
+          "status": "Official",
+          "date": "2024-10-18",
+          "release-group": {
+            "id": "b6923fdb-2f07-49f0-9adc-3dc2275af0da",
+            "primary-type": "Album"
+          },
+          "media": [
+            {
+              "position": 2,
+              "format": "12\" Vinyl",
+              "track-count": 4,
+              "track-offset": 1,
+              "track": [
+                {
+                  "id": "8215df23-3a6e-4bfc-a4dc-867af5f1baa7",
+                  "number": "C15",
+                  "title": "That’s So True"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "44a5843f-edc6-4909-a29f-11aeac06026a",
+          "title": "The Secret of Us (deluxe)",
+          "status": "Official",
+          "release-group": {
+            "id": "b6923fdb-2f07-49f0-9adc-3dc2275af0da",
+            "primary-type": "Album"
+          },
+          "media": [
+            {
+              "position": 1,
+              "format": "Digital Media",
+              "track-count": 20,
+              "track-offset": 14,
+              "track": [
+                {
+                  "id": "c96ddbd8-b502-4553-a23e-07fc6638c008",
+                  "number": "15",
+                  "title": "That’s So True",
+                  "length": 166300
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "843a7918-5a39-42ef-b1f7-5f2196637781",
+      "title": "That's So True",
+      "length": 164920,
+      "first-release-date": "2025-12-12",
+      "artist-credit": [
+        {
+          "name": "Gracie Abrams",
+          "joinphrase": "",
+          "artist": {
+            "id": "f7441bc7-d7de-4813-a2fc-31a4033d396d",
+            "name": "Gracie Abrams"
+          }
+        }
+      ],
+      "releases": [
+        {
+          "id": "d5757094-0fd0-4ef4-a931-03d0d2b363c9",
+          "title": "MNM Big Hits - Best Of 2025",
+          "status": "Official",
+          "release-group": {
+            "id": "b8769ece-f29f-49bd-8edf-5ffd13259417",
+            "primary-type": "Album",
+            "secondary-types": [
+              "Compilation"
+            ]
+          },
+          "media": [
+            {
+              "position": 2,
+              "format": "Digital Media",
+              "track-count": 22,
+              "track-offset": 12,
+              "track": [
+                {
+                  "id": "6f6b7f37-3cb7-4de1-8b5a-207d293463d6",
+                  "number": "13",
+                  "title": "That's So True",
+                  "length": 164920
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "2ad00efc-96f0-4b77-9ff8-37e4e4842b7d",
+          "title": "MNM Big Hits: Best of 2025",
+          "status": "Official",
+          "date": "",
+          "release-group": {
+            "id": "b8769ece-f29f-49bd-8edf-5ffd13259417",
+            "primary-type": "Album",
+            "secondary-types": [
+              "Compilation"
+            ]
+          },
+          "media": [
+            {
+              "position": 2,
+              "format": "CD",
+              "track-count": 22,
+              "track-offset": 12,
+              "track": [
+                {
+                  "id": "188cc54e-824c-4171-8a7a-12dc2725a5bf",
+                  "number": "13",
+                  "title": "That's So True",
+                  "length": 164920
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c80164f2-c1da-433f-b72c-85a07baa7032",
+      "title": "That’s So True",
+      "disambiguation": "official lyric video",
+      "length": 166443,
+      "first-release-date": "2024-11-06",
+      "isrcs": [
+        "USUMV2402143"
+      ],
+      "artist-credit": [
+        {
+          "name": "Gracie Abrams",
+          "joinphrase": "",
+          "artist": {
+            "id": "f7441bc7-d7de-4813-a2fc-31a4033d396d",
+            "name": "Gracie Abrams"
+          }
+        }
+      ],
+      "releases": [
+        {
+          "id": "78ab0acf-b829-4388-898a-2aa79d6b080b",
+          "title": "That’s So True (live from Radio City Music Hall)",
+          "status": "Official",
+          "release-group": {
+            "id": "01bbe92f-84a6-4d8a-834d-21acdbf650e0",
+            "primary-type": "Single",
+            "secondary-types": [
+              "Live"
+            ]
+          },
+          "media": [
+            {
+              "position": 1,
+              "format": "Digital Media",
+              "track-count": 4,
+              "track-offset": 3,
+              "track": [
+                {
+                  "id": "66ce028e-6323-4760-9214-34bbbd39e848",
+                  "number": "4",
+                  "title": "That’s So True",
+                  "length": 166443
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "5e9fd428-c5d4-452a-8afb-0641900da5f6",
+      "title": "That’s So True",
+      "disambiguation": "live, 2024-10: Radio City Music Hall, New York, USA",
+      "length": 194199,
+      "first-release-date": "2024-11-06",
+      "isrcs": [
+        "USUG12404428"
+      ],
+      "artist-credit": [
+        {
+          "name": "Gracie Abrams",
+          "joinphrase": "",
+          "artist": {
+            "id": "f7441bc7-d7de-4813-a2fc-31a4033d396d",
+            "name": "Gracie Abrams"
+          }
+        }
+      ],
+      "releases": [
+        {
+          "id": "7995ee68-0f6c-4309-aa63-d4bf4112b126",
+          "title": "The Secret of Us (live from Radio City Music Hall)",
+          "status": "Official",
+          "date": "2025-04-12",
+          "release-group": {
+            "id": "7327f8ca-5b26-4652-9aa2-00d4f6f7f88f",
+            "primary-type": "Album",
+            "secondary-types": [
+              "Live"
+            ]
+          },
+          "media": [
+            {
+              "position": 1,
+              "format": "12\" Vinyl",
+              "track-count": 12,
+              "track-offset": 8,
+              "track": [
+                {
+                  "id": "8508c62d-530d-4367-af51-22734a1468da",
+                  "number": "B9",
+                  "title": "That's So True",
+                  "length": 213000
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "e0dd5ec4-5e00-4848-94d3-47bc61ecdd41",
+          "title": "That’s So True",
+          "status": "Official",
+          "date": "2024-11-06",
+          "release-group": {
+            "id": "01bbe92f-84a6-4d8a-834d-21acdbf650e0",
+            "primary-type": "Single",
+            "secondary-types": [
+              "Live"
+            ]
+          },
+          "media": [
+            {
+              "position": 1,
+              "format": "12\" Vinyl",
+              "track-count": 2,
+              "track-offset": 1,
+              "track": [
+                {
+                  "id": "a8ff0774-e15e-47d1-93ec-0075cacfe97e",
+                  "number": "B",
+                  "title": "That’s So True (live from Radio City Music Hall)"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "353605ec-6d50-4577-9d94-241c5a734f67",
+          "title": "That’s So True (live from Radio City Music Hall)",
+          "status": "Official",
+          "date": "2024-11-11",
+          "release-group": {
+            "id": "01bbe92f-84a6-4d8a-834d-21acdbf650e0",
+            "primary-type": "Single",
+            "secondary-types": [
+              "Live"
+            ]
+          },
+          "media": [
+            {
+              "position": 1,
+              "format": "Digital Media",
+              "track-count": 1,
+              "track-offset": 0,
+              "track": [
+                {
+                  "id": "7a37d840-1c5e-4221-a80a-3aa778021bdd",
+                  "number": "1",
+                  "title": "That’s So True",
+                  "length": 194199
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "88696370-1a73-411b-b181-751f33d450bd",
+          "title": "That’s So True (live from Radio City Music Hall)",
+          "status": "Official",
+          "date": "2024-11-06",
+          "release-group": {
+            "id": "01bbe92f-84a6-4d8a-834d-21acdbf650e0",
+            "primary-type": "Single",
+            "secondary-types": [
+              "Live"
+            ]
+          },
+          "media": [
+            {
+              "position": 1,
+              "format": "Digital Media",
+              "track-count": 2,
+              "track-offset": 0,
+              "track": [
+                {
+                  "id": "346971fa-f72b-4581-ade4-0234d0b95ba2",
+                  "number": "1",
+                  "title": "That’s So True",
+                  "length": 194199
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "78ab0acf-b829-4388-898a-2aa79d6b080b",
+          "title": "That’s So True (live from Radio City Music Hall)",
+          "status": "Official",
+          "release-group": {
+            "id": "01bbe92f-84a6-4d8a-834d-21acdbf650e0",
+            "primary-type": "Single",
+            "secondary-types": [
+              "Live"
+            ]
+          },
+          "media": [
+            {
+              "position": 1,
+              "format": "Digital Media",
+              "track-count": 4,
+              "track-offset": 0,
+              "track": [
+                {
+                  "id": "adf11140-0953-4022-a06e-71f8febd9f53",
+                  "number": "1",
+                  "title": "That’s So True",
+                  "length": 194199
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "bcf349f9-01cc-4010-bc57-66db16eb9a58",
+          "title": "That’s So True (live from Radio City Music Hall)",
+          "status": "Official",
+          "release-group": {
+            "id": "01bbe92f-84a6-4d8a-834d-21acdbf650e0",
+            "primary-type": "Single",
+            "secondary-types": [
+              "Live"
+            ]
+          },
+          "media": [
+            {
+              "position": 1,
+              "format": "Digital Media",
+              "track-count": 1,
+              "track-offset": 0,
+              "track": [
+                {
+                  "id": "eff2e6f4-b646-4d5b-a23f-c638a54a08af",
+                  "number": "1",
+                  "title": "That’s So True",
+                  "length": 194199
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "596616a3-ee7d-4cb6-99ad-fe9bdd6eecfb",
+      "title": "That’s So True",
+      "disambiguation": "clean",
+      "length": 166000,
+      "first-release-date": "2024-10-16",
+      "isrcs": [
+        "USUG12406911"
+      ],
+      "artist-credit": [
+        {
+          "name": "Gracie Abrams",
+          "joinphrase": "",
+          "artist": {
+            "id": "f7441bc7-d7de-4813-a2fc-31a4033d396d",
+            "name": "Gracie Abrams"
+          }
+        }
+      ],
+      "releases": [
+        {
+          "id": "4b6fb4f3-ff9d-4fab-a87e-ab194030015d",
+          "title": "The Secret of Us (deluxe)",
+          "status": "Official",
+          "release-group": {
+            "id": "b6923fdb-2f07-49f0-9adc-3dc2275af0da",
+            "primary-type": "Album"
+          },
+          "media": [
+            {
+              "position": 1,
+              "format": "Digital Media",
+              "track-count": 20,
+              "track-offset": 14,
+              "track": [
+                {
+                  "id": "17b046e9-e8dc-4a53-98ce-f8c6f61ddd51",
+                  "number": "15",
+                  "title": "That’s So True",
+                  "length": 166000
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "f9c5e5d8-48f3-49fb-a093-b217f93d7842",
+          "title": "Now That’s What I Call Music! 120",
+          "status": "Official",
+          "date": "2025-04-04",
+          "release-group": {
+            "id": "e3f6477a-745c-4664-aaa7-9f8c43342c06",
+            "primary-type": "Album",
+            "secondary-types": [
+              "Compilation"
+            ]
+          },
+          "media": [
+            {
+              "position": 1,
+              "format": "CD",
+              "track-count": 21,
+              "track-offset": 0,
+              "track": [
+                {
+                  "id": "c06d263b-1c9b-4382-97a6-32fd02594899",
+                  "number": "1",
+                  "title": "That's So True",
+                  "length": 165893
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "889d42f2-9960-432c-b09c-0067bcb846ea",
+          "title": "The Secret of Us (deluxe)",
+          "status": "Official",
+          "date": "2024-10-16",
+          "release-group": {
+            "id": "b6923fdb-2f07-49f0-9adc-3dc2275af0da",
+            "primary-type": "Album"
+          },
+          "media": [
+            {
+              "position": 1,
+              "format": "Digital Media",
+              "track-count": 20,
+              "track-offset": 14,
+              "track": [
+                {
+                  "id": "835859f1-c653-4f8c-b7ad-0e2e673081cf",
+                  "number": "15",
+                  "title": "That’s So True",
+                  "length": 166300
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "02e86137-f302-4be0-b41a-f2fc68688df8",
+      "title": "That’s So True",
+      "disambiguation": "part of “2025 MegaMix” DJ‐mix",
+      "length": 159000,
+      "first-release-date": "2025-12-05",
+      "isrcs": [
+        "US23A9233570"
+      ],
+      "artist-credit": [
+        {
+          "name": "Gracie Abrams",
+          "joinphrase": "",
+          "artist": {
+            "id": "f7441bc7-d7de-4813-a2fc-31a4033d396d",
+            "name": "Gracie Abrams"
+          }
+        }
+      ],
+      "releases": [
+        {
+          "id": "a51a2790-d9d8-4a74-a665-212ff6ca648e",
+          "title": "2025 MegaMix",
+          "status": "Official",
+          "date": "2025-12-05",
+          "release-group": {
+            "id": "a32f76f5-35b2-486a-9f43-ff625a19e683",
+            "primary-type": "Album",
+            "secondary-types": [
+              "DJ-mix"
+            ]
+          },
+          "media": [
+            {
+              "position": 1,
+              "format": "Digital Media",
+              "track-count": 21,
+              "track-offset": 17,
+              "track": [
+                {
+                  "id": "d5f8f6be-985e-455e-85d6-039808c5a170",
+                  "number": "18",
+                  "title": "That’s So True",
+                  "length": 159000
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "2149d333-ca61-4411-b815-f1faa79d134b",
+      "title": "That’s So True",
+      "length": 164000,
+      "first-release-date": "2025-12-19",
+      "artist-credit": [
+        {
+          "name": "Gracie Abrams",
+          "joinphrase": "",
+          "artist": {
+            "id": "f7441bc7-d7de-4813-a2fc-31a4033d396d",
+            "name": "Gracie Abrams"
+          }
+        }
+      ],
+      "releases": [
+        {
+          "id": "937f02fe-76ab-4726-9127-8cdb6549b94c",
+          "title": "NRJ Hits 2026",
+          "status": "Official",
+          "date": "2025-12-19",
+          "release-group": {
+            "id": "89f32df1-dc28-432b-8c8b-121184dc17e6",
+            "primary-type": "Album",
+            "secondary-types": [
+              "Compilation"
+            ]
+          },
+          "media": [
+            {
+              "position": 1,
+              "format": "CD",
+              "track-count": 18,
+              "track-offset": 9,
+              "track": [
+                {
+                  "id": "47c28b6b-5a13-4258-b534-cdb25194dd2b",
+                  "number": "10",
+                  "title": "That’s So True",
+                  "length": 164000
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c5e1ac44-ce03-49ef-8db9-86efeed55b20",
+      "title": "That’s So True",
+      "disambiguation": "live: 2024-12-14, Saturday Night Live",
+      "length": 242000,
+      "artist-credit": [
+        {
+          "name": "Gracie Abrams",
+          "joinphrase": "",
+          "artist": {
+            "id": "f7441bc7-d7de-4813-a2fc-31a4033d396d",
+            "name": "Gracie Abrams"
+          }
+        }
+      ],
+      "releases": []
+    },
+    {
+      "id": "947b0b50-8c52-470c-8f79-137dfece5bc8",
+      "title": "That’s So True",
+      "length": 166000,
+      "first-release-date": "2025-11-28",
+      "artist-credit": [
+        {
+          "name": "Gracie Abrams",
+          "joinphrase": "",
+          "artist": {
+            "id": "f7441bc7-d7de-4813-a2fc-31a4033d396d",
+            "name": "Gracie Abrams"
+          }
+        }
+      ],
+      "releases": [
+        {
+          "id": "df4c9014-ae62-4df1-b149-a169de23a67b",
+          "title": "NRJ Music Awards 2025 [Édition Collector]",
+          "status": "Official",
+          "date": "2025-11-28",
+          "release-group": {
+            "id": "98474a82-4090-4b05-8388-6c28c8f1bd95",
+            "primary-type": "Album",
+            "secondary-types": [
+              "Compilation"
+            ]
+          },
+          "media": [
+            {
+              "position": 3,
+              "format": "CD",
+              "track-count": 18,
+              "track-offset": 8,
+              "track": [
+                {
+                  "id": "85fb6c57-cd9c-4213-96a9-9de88ff00449",
+                  "number": "9",
+                  "title": "That’s So True",
+                  "length": 166000
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "db570328-1d61-466d-9a0d-9037f537c435",
+      "title": "That’s So True",
+      "disambiguation": "Live at Radio City Music Hall",
+      "length": 218000,
+      "artist-credit": [
+        {
+          "name": "Gracie Abrams",
+          "joinphrase": "",
+          "artist": {
+            "id": "f7441bc7-d7de-4813-a2fc-31a4033d396d",
+            "name": "Gracie Abrams"
+          }
+        }
+      ],
+      "releases": []
+    },
+    {
+      "id": "a03cfbbf-6b7a-4def-8b63-1132cb3fa810",
+      "title": "That's So True",
+      "first-release-date": "2025-11-28",
+      "artist-credit": [
+        {
+          "name": "Gracie Abrams",
+          "joinphrase": "",
+          "artist": {
+            "id": "f7441bc7-d7de-4813-a2fc-31a4033d396d",
+            "name": "Gracie Abrams"
+          }
+        }
+      ],
+      "releases": [
+        {
+          "id": "e9395759-bf35-4e67-8d77-c322e82743bc",
+          "title": "The Pop Girl Era",
+          "status": "Official",
+          "date": "2025-11-28",
+          "release-group": {
+            "id": "92ec81ef-9143-4785-839a-8068e2eef062",
+            "primary-type": "Album",
+            "secondary-types": [
+              "Compilation"
+            ]
+          },
+          "media": [
+            {
+              "position": 1,
+              "format": "CD",
+              "track-count": 20,
+              "track-offset": 7,
+              "track": [
+                {
+                  "id": "44b96b62-85f6-4b76-8a29-ae12b7f4e86a",
+                  "number": "8",
+                  "title": "That's So True"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "45b06dd6-6a80-4ed9-880d-728f2fb3a7b9",
+      "title": "That’s So True (Covex remix)",
+      "disambiguation": "part of “Today’s Hits: April 2025” DJ‐mix",
+      "length": 118000,
+      "first-release-date": "2025-04-04",
+      "isrcs": [
+        "US23A9313982"
+      ],
+      "artist-credit": [
+        {
+          "name": "Gracie Abrams",
+          "joinphrase": "",
+          "artist": {
+            "id": "f7441bc7-d7de-4813-a2fc-31a4033d396d",
+            "name": "Gracie Abrams"
+          }
+        }
+      ],
+      "releases": [
+        {
+          "id": "a5d80ff2-343d-4522-b071-91f05280d881",
+          "title": "Today’s Hits: April 2025",
+          "status": "Official",
+          "date": "2025-04-04",
+          "release-group": {
+            "id": "d4766fa3-41ae-4da7-8e07-3f2999cb41ff",
+            "primary-type": "Album",
+            "secondary-types": [
+              "DJ-mix"
+            ]
+          },
+          "media": [
+            {
+              "position": 1,
+              "format": "Digital Media",
+              "track-count": 38,
+              "track-offset": 6,
+              "track": [
+                {
+                  "id": "57ef9b29-b189-4b14-b357-9fe88b666154",
+                  "number": "7",
+                  "title": "That’s So True (Covex remix)",
+                  "length": 118000
+                }
+              ]
+            }
+          ]
+        }
+      ]
     }
-   ]
-  },
-  {
-   "id": "4fceb2c2-0ecf-42f8-b58b-185fda1497ed",
-   "title": "That’s So True",
-   "disambiguation": "live, 2025-08-11: Red Rocks Amphitheatre, Morrison, CO, USA",
-   "length": 225000,
-   "first-release-date": "2025-10-29",
-   "isrcs": [
-    "USUG12509332"
-   ],
-   "artist-credit": [
-    {
-     "name": "Gracie Abrams",
-     "joinphrase": "",
-     "artist": {
-      "id": "f7441bc7-d7de-4813-a2fc-31a4033d396d",
-      "name": "Gracie Abrams"
-     }
-    }
-   ],
-   "releases": [
-    {
-     "id": "297bc70b-a8eb-4931-ac17-1a4dff08b5a2",
-     "title": "Apple Music Live: Gracie Abrams",
-     "status": "Official",
-     "release-group": {
-      "id": "b62219ab-be78-474f-a0ec-75e80ef30870",
-      "primary-type": "Album",
-      "secondary-types": [
-       "Live"
-      ]
-     },
-     "media": [
-      {
-       "position": 1,
-       "format": "Digital Media",
-       "track-count": 17,
-       "track-offset": 15,
-       "track": [
-        {
-         "id": "5cf02b4a-7e1c-4d8d-9a4b-58a44af7d34b",
-         "number": "16",
-         "title": "That’s So True (Apple Music Live)",
-         "length": 225000
-        }
-       ]
-      }
-     ]
-    }
-   ]
-  },
-  {
-   "id": "a6ff57e9-5ba8-4a32-8ac3-e5e8c42796dc",
-   "title": "That’s So True",
-   "disambiguation": "explicit",
-   "length": 166300,
-   "first-release-date": "2024-06-21",
-   "isrcs": [
-    "USUG12406903"
-   ],
-   "artist-credit": [
-    {
-     "name": "Gracie Abrams",
-     "joinphrase": "",
-     "artist": {
-      "id": "f7441bc7-d7de-4813-a2fc-31a4033d396d",
-      "name": "Gracie Abrams"
-     }
-    }
-   ],
-   "releases": [
-    {
-     "id": "27595d14-f4ee-4b1b-971f-f31ce483e8f9",
-     "title": "The Dome, Vol. 110",
-     "status": "Official",
-     "date": "2025-03-21",
-     "release-group": {
-      "id": "6fc7a1d7-481a-4aa5-92a9-d56fdc2314a4",
-      "primary-type": "Album",
-      "secondary-types": [
-       "Compilation"
-      ]
-     },
-     "media": [
-      {
-       "position": 1,
-       "format": "CD",
-       "track-count": 24,
-       "track-offset": 0,
-       "track": [
-        {
-         "id": "813ae335-6e0b-4354-aa8c-f84211bc73a4",
-         "number": "1",
-         "title": "That’s So True",
-         "length": 166347
-        }
-       ]
-      }
-     ]
-    },
-    {
-     "id": "ddeb287c-2fe0-4477-a28a-1711a9bac082",
-     "title": "Now That's What WE Call Music! (25)",
-     "status": "Bootleg",
-     "date": "2025-08-31",
-     "release-group": {
-      "id": "8bc12fe7-e5ec-45b7-bcac-a796db7a667f",
-      "primary-type": "Album",
-      "secondary-types": [
-       "Compilation"
-      ]
-     },
-     "media": [
-      {
-       "position": 1,
-       "format": "CD-R",
-       "track-count": 20,
-       "track-offset": 6,
-       "track": [
-        {
-         "id": "cc8f573e-5f7a-4a4a-a5c1-afffa126df1e",
-         "number": "7",
-         "title": "That's So True",
-         "length": 167000
-        }
-       ]
-      }
-     ]
-    },
-    {
-     "id": "7c9d8cb3-06b8-4729-b3c0-5eb48915ac70",
-     "title": "Die Ultimative Chartshow: Die erfolgreichsten Hits 2025 & Die besten Discofox Tracks",
-     "status": "Official",
-     "date": "2025-11-21",
-     "release-group": {
-      "id": "f0dcc311-eeed-405d-bf30-58ee21ebca6b",
-      "primary-type": "Album",
-      "secondary-types": [
-       "Compilation"
-      ]
-     },
-     "media": [
-      {
-       "position": 1,
-       "format": "CD",
-       "track-count": 24,
-       "track-offset": 0,
-       "track": [
-        {
-         "id": "c0824a1a-b061-4611-b3f7-7d4329560438",
-         "number": "1",
-         "title": "That’s So True",
-         "length": 164906
-        }
-       ]
-      }
-     ]
-    },
-    {
-     "id": "e06cc7f8-f0a5-4307-8c0c-4d1dcd0b0abe",
-     "title": "That’s So True / I Love You I’m Sorry",
-     "status": "Official",
-     "date": "2025-09-26",
-     "release-group": {
-      "id": "26498e60-de7a-4bd3-9b74-2dfaab507e0a",
-      "primary-type": "Single"
-     },
-     "media": [
-      {
-       "position": 1,
-       "format": "Vinyl",
-       "track-count": 2,
-       "track-offset": 0,
-       "track": [
-        {
-         "id": "33af298b-b554-4ac0-8f99-d12ab6d40ccd",
-         "number": "A",
-         "title": "That’s So True"
-        }
-       ]
-      }
-     ]
-    },
-    {
-     "id": "03d345e8-a7a0-4f15-9cf4-ad976de696e9",
-     "title": "Bravo: The Hits 2025",
-     "status": "Official",
-     "date": "2025-11-07",
-     "release-group": {
-      "id": "33d1d2a7-f9ed-4b52-992a-9fe5bf89256c",
-      "primary-type": "Album",
-      "secondary-types": [
-       "Compilation"
-      ]
-     },
-     "media": [
-      {
-       "position": 2,
-       "format": "CD",
-       "track-count": 24,
-       "track-offset": 19,
-       "track": [
-        {
-         "id": "da8fa08a-b4d3-4f68-8994-80c72cc6eeee",
-         "number": "2-20",
-         "title": "That's So True",
-         "length": 164546
-        }
-       ]
-      }
-     ]
-    },
-    {
-     "id": "f2c3f7ce-7cdd-45ae-b48b-5f8b5c9a8666",
-     "title": "NRJ Music Awards 2025",
-     "status": "Official",
-     "release-group": {
-      "id": "105cdc30-da9f-4913-9b46-202603bc1256",
-      "primary-type": "Album",
-      "secondary-types": [
-       "Compilation"
-      ]
-     },
-     "media": [
-      {
-       "position": 3,
-       "format": "CD",
-       "track-count": 20,
-       "track-offset": 15,
-       "track": [
-        {
-         "id": "8e541454-ad59-4ee0-aedf-e159466eddfc",
-         "number": "16",
-         "title": "That’s So True",
-         "length": 166000
-        }
-       ]
-      }
-     ]
-    },
-    {
-     "id": "2029f031-7d75-406a-bf44-27232a5852d1",
-     "title": "The Secret Of Us Deluxe (Japan Edition)",
-     "status": "Official",
-     "date": "2025-03-14",
-     "release-group": {
-      "id": "b6923fdb-2f07-49f0-9adc-3dc2275af0da",
-      "primary-type": "Album"
-     },
-     "media": [
-      {
-       "position": 1,
-       "format": "CD",
-       "track-count": 22,
-       "track-offset": 14,
-       "track": [
-        {
-         "id": "64644ba6-8f1c-4e39-b833-37b910c287f9",
-         "number": "15",
-         "title": "That’s So True",
-         "length": 166300
-        }
-       ]
-      }
-     ]
-    },
-    {
-     "id": "15090faf-e8c8-4243-99d7-380db1d757db",
-     "title": "Bravo Hits 128",
-     "status": "Official",
-     "date": "2025-02-14",
-     "release-group": {
-      "id": "44bad47b-e9bb-4d8b-95c6-720d55c0bc16",
-      "primary-type": "Album",
-      "secondary-types": [
-       "Compilation"
-      ]
-     },
-     "media": [
-      {
-       "position": 1,
-       "format": "CD",
-       "track-count": 24,
-       "track-offset": 1,
-       "track": [
-        {
-         "id": "a3623416-e9a7-4e4d-835f-9af66f170dfc",
-         "number": "2",
-         "title": "That’s So True",
-         "length": 166320
-        }
-       ]
-      }
-     ]
-    },
-    {
-     "id": "3f82a087-2dac-4aa6-904a-67a3e68921f5",
-     "title": "The Secret of Us (deluxe)",
-     "status": "Official",
-     "date": "2024-10-18",
-     "release-group": {
-      "id": "b6923fdb-2f07-49f0-9adc-3dc2275af0da",
-      "primary-type": "Album"
-     },
-     "media": [
-      {
-       "position": 1,
-       "format": "CD",
-       "track-count": 17,
-       "track-offset": 14,
-       "track": [
-        {
-         "id": "93a861a9-2790-4e3f-955e-53082d4fc6d4",
-         "number": "15",
-         "title": "That’s So True",
-         "length": 166306
-        }
-       ]
-      }
-     ]
-    },
-    {
-     "id": "9400153b-6f3f-4757-b449-60316ff4cd83",
-     "title": "Megahits 2025: Die Erste",
-     "status": "Official",
-     "date": "2025-01-10",
-     "release-group": {
-      "id": "69135d12-3af1-4c35-9664-cc972ba6cab0",
-      "primary-type": "Album",
-      "secondary-types": [
-       "Compilation"
-      ]
-     },
-     "media": [
-      {
-       "position": 1,
-       "format": "CD",
-       "track-count": 24,
-       "track-offset": 0,
-       "track": [
-        {
-         "id": "2e640cad-85bb-4fd9-9137-3175f53834e9",
-         "number": "1",
-         "title": "That’s So True",
-         "length": 163000
-        }
-       ]
-      }
-     ]
-    },
-    {
-     "id": "e0dd5ec4-5e00-4848-94d3-47bc61ecdd41",
-     "title": "That’s So True",
-     "status": "Official",
-     "date": "2024-11-06",
-     "release-group": {
-      "id": "01bbe92f-84a6-4d8a-834d-21acdbf650e0",
-      "primary-type": "Single",
-      "secondary-types": [
-       "Live"
-      ]
-     },
-     "media": [
-      {
-       "position": 1,
-       "format": "12\" Vinyl",
-       "track-count": 2,
-       "track-offset": 0,
-       "track": [
-        {
-         "id": "f206b2ce-7a54-4636-ad51-8736ade29845",
-         "number": "A",
-         "title": "That’s So True"
-        }
-       ]
-      }
-     ]
-    },
-    {
-     "id": "88696370-1a73-411b-b181-751f33d450bd",
-     "title": "That’s So True (live from Radio City Music Hall)",
-     "status": "Official",
-     "date": "2024-11-06",
-     "release-group": {
-      "id": "01bbe92f-84a6-4d8a-834d-21acdbf650e0",
-      "primary-type": "Single",
-      "secondary-types": [
-       "Live"
-      ]
-     },
-     "media": [
-      {
-       "position": 1,
-       "format": "Digital Media",
-       "track-count": 2,
-       "track-offset": 1,
-       "track": [
-        {
-         "id": "da0a44f1-13ab-4418-9e33-2606f2702e5e",
-         "number": "2",
-         "title": "That’s So True",
-         "length": 166300
-        }
-       ]
-      }
-     ]
-    },
-    {
-     "id": "78ab0acf-b829-4388-898a-2aa79d6b080b",
-     "title": "That’s So True (live from Radio City Music Hall)",
-     "status": "Official",
-     "release-group": {
-      "id": "01bbe92f-84a6-4d8a-834d-21acdbf650e0",
-      "primary-type": "Single",
-      "secondary-types": [
-       "Live"
-      ]
-     },
-     "media": [
-      {
-       "position": 1,
-       "format": "Digital Media",
-       "track-count": 4,
-       "track-offset": 1,
-       "track": [
-        {
-         "id": "6b2576f6-f011-41eb-9f4d-32d3fe30a5ec",
-         "number": "2",
-         "title": "That’s So True",
-         "length": 166300
-        }
-       ]
-      }
-     ]
-    },
-    {
-     "id": "8ab146c0-6ae6-4eaa-b27e-c449f7352cfe",
-     "title": "The Secret of Us (deluxe)",
-     "status": "Official",
-     "release-group": {
-      "id": "b6923fdb-2f07-49f0-9adc-3dc2275af0da",
-      "primary-type": "Album"
-     },
-     "media": [
-      {
-       "position": 1,
-       "format": "Digital Media",
-       "track-count": 22,
-       "track-offset": 14,
-       "track": [
-        {
-         "id": "115586fc-3950-460c-b2aa-8c2c0992c658",
-         "number": "15",
-         "title": "That’s So True",
-         "length": 166300
-        }
-       ]
-      }
-     ]
-    },
-    {
-     "id": "2aa4069a-f4ea-4ed5-8dd6-4587d1d62a8d",
-     "title": "The Secret of Us (deluxe)",
-     "status": "Official",
-     "release-group": {
-      "id": "b6923fdb-2f07-49f0-9adc-3dc2275af0da",
-      "primary-type": "Album"
-     },
-     "media": [
-      {
-       "position": 1,
-       "format": "Digital Media",
-       "track-count": 20,
-       "track-offset": 14,
-       "track": [
-        {
-         "id": "b5976c39-f607-4489-a1d8-ae0aa4310167",
-         "number": "15",
-         "title": "That’s So True",
-         "length": 166000
-        }
-       ]
-      }
-     ]
-    },
-    {
-     "id": "3041efbc-682d-438d-ab48-fbd5aacdcec7",
-     "title": "The Secret of Us (deluxe)",
-     "status": "Official",
-     "release-group": {
-      "id": "b6923fdb-2f07-49f0-9adc-3dc2275af0da",
-      "primary-type": "Album"
-     },
-     "media": [
-      {
-       "position": 1,
-       "format": "Digital Media",
-       "track-count": 20,
-       "track-offset": 14,
-       "track": [
-        {
-         "id": "7a21d090-4498-4533-9002-0dd3c92d270f",
-         "number": "15",
-         "title": "That’s So True",
-         "length": 166300
-        }
-       ]
-      }
-     ]
-    },
-    {
-     "id": "6a0d4cb6-7d0b-45d6-9a50-b0a579a5a5e4",
-     "title": "The Secret of Us (deluxe)",
-     "status": "Official",
-     "date": "2024-10-18",
-     "release-group": {
-      "id": "b6923fdb-2f07-49f0-9adc-3dc2275af0da",
-      "primary-type": "Album"
-     },
-     "media": [
-      {
-       "position": 2,
-       "format": "12\" Vinyl",
-       "track-count": 4,
-       "track-offset": 1,
-       "track": [
-        {
-         "id": "26c3364d-b80f-4dfa-9885-9f7836bf8422",
-         "number": "C15",
-         "title": "That’s So True"
-        }
-       ]
-      }
-     ]
-    },
-    {
-     "id": "9949992c-e8e3-4cc3-8623-6cc1d6920d32",
-     "title": "The Secret of Us (deluxe)",
-     "status": "Official",
-     "date": "2024-10-18",
-     "release-group": {
-      "id": "b6923fdb-2f07-49f0-9adc-3dc2275af0da",
-      "primary-type": "Album"
-     },
-     "media": [
-      {
-       "position": 2,
-       "format": "12\" Vinyl",
-       "track-count": 4,
-       "track-offset": 1,
-       "track": [
-        {
-         "id": "757a00d3-e1ff-4dc2-912a-b3b434765cf8",
-         "number": "C15",
-         "title": "That’s So True"
-        }
-       ]
-      }
-     ]
-    },
-    {
-     "id": "5a415b07-fdeb-49cf-88c6-7d577acfdd2f",
-     "title": "The Secret of Us (deluxe)",
-     "status": "Official",
-     "date": "2024-10-18",
-     "release-group": {
-      "id": "b6923fdb-2f07-49f0-9adc-3dc2275af0da",
-      "primary-type": "Album"
-     },
-     "media": [
-      {
-       "position": 2,
-       "format": "12\" Vinyl",
-       "track-count": 4,
-       "track-offset": 1,
-       "track": [
-        {
-         "id": "8215df23-3a6e-4bfc-a4dc-867af5f1baa7",
-         "number": "C15",
-         "title": "That’s So True"
-        }
-       ]
-      }
-     ]
-    },
-    {
-     "id": "44a5843f-edc6-4909-a29f-11aeac06026a",
-     "title": "The Secret of Us (deluxe)",
-     "status": "Official",
-     "release-group": {
-      "id": "b6923fdb-2f07-49f0-9adc-3dc2275af0da",
-      "primary-type": "Album"
-     },
-     "media": [
-      {
-       "position": 1,
-       "format": "Digital Media",
-       "track-count": 20,
-       "track-offset": 14,
-       "track": [
-        {
-         "id": "c96ddbd8-b502-4553-a23e-07fc6638c008",
-         "number": "15",
-         "title": "That’s So True",
-         "length": 166300
-        }
-       ]
-      }
-     ]
-    }
-   ]
-  },
-  {
-   "id": "843a7918-5a39-42ef-b1f7-5f2196637781",
-   "title": "That's So True",
-   "length": 164920,
-   "first-release-date": "2025-12-12",
-   "artist-credit": [
-    {
-     "name": "Gracie Abrams",
-     "joinphrase": "",
-     "artist": {
-      "id": "f7441bc7-d7de-4813-a2fc-31a4033d396d",
-      "name": "Gracie Abrams"
-     }
-    }
-   ],
-   "releases": [
-    {
-     "id": "d5757094-0fd0-4ef4-a931-03d0d2b363c9",
-     "title": "MNM Big Hits - Best Of 2025",
-     "status": "Official",
-     "release-group": {
-      "id": "b8769ece-f29f-49bd-8edf-5ffd13259417",
-      "primary-type": "Album",
-      "secondary-types": [
-       "Compilation"
-      ]
-     },
-     "media": [
-      {
-       "position": 2,
-       "format": "Digital Media",
-       "track-count": 22,
-       "track-offset": 12,
-       "track": [
-        {
-         "id": "6f6b7f37-3cb7-4de1-8b5a-207d293463d6",
-         "number": "13",
-         "title": "That's So True",
-         "length": 164920
-        }
-       ]
-      }
-     ]
-    },
-    {
-     "id": "2ad00efc-96f0-4b77-9ff8-37e4e4842b7d",
-     "title": "MNM Big Hits: Best of 2025",
-     "status": "Official",
-     "date": "",
-     "release-group": {
-      "id": "b8769ece-f29f-49bd-8edf-5ffd13259417",
-      "primary-type": "Album",
-      "secondary-types": [
-       "Compilation"
-      ]
-     },
-     "media": [
-      {
-       "position": 2,
-       "format": "CD",
-       "track-count": 22,
-       "track-offset": 12,
-       "track": [
-        {
-         "id": "188cc54e-824c-4171-8a7a-12dc2725a5bf",
-         "number": "13",
-         "title": "That's So True",
-         "length": 164920
-        }
-       ]
-      }
-     ]
-    }
-   ]
-  },
-  {
-   "id": "c80164f2-c1da-433f-b72c-85a07baa7032",
-   "title": "That’s So True",
-   "disambiguation": "official lyric video",
-   "length": 166443,
-   "first-release-date": "2024-11-06",
-   "isrcs": [
-    "USUMV2402143"
-   ],
-   "artist-credit": [
-    {
-     "name": "Gracie Abrams",
-     "joinphrase": "",
-     "artist": {
-      "id": "f7441bc7-d7de-4813-a2fc-31a4033d396d",
-      "name": "Gracie Abrams"
-     }
-    }
-   ],
-   "releases": [
-    {
-     "id": "78ab0acf-b829-4388-898a-2aa79d6b080b",
-     "title": "That’s So True (live from Radio City Music Hall)",
-     "status": "Official",
-     "release-group": {
-      "id": "01bbe92f-84a6-4d8a-834d-21acdbf650e0",
-      "primary-type": "Single",
-      "secondary-types": [
-       "Live"
-      ]
-     },
-     "media": [
-      {
-       "position": 1,
-       "format": "Digital Media",
-       "track-count": 4,
-       "track-offset": 3,
-       "track": [
-        {
-         "id": "66ce028e-6323-4760-9214-34bbbd39e848",
-         "number": "4",
-         "title": "That’s So True",
-         "length": 166443
-        }
-       ]
-      }
-     ]
-    }
-   ]
-  },
-  {
-   "id": "5e9fd428-c5d4-452a-8afb-0641900da5f6",
-   "title": "That’s So True",
-   "disambiguation": "live, 2024-10: Radio City Music Hall, New York, USA",
-   "length": 194199,
-   "first-release-date": "2024-11-06",
-   "isrcs": [
-    "USUG12404428"
-   ],
-   "artist-credit": [
-    {
-     "name": "Gracie Abrams",
-     "joinphrase": "",
-     "artist": {
-      "id": "f7441bc7-d7de-4813-a2fc-31a4033d396d",
-      "name": "Gracie Abrams"
-     }
-    }
-   ],
-   "releases": [
-    {
-     "id": "7995ee68-0f6c-4309-aa63-d4bf4112b126",
-     "title": "The Secret of Us (live from Radio City Music Hall)",
-     "status": "Official",
-     "date": "2025-04-12",
-     "release-group": {
-      "id": "7327f8ca-5b26-4652-9aa2-00d4f6f7f88f",
-      "primary-type": "Album",
-      "secondary-types": [
-       "Live"
-      ]
-     },
-     "media": [
-      {
-       "position": 1,
-       "format": "12\" Vinyl",
-       "track-count": 12,
-       "track-offset": 8,
-       "track": [
-        {
-         "id": "8508c62d-530d-4367-af51-22734a1468da",
-         "number": "B9",
-         "title": "That's So True",
-         "length": 213000
-        }
-       ]
-      }
-     ]
-    },
-    {
-     "id": "e0dd5ec4-5e00-4848-94d3-47bc61ecdd41",
-     "title": "That’s So True",
-     "status": "Official",
-     "date": "2024-11-06",
-     "release-group": {
-      "id": "01bbe92f-84a6-4d8a-834d-21acdbf650e0",
-      "primary-type": "Single",
-      "secondary-types": [
-       "Live"
-      ]
-     },
-     "media": [
-      {
-       "position": 1,
-       "format": "12\" Vinyl",
-       "track-count": 2,
-       "track-offset": 1,
-       "track": [
-        {
-         "id": "a8ff0774-e15e-47d1-93ec-0075cacfe97e",
-         "number": "B",
-         "title": "That’s So True (live from Radio City Music Hall)"
-        }
-       ]
-      }
-     ]
-    },
-    {
-     "id": "353605ec-6d50-4577-9d94-241c5a734f67",
-     "title": "That’s So True (live from Radio City Music Hall)",
-     "status": "Official",
-     "date": "2024-11-11",
-     "release-group": {
-      "id": "01bbe92f-84a6-4d8a-834d-21acdbf650e0",
-      "primary-type": "Single",
-      "secondary-types": [
-       "Live"
-      ]
-     },
-     "media": [
-      {
-       "position": 1,
-       "format": "Digital Media",
-       "track-count": 1,
-       "track-offset": 0,
-       "track": [
-        {
-         "id": "7a37d840-1c5e-4221-a80a-3aa778021bdd",
-         "number": "1",
-         "title": "That’s So True",
-         "length": 194199
-        }
-       ]
-      }
-     ]
-    },
-    {
-     "id": "88696370-1a73-411b-b181-751f33d450bd",
-     "title": "That’s So True (live from Radio City Music Hall)",
-     "status": "Official",
-     "date": "2024-11-06",
-     "release-group": {
-      "id": "01bbe92f-84a6-4d8a-834d-21acdbf650e0",
-      "primary-type": "Single",
-      "secondary-types": [
-       "Live"
-      ]
-     },
-     "media": [
-      {
-       "position": 1,
-       "format": "Digital Media",
-       "track-count": 2,
-       "track-offset": 0,
-       "track": [
-        {
-         "id": "346971fa-f72b-4581-ade4-0234d0b95ba2",
-         "number": "1",
-         "title": "That’s So True",
-         "length": 194199
-        }
-       ]
-      }
-     ]
-    },
-    {
-     "id": "78ab0acf-b829-4388-898a-2aa79d6b080b",
-     "title": "That’s So True (live from Radio City Music Hall)",
-     "status": "Official",
-     "release-group": {
-      "id": "01bbe92f-84a6-4d8a-834d-21acdbf650e0",
-      "primary-type": "Single",
-      "secondary-types": [
-       "Live"
-      ]
-     },
-     "media": [
-      {
-       "position": 1,
-       "format": "Digital Media",
-       "track-count": 4,
-       "track-offset": 0,
-       "track": [
-        {
-         "id": "adf11140-0953-4022-a06e-71f8febd9f53",
-         "number": "1",
-         "title": "That’s So True",
-         "length": 194199
-        }
-       ]
-      }
-     ]
-    },
-    {
-     "id": "bcf349f9-01cc-4010-bc57-66db16eb9a58",
-     "title": "That’s So True (live from Radio City Music Hall)",
-     "status": "Official",
-     "release-group": {
-      "id": "01bbe92f-84a6-4d8a-834d-21acdbf650e0",
-      "primary-type": "Single",
-      "secondary-types": [
-       "Live"
-      ]
-     },
-     "media": [
-      {
-       "position": 1,
-       "format": "Digital Media",
-       "track-count": 1,
-       "track-offset": 0,
-       "track": [
-        {
-         "id": "eff2e6f4-b646-4d5b-a23f-c638a54a08af",
-         "number": "1",
-         "title": "That’s So True",
-         "length": 194199
-        }
-       ]
-      }
-     ]
-    }
-   ]
-  },
-  {
-   "id": "596616a3-ee7d-4cb6-99ad-fe9bdd6eecfb",
-   "title": "That’s So True",
-   "disambiguation": "clean",
-   "length": 166000,
-   "first-release-date": "2024-10-16",
-   "isrcs": [
-    "USUG12406911"
-   ],
-   "artist-credit": [
-    {
-     "name": "Gracie Abrams",
-     "joinphrase": "",
-     "artist": {
-      "id": "f7441bc7-d7de-4813-a2fc-31a4033d396d",
-      "name": "Gracie Abrams"
-     }
-    }
-   ],
-   "releases": [
-    {
-     "id": "4b6fb4f3-ff9d-4fab-a87e-ab194030015d",
-     "title": "The Secret of Us (deluxe)",
-     "status": "Official",
-     "release-group": {
-      "id": "b6923fdb-2f07-49f0-9adc-3dc2275af0da",
-      "primary-type": "Album"
-     },
-     "media": [
-      {
-       "position": 1,
-       "format": "Digital Media",
-       "track-count": 20,
-       "track-offset": 14,
-       "track": [
-        {
-         "id": "17b046e9-e8dc-4a53-98ce-f8c6f61ddd51",
-         "number": "15",
-         "title": "That’s So True",
-         "length": 166000
-        }
-       ]
-      }
-     ]
-    },
-    {
-     "id": "f9c5e5d8-48f3-49fb-a093-b217f93d7842",
-     "title": "Now That’s What I Call Music! 120",
-     "status": "Official",
-     "date": "2025-04-04",
-     "release-group": {
-      "id": "e3f6477a-745c-4664-aaa7-9f8c43342c06",
-      "primary-type": "Album",
-      "secondary-types": [
-       "Compilation"
-      ]
-     },
-     "media": [
-      {
-       "position": 1,
-       "format": "CD",
-       "track-count": 21,
-       "track-offset": 0,
-       "track": [
-        {
-         "id": "c06d263b-1c9b-4382-97a6-32fd02594899",
-         "number": "1",
-         "title": "That's So True",
-         "length": 165893
-        }
-       ]
-      }
-     ]
-    },
-    {
-     "id": "889d42f2-9960-432c-b09c-0067bcb846ea",
-     "title": "The Secret of Us (deluxe)",
-     "status": "Official",
-     "date": "2024-10-16",
-     "release-group": {
-      "id": "b6923fdb-2f07-49f0-9adc-3dc2275af0da",
-      "primary-type": "Album"
-     },
-     "media": [
-      {
-       "position": 1,
-       "format": "Digital Media",
-       "track-count": 20,
-       "track-offset": 14,
-       "track": [
-        {
-         "id": "835859f1-c653-4f8c-b7ad-0e2e673081cf",
-         "number": "15",
-         "title": "That’s So True",
-         "length": 166300
-        }
-       ]
-      }
-     ]
-    }
-   ]
-  },
-  {
-   "id": "02e86137-f302-4be0-b41a-f2fc68688df8",
-   "title": "That’s So True",
-   "disambiguation": "part of “2025 MegaMix” DJ‐mix",
-   "length": 159000,
-   "first-release-date": "2025-12-05",
-   "isrcs": [
-    "US23A9233570"
-   ],
-   "artist-credit": [
-    {
-     "name": "Gracie Abrams",
-     "joinphrase": "",
-     "artist": {
-      "id": "f7441bc7-d7de-4813-a2fc-31a4033d396d",
-      "name": "Gracie Abrams"
-     }
-    }
-   ],
-   "releases": [
-    {
-     "id": "a51a2790-d9d8-4a74-a665-212ff6ca648e",
-     "title": "2025 MegaMix",
-     "status": "Official",
-     "date": "2025-12-05",
-     "release-group": {
-      "id": "a32f76f5-35b2-486a-9f43-ff625a19e683",
-      "primary-type": "Album",
-      "secondary-types": [
-       "DJ-mix"
-      ]
-     },
-     "media": [
-      {
-       "position": 1,
-       "format": "Digital Media",
-       "track-count": 21,
-       "track-offset": 17,
-       "track": [
-        {
-         "id": "d5f8f6be-985e-455e-85d6-039808c5a170",
-         "number": "18",
-         "title": "That’s So True",
-         "length": 159000
-        }
-       ]
-      }
-     ]
-    }
-   ]
-  },
-  {
-   "id": "2149d333-ca61-4411-b815-f1faa79d134b",
-   "title": "That’s So True",
-   "length": 164000,
-   "first-release-date": "2025-12-19",
-   "artist-credit": [
-    {
-     "name": "Gracie Abrams",
-     "joinphrase": "",
-     "artist": {
-      "id": "f7441bc7-d7de-4813-a2fc-31a4033d396d",
-      "name": "Gracie Abrams"
-     }
-    }
-   ],
-   "releases": [
-    {
-     "id": "937f02fe-76ab-4726-9127-8cdb6549b94c",
-     "title": "NRJ Hits 2026",
-     "status": "Official",
-     "date": "2025-12-19",
-     "release-group": {
-      "id": "89f32df1-dc28-432b-8c8b-121184dc17e6",
-      "primary-type": "Album",
-      "secondary-types": [
-       "Compilation"
-      ]
-     },
-     "media": [
-      {
-       "position": 1,
-       "format": "CD",
-       "track-count": 18,
-       "track-offset": 9,
-       "track": [
-        {
-         "id": "47c28b6b-5a13-4258-b534-cdb25194dd2b",
-         "number": "10",
-         "title": "That’s So True",
-         "length": 164000
-        }
-       ]
-      }
-     ]
-    }
-   ]
-  },
-  {
-   "id": "c5e1ac44-ce03-49ef-8db9-86efeed55b20",
-   "title": "That’s So True",
-   "disambiguation": "live: 2024-12-14, Saturday Night Live",
-   "length": 242000,
-   "artist-credit": [
-    {
-     "name": "Gracie Abrams",
-     "joinphrase": "",
-     "artist": {
-      "id": "f7441bc7-d7de-4813-a2fc-31a4033d396d",
-      "name": "Gracie Abrams"
-     }
-    }
-   ],
-   "releases": []
-  },
-  {
-   "id": "947b0b50-8c52-470c-8f79-137dfece5bc8",
-   "title": "That’s So True",
-   "length": 166000,
-   "first-release-date": "2025-11-28",
-   "artist-credit": [
-    {
-     "name": "Gracie Abrams",
-     "joinphrase": "",
-     "artist": {
-      "id": "f7441bc7-d7de-4813-a2fc-31a4033d396d",
-      "name": "Gracie Abrams"
-     }
-    }
-   ],
-   "releases": [
-    {
-     "id": "df4c9014-ae62-4df1-b149-a169de23a67b",
-     "title": "NRJ Music Awards 2025 [Édition Collector]",
-     "status": "Official",
-     "date": "2025-11-28",
-     "release-group": {
-      "id": "98474a82-4090-4b05-8388-6c28c8f1bd95",
-      "primary-type": "Album",
-      "secondary-types": [
-       "Compilation"
-      ]
-     },
-     "media": [
-      {
-       "position": 3,
-       "format": "CD",
-       "track-count": 18,
-       "track-offset": 8,
-       "track": [
-        {
-         "id": "85fb6c57-cd9c-4213-96a9-9de88ff00449",
-         "number": "9",
-         "title": "That’s So True",
-         "length": 166000
-        }
-       ]
-      }
-     ]
-    }
-   ]
-  },
-  {
-   "id": "db570328-1d61-466d-9a0d-9037f537c435",
-   "title": "That’s So True",
-   "disambiguation": "Live at Radio City Music Hall",
-   "length": 218000,
-   "artist-credit": [
-    {
-     "name": "Gracie Abrams",
-     "joinphrase": "",
-     "artist": {
-      "id": "f7441bc7-d7de-4813-a2fc-31a4033d396d",
-      "name": "Gracie Abrams"
-     }
-    }
-   ],
-   "releases": []
-  },
-  {
-   "id": "a03cfbbf-6b7a-4def-8b63-1132cb3fa810",
-   "title": "That's So True",
-   "first-release-date": "2025-11-28",
-   "artist-credit": [
-    {
-     "name": "Gracie Abrams",
-     "joinphrase": "",
-     "artist": {
-      "id": "f7441bc7-d7de-4813-a2fc-31a4033d396d",
-      "name": "Gracie Abrams"
-     }
-    }
-   ],
-   "releases": [
-    {
-     "id": "e9395759-bf35-4e67-8d77-c322e82743bc",
-     "title": "The Pop Girl Era",
-     "status": "Official",
-     "date": "2025-11-28",
-     "release-group": {
-      "id": "92ec81ef-9143-4785-839a-8068e2eef062",
-      "primary-type": "Album",
-      "secondary-types": [
-       "Compilation"
-      ]
-     },
-     "media": [
-      {
-       "position": 1,
-       "format": "CD",
-       "track-count": 20,
-       "track-offset": 7,
-       "track": [
-        {
-         "id": "44b96b62-85f6-4b76-8a29-ae12b7f4e86a",
-         "number": "8",
-         "title": "That's So True"
-        }
-       ]
-      }
-     ]
-    }
-   ]
-  },
-  {
-   "id": "45b06dd6-6a80-4ed9-880d-728f2fb3a7b9",
-   "title": "That’s So True (Covex remix)",
-   "disambiguation": "part of “Today’s Hits: April 2025” DJ‐mix",
-   "length": 118000,
-   "first-release-date": "2025-04-04",
-   "isrcs": [
-    "US23A9313982"
-   ],
-   "artist-credit": [
-    {
-     "name": "Gracie Abrams",
-     "joinphrase": "",
-     "artist": {
-      "id": "f7441bc7-d7de-4813-a2fc-31a4033d396d",
-      "name": "Gracie Abrams"
-     }
-    }
-   ],
-   "releases": [
-    {
-     "id": "a5d80ff2-343d-4522-b071-91f05280d881",
-     "title": "Today’s Hits: April 2025",
-     "status": "Official",
-     "date": "2025-04-04",
-     "release-group": {
-      "id": "d4766fa3-41ae-4da7-8e07-3f2999cb41ff",
-      "primary-type": "Album",
-      "secondary-types": [
-       "DJ-mix"
-      ]
-     },
-     "media": [
-      {
-       "position": 1,
-       "format": "Digital Media",
-       "track-count": 38,
-       "track-offset": 6,
-       "track": [
-        {
-         "id": "57ef9b29-b189-4b14-b357-9fe88b666154",
-         "number": "7",
-         "title": "That’s So True (Covex remix)",
-         "length": 118000
-        }
-       ]
-      }
-     ]
-    }
-   ]
-  }
- ]
+  ]
 }

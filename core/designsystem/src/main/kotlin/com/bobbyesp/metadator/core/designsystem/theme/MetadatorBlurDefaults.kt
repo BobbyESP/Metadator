@@ -23,6 +23,10 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.bobbyesp.metadator.core.designsystem.theme.MetadatorBlurDefaults.DarkContainerOpacity
+import com.bobbyesp.metadator.core.designsystem.theme.MetadatorBlurDefaults.HaloDropFraction
+import com.bobbyesp.metadator.core.designsystem.theme.MetadatorBlurDefaults.LightContainerOpacity
+import com.bobbyesp.metadator.core.designsystem.theme.MetadatorBlurDefaults.NoiseFactor
 import dev.chrisbanes.haze.HazeInput
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.blur.HazeBlurDefaults

@@ -44,8 +44,10 @@ class LookupService(
         return when {
             failed.size == results.size && results.all { it.second == LookupResult.Offline } ->
                 LookupOutcome.Offline
+
             failed.size == results.size && results.any { it.second == LookupResult.RateLimited } ->
                 LookupOutcome.RateLimited
+
             failed.size == results.size -> LookupOutcome.Failed
             else ->
                 LookupOutcome.Results(

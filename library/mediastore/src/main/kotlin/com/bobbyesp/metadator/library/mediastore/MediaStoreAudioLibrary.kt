@@ -179,6 +179,7 @@ class MediaStoreAudioLibrary(
     companion object {
         val AudioCollection: Uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
         private val AlbumArtCollection: Uri = "content://media/external/audio/albumart".toUri()
+
         /** The file path column: deprecated, and only read where nothing replaces it (API < 29). */
         internal const val DATA_COLUMN = "_data"
         private const val IS_MUSIC = "${MediaStore.Audio.Media.IS_MUSIC} != 0"

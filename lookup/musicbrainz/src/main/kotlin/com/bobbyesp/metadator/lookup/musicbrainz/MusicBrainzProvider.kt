@@ -56,6 +56,7 @@ class MusicBrainzProvider(
             when {
                 response.status == HttpStatusCode.ServiceUnavailable ||
                     response.status == HttpStatusCode.TooManyRequests -> LookupResult.RateLimited
+
                 !response.status.isSuccess() -> LookupResult.Failed("HTTP ${response.status.value}")
                 else -> {
                     val recordings = response.body<RecordingSearch>().recordings

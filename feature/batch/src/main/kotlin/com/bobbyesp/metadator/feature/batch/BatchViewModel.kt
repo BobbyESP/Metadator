@@ -141,6 +141,7 @@ class BatchViewModel(
         when (intent) {
             is BatchIntent.SetField ->
                 setState { copy(edits = edits + (intent.key to intent.values)) }
+
             is BatchIntent.ResetField -> setState { copy(edits = edits - intent.key) }
             is BatchIntent.SetCoverFromUri ->
                 launch {
@@ -161,6 +162,7 @@ class BatchViewModel(
                             )
                         }
                 }
+
             BatchIntent.RemoveCovers -> setState { copy(cover = ArtworkChange.Remove) }
             BatchIntent.KeepCovers -> setState { copy(cover = ArtworkChange.Unchanged) }
             is BatchIntent.SetNumbering -> setState { copy(numbering = intent.numbering) }

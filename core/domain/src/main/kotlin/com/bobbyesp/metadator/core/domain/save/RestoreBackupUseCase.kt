@@ -46,14 +46,17 @@ class RestoreBackupUseCase(
                 indexer.rescan(listOf(backup.ref))
                 RestoreOutcome.Restored(previous)
             }
+
             TagWriteResult.NeedsAccess -> {
                 backups.delete(previous)
                 RestoreOutcome.NeedsAccess
             }
+
             TagWriteResult.NotFound -> {
                 backups.delete(previous)
                 RestoreOutcome.FileGone
             }
+
             is TagWriteResult.Failed -> {
                 // Whatever the failed write left, the file goes back to how it was; if that fails
                 // too, the backup of it stays.

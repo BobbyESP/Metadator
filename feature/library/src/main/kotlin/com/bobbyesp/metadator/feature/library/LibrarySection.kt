@@ -138,7 +138,10 @@ private fun rememberOpenFileLauncher(onPicked: (Uri) -> Unit) =
 /** What a wide window shows beside the library while no song is open. */
 @Composable
 private fun NoSongOpen() {
-    Box(Modifier.fillMaxSize().padding(Spacing.extraLarge), contentAlignment = Alignment.Center) {
+    Box(
+        Modifier.fillMaxSize().padding(Spacing.extraLarge),
+        contentAlignment = Alignment.Center,
+    ) {
         PlaceholderCard(
             title = stringResource(R.string.no_song_open_title),
             description = stringResource(R.string.no_song_open_description),

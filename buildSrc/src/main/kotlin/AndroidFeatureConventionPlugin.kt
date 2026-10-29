@@ -44,16 +44,16 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
                 .filter { it != this.path }
                 .filter { path ->
                     path.startsWith(":feature:") ||
-                        path == ":app" ||
-                        (path.count { it == ':' } == 2 &&
-                            !path.startsWith(":core:") &&
-                            !path.endsWith(":api"))
+                            path == ":app" ||
+                            (path.count { it == ':' } == 2 &&
+                                    !path.startsWith(":core:") &&
+                                    !path.endsWith(":api"))
                 }
                 .distinct()
         if (forbidden.isNotEmpty()) {
             throw GradleException(
                 "$path depends on $forbidden. A feature may depend on :core:* and on contracts " +
-                    "(*:api) only; implementations are bound in :app."
+                        "(*:api) only; implementations are bound in :app."
             )
         }
     }

@@ -103,6 +103,7 @@ class ContentResolverFileInfo(
                             .getColumnIndex(column)
                             .takeIf { it >= 0 && !cursor.isNull(it) }
                             ?.let(cursor::getString)
+
                     fun long(column: String) =
                         cursor
                             .getColumnIndex(column)

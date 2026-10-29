@@ -38,6 +38,7 @@ class LoadLyricsUseCase(
                 val lyrics = text?.let { withContext(dispatchers.default) { SongLyrics.parse(it) } }
                 if (lyrics == null) TrackLyrics.None else TrackLyrics.Available(lyrics)
             }
+
             else -> TrackLyrics.Unreadable
         }
 }

@@ -90,6 +90,7 @@ class PlaybackService : MediaSessionService() {
                                 Player.REPEAT_MODE_ALL -> Player.REPEAT_MODE_ONE
                                 else -> Player.REPEAT_MODE_OFF
                             }
+
                     else ->
                         return Futures.immediateFuture(
                             SessionResult(SessionError.ERROR_NOT_SUPPORTED)
@@ -156,9 +157,11 @@ class PlaybackService : MediaSessionService() {
                     Player.REPEAT_MODE_ALL ->
                         CommandButton.Builder(CommandButton.ICON_REPEAT_ALL)
                             .setDisplayName(getString(R.string.notification_repeat_all))
+
                     Player.REPEAT_MODE_ONE ->
                         CommandButton.Builder(CommandButton.ICON_REPEAT_ONE)
                             .setDisplayName(getString(R.string.notification_repeat_one))
+
                     else ->
                         CommandButton.Builder(CommandButton.ICON_REPEAT_OFF)
                             .setDisplayName(getString(R.string.notification_repeat_off))

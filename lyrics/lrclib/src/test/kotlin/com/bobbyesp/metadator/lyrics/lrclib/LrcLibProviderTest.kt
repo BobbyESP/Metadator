@@ -28,6 +28,7 @@ class LrcLibProviderTest {
                         HttpStatusCode.NotFound,
                         json,
                     )
+
                 "/api/search" ->
                     respond(
                         """[{"id":1,"duration":300.0,"plainLyrics":"far"},
@@ -35,6 +36,7 @@ class LrcLibProviderTest {
                         HttpStatusCode.OK,
                         json,
                     )
+
                 else -> respond("", HttpStatusCode.NotFound)
             }
         }

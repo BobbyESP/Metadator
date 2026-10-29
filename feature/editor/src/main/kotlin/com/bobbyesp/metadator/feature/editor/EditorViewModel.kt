@@ -184,11 +184,14 @@ class EditorViewModel(
                     )
                 editDraft { setAll(values) }
             }
+
             is EditorIntent.Revert ->
                 editDraft { intent.keys.fold(this) { draft, key -> draft.revert(key) } }
+
             EditorIntent.RevertAll -> editDraft { revertAll() }
             is EditorIntent.SetCoverFromUri ->
                 setCover { images.read(intent.uri)?.let { it.bytes to it.mimeType } }
+
             EditorIntent.RemoveCover -> editDraft { removeCover() }
             EditorIntent.RevertCover -> editDraft { revertCover() }
             EditorIntent.Save -> save()
@@ -200,6 +203,7 @@ class EditorViewModel(
                 historyJob?.cancel()
                 setState { copy(history = null) }
             }
+
             is EditorIntent.RestoreVersion -> restoreVersion(intent.id)
         }
     }
@@ -230,9 +234,11 @@ class EditorViewModel(
                     }
                     inspectCover()
                 }
+
                 LoadTrackResult.NotFound -> setState { copy(status = EditorStatus.NotFound) }
                 LoadTrackResult.AccessDenied ->
                     setState { copy(status = EditorStatus.AccessDenied) }
+
                 LoadTrackResult.Unsupported -> setState { copy(status = EditorStatus.Unsupported) }
                 is LoadTrackResult.Failed ->
                     setState { copy(status = EditorStatus.Failed(result.message)) }
@@ -326,18 +332,22 @@ class EditorViewModel(
                     )
                 )
             }
+
             SaveOutcome.NothingToSave -> setState { copy(saving = false) }
             SaveOutcome.NeedsAccess -> {
                 setState { copy(saving = false) }
                 showMessage(UiMessage(strings.get(R.string.write_access_denied), long = true))
             }
+
             SaveOutcome.FileGone -> {
                 setState { copy(saving = false, status = EditorStatus.NotFound) }
             }
+
             SaveOutcome.Unsupported -> {
                 setState { copy(saving = false) }
                 showMessage(UiMessage(strings.get(R.string.format_unsupported), long = true))
             }
+
             is SaveOutcome.Failed -> {
                 setState { copy(saving = false) }
                 showMessage(
@@ -365,6 +375,7 @@ class EditorViewModel(
                         draft = TagDraft(result.track.snapshot),
                     )
                 }
+
             else -> setState { copy(saving = false) }
         }
         inspectCover()
@@ -394,6 +405,7 @@ class EditorViewModel(
                     reloadAfterWrite()
                     R.string.undone
                 }
+
                 RestoreOutcome.BackupGone -> R.string.undo_unavailable
                 RestoreOutcome.NeedsAccess -> R.string.write_access_denied
                 RestoreOutcome.FileGone -> R.string.file_gone_title
@@ -441,20 +453,24 @@ class EditorViewModel(
                         )
                     )
                 }
+
                 RestoreOutcome.BackupGone -> {
                     setRestoring(null)
                     showMessage(UiMessage(strings.get(R.string.undo_unavailable)))
                     loadHistory()
                 }
+
                 RestoreOutcome.NeedsAccess -> {
                     setRestoring(null)
                     showMessage(UiMessage(strings.get(R.string.write_access_denied), long = true))
                 }
+
                 RestoreOutcome.FileGone -> {
                     setRestoring(null)
                     setState { copy(status = EditorStatus.NotFound) }
                     sendEffect(EditorEffect.CloseHistory)
                 }
+
                 is RestoreOutcome.Failed -> {
                     setRestoring(null)
                     showMessage(
@@ -509,8 +525,10 @@ class EditorViewModel(
                         )
                     }
                 }
+
                 LyricsResult.NotFound ->
                     showMessage(UiMessage(strings.get(R.string.lyrics_not_found)))
+
                 LyricsResult.Offline -> showMessage(UiMessage(strings.get(R.string.offline)))
                 is LyricsResult.Failed ->
                     showMessage(UiMessage(strings.get(R.string.lyrics_failed)))

@@ -45,6 +45,7 @@ class MediaStoreWriteAccess(
                 val request = MediaStore.createWriteRequest(context.contentResolver, mediaUris)
                 host.launch(request.intentSender).toAccessResult()
             }
+
             Build.VERSION.SDK_INT == Build.VERSION_CODES.Q -> {
                 for (ref in missing) {
                     val exception =
@@ -55,6 +56,7 @@ class MediaStoreWriteAccess(
                 }
                 AccessResult.Granted
             }
+
             else ->
                 host.requestPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE).toAccessResult()
         }

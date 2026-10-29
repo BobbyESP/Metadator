@@ -100,6 +100,7 @@ class LookupViewModel(private val service: LookupService) : ViewModel() {
                         when (outcome) {
                             is LookupOutcome.Results ->
                                 LookupStatus.Results(outcome.candidates, outcome.failedProviders)
+
                             LookupOutcome.NoProviders -> LookupStatus.NoProviders
                             LookupOutcome.Offline -> LookupStatus.Offline
                             LookupOutcome.RateLimited -> LookupStatus.RateLimited
