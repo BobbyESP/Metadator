@@ -78,9 +78,9 @@ import com.bobbyesp.metadator.lyrics.api.SongLyrics
 import com.bobbyesp.metadator.lyrics.api.TimedLine
 import com.bobbyesp.metadator.lyrics.api.TimedWord
 import com.bobbyesp.metadator.player.api.PlaybackState
+import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
-import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * The lyrics of the song that is playing, as its file has them: following the song where they are
