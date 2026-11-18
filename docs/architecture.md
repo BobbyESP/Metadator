@@ -314,11 +314,23 @@ screen while its corners straighten. Pulling the full player down, or back, clos
 - Shapes are not animated by shared elements. The container's corner and the cover's are values
   of the same transition (`animateDp`), given to the shape and to the container's overlay clip,
   which shared elements inside inherit.
-- `PlayerSheetState` holds a `progress` (0 the bar, 1 the screen) and a `SeekableTransitionState`
-  that follows it. A drag sets the progress; a release hands it to a spring with the finger's
-  velocity. A tap on the bar opens it with a softer spring, since it starts from rest and has the
-  whole way to cover. A navigation transition cannot be held halfway like this, which is why the full player
-  stopped being a `NavKey`.
+- `PlayerSheetState` holds a `position` (0 the bar, 1 the screen) and a `SeekableTransitionState`
+  that follows it. A drag writes the position in the same frame, with no coroutine per touch
+  event, so everything that reads it (the transition, the halo, the blur behind) is never a frame
+  behind the finger; a release hands it to a spring with the finger's velocity, and a new touch or
+  a new settle cancels the one running. A tap on the bar opens it with a softer spring, since it
+  starts from rest and has the whole way to cover. A navigation transition cannot be held halfway
+  like this, which is why the full player stopped being a `NavKey`.
+- The files: `PlayerSheet.kt` wires the state, the effects and the two contents;
+  `PlayerSheetPieces.kt` builds what the two contents tie together (`SheetPieces`);
+  `PlayerSheetMotion.kt` holds the specs, the easings and the constants; `PlayerSheetBar.kt` holds
+  where the bar rests and its halo.
+- The bar's halo is **not inside the bar**: it is a sibling behind the transition, at the place
+  the bar rests (`barPlace`, shared by the two so that they cannot disagree), as tall as the bar
+  is at rest. The bar is part of an `AnimatedContent` whose contents the shared element transition
+  keeps around and draws in an overlay, and Haze lays its effect out against the window: a halo
+  inside them could be left behind, or drawn twice when the sheet is let go halfway and turned
+  back. The halo is there while the bar is at rest and fades as soon as the sheet moves.
 - The bounce is the spring running past either end. The transition cannot go past its ends, so
   that excess (`overshoot`) is drawn on the whole sheet: the screen swells slightly, the bar dips.
 - The container moves linearly, so its edge stays under the finger. What it carries eases in and

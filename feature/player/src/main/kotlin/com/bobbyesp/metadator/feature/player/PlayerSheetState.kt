@@ -3,11 +3,12 @@
  */
 package com.bobbyesp.metadator.feature.player
 
-import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.SeekableTransitionState
+import androidx.compose.animation.core.animate
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
@@ -17,6 +18,8 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.unit.Velocity
 import kotlin.math.abs
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -34,11 +37,14 @@ internal enum class PlayerSheetValue(val progress: Float) {
  * or the back gesture.
  *
  * Two things, one following the other:
- * - [progress], 0 for the bar and 1 for the screen, is the truth. A finger sets it directly; a
- *   release hands it to a spring, with the finger's velocity. Being a spring it runs past the end
- *   and comes back, and that excess is [overshoot]: the bounce.
+ * - [position], 0 for the bar and 1 for the screen, is the truth. A finger writes it directly, in
+ *   the same frame; a release hands it to a spring, with the finger's velocity. Being a spring it
+ *   runs past the end and comes back, and that excess is [overshoot]: the bounce.
  * - [transition] is the shared-element transition, which only ever goes from one state to the other
- *   and cannot go past either. [sync] keeps it seeked to wherever [progress] is.
+ *   and cannot go past either. [sync] keeps it seeked to wherever [position] is.
+ *
+ * Nothing here launches a coroutine per touch event: only a settle does, one at a time, and a new
+ * touch or a new settle cancels the one running.
  */
 @Stable
 internal class PlayerSheetState(
@@ -53,16 +59,18 @@ internal class PlayerSheetState(
 ) {
     val transition = SeekableTransitionState(initial)
 
-    private val progress = Animatable(initial.progress)
-
     /** The distance, in pixels, a finger covers to take the sheet from one state to the other. */
-    var travel by mutableStateOf(1f)
+    var travel = 1f
+
+    private var position by mutableFloatStateOf(initial.progress)
+
+    /** Where [position] is going: the end of a settle, or where the finger or a gesture left it. */
+    private var heading by mutableFloatStateOf(initial.progress)
 
     private var dragging by mutableStateOf(false)
+    private var settle: Job? = null
+    private var settling by mutableStateOf(false)
     private var dragFrom = initial
-
-    /** Where the finger has it, kept apart from [progress] because that one is set a frame late. */
-    private var dragPosition = initial.progress
 
     /** Whether the sheet was last sent to the bar: a back gesture's progress must not undo that. */
     private var collapsing = false
@@ -71,11 +79,11 @@ internal class PlayerSheetState(
     val isExpanded: Boolean
         get() =
             transition.currentState == PlayerSheetValue.Expanded ||
-                progress.targetValue == PlayerSheetValue.Expanded.progress
+                heading == PlayerSheetValue.Expanded.progress
 
     /** How far open the sheet is, from 0 (the bar) to 1 (the screen). Read it while drawing. */
     val fraction: Float
-        get() = progress.value.coerceIn(0f, 1f)
+        get() = position.coerceIn(0f, 1f)
 
     /** Whether the full player is on screen and at rest: not arriving, leaving or being dragged. */
     val isSettledExpanded: Boolean
@@ -88,7 +96,7 @@ internal class PlayerSheetState(
      * beyond the bar, zero the rest of the time. Read it while drawing.
      */
     val overshoot: Float
-        get() = progress.value - progress.value.coerceIn(0f, 1f)
+        get() = position - fraction
 
     fun expand() = animateTo(PlayerSheetValue.Expanded)
 
@@ -99,14 +107,16 @@ internal class PlayerSheetState(
 
     /** Collapses without a transition, for when what the sheet shows is gone. */
     fun snapToCollapsed() {
+        cancelSettle()
         dragging = false
-        scope.launch { progress.snapTo(PlayerSheetValue.Collapsed.progress) }
+        jumpTo(PlayerSheetValue.Collapsed.progress)
     }
 
     /** Shows how far a back gesture has got, [backProgress] from 0 to 1, without committing. */
     fun previewCollapse(backProgress: Float) {
         if (collapsing || transition.currentState != PlayerSheetValue.Expanded) return
-        scope.launch { progress.snapTo(1f - backProgress * BACK_PREVIEW_FRACTION) }
+        cancelSettle()
+        jumpTo(1f - backProgress * BACK_PREVIEW_FRACTION)
     }
 
     /**
@@ -114,16 +124,9 @@ internal class PlayerSheetState(
      * much of it was used, for a list that shares the gesture.
      */
     fun dragBy(delta: Float): Float {
-        if (!dragging) {
-            dragging = true
-            collapsing = false
-            dragFrom = transition.currentState
-            dragPosition = progress.value.coerceIn(0f, 1f)
-        }
-        val before = dragPosition
-        dragPosition = (before - delta / travel).coerceIn(0f, 1f)
-        val position = dragPosition
-        scope.launch { progress.snapTo(position) }
+        if (!dragging) startDrag()
+        val before = position
+        jumpTo((before - delta / travel).coerceIn(0f, 1f))
         return (before - position) * travel
     }
 
@@ -132,33 +135,23 @@ internal class PlayerSheetState(
         if (!dragging) return
         dragging = false
         val upwards = -velocity
-        val current = dragPosition
         val target =
             when {
                 upwards > velocityThreshold -> PlayerSheetValue.Expanded
                 upwards < -velocityThreshold -> PlayerSheetValue.Collapsed
-                abs(current - dragFrom.progress) > COMMIT_FRACTION -> dragFrom.other
+                abs(position - dragFrom.progress) > COMMIT_FRACTION -> dragFrom.other
                 else -> dragFrom
             }
         animateTo(target, initialVelocity = upwards / travel)
     }
 
-    private fun animateTo(
-        target: PlayerSheetValue,
-        initialVelocity: Float = 0f,
-        spec: AnimationSpec<Float> = settleSpec,
-    ) {
-        collapsing = target == PlayerSheetValue.Collapsed
-        scope.launch { progress.animateTo(target.progress, spec, initialVelocity) }
-    }
-
     /**
-     * Keeps [transition] where [progress] is, for as long as the sheet is on screen. The transition
+     * Keeps [transition] where [position] is, for as long as the sheet is on screen. The transition
      * is told it has arrived only once the spring has come to rest, so that the two contents stay
      * composed while it is still bouncing.
      */
     suspend fun sync() {
-        snapshotFlow { progress.value.coerceIn(0f, 1f) to (dragging || progress.isRunning) }
+        snapshotFlow { fraction to (dragging || settling) }
             .collectLatest { (position, moving) ->
                 val from = transition.currentState
                 when {
@@ -197,11 +190,59 @@ internal class PlayerSheetState(
 
             override suspend fun onPreFling(available: Velocity): Velocity {
                 if (!dragging) return Velocity.Zero
-                val moved = dragPosition != dragFrom.progress
+                val moved = position != dragFrom.progress
                 settle(available.y)
                 return if (moved) available else Velocity.Zero
             }
         }
+
+    private fun startDrag() {
+        cancelSettle()
+        dragging = true
+        collapsing = false
+        dragFrom = transition.currentState
+        position = position.coerceIn(0f, 1f)
+    }
+
+    /** Puts the sheet at [to] now, where it is going as well. */
+    private fun jumpTo(to: Float) {
+        position = to
+        heading = to
+    }
+
+    private fun cancelSettle() {
+        settle?.cancel()
+        settle = null
+        settling = false
+    }
+
+    private fun animateTo(
+        target: PlayerSheetValue,
+        initialVelocity: Float = 0f,
+        spec: AnimationSpec<Float> = settleSpec,
+    ) {
+        cancelSettle()
+        collapsing = target == PlayerSheetValue.Collapsed
+        heading = target.progress
+        // Started only once it is recorded as the current one, so that its end, which may come in
+        // the same frame, never clears the flag of a settle that has replaced it.
+        val job =
+            scope.launch(start = CoroutineStart.LAZY) {
+                try {
+                    animate(position, target.progress, initialVelocity, spec) { value, _ ->
+                        position = value
+                    }
+                } finally {
+                    if (settle === coroutineContext[Job]) {
+                        settle = null
+                        settling = false
+                    }
+                }
+            }
+        settle = job
+        settling = true
+        job.start()
+    }
 
     private companion object {
         /** Past this much of the way, a slow release still goes through. */
