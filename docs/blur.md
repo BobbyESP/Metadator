@@ -58,6 +58,10 @@ blur setting while the theme is shown, so the level changes as the phone does.
 `rememberBlurLevel(preferred)` caps it with the user's choice: less blur than the device allows,
 never more. A phone in battery saver or too hot stops blurring whatever was chosen.
 
+At `Off` a frosted surface draws its solid color itself, not through Haze: Haze draws an effect only
+over layers a source has recorded, and at `Off` `blurSource` records none, so even Haze's own
+fallback color would never show and the surface would be invisible.
+
 Where a screen has a solid alternative it asks the level or `BlurDefaults.isHaloAvailable` (`Full`,
 from Android 13, where Haze can vary a blur's radius):
 

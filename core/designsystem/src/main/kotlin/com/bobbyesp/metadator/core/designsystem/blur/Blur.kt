@@ -13,6 +13,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
@@ -95,6 +96,12 @@ fun Modifier.frosted(
     val style =
         remember(containerColor, radius, amount) { frostStyle(containerColor, radius, amount) }
     val clipped = if (shape === RectangleShape) this else clip(shape)
+    if (LocalBlurLevel.current == BlurLevel.Off) {
+        // Not through Haze: it draws an effect only over the layers a source has recorded, and at
+        // Off nothing records any, so even its fallback color would never show.
+        val solid = containerColor.copy(alpha = BlurDefaults.FallbackOpacity)
+        return clipped.drawBehind { drawRect(solid, alpha = amount().coerceIn(0f, 1f)) }
+    }
     return clipped.hazeBlur(input = HazeInput.Sources(source.state), style = style)
 }
 
