@@ -81,6 +81,9 @@ fun Modifier.blurSource(source: BlurSource, zIndex: Float = 0f): Modifier {
  * @param shape The surface's shape; the frost is clipped to it.
  * @param radius How far what is beneath is blurred. Fixed for the surface's life: a new radius
  *   builds the blur again.
+ * @param containerOpacity How much of [containerColor] covers the blur, where the default (see
+ *   [BlurDefaults.LightContainerOpacity]) hides too much of what is beneath for a surface that is
+ *   meant to be seen through. Lower is more see-through; contrast of what is on it suffers.
  * @param amount How much of the frost shows, from 0 (none: what is beneath shows as it is) to 1.
  *   Read while drawing, so animate it freely: unlike the color or the radius, it changes nothing
  *   the blur has to be built again for.
@@ -91,10 +94,13 @@ fun Modifier.frosted(
     containerColor: Color,
     shape: Shape = RectangleShape,
     radius: Dp = BlurDefaults.SurfaceRadius,
+    containerOpacity: Float? = null,
     amount: () -> Float = FullAmount,
 ): Modifier {
     val style =
-        remember(containerColor, radius, amount) { frostStyle(containerColor, radius, amount) }
+        remember(containerColor, radius, containerOpacity, amount) {
+            frostStyle(containerColor, radius, containerOpacity, amount)
+        }
     val clipped = if (shape === RectangleShape) this else clip(shape)
     if (LocalBlurLevel.current == BlurLevel.Off) {
         // Not through Haze: it draws an effect only over the layers a source has recorded, and at
@@ -107,10 +113,16 @@ fun Modifier.frosted(
 
 private val FullAmount = { 1f }
 
-private fun frostStyle(containerColor: Color, radius: Dp, amount: () -> Float): HazeBlurStyle {
+private fun frostStyle(
+    containerColor: Color,
+    radius: Dp,
+    containerOpacity: Float?,
+    amount: () -> Float,
+): HazeBlurStyle {
     val opacity =
-        if (containerColor.luminance() >= 0.5f) BlurDefaults.LightContainerOpacity
-        else BlurDefaults.DarkContainerOpacity
+        containerOpacity?.coerceIn(0f, 1f)
+            ?: if (containerColor.luminance() >= 0.5f) BlurDefaults.LightContainerOpacity
+            else BlurDefaults.DarkContainerOpacity
     // Built once here, not in the block: Haze runs it on every frame the amount moves.
     val tint = listOf(HazeColorEffect.tint(containerColor.copy(alpha = opacity)))
     val fallback = HazeColorEffect.tint(containerColor.copy(alpha = BlurDefaults.FallbackOpacity))

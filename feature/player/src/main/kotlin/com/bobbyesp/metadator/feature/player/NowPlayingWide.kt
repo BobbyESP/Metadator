@@ -346,7 +346,13 @@ private fun FloatingControls(
             modifier
                 .fillMaxWidth()
                 .then(
-                    if (frost) Modifier.frosted(source, containerColor = container, shape = shape)
+                    if (frost)
+                        Modifier.frosted(
+                            source,
+                            containerColor = container,
+                            shape = shape,
+                            containerOpacity = FLOATING_CONTROLS_OPACITY,
+                        )
                     else Modifier.clip(shape).background(container)
                 )
                 .padding(horizontal = Spacing.small, vertical = Spacing.extraSmall),
@@ -431,3 +437,9 @@ private val SongColumnMaxWidth = 440.dp
 private val FloatingControlsClearance = 80.dp
 
 private const val BACKDROP_VEIL = 0.72f
+
+/**
+ * How much of the controls' container covers what they float over: less than a bar's default, or
+ * the frost is too faint to tell from a solid one over a backdrop this smooth.
+ */
+private const val FLOATING_CONTROLS_OPACITY = 0.6f
