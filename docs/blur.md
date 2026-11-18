@@ -90,3 +90,11 @@ surfaces renders once for both.
   overlay, where a frosted surface flickers: it is its solid color until the transition settles.
 - A surface whose frost has to appear or disappear draws its resting color behind
   (`drawBehind { drawRect(surface) }`) and animates `amount`, never the color.
+
+## The setting
+
+*Settings → Appearance → Blur* is a choice of *Automatic*, *Light* or *Off*
+(`BlurPreference`, in `UserSettings.blur`, stored under the `blur_preference` key). The theme maps
+it to `BlurLevel.Full`, `Reduced` and `Off` and passes it as `preferred` to `rememberBlurLevel`, so
+it can only lower what the device allows. The item is hidden below Android 12, where nothing
+blurs and there is nothing to choose.

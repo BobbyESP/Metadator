@@ -33,6 +33,11 @@
     <string name="palette_monochrome">Monocromático</string>
     <string name="palette_fidelity">Fidelidade</string>
     <string name="palette_content">Conteúdo</string>
+    <string name="blur">Desfoque</string>
+    <string name="blur_description">Barras e menus translúcidos, e foco suave atrás das folhas. Automático desfoca o quanto o celular aguentar; Leve só nas barras e menus.</string>
+    <string name="blur_automatic">Automático</string>
+    <string name="blur_light">Leve</string>
+    <string name="blur_off">Desativado</string>
 
     <!-- Editor -->
     <string name="multi_values">Vários artistas ou gêneros</string>

@@ -50,6 +50,7 @@ class DataStoreSettingsRepository(private val dataStore: DataStore<Preferences>)
             preferences[Keys.SeedColor] = updated.seedColor
             preferences[Keys.PaletteStyle] = updated.paletteStyle.name
             preferences[Keys.PureBlack] = updated.pureBlack
+            preferences[Keys.Blur] = updated.blur.name
             preferences[Keys.ColorEditorFromArtwork] = updated.colorEditorFromArtwork
             preferences[Keys.MultiValueMode] = updated.multiValueMode.name
             preferences[Keys.MultiValueSeparator] = updated.multiValueSeparator
@@ -72,6 +73,7 @@ class DataStoreSettingsRepository(private val dataStore: DataStore<Preferences>)
             seedColor = this[Keys.SeedColor] ?: defaults.seedColor,
             paletteStyle = enumOrDefault(this[Keys.PaletteStyle], defaults.paletteStyle),
             pureBlack = this[Keys.PureBlack] ?: defaults.pureBlack,
+            blur = enumOrDefault(this[Keys.Blur], defaults.blur),
             colorEditorFromArtwork =
                 this[Keys.ColorEditorFromArtwork] ?: defaults.colorEditorFromArtwork,
             multiValueMode = enumOrDefault(this[Keys.MultiValueMode], defaults.multiValueMode),
@@ -100,6 +102,9 @@ class DataStoreSettingsRepository(private val dataStore: DataStore<Preferences>)
         val WarnSmallArtwork = booleanPreferencesKey("warn_small_artwork")
         val EnabledProviders = stringSetPreferencesKey("enabled_providers")
         val SuccessfulSaves = intPreferencesKey("successful_saves")
+
+        // Added after 2.0.
+        val Blur = stringPreferencesKey("blur_preference")
     }
 
     companion object {

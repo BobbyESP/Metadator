@@ -33,6 +33,11 @@
     <string name="palette_monochrome">Monochroom</string>
     <string name="palette_fidelity">Kleurgetrouw</string>
     <string name="palette_content">Inhoud</string>
+    <string name="blur">Vervaging</string>
+    <string name="blur_description">Matte balken en menu\'s, en zachte vervaging achter sheets. Automatisch vervaagt zoveel als je telefoon aankan; Licht vervaagt alleen balken en menu\'s.</string>
+    <string name="blur_automatic">Automatisch</string>
+    <string name="blur_light">Licht</string>
+    <string name="blur_off">Uit</string>
 
     <!-- Editor -->
     <string name="multi_values">Meerdere artiesten of genres</string>

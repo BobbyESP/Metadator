@@ -33,6 +33,11 @@
     <string name="palette_monochrome">Monochrome</string>
     <string name="palette_fidelity">Fidelity</string>
     <string name="palette_content">Content</string>
+    <string name="blur">Blur</string>
+    <string name="blur_description">Frosted bars and menus, and soft focus behind sheets. Automatic blurs as much as your phone can afford; Light only frosts bars and menus.</string>
+    <string name="blur_automatic">Automatic</string>
+    <string name="blur_light">Light</string>
+    <string name="blur_off">Off</string>
 
     <!-- Editor -->
     <string name="multi_values">Several artists or genres</string>

@@ -33,6 +33,11 @@
     <string name="palette_monochrome">Monocromo</string>
     <string name="palette_fidelity">Fidelidad</string>
     <string name="palette_content">Contenido</string>
+    <string name="blur">Desenfoque</string>
+    <string name="blur_description">Barras y menús esmerilados, y un fondo suave detrás de las hojas. Automático desenfoca todo lo que tu móvil aguante; Ligero solo barras y menús.</string>
+    <string name="blur_automatic">Automático</string>
+    <string name="blur_light">Ligero</string>
+    <string name="blur_off">Desactivado</string>
 
     <!-- Editor -->
     <string name="multi_values">Varios artistas o géneros</string>

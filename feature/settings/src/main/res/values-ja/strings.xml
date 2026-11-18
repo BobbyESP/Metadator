@@ -33,6 +33,11 @@
     <string name="palette_monochrome">モノクロ</string>
     <string name="palette_fidelity">フィデリティ</string>
     <string name="palette_content">コンテンツ</string>
+    <string name="blur">ぼかし</string>
+    <string name="blur_description">バーとメニューのすりガラス効果と、シートの背面のやわらかなぼかし。「自動」は端末が対応できる範囲でぼかし、「弱」はバーとメニューだけをぼかします。</string>
+    <string name="blur_automatic">自動</string>
+    <string name="blur_light">弱</string>
+    <string name="blur_off">オフ</string>
 
     <!-- Editor -->
     <string name="multi_values">複数のアーティストやジャンル</string>

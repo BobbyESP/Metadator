@@ -33,6 +33,11 @@
     <string name="palette_monochrome">Monochrome</string>
     <string name="palette_fidelity">Fidélité</string>
     <string name="palette_content">Contenu</string>
+    <string name="blur">Flou</string>
+    <string name="blur_description">Barres et menus dépolis, et arrière-plan adouci derrière les feuilles. Automatique floute autant que le téléphone le permet ; Léger ne floute que les barres et les menus.</string>
+    <string name="blur_automatic">Automatique</string>
+    <string name="blur_light">Léger</string>
+    <string name="blur_off">Désactivé</string>
 
     <!-- Editor -->
     <string name="multi_values">Plusieurs artistes ou genres</string>

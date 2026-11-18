@@ -33,6 +33,11 @@
     <string name="palette_monochrome">Monochrom</string>
     <string name="palette_fidelity">Farbtreu</string>
     <string name="palette_content">Inhalt</string>
+    <string name="blur">Unschärfe</string>
+    <string name="blur_description">Mattierte Leisten und Menüs sowie ein weicher Fokus hinter Sheets. Automatisch weichzeichnet so viel, wie das Handy verkraftet; Leicht nur Leisten und Menüs.</string>
+    <string name="blur_automatic">Automatisch</string>
+    <string name="blur_light">Leicht</string>
+    <string name="blur_off">Aus</string>
 
     <!-- Editor -->
     <string name="multi_values">Mehrere Interpreten oder Genres</string>

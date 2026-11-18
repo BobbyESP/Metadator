@@ -33,6 +33,11 @@
     <string name="palette_monochrome">أحادي اللون</string>
     <string name="palette_fidelity">مطابق</string>
     <string name="palette_content">المحتوى</string>
+    <string name="blur">التمويه</string>
+    <string name="blur_description">أشرطة وقوائم بتأثير الزجاج المصنفر، وتمويه ناعم خلف الأوراق السفلية. يعتمد «تلقائي» أقصى تمويه يتحمله هاتفك، أما «خفيف» فيطبّق التأثير على الأشرطة والقوائم فقط.</string>
+    <string name="blur_automatic">تلقائي</string>
+    <string name="blur_light">خفيف</string>
+    <string name="blur_off">إيقاف</string>
 
     <!-- Editor -->
     <string name="multi_values">عدة فنانين أو أنواع</string>

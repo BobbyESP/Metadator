@@ -33,6 +33,11 @@
     <string name="palette_monochrome">모노크롬</string>
     <string name="palette_fidelity">피델리티</string>
     <string name="palette_content">콘텐츠</string>
+    <string name="blur">흐림 효과</string>
+    <string name="blur_description">반투명 흐림 처리된 바와 메뉴, 시트 뒤의 부드러운 초점 흐림. ‘자동’은 기기가 감당할 수 있는 만큼 흐리게 하고, ‘약하게’는 바와 메뉴에만 적용합니다.</string>
+    <string name="blur_automatic">자동</string>
+    <string name="blur_light">약하게</string>
+    <string name="blur_off">끄기</string>
 
     <!-- Editor -->
     <string name="multi_values">여러 아티스트 또는 장르</string>

@@ -25,8 +25,10 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import com.bobbyesp.metadator.core.designsystem.blur.BlurLevel
 import com.bobbyesp.metadator.core.designsystem.blur.ProvideBlurLevel
 import com.bobbyesp.metadator.core.designsystem.blur.rememberBlurLevel
+import com.bobbyesp.metadator.core.model.BlurPreference
 import com.bobbyesp.metadator.core.model.PaletteStyle
 import com.bobbyesp.metadator.core.model.ThemeMode
 import com.bobbyesp.metadator.core.model.UserSettings
@@ -83,7 +85,7 @@ fun MetadatorTheme(settings: UserSettings = UserSettings(), content: @Composable
         LocalDarkTheme provides built.source.isDark,
         LocalThemeColors provides themeColors,
     ) {
-        ProvideBlurLevel(rememberBlurLevel()) {
+        ProvideBlurLevel(rememberBlurLevel(preferred = settings.blur.toBlurLevel())) {
             MaterialExpressiveTheme(
                 colorScheme = built.scheme,
                 motionScheme = motionScheme,
@@ -171,6 +173,13 @@ private fun ColorScheme.pureBlack(): ColorScheme =
         surface = Color.Black,
         onSurface = Color.White,
     )
+
+private fun BlurPreference.toBlurLevel(): BlurLevel =
+    when (this) {
+        BlurPreference.Automatic -> BlurLevel.Full
+        BlurPreference.Light -> BlurLevel.Reduced
+        BlurPreference.Off -> BlurLevel.Off
+    }
 
 private fun PaletteStyle.toKolor(): KolorPaletteStyle =
     when (this) {

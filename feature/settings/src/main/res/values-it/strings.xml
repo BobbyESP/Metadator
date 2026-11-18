@@ -33,6 +33,11 @@
     <string name="palette_monochrome">Monocromatico</string>
     <string name="palette_fidelity">Fedeltà</string>
     <string name="palette_content">Contenuto</string>
+    <string name="blur">Sfocatura</string>
+    <string name="blur_description">Barre e menu satinati, e sfondo sfocato dietro i fogli. Automatica sfoca quanto il telefono può permettersi; Leggera solo barre e menu.</string>
+    <string name="blur_automatic">Automatica</string>
+    <string name="blur_light">Leggera</string>
+    <string name="blur_off">Disattivata</string>
 
     <!-- Editor -->
     <string name="multi_values">Più artisti o generi</string>
