@@ -8,6 +8,7 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -48,22 +49,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
-import com.bobbyesp.metadator.core.designsystem.blur.BlurLevel
 import com.bobbyesp.metadator.core.designsystem.blur.BlurSource
-import com.bobbyesp.metadator.core.designsystem.blur.LocalBlurLevel
 import com.bobbyesp.metadator.core.designsystem.blur.blurSource
 import com.bobbyesp.metadator.core.designsystem.blur.dissolved
 import com.bobbyesp.metadator.core.designsystem.blur.frosted
-import com.bobbyesp.metadator.core.designsystem.blur.outOfFocus
 import com.bobbyesp.metadator.core.designsystem.blur.rememberBlurSource
 import com.bobbyesp.metadator.core.designsystem.component.Choice
 import com.bobbyesp.metadator.core.designsystem.component.ConnectedChoices
@@ -71,7 +67,7 @@ import com.bobbyesp.metadator.core.designsystem.theme.Spacing
 import com.bobbyesp.metadator.core.domain.lyrics.TrackLyrics
 import com.bobbyesp.metadator.core.model.Track
 import com.bobbyesp.metadator.core.ui.R as CoreUiR
-import com.bobbyesp.metadator.core.ui.component.ArtworkImage
+import com.bobbyesp.metadator.core.ui.component.rememberArtworkWash
 import com.bobbyesp.metadator.player.api.PlaybackState
 import com.bobbyesp.metadator.player.api.PlayerController
 
@@ -386,16 +382,19 @@ private fun FloatingControls(
 }
 
 /**
- * What the wide player is drawn on: the cover, out of focus, under a veil of the surface color, so
- * the screen takes the colors of the song without the text on it losing contrast. A new song's
- * cover fades in over the last one's. Below [BlurLevel.Full] it stays sharp, which a stretched
- * cover cannot, so the theme's colors do instead, which the cover has already tinted.
+ * What the wide player is drawn on: the cover's colors, under a veil of the surface color, so the
+ * screen takes the colors of the song without the text on it losing contrast. A new song's colors
+ * fade in over the last one's.
+ *
+ * The cover is averaged down to a few pixels and smoothed back up ([rememberArtworkWash]), then
+ * stretched with a cubic filter, which turns them into a smooth gradient. No blur is involved, so
+ * it looks the same at every blur level and below Android 12, and costs the drawing of one small
+ * picture.
  */
 @Composable
 private fun PlayerBackdrop(track: Track, modifier: Modifier = Modifier) {
     val colors = MaterialTheme.colorScheme
-    val artwork = track.artworkRef?.uri
-    if (LocalBlurLevel.current != BlurLevel.Full || artwork == null) {
+    if (track.artworkRef == null) {
         Box(
             modifier.background(
                 Brush.verticalGradient(listOf(colors.primaryContainer, colors.surface))
@@ -403,32 +402,23 @@ private fun PlayerBackdrop(track: Track, modifier: Modifier = Modifier) {
         )
         return
     }
-    var bounds by remember { mutableStateOf(IntSize.Zero) }
-    Box(modifier.background(colors.surface).onSizeChanged { bounds = it }) {
+    Box(modifier.background(colors.surface)) {
         Crossfade(
             targetState = track,
             animationSpec = MaterialTheme.motionScheme.slowEffectsSpec(),
-            modifier = Modifier.align(Alignment.Center),
+            modifier = Modifier.matchParentSize(),
             label = "Backdrop",
         ) { shown ->
-            // Blurred small and then stretched over the screen: the same picture as blurring it
-            // at full size, for a fraction of the work on every frame the lyrics move. Stretched
-            // past the edges, where a blur fades out.
-            ArtworkImage(
-                model = shown.artworkRef?.uri,
-                contentDescription = null,
-                modifier =
-                    Modifier.size(BackdropSample)
-                        .graphicsLayer {
-                            val scale =
-                                maxOf(bounds.width, bounds.height) / size.width * BACKDROP_OVERSCAN
-                            scaleX = scale
-                            scaleY = scale
-                        }
-                        .outOfFocus { BackdropBlur },
-                shape = RectangleShape,
-                cacheKey = shown.artworkCacheKey,
-            )
+            val wash = rememberArtworkWash(shown.artworkRef?.uri, shown.artworkCacheKey)
+            if (wash != null) {
+                Image(
+                    bitmap = wash,
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop,
+                    filterQuality = FilterQuality.High,
+                )
+            }
         }
         Box(Modifier.matchParentSize().background(colors.surface.copy(alpha = BACKDROP_VEIL)))
     }
@@ -440,7 +430,4 @@ private val SongColumnMaxWidth = 440.dp
 /** The room the floating controls take at the bottom of what scrolls beneath them. */
 private val FloatingControlsClearance = 80.dp
 
-private val BackdropSample = 96.dp
-private val BackdropBlur = 16.dp
-private const val BACKDROP_OVERSCAN = 1.5f
 private const val BACKDROP_VEIL = 0.72f

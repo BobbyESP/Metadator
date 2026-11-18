@@ -68,8 +68,10 @@ from Android 13, where Haze can vary a blur's radius):
 - An element that a halo lifts keeps its shadow where there is no halo (the player's bar, the
   floating toolbars, the menus' groups).
 - Content out of focus stays sharp below `Full`, so it has to be set apart another way: the
-  shell's scrim is darker there (`BlurDefaults.SharpScrimOpacity`), and the wide player's backdrop,
-  a cover blurred and stretched over the screen, is a gradient of the theme's colors instead.
+  shell's scrim is darker there (`BlurDefaults.SharpScrimOpacity`). The wide player's backdrop does
+  not depend on blur at all: the cover is averaged down to 16 px (`rememberArtworkWash`), smoothed back up by doubling, and
+  stretched over the screen with a cubic filter, which turns it into a smooth wash of the cover's
+  colors at every level.
 - `LocalBackdropSource` is what the shell records of every screen for what floats over all of them:
   the player's bar, which is its sibling there, and the menus, which are windows of their own. It
   is `null` where nothing is recorded (a preview, an overlay in a window of its own), and a menu
