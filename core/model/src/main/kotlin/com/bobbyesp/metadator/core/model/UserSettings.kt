@@ -10,6 +10,7 @@ data class UserSettings(
     val seedColor: Int = DEFAULT_SEED_COLOR,
     val paletteStyle: PaletteStyle = PaletteStyle.TonalSpot,
     val pureBlack: Boolean = false,
+    val blur: BlurPreference = BlurPreference.Automatic,
     val colorEditorFromArtwork: Boolean = true,
     val multiValueMode: MultiValueMode = MultiValueMode.Separate,
     val multiValueSeparator: String = "; ",
@@ -57,4 +58,19 @@ enum class PaletteStyle {
 enum class MultiValueMode {
     Separate,
     Joined,
+}
+
+/**
+ * How much of the app may blur: a choice of less than the device allows, never more. A phone in
+ * battery saver or too hot stops blurring whatever is chosen.
+ */
+enum class BlurPreference {
+    /** As much as the device can afford. */
+    Automatic,
+
+    /** Frosted surfaces only: no halos, and nothing goes out of focus. */
+    Light,
+
+    /** Nothing blurs; surfaces are solid. */
+    Off,
 }

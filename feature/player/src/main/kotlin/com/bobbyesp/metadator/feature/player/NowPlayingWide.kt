@@ -3,12 +3,12 @@
  */
 package com.bobbyesp.metadator.feature.player
 
-import android.os.Build
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -47,34 +47,29 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.graphics.blur.BlurRadiusSpec
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import com.bobbyesp.metadator.core.designsystem.blur.BlurSource
+import com.bobbyesp.metadator.core.designsystem.blur.blurSource
+import com.bobbyesp.metadator.core.designsystem.blur.dissolved
+import com.bobbyesp.metadator.core.designsystem.blur.frosted
+import com.bobbyesp.metadator.core.designsystem.blur.rememberBlurSource
 import com.bobbyesp.metadator.core.designsystem.component.Choice
 import com.bobbyesp.metadator.core.designsystem.component.ConnectedChoices
-import com.bobbyesp.metadator.core.designsystem.theme.MetadatorBlurDefaults
 import com.bobbyesp.metadator.core.designsystem.theme.Spacing
-import com.bobbyesp.metadator.core.designsystem.theme.dissolved
-import com.bobbyesp.metadator.core.designsystem.theme.frosted
 import com.bobbyesp.metadator.core.domain.lyrics.TrackLyrics
 import com.bobbyesp.metadator.core.model.Track
 import com.bobbyesp.metadator.core.ui.R as CoreUiR
-import com.bobbyesp.metadator.core.ui.component.ArtworkImage
+import com.bobbyesp.metadator.core.ui.component.rememberArtworkWash
 import com.bobbyesp.metadator.player.api.PlaybackState
 import com.bobbyesp.metadator.player.api.PlayerController
-import dev.chrisbanes.haze.HazeState
-import dev.chrisbanes.haze.hazeSource
-import dev.chrisbanes.haze.rememberHazeState
 
 /**
  * The player, full screen, where the window is wider than it is tall: the song on the left, and on
@@ -110,12 +105,12 @@ internal fun NowPlayingWideContent(
 ) {
     // What the floating controls frost: the backdrop and the lyrics. Both are recorded here as
     // siblings of the controls, never as their ancestors, or the controls would blur themselves.
-    val haze = rememberHazeState()
+    val source = rememberBlurSource()
     Surface(modifier = modifier.fillMaxSize(), color = MaterialTheme.colorScheme.surface) {
         Box(Modifier.fillMaxSize()) {
             PlayerBackdrop(
                 track,
-                Modifier.matchParentSize().hazeSource(haze),
+                Modifier.matchParentSize().blurSource(source),
             )
             Row(
                 modifier =
@@ -150,7 +145,7 @@ internal fun NowPlayingWideContent(
                     lyrics = lyrics,
                     compact = compact,
                     settled = settled,
-                    haze = haze,
+                    source = source,
                     onEdit = { onEdit(track.ref.uri) },
                     playButtonModifier = playButtonModifier,
                     modifier = Modifier.weight(1f - SONG_COLUMN_WEIGHT).fillMaxHeight(),
@@ -226,7 +221,7 @@ private fun SidePanel(
     lyrics: TrackLyrics?,
     compact: Boolean,
     settled: Boolean,
-    haze: HazeState,
+    source: BlurSource,
     onEdit: () -> Unit,
     playButtonModifier: Modifier,
     modifier: Modifier,
@@ -268,7 +263,7 @@ private fun SidePanel(
                     fadeIn(motion.defaultEffectsSpec()) togetherWith
                         fadeOut(motion.fastEffectsSpec())
                 },
-                modifier = Modifier.weight(1f).fillMaxWidth().hazeSource(haze, zIndex = 1f),
+                modifier = Modifier.weight(1f).fillMaxWidth().blurSource(source, zIndex = 1f),
                 label = "SidePane",
             ) { shown ->
                 when (shown) {
@@ -293,7 +288,7 @@ private fun SidePanel(
                 playback = playback,
                 positionMs = positionMs,
                 player = player,
-                haze = haze,
+                source = source,
                 frost = settled,
                 playButtonModifier = playButtonModifier,
                 modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = Spacing.medium),
@@ -339,20 +334,25 @@ private fun FloatingControls(
     playback: PlaybackState,
     positionMs: () -> Long,
     player: PlayerController,
-    haze: HazeState,
+    source: BlurSource,
     frost: Boolean,
     playButtonModifier: Modifier,
     modifier: Modifier = Modifier,
 ) {
     val container = MaterialTheme.colorScheme.surfaceContainerHigh
     val shape = MaterialTheme.shapes.extraLarge
-    val style = MetadatorBlurDefaults.surfaceStyle(container)
     Row(
         modifier =
             modifier
                 .fillMaxWidth()
                 .then(
-                    if (frost) Modifier.frosted(haze, style, shape)
+                    if (frost)
+                        Modifier.frosted(
+                            source,
+                            containerColor = container,
+                            shape = shape,
+                            containerOpacity = FLOATING_CONTROLS_OPACITY,
+                        )
                     else Modifier.clip(shape).background(container)
                 )
                 .padding(horizontal = Spacing.small, vertical = Spacing.extraSmall),
@@ -388,16 +388,19 @@ private fun FloatingControls(
 }
 
 /**
- * What the wide player is drawn on: the cover, out of focus, under a veil of the surface color, so
- * the screen takes the colors of the song without the text on it losing contrast. A new song's
- * cover fades in over the last one's. Where the device cannot blur, the theme's colors do, which
- * the cover has already tinted.
+ * What the wide player is drawn on: the cover's colors, under a veil of the surface color, so the
+ * screen takes the colors of the song without the text on it losing contrast. A new song's colors
+ * fade in over the last one's.
+ *
+ * The cover is averaged down to a few pixels and smoothed back up ([rememberArtworkWash]), then
+ * stretched with a cubic filter, which turns them into a smooth gradient. No blur is involved, so
+ * it looks the same at every blur level and below Android 12, and costs the drawing of one small
+ * picture.
  */
 @Composable
 private fun PlayerBackdrop(track: Track, modifier: Modifier = Modifier) {
     val colors = MaterialTheme.colorScheme
-    val artwork = track.artworkRef?.uri
-    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S || artwork == null) {
+    if (track.artworkRef == null) {
         Box(
             modifier.background(
                 Brush.verticalGradient(listOf(colors.primaryContainer, colors.surface))
@@ -405,32 +408,23 @@ private fun PlayerBackdrop(track: Track, modifier: Modifier = Modifier) {
         )
         return
     }
-    var bounds by remember { mutableStateOf(IntSize.Zero) }
-    Box(modifier.background(colors.surface).onSizeChanged { bounds = it }) {
+    Box(modifier.background(colors.surface)) {
         Crossfade(
             targetState = track,
             animationSpec = MaterialTheme.motionScheme.slowEffectsSpec(),
-            modifier = Modifier.align(Alignment.Center),
+            modifier = Modifier.matchParentSize(),
             label = "Backdrop",
         ) { shown ->
-            // Blurred small and then stretched over the screen: the same picture as blurring it
-            // at full size, for a fraction of the work on every frame the lyrics move. Stretched
-            // past the edges, where a blur fades out.
-            ArtworkImage(
-                model = shown.artworkRef?.uri,
-                contentDescription = null,
-                modifier =
-                    Modifier.size(BackdropSample)
-                        .graphicsLayer {
-                            val scale =
-                                maxOf(bounds.width, bounds.height) / size.width * BACKDROP_OVERSCAN
-                            scaleX = scale
-                            scaleY = scale
-                        }
-                        .blur { blurRadiusSpec = BlurRadiusSpec.uniform(BackdropBlur) },
-                shape = RectangleShape,
-                cacheKey = shown.artworkCacheKey,
-            )
+            val wash = rememberArtworkWash(shown.artworkRef?.uri, shown.artworkCacheKey)
+            if (wash != null) {
+                Image(
+                    bitmap = wash,
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop,
+                    filterQuality = FilterQuality.High,
+                )
+            }
         }
         Box(Modifier.matchParentSize().background(colors.surface.copy(alpha = BACKDROP_VEIL)))
     }
@@ -442,7 +436,10 @@ private val SongColumnMaxWidth = 440.dp
 /** The room the floating controls take at the bottom of what scrolls beneath them. */
 private val FloatingControlsClearance = 80.dp
 
-private val BackdropSample = 96.dp
-private val BackdropBlur = 16.dp
-private const val BACKDROP_OVERSCAN = 1.5f
 private const val BACKDROP_VEIL = 0.72f
+
+/**
+ * How much of the controls' container covers what they float over: less than a bar's default, or
+ * the frost is too faint to tell from a solid one over a backdrop this smooth.
+ */
+private const val FLOATING_CONTROLS_OPACITY = 0.6f

@@ -6,6 +6,7 @@ are in [`AGENTS.md`](../AGENTS.md).
 | Document | Covers |
 |---|---|
 | [architecture.md](architecture.md) | Modules, layers, ViewModels, navigation, theme, DI |
+| [blur.md](blur.md) | The blur package: frosted surfaces, halos, content out of focus, the level each device gets |
 | [saving-tags.md](saving-tags.md) | How a save keeps every tag it didn't change, backups, undo and the edit history, write access, rescans |
 | [testing.md](testing.md) | What is tested where, and what still needs a device |
 | [ci.md](ci.md) | What runs on a pull request, the release build and its secrets |

@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2026  Gabriel Fontán (BobbyESP)
  */
-package com.bobbyesp.metadator.core.designsystem.theme
+package com.bobbyesp.metadator.core.designsystem.blur
 
 import android.graphics.RuntimeShader
 import android.os.Build
@@ -17,14 +17,14 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.offset
 import dev.chrisbanes.haze.HazeInput
 import dev.chrisbanes.haze.HazeProgressive
-import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.blur.HazeBlurStyle
 import dev.chrisbanes.haze.blur.HazeColorEffect
 import dev.chrisbanes.haze.blur.hazeBlur
-import dev.chrisbanes.haze.blur.material3.Material3
+import kotlin.math.roundToInt
 
 /**
  * Lifts this element off the content beneath it with blur instead of a shadow: the content around
@@ -33,59 +33,46 @@ import dev.chrisbanes.haze.blur.material3.Material3
  *
  * The halo follows [shape], the element's own, and its blur radius truly decreases with distance
  * rather than a blurred copy fading over a sharp one, so there is no double image in between. It
- * blurs what [state] records, which must not contain this element.
+ * blurs what [source] records, which must not contain this element.
  *
  * Drawn behind everything this modifier's element draws, and outside its bounds without changing
  * its layout. In a popup, whose window ends at its content, pass [reserveSpace]: the halo then
  * takes room around the element, and whoever places the popup must make up for it.
  *
- * Android 13 and up, where Haze can vary the radius. Elsewhere this does nothing: check
- * [MetadatorBlurDefaults.isHaloSupported] and keep the element's shadow there.
+ * Only where [BlurDefaults.isHaloAvailable]: at [BlurLevel.Full], from Android 13, where Haze can
+ * vary the radius. Elsewhere this does nothing: check it, and keep the element's shadow there.
  *
  * Keep it out of the element's own enter and exit animation, and animate [strength] instead: in a
  * scaled or fading layer the halo would spring with the element and be cut to its bounds.
  *
- * @param strength How far the halo has come into focus, from 0 (none) to 1. It scales the blur
- *   radius and the halo's opacity together, so the content around the element blurs progressively
- *   rather than a full blur fading in over it. At 0 the halo still keeps its place in the layout.
+ * @param strength How far the halo has come into focus, from 0 (none) to 1, read while drawing, so
+ *   animating it recomposes nothing. It scales the blur radius and the halo's opacity together, so
+ *   the content around the element blurs progressively rather than a full blur fading in over it.
+ *   At 0 the halo draws nothing, and still keeps its place in the layout.
  */
 @Composable
 fun Modifier.blurHalo(
-    state: HazeState,
+    source: BlurSource,
     shape: Shape,
-    spread: Dp = MetadatorBlurDefaults.HaloSpread,
-    strength: Float = 1f,
+    spread: Dp = BlurDefaults.HaloSpread,
+    strength: () -> Float = { 1f },
     reserveSpace: Boolean = false,
 ): Modifier {
-    // The version again, though isHaloSupported has it: spelled out is how lint knows the shader
-    // below is only reached on Android 13.
-    if (
-        Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
-            !MetadatorBlurDefaults.isHaloSupported
-    ) {
-        return this
-    }
+    if (!BlurDefaults.isHaloAvailable) return this
 
     val density = LocalDensity.current
     val spreadPx = with(density) { spread.roundToPx() }
-    val dropPx = with(density) { MetadatorBlurDefaults.haloDrop(spread).roundToPx() }
+    val dropPx = with(density) { BlurDefaults.haloDrop(spread).roundToPx() }
     // The halo's room on every side: its spread, plus the drop it reaches further by below.
     val marginPx = spreadPx + dropPx
     val geometry = remember { HaloGeometry() }
     val progressive = remember(geometry) { HazeProgressive.forShader { geometry.shader(it) } }
+    val surface = MaterialTheme.colorScheme.surface
     val style =
-        MetadatorBlurDefaults.haloStyle(
-            surface = MaterialTheme.colorScheme.surface,
-            progressive = progressive,
-            strength = strength.coerceIn(0f, 1f),
-        )
+        remember(surface, progressive, strength) { haloStyle(surface, progressive, strength) }
 
-    return this
-        // Outer: the halo's area, the element grown by the margin on every side. Reported to the
-        // parent as the element alone unless the room is reserved.
-        .layout { measurable, constraints ->
+    return this.layout { measurable, constraints ->
             val grow = 2 * marginPx
-            // Room that is reserved is already in the constraints: the element gets what is left.
             val placeable =
                 measurable.measure(
                     if (reserveSpace) constraints else constraints.offset(grow, grow)
@@ -110,10 +97,7 @@ fun Modifier.blurHalo(
                 }
             }
         }
-        // The halo's own intensity reaches zero at its edge, so it never needs the extra room Haze
-        // would otherwise blur beyond it.
-        .hazeBlur(input = HazeInput.Sources(state), style = style, expandLayerBounds = false)
-        // Inner: the element, back at its own size, in the middle of the halo's area.
+        .hazeBlur(input = HazeInput.Sources(source.state), style = style, expandLayerBounds = false)
         .layout { measurable, constraints ->
             val grow = 2 * marginPx
             val placeable = measurable.measure(constraints.offset(-grow, -grow))
@@ -162,7 +146,8 @@ private class HaloGeometry {
      */
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     fun shader(size: Size): RuntimeShader {
-        val shader = shader ?: haloShader().also { shader = it }
+        // Only reached where isHaloAvailable, which is Android 13 and up.
+        @Suppress("NewApi") val shader = shader ?: haloShader().also { shader = it }
         val scale = size.width / nodeWidth
         shader.setFloatUniform("size", size.width, size.height)
         shader.setFloatUniform("margin", margin * scale)
@@ -229,17 +214,24 @@ half4 main(float2 position) {
 /**
  * The halo's look: blur, grain and a faint veil of the surface, all fading with the intensity, and
  * all scaled by [strength] while the halo comes into focus.
+ *
+ * The opacity follows [strength] exactly; the radius in whole dps. A new radius builds the blur
+ * again, and a halo coming into focus would otherwise do it on every frame. Twelve steps of a
+ * radius under the opacity read as one smooth change.
  */
-@Composable
-internal fun MetadatorBlurDefaults.haloStyle(
+private fun haloStyle(
     surface: Color,
     progressive: HazeProgressive,
-    strength: Float,
-): HazeBlurStyle =
-    HazeBlurStyle.Material3(surface) {
-        blurRadius(HaloRadius * strength)
-        noiseFactor(HaloNoiseFactor)
-        colorEffects(listOf(HazeColorEffect.tint(surface.copy(alpha = HaloVeilOpacity))))
+    strength: () -> Float,
+): HazeBlurStyle {
+    val veil = listOf(HazeColorEffect.tint(surface.copy(alpha = BlurDefaults.HaloVeilOpacity)))
+    return HazeBlurStyle {
+        val amount = strength().coerceIn(0f, 1f)
+        blurRadius((BlurDefaults.HaloRadius.value * amount).roundToInt().dp)
+        noiseFactor(BlurDefaults.HaloNoiseFactor)
+        backgroundColor(surface)
+        colorEffects(veil)
         progressive(progressive)
-        alpha(strength)
+        alpha(amount)
     }
+}

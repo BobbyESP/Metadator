@@ -3,6 +3,7 @@
  */
 package com.bobbyesp.metadator.feature.settings
 
+import android.os.Build
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.fadeIn
@@ -23,6 +24,9 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material.icons.rounded.BlurLinear
+import androidx.compose.material.icons.rounded.BlurOff
+import androidx.compose.material.icons.rounded.BlurOn
 import androidx.compose.material.icons.rounded.BrightnessAuto
 import androidx.compose.material.icons.rounded.BugReport
 import androidx.compose.material.icons.rounded.Check
@@ -93,6 +97,7 @@ import com.bobbyesp.metadator.core.designsystem.theme.LogotypeStyle
 import com.bobbyesp.metadator.core.designsystem.theme.MetadatorGlyph
 import com.bobbyesp.metadator.core.designsystem.theme.Spacing
 import com.bobbyesp.metadator.core.designsystem.theme.isDynamicColorSupported
+import com.bobbyesp.metadator.core.model.BlurPreference
 import com.bobbyesp.metadator.core.model.MultiValueMode
 import com.bobbyesp.metadator.core.model.PaletteStyle
 import com.bobbyesp.metadator.core.model.ThemeMode
@@ -452,6 +457,42 @@ private fun LazyListScope.appearance(
         item(key = "palette", contentType = "palette") {
             PaletteStylePicker(settings.paletteStyle) { style ->
                 update { it.copy(paletteStyle = style) }
+            }
+        }
+    }
+    // Below Android 12 nothing blurs, so there is nothing to choose.
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        item(key = "blur-header", contentType = "header") {
+            SectionHeader(stringResource(R.string.blur), Modifier.readableWidth())
+        }
+        item(key = "blur", contentType = "blur") {
+            val automatic = stringResource(R.string.blur_automatic)
+            val light = stringResource(R.string.blur_light)
+            val off = stringResource(R.string.blur_off)
+            val choices =
+                remember(automatic, light, off) {
+                    listOf(
+                        Choice(BlurPreference.Automatic, automatic, Icons.Rounded.BlurOn),
+                        Choice(BlurPreference.Light, light, Icons.Rounded.BlurLinear),
+                        Choice(BlurPreference.Off, off, Icons.Rounded.BlurOff),
+                    )
+                }
+            Column(
+                Modifier.readableWidth(),
+                verticalArrangement = Arrangement.spacedBy(Spacing.small),
+            ) {
+                ConnectedChoices(
+                    choices = choices,
+                    selected = settings.blur,
+                    onSelect = { blur -> update { it.copy(blur = blur) } },
+                    fill = true,
+                )
+                Text(
+                    stringResource(R.string.blur_description),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = Spacing.large),
+                )
             }
         }
     }

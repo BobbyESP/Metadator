@@ -33,6 +33,11 @@
     <string name="palette_monochrome">मोनोक्रोम</string>
     <string name="palette_fidelity">फ़िडेलिटी</string>
     <string name="palette_content">कॉन्टेंट</string>
+    <string name="blur">धुंधलापन</string>
+    <string name="blur_description">फ्रॉस्टेड बार और मेन्यू, और शीट के पीछे हल्का धुंधलापन। “स्वचालित” उतना ही धुंधला करता है जितना आपका फ़ोन सह सके; “हल्का” केवल बार और मेन्यू पर लागू होता है।</string>
+    <string name="blur_automatic">स्वचालित</string>
+    <string name="blur_light">हल्का</string>
+    <string name="blur_off">बंद</string>
 
     <!-- Editor -->
     <string name="multi_values">कई कलाकार या शैलियां</string>

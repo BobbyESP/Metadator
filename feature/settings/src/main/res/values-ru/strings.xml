@@ -33,6 +33,11 @@
     <string name="palette_monochrome">Монохромный</string>
     <string name="palette_fidelity">Точный</string>
     <string name="palette_content">По содержимому</string>
+    <string name="blur">Размытие</string>
+    <string name="blur_description">Матовые панели и меню, а также мягкое размытие за шторками. «Авто» размывает столько, сколько потянет телефон; «Лёгкое» — только панели и меню.</string>
+    <string name="blur_automatic">Авто</string>
+    <string name="blur_light">Лёгкое</string>
+    <string name="blur_off">Выкл.</string>
 
     <!-- Editor -->
     <string name="multi_values">Несколько исполнителей или жанров</string>

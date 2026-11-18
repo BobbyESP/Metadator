@@ -92,6 +92,9 @@ import androidx.compose.ui.unit.dp
 import androidx.navigationevent.NavigationEventInfo
 import androidx.navigationevent.compose.NavigationBackHandler
 import androidx.navigationevent.compose.rememberNavigationEventState
+import com.bobbyesp.metadator.core.designsystem.blur.blurHalo
+import com.bobbyesp.metadator.core.designsystem.blur.blurSource
+import com.bobbyesp.metadator.core.designsystem.blur.rememberBlurSource
 import com.bobbyesp.metadator.core.designsystem.component.ActionMenu
 import com.bobbyesp.metadator.core.designsystem.component.FloatingActionToolbar
 import com.bobbyesp.metadator.core.designsystem.component.FloatingActionToolbarDefaults
@@ -107,7 +110,6 @@ import com.bobbyesp.metadator.core.designsystem.component.TonalTextField
 import com.bobbyesp.metadator.core.designsystem.component.sidesOf
 import com.bobbyesp.metadator.core.designsystem.theme.GroupShapes
 import com.bobbyesp.metadator.core.designsystem.theme.Spacing
-import com.bobbyesp.metadator.core.designsystem.theme.blurHalo
 import com.bobbyesp.metadator.core.domain.editor.Position
 import com.bobbyesp.metadator.core.domain.editor.TagDraft
 import com.bobbyesp.metadator.core.ui.R as CoreUiR
@@ -120,8 +122,6 @@ import com.bobbyesp.metadator.feature.editor.components.TagTextField
 import com.bobbyesp.metadator.lyrics.api.Lrc
 import com.bobbyesp.metadator.tags.api.FieldKind
 import com.bobbyesp.metadator.tags.api.TagField
-import dev.chrisbanes.haze.hazeSource
-import dev.chrisbanes.haze.rememberHazeState
 
 /** The fields of each section, in order. */
 private val MainFields =
@@ -199,7 +199,7 @@ internal fun EditorScreen(
             if (uri != null) onIntent(EditorIntent.SetCoverFromUri(uri.toString()))
         }
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
-    val haze = rememberHazeState()
+    val source = rememberBlurSource()
     val focusManager = LocalFocusManager.current
 
     Scaffold(
@@ -274,7 +274,7 @@ internal fun EditorScreen(
                             (tagKeys + originalKeys).filter { it !in KnownKeys }.sorted()
                         }
 
-                    BoxWithConstraints(Modifier.fillMaxSize().imePadding().hazeSource(haze)) {
+                    BoxWithConstraints(Modifier.fillMaxSize().imePadding().blurSource(source)) {
                         if (maxWidth >= TwoColumnWidth) {
                             Row(Modifier.fillMaxSize().padding(horizontal = Spacing.extraLarge)) {
                                 Column(
@@ -329,7 +329,7 @@ internal fun EditorScreen(
                             Modifier.align(Alignment.BottomCenter)
                                 .navigationBarsPadding()
                                 .padding(bottom = Spacing.large)
-                                .blurHalo(haze, FloatingActionToolbarDefaults.HaloShape),
+                                .blurHalo(source, FloatingActionToolbarDefaults.HaloShape),
                     )
                 }
         }

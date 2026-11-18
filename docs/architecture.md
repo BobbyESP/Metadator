@@ -177,17 +177,17 @@ or should notice: a selection, a song starting or pausing, a tab switching.
 
 ### Blur
 
-Material has no blur tokens; `MetadatorBlurDefaults` (`:core:designsystem`) is where the app decides
+Material has no blur tokens; the `blur` package of `:core:designsystem` is where the app decides
 where it blurs, and by how much. Blur stands in for elevation: where Material would cast a shadow
 under something that floats over content, the app blurs instead. There are three kinds of blur, for
-three jobs.
+three jobs. How the package works, what each device gets and what the setting does is in
+[blur.md](blur.md); the part that matters here is where each is used.
 
 **A surface floating over content that moves beneath it is frosted, not shadowed.** What is behind
-it shows through, blurred, under its Material container color made translucent. It is
-[Haze](https://github.com/chrisbanes/haze): the content is recorded with `Modifier.hazeSource`, and
-the surface applies `Modifier.frosted` with `MetadatorBlurDefaults.surfaceStyle(containerRole)`.
-The surface's own container becomes transparent and loses its shadow. That is the wide player's
-floating controls, and the menus.
+it shows through, blurred, under its Material container color made translucent. The content is
+recorded with `Modifier.blurSource`, and the surface applies `Modifier.frosted(source,
+containerRole)`. The surface's own container becomes transparent and loses its shadow. That is the
+wide player's floating controls, and the menus.
 
 - **The source is a sibling of what frosts it, never an ancestor.** A surface inside its own source
   would blur itself.
@@ -199,22 +199,24 @@ floating controls, and the menus.
 element goes out of focus, most at its edge, and is sharp again a little further out. Where a
 shadow darkens, this softens. The halo follows the element's shape, reaches a little further below
 it than above, as Material's light does, and is drawn outside the element without changing its
-layout. It takes Android 13; below it `MetadatorBlurDefaults.isHaloSupported` is false and the
-element keeps its shadow. The player's bar, the floating toolbars and the menus have one.
+layout. It takes Android 13 and the full blur level; elsewhere `BlurDefaults.isHaloAvailable` is
+false and the element keeps its shadow. The player's bar, the floating toolbars and the menus have
+one.
 
 - **Out of the element's own enter and exit animation**, which would scale, slide and clip the halo
   with the element. Animate its `strength` instead.
 - **Only while there is one to draw.** A source records its content only while something blurs it,
   so a halo that is not showing is taken off the chain rather than left at strength zero.
 
-Two things are recorded. The shell records every screen (`LocalBackdropHaze`) for what floats over
+Two things are recorded. The shell records every screen (`LocalBackdropSource`) for what floats over
 all of them: the player's bar, which is its sibling there, and the menus, which are windows of
 their own. A screen with a toolbar of its own records its lists itself, since the toolbar is inside
 what the shell records.
 
 **What something opens over goes out of focus** (`Modifier.outOfFocus`): blurred with
 `Modifier.blur` and dimmed, by a fraction read while drawing so a gesture can drive it. The shell
-does it to everything behind the player as it opens.
+does it to everything behind the player as it opens. Below the full blur level it stays sharp, and
+only the dim, darker, sets it back.
 
 **What comes and goes as one surface turns into another does so through focus**
 (`Modifier.dissolved`): as faint and as blurred as it is absent, sharpening as it shows. It is
@@ -222,7 +224,8 @@ does it to everything behind the player as it opens.
 The player's sheet does it to what its bar and its full screen do not share.
 
 Below Android 12 nothing blurs: a frosted surface falls back to its container color, nearly opaque,
-and what would go out of focus is only dimmed, and more.
+and what would go out of focus is only dimmed, and more. The same holds wherever the blur level is
+`Off` (battery saver, a hot phone), and at `Reduced` only frosted surfaces blur.
 
 ## The player
 

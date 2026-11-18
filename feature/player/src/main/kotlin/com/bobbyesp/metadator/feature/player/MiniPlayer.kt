@@ -39,8 +39,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import com.bobbyesp.metadator.core.designsystem.blur.dissolved
 import com.bobbyesp.metadator.core.designsystem.theme.Spacing
-import com.bobbyesp.metadator.core.designsystem.theme.dissolved
 import com.bobbyesp.metadator.core.model.Track
 import com.bobbyesp.metadator.core.ui.R as CoreUiR
 import com.bobbyesp.metadator.player.api.PlaybackState

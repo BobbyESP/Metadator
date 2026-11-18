@@ -33,6 +33,11 @@
     <string name="palette_monochrome">单色</string>
     <string name="palette_fidelity">保真</string>
     <string name="palette_content">内容</string>
+    <string name="blur">模糊</string>
+    <string name="blur_description">磨砂效果的栏和菜单，以及面板后方的柔和虚化。“自动”会在手机能承受的范围内尽量模糊；“轻度”只对栏和菜单应用磨砂。</string>
+    <string name="blur_automatic">自动</string>
+    <string name="blur_light">轻度</string>
+    <string name="blur_off">关闭</string>
 
     <!-- Editor -->
     <string name="multi_values">多个艺术家或流派</string>

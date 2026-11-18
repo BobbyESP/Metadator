@@ -36,11 +36,11 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupProperties
-import com.bobbyesp.metadator.core.designsystem.theme.LocalBackdropHaze
-import com.bobbyesp.metadator.core.designsystem.theme.MetadatorBlurDefaults
-import com.bobbyesp.metadator.core.designsystem.theme.blurHalo
-import com.bobbyesp.metadator.core.designsystem.theme.frosted
-import dev.chrisbanes.haze.HazeState
+import com.bobbyesp.metadator.core.designsystem.blur.BlurDefaults
+import com.bobbyesp.metadator.core.designsystem.blur.BlurSource
+import com.bobbyesp.metadator.core.designsystem.blur.LocalBackdropSource
+import com.bobbyesp.metadator.core.designsystem.blur.blurHalo
+import com.bobbyesp.metadator.core.designsystem.blur.frosted
 
 /** One thing a menu can do. */
 @Immutable
@@ -55,7 +55,7 @@ class MenuAction(
  * A menu in Material's expressive form: a floating group whose items take its corners. Groups are
  * the unit, so a menu with two kinds of things (choices, then an action) is two groups with a gap.
  *
- * Over a screen the shell records ([LocalBackdropHaze]) the menu is frosted, and lifted off the
+ * Over a screen the shell records ([LocalBackdropSource]) the menu is frosted, and lifted off the
  * screen by a blur halo where the device can draw one; anywhere else it is Material's own, shadow
  * included.
  */
@@ -67,8 +67,8 @@ fun PopupMenu(
     modifier: Modifier = Modifier,
     content: @Composable ColumnScope.() -> Unit,
 ) {
-    val backdrop = LocalBackdropHaze.current
-    if (backdrop != null && MetadatorBlurDefaults.isHaloSupported) {
+    val backdrop = LocalBackdropSource.current
+    if (backdrop != null && BlurDefaults.isHaloAvailable) {
         HaloMenuPopup(expanded, onDismissRequest, backdrop, modifier, content)
     } else {
         DropdownMenuPopup(
@@ -85,8 +85,8 @@ fun PopupMenu(
 @Composable
 fun PopupMenuGroup(index: Int = 0, count: Int = 1, content: @Composable ColumnScope.() -> Unit) {
     val shapes = MenuDefaults.groupShape(index, count)
-    val backdrop = LocalBackdropHaze.current
-    if (backdrop == null || !MetadatorBlurDefaults.isBlurSupported) {
+    val backdrop = LocalBackdropSource.current
+    if (backdrop == null) {
         DropdownMenuGroup(shapes = shapes, content = content)
         return
     }
@@ -99,14 +99,12 @@ fun PopupMenuGroup(index: Int = 0, count: Int = 1, content: @Composable ColumnSc
         // shadow, cast from outside the frost, whose clip would cut a shadow of the group's own.
         Modifier.shadow(
                 elevation =
-                    if (MetadatorBlurDefaults.isHaloSupported) 0.dp
-                    else MenuDefaults.ShadowElevation,
+                    if (BlurDefaults.isHaloAvailable) 0.dp else MenuDefaults.ShadowElevation,
                 shape = shape,
             )
             .frosted(
-                state = backdrop,
-                style =
-                    MetadatorBlurDefaults.surfaceStyle(MenuDefaults.groupStandardContainerColor),
+                source = backdrop,
+                containerColor = MenuDefaults.groupStandardContainerColor,
                 shape = shape,
             )
     ) {
@@ -161,13 +159,12 @@ fun ActionMenu(
 private fun HaloMenuPopup(
     expanded: Boolean,
     onDismissRequest: () -> Unit,
-    backdrop: HazeState,
+    backdrop: BlurSource,
     modifier: Modifier,
     content: @Composable ColumnScope.() -> Unit,
 ) {
-    val spread = MetadatorBlurDefaults.MenuHaloSpread
-    val marginPx =
-        with(LocalDensity.current) { MetadatorBlurDefaults.haloMargin(spread).roundToPx() }
+    val spread = BlurDefaults.MenuHaloSpread
+    val marginPx = with(LocalDensity.current) { BlurDefaults.haloMargin(spread).roundToPx() }
     val menuPosition =
         MenuDefaults.rememberDropdownMenuPopupPositionProvider(MenuAnchorPosition.Below)
     val positionProvider =
@@ -208,12 +205,12 @@ private fun HaloMenuPopup(
                     }
                 }
                 .blurHalo(
-                    state = backdrop,
+                    source = backdrop,
                     // However many groups, they read as one menu: the halo follows its outer
                     // corners.
                     shape = MenuDefaults.groupShape(index = 0, count = 1).shape,
                     spread = spread,
-                    strength = haloStrength.value,
+                    strength = { haloStrength.value },
                     reserveSpace = true,
                 ),
         popupPositionProvider = positionProvider,

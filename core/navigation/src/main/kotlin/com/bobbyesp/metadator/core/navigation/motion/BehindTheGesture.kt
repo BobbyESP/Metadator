@@ -15,7 +15,7 @@ import androidx.navigation3.runtime.NavEntryDecorator
 import androidx.navigation3.ui.LocalNavAnimatedContentScope
 import androidx.navigationevent.NavigationEventTransitionState.InProgress
 import androidx.navigationevent.compose.LocalNavigationEventDispatcherOwner
-import com.bobbyesp.metadator.core.designsystem.theme.outOfFocus
+import com.bobbyesp.metadator.core.designsystem.blur.outOfFocus
 import kotlinx.coroutines.flow.collectLatest
 
 /**
