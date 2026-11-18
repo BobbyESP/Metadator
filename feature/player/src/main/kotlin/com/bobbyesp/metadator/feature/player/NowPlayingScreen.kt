@@ -78,6 +78,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.bobbyesp.metadator.core.common.formatDuration
+import com.bobbyesp.metadator.core.designsystem.blur.defocused
+import com.bobbyesp.metadator.core.designsystem.blur.dissolved
 import com.bobbyesp.metadator.core.designsystem.component.LabelChip
 import com.bobbyesp.metadator.core.designsystem.component.PlaceholderCard
 import com.bobbyesp.metadator.core.designsystem.component.RolledIn
@@ -85,8 +87,6 @@ import com.bobbyesp.metadator.core.designsystem.component.ThroughFocus
 import com.bobbyesp.metadator.core.designsystem.component.sidesOf
 import com.bobbyesp.metadator.core.designsystem.theme.GroupShapes
 import com.bobbyesp.metadator.core.designsystem.theme.Spacing
-import com.bobbyesp.metadator.core.designsystem.theme.defocused
-import com.bobbyesp.metadator.core.designsystem.theme.dissolved
 import com.bobbyesp.metadator.core.designsystem.theme.resizedTo
 import com.bobbyesp.metadator.core.model.Track
 import com.bobbyesp.metadator.core.ui.R as CoreUiR

@@ -76,13 +76,13 @@ import androidx.navigationevent.NavigationEventInfo
 import androidx.navigationevent.NavigationEventTransitionState
 import androidx.navigationevent.compose.NavigationBackHandler
 import androidx.navigationevent.compose.rememberNavigationEventState
+import com.bobbyesp.metadator.core.designsystem.blur.BlurDefaults
+import com.bobbyesp.metadator.core.designsystem.blur.BlurSource
+import com.bobbyesp.metadator.core.designsystem.blur.blurHalo
+import com.bobbyesp.metadator.core.designsystem.blur.dissolved
 import com.bobbyesp.metadator.core.designsystem.theme.MetadatorAccentTheme
-import com.bobbyesp.metadator.core.designsystem.theme.MetadatorBlurDefaults
 import com.bobbyesp.metadator.core.designsystem.theme.Spacing
-import com.bobbyesp.metadator.core.designsystem.theme.blurHalo
-import com.bobbyesp.metadator.core.designsystem.theme.dissolved
 import com.bobbyesp.metadator.player.api.PlayerController
-import dev.chrisbanes.haze.HazeState
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 
@@ -135,7 +135,7 @@ fun PlayerSheet(
     modifier: Modifier = Modifier,
     layout: PlayerLayout = PlayerLayout.Stacked,
     expansion: PlayerSheetExpansion? = null,
-    backdrop: HazeState? = null,
+    backdrop: BlurSource? = null,
 ) {
     val player: PlayerController = koinInject()
     val playbackState = player.state.collectAsStateWithLifecycle()
@@ -171,7 +171,7 @@ fun PlayerSheet(
 
     val motion = MaterialTheme.motionScheme
 
-    val haloed = backdrop != null && MetadatorBlurDefaults.isHaloSupported
+    val haloed = backdrop != null && BlurDefaults.isHaloAvailable
     // The cover steps back while the music is paused, in the full player only. Both covers do it
     // by as much as the sheet is open: a shared element draws one of the two from the first frame,
     // and if only the screen's stepped back, the cover would jump to its size there.
@@ -409,21 +409,28 @@ fun PlayerSheet(
 private fun BarPlace(
     sheet: PlayerSheetState,
     available: Boolean,
-    backdrop: HazeState?,
+    backdrop: BlurSource?,
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit,
 ) {
     val atRest by remember(sheet) { derivedStateOf { sheet.fraction == 0f } }
-    val strength by
+    val strength =
         animateFloatAsState(
             targetValue = if (available && atRest) 1f else 0f,
             animationSpec = MaterialTheme.motionScheme.defaultEffectsSpec(),
             label = "MiniPlayerHalo",
         )
+    // Whether there is a halo at all changes twice per fade; its strength, every frame, is read
+    // while drawing.
+    val haloed by remember(available) { derivedStateOf { available || strength.value > 0f } }
     Box(
         modifier.then(
-            if (backdrop != null && (available || strength > 0f)) {
-                Modifier.blurHalo(state = backdrop, shape = BarShape, strength = strength)
+            if (backdrop != null && haloed) {
+                Modifier.blurHalo(
+                    source = backdrop,
+                    shape = BarShape,
+                    strength = { strength.value },
+                )
             } else Modifier
         )
     ) {

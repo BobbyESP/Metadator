@@ -29,9 +29,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
-import com.bobbyesp.metadator.core.designsystem.theme.LocalBackdropHaze
+import com.bobbyesp.metadator.core.designsystem.blur.LocalBackdropSource
+import com.bobbyesp.metadator.core.designsystem.blur.blurSource
+import com.bobbyesp.metadator.core.designsystem.blur.outOfFocus
+import com.bobbyesp.metadator.core.designsystem.blur.rememberBlurSource
 import com.bobbyesp.metadator.core.designsystem.theme.Spacing
-import com.bobbyesp.metadator.core.designsystem.theme.outOfFocus
 import com.bobbyesp.metadator.core.navigation.Collection
 import com.bobbyesp.metadator.core.navigation.Editor
 import com.bobbyesp.metadator.core.navigation.Library
@@ -49,8 +51,6 @@ import com.bobbyesp.metadator.feature.player.PlayerSheetDefaults
 import com.bobbyesp.metadator.feature.player.rememberPlayerSheetExpansion
 import com.bobbyesp.metadator.feature.settings.settingsSection
 import com.bobbyesp.metadator.player.api.PlayerController
-import dev.chrisbanes.haze.hazeSource
-import dev.chrisbanes.haze.rememberHazeState
 import org.koin.compose.koinInject
 
 /**
@@ -99,7 +99,7 @@ fun MetadatorApp(onExit: () -> Unit) {
         }
     val playerExpansion = rememberPlayerSheetExpansion()
 
-    val backdrop = rememberHazeState()
+    val backdrop = rememberBlurSource()
 
     val behindPlayer =
         remember(playerExpansion) { { playerExpansion.fraction.let { if (it < 1f) it else 0f } } }
@@ -107,13 +107,13 @@ fun MetadatorApp(onExit: () -> Unit) {
     Surface(color = MaterialTheme.colorScheme.surface) {
         Box(Modifier.fillMaxSize()) {
             Box(Modifier.fillMaxSize().outOfFocus(behindPlayer, MaterialTheme.colorScheme.scrim)) {
-                CompositionLocalProvider(LocalBackdropHaze provides backdrop) {
+                CompositionLocalProvider(LocalBackdropSource provides backdrop) {
                     MetadatorNavDisplay(
                         backStack = backStack,
                         navigator = navigator,
                         sceneStrategies = strategies,
                         entryProvider = entries,
-                        modifier = Modifier.hazeSource(backdrop),
+                        modifier = Modifier.blurSource(backdrop),
                     )
                 }
                 SnackbarHost(

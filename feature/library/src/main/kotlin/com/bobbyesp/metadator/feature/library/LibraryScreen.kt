@@ -88,6 +88,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -104,6 +105,10 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import com.bobbyesp.metadator.core.designsystem.blur.BlurSource
+import com.bobbyesp.metadator.core.designsystem.blur.blurHalo
+import com.bobbyesp.metadator.core.designsystem.blur.blurSource
+import com.bobbyesp.metadator.core.designsystem.blur.rememberBlurSource
 import com.bobbyesp.metadator.core.designsystem.component.ActionChip
 import com.bobbyesp.metadator.core.designsystem.component.ActionMenu
 import com.bobbyesp.metadator.core.designsystem.component.Choice
@@ -119,7 +124,6 @@ import com.bobbyesp.metadator.core.designsystem.component.PopupMenuGroup
 import com.bobbyesp.metadator.core.designsystem.component.ToggleChip
 import com.bobbyesp.metadator.core.designsystem.theme.GroupShapes
 import com.bobbyesp.metadator.core.designsystem.theme.Spacing
-import com.bobbyesp.metadator.core.designsystem.theme.blurHalo
 import com.bobbyesp.metadator.core.model.SortOrder
 import com.bobbyesp.metadator.core.model.Track
 import com.bobbyesp.metadator.core.model.TrackCollection
@@ -129,9 +133,6 @@ import com.bobbyesp.metadator.core.ui.R as CoreUiR
 import com.bobbyesp.metadator.core.ui.component.ArtworkImage
 import com.bobbyesp.metadator.core.ui.component.CollectionCard
 import com.bobbyesp.metadator.core.ui.component.TrackListItem
-import dev.chrisbanes.haze.HazeState
-import dev.chrisbanes.haze.hazeSource
-import dev.chrisbanes.haze.rememberHazeState
 
 @Composable
 internal fun LibraryScreen(
@@ -150,7 +151,7 @@ internal fun LibraryScreen(
     }
     BackHandler(enabled = state.selecting) { onIntent(LibraryIntent.ClearSelection) }
 
-    val haze = rememberHazeState()
+    val source = rememberBlurSource()
     val latestState by rememberUpdatedState(state)
 
     Scaffold(
@@ -177,7 +178,7 @@ internal fun LibraryScreen(
         },
     ) { padding ->
         Box(Modifier.fillMaxSize().padding(padding)) {
-            Box(Modifier.fillMaxSize().hazeSource(haze)) {
+            Box(Modifier.fillMaxSize().blurSource(source)) {
                 when {
                     permission.status != PermissionStatus.Granted ->
                         PermissionNeeded(
@@ -201,7 +202,7 @@ internal fun LibraryScreen(
             SelectionToolbar(
                 selecting = state.selecting,
                 playerActive = state.playerActive,
-                haze = haze,
+                source = source,
                 onEdit = { onEditTracks(latestState.selectedTracks) },
                 onPlay = { onIntent(LibraryIntent.PlaySelection) },
                 modifier = Modifier.align(Alignment.BottomCenter),
@@ -353,17 +354,20 @@ private fun SelectionTopBar(count: Int, onClose: () -> Unit, onSelectAll: () -> 
 private fun SelectionToolbar(
     selecting: Boolean,
     playerActive: Boolean,
-    haze: HazeState,
+    source: BlurSource,
     onEdit: () -> Unit,
     onPlay: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val halo by
+    val halo =
         animateFloatAsState(
             targetValue = if (selecting) 1f else 0f,
             animationSpec = MaterialTheme.motionScheme.defaultEffectsSpec(),
             label = "SelectionToolbarHalo",
         )
+    // Whether there is a halo at all changes twice per fade; its strength, every frame, is read
+    // while drawing.
+    val haloed by remember(selecting) { derivedStateOf { selecting || halo.value > 0f } }
     AnimatedVisibility(
         visible = selecting,
         enter = slideInVertically { it } + fadeIn(),
@@ -373,11 +377,11 @@ private fun SelectionToolbar(
                 .navigationBarsPadding()
                 .padding(bottom = if (playerActive) 104.dp else Spacing.large)
                 .then(
-                    if (selecting || halo > 0f) {
+                    if (haloed) {
                         Modifier.blurHalo(
-                            state = haze,
+                            source = source,
                             shape = FloatingActionToolbarDefaults.HaloShape,
-                            strength = halo,
+                            strength = { halo.value },
                         )
                     } else Modifier
                 ),

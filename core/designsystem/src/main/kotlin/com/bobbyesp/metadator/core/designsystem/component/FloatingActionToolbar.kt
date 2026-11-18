@@ -15,7 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
-import com.bobbyesp.metadator.core.designsystem.theme.MetadatorBlurDefaults
+import com.bobbyesp.metadator.core.designsystem.blur.BlurDefaults
 
 /**
  * What a screen can do with what it shows, floating over its list: Material's vibrant toolbar, with
@@ -36,7 +36,7 @@ fun FloatingActionToolbar(
     modifier: Modifier = Modifier,
     actions: @Composable RowScope.() -> Unit,
 ) {
-    val flat = MetadatorBlurDefaults.isHaloSupported
+    val flat = BlurDefaults.isHaloAvailable
     val colors = FloatingToolbarDefaults.vibrantFloatingToolbarColors()
     HorizontalFloatingToolbar(
         expanded = true,

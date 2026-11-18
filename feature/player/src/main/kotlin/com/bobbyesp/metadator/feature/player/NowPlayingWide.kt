@@ -3,7 +3,6 @@
  */
 package com.bobbyesp.metadator.feature.player
 
-import android.os.Build
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.fadeIn
@@ -47,12 +46,10 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.graphics.blur.BlurRadiusSpec
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.res.stringResource
@@ -60,21 +57,23 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import com.bobbyesp.metadator.core.designsystem.blur.BlurLevel
+import com.bobbyesp.metadator.core.designsystem.blur.BlurSource
+import com.bobbyesp.metadator.core.designsystem.blur.LocalBlurLevel
+import com.bobbyesp.metadator.core.designsystem.blur.blurSource
+import com.bobbyesp.metadator.core.designsystem.blur.dissolved
+import com.bobbyesp.metadator.core.designsystem.blur.frosted
+import com.bobbyesp.metadator.core.designsystem.blur.outOfFocus
+import com.bobbyesp.metadator.core.designsystem.blur.rememberBlurSource
 import com.bobbyesp.metadator.core.designsystem.component.Choice
 import com.bobbyesp.metadator.core.designsystem.component.ConnectedChoices
-import com.bobbyesp.metadator.core.designsystem.theme.MetadatorBlurDefaults
 import com.bobbyesp.metadator.core.designsystem.theme.Spacing
-import com.bobbyesp.metadator.core.designsystem.theme.dissolved
-import com.bobbyesp.metadator.core.designsystem.theme.frosted
 import com.bobbyesp.metadator.core.domain.lyrics.TrackLyrics
 import com.bobbyesp.metadator.core.model.Track
 import com.bobbyesp.metadator.core.ui.R as CoreUiR
 import com.bobbyesp.metadator.core.ui.component.ArtworkImage
 import com.bobbyesp.metadator.player.api.PlaybackState
 import com.bobbyesp.metadator.player.api.PlayerController
-import dev.chrisbanes.haze.HazeState
-import dev.chrisbanes.haze.hazeSource
-import dev.chrisbanes.haze.rememberHazeState
 
 /**
  * The player, full screen, where the window is wider than it is tall: the song on the left, and on
@@ -110,12 +109,12 @@ internal fun NowPlayingWideContent(
 ) {
     // What the floating controls frost: the backdrop and the lyrics. Both are recorded here as
     // siblings of the controls, never as their ancestors, or the controls would blur themselves.
-    val haze = rememberHazeState()
+    val source = rememberBlurSource()
     Surface(modifier = modifier.fillMaxSize(), color = MaterialTheme.colorScheme.surface) {
         Box(Modifier.fillMaxSize()) {
             PlayerBackdrop(
                 track,
-                Modifier.matchParentSize().hazeSource(haze),
+                Modifier.matchParentSize().blurSource(source),
             )
             Row(
                 modifier =
@@ -150,7 +149,7 @@ internal fun NowPlayingWideContent(
                     lyrics = lyrics,
                     compact = compact,
                     settled = settled,
-                    haze = haze,
+                    source = source,
                     onEdit = { onEdit(track.ref.uri) },
                     playButtonModifier = playButtonModifier,
                     modifier = Modifier.weight(1f - SONG_COLUMN_WEIGHT).fillMaxHeight(),
@@ -226,7 +225,7 @@ private fun SidePanel(
     lyrics: TrackLyrics?,
     compact: Boolean,
     settled: Boolean,
-    haze: HazeState,
+    source: BlurSource,
     onEdit: () -> Unit,
     playButtonModifier: Modifier,
     modifier: Modifier,
@@ -268,7 +267,7 @@ private fun SidePanel(
                     fadeIn(motion.defaultEffectsSpec()) togetherWith
                         fadeOut(motion.fastEffectsSpec())
                 },
-                modifier = Modifier.weight(1f).fillMaxWidth().hazeSource(haze, zIndex = 1f),
+                modifier = Modifier.weight(1f).fillMaxWidth().blurSource(source, zIndex = 1f),
                 label = "SidePane",
             ) { shown ->
                 when (shown) {
@@ -293,7 +292,7 @@ private fun SidePanel(
                 playback = playback,
                 positionMs = positionMs,
                 player = player,
-                haze = haze,
+                source = source,
                 frost = settled,
                 playButtonModifier = playButtonModifier,
                 modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = Spacing.medium),
@@ -339,20 +338,19 @@ private fun FloatingControls(
     playback: PlaybackState,
     positionMs: () -> Long,
     player: PlayerController,
-    haze: HazeState,
+    source: BlurSource,
     frost: Boolean,
     playButtonModifier: Modifier,
     modifier: Modifier = Modifier,
 ) {
     val container = MaterialTheme.colorScheme.surfaceContainerHigh
     val shape = MaterialTheme.shapes.extraLarge
-    val style = MetadatorBlurDefaults.surfaceStyle(container)
     Row(
         modifier =
             modifier
                 .fillMaxWidth()
                 .then(
-                    if (frost) Modifier.frosted(haze, style, shape)
+                    if (frost) Modifier.frosted(source, containerColor = container, shape = shape)
                     else Modifier.clip(shape).background(container)
                 )
                 .padding(horizontal = Spacing.small, vertical = Spacing.extraSmall),
@@ -390,14 +388,14 @@ private fun FloatingControls(
 /**
  * What the wide player is drawn on: the cover, out of focus, under a veil of the surface color, so
  * the screen takes the colors of the song without the text on it losing contrast. A new song's
- * cover fades in over the last one's. Where the device cannot blur, the theme's colors do, which
- * the cover has already tinted.
+ * cover fades in over the last one's. Below [BlurLevel.Full] it stays sharp, which a stretched
+ * cover cannot, so the theme's colors do instead, which the cover has already tinted.
  */
 @Composable
 private fun PlayerBackdrop(track: Track, modifier: Modifier = Modifier) {
     val colors = MaterialTheme.colorScheme
     val artwork = track.artworkRef?.uri
-    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S || artwork == null) {
+    if (LocalBlurLevel.current != BlurLevel.Full || artwork == null) {
         Box(
             modifier.background(
                 Brush.verticalGradient(listOf(colors.primaryContainer, colors.surface))
@@ -427,7 +425,7 @@ private fun PlayerBackdrop(track: Track, modifier: Modifier = Modifier) {
                             scaleX = scale
                             scaleY = scale
                         }
-                        .blur { blurRadiusSpec = BlurRadiusSpec.uniform(BackdropBlur) },
+                        .outOfFocus { BackdropBlur },
                 shape = RectangleShape,
                 cacheKey = shown.artworkCacheKey,
             )
